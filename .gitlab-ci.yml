@@ -7,8 +7,7 @@ cache:
     key: "$CI_PROJECT_ID"
     
 stages:
-    - examples
-    - utility
+    - build
 
 #test_pypal:
 #    stage: build
@@ -23,8 +22,8 @@ stages:
 #        - make
         
 ## Test compilation in the examples directory
-build_examples:
-    stage: examples
+examples:
+    stage: build
 
     only:
         - master
@@ -36,8 +35,8 @@ build_examples:
         - make
 
 ## Test compilation in the utility directory
-build_utility:
-    stage: examples
+utility:
+    stage: build
 
     only:
         - master
