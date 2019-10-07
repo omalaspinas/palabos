@@ -114,11 +114,11 @@ SConsArgsPalabos = palabosRoot=$(palabosRoot) \
 compilation:
 	cd compilePalabos; python $(SConsPalabos) $(SConsArgsPalabos)
 	bash ./preprocess $(jlabosRoot)
-	python2 $(SCons) $(SConsArgs)
+	python3 $(SCons) $(SConsArgs)
 	bash ./postprocess $(jlabosRoot) $(parallelCXX) $(linkFlags)
 
 clean:
-	python2 $(SCons) -c $(SConsArgs)
+	python3 $(SCons) -c $(SConsArgs)
 	cd compilePalabos; python $(SConsPalabos) -c $(SConsArgsPalabos)
 	/bin/rm -f swig/tmp/*
 	/bin/rm -f `find . -name "*~"`

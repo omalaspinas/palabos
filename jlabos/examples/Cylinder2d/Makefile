@@ -53,7 +53,7 @@ run: compilation
 	mpirun -np 4 java -ea -jar -Djava.library.path=../../src/jlabos/plb:/usr/lib $(mainClass).jar
 	
 compilation:
-	python2 $(SCons) $(SConsArgs)
+	python3 $(SCons) $(SConsArgs)
 
 clean:
-	python2 $(SCons) -c $(SConsArgs)
+	python3 $(SCons) -c $(SConsArgs)

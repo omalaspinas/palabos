@@ -77,6 +77,8 @@ env = Environment ( ENV       = os.environ,
                     CPPPATH   = allPaths
                   )
 
+env.SConsignFile(os.path.join(env.Dir('#').abspath, palabosRoot, '.sconsign.dblite'))
+
 if dynamicLibrary:
     LibraryGen = env.SharedLibrary
 else:
