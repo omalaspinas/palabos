@@ -44,7 +44,7 @@ utility:
     
     script: 
         - pwd
-        - cd examples
+        - cd utility
         - make
 
 # run tests using the binary built before
