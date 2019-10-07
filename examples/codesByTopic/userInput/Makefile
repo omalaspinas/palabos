@@ -20,7 +20,7 @@ palabosRoot  = ../../..
 projectFiles = readParameters.cpp
 
 # Set optimization flags on/off
-optimize     = false
+optimize     = true
 # Set debug mode and debug flags on/off
 debug        = true
 # Set profiling flags on/off
