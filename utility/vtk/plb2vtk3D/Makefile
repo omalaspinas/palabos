@@ -15,7 +15,7 @@
 #                optimFlags   = -O -finline-functions
 
 # Leading directory of the Palabos source code
-palabosRoot  = ../..
+palabosRoot  = ../../..
 # Name of source files in current directory to compile and link with Palabos
 projectFiles = plb2vtk3D.cpp
 #projectFiles = plb2vtk2D.cpp
