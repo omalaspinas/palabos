@@ -33,8 +33,6 @@ profile      = false
 # Set MPI-parallel mode on/off (parallelism in cluster-like environment)
 MPIparallel  = true
 
-# Set SMP-parallel mode on/off (shared-memory parallelism)
-SMPparallel  = false
 # Decide whether to include calls to the POSIX API. On non-POSIX systems,
 #   including Windows, this flag must be false, unless a POSIX environment is
 #   emulated (such as with Cygwin).
@@ -96,7 +94,6 @@ SConsArgsPalabos = palabosRoot=$(palabosRoot) \
             debug=$(debug) \
             profile=$(profile) \
             MPIparallel=$(MPIparallel) \
-            SMPparallel=$(SMPparallel) \
             usePOSIX=$(usePOSIX) \
             serialCXX=$(serialCXX) \
             parallelCXX=$(parallelCXX) \

@@ -20,7 +20,6 @@ optimize      = argdict['optimize'].lower() == 'true'
 debug         = argdict['debug'].lower() == 'true'
 profile       = argdict['profile'].lower() == 'true'
 MPIparallel   = argdict['MPIparallel'].lower() == 'true'
-SMPparallel   = argdict['SMPparallel'].lower() == 'true'
 usePOSIX      = argdict['usePOSIX'].lower() == 'true'
 serialCXX     = argdict['serialCXX']
 parallelCXX   = argdict['parallelCXX']
@@ -63,9 +62,6 @@ if MPIparallel:
     flags.append('-DPLB_MPI_PARALLEL')
 else:
     compiler = serialCXX
-
-if SMPparallel:
-    flags.append('-DPLB_SMP_PARALLEL')
 
 if usePOSIX:
     flags.append('-DPLB_USE_POSIX')
