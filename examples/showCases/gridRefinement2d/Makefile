@@ -37,7 +37,7 @@ srcPaths =
 # Path to external libraries (other than Palabos)
 libraryPaths = 
 # Path to inlude directories (other than Palabos)
-includePaths = .
+includePaths =
 # Dynamic and static libraries (other than Palabos)
 libraries    =
 
