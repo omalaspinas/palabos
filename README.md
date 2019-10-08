@@ -1,7 +1,7 @@
 # Palabos
 
 [Palabos](https://palabos.unige.ch/) is an open-source CFD solver based on the [lattice Boltzmann method](https://palabos.unige.ch/lattice-boltzmann/what-lattice-boltzmann/). 
-On this page you can download the code, [access examples](http://www.palabos.org/gallery/overview) and resources, 
+On this page you can download the source code, [access examples](https://gitlab.com/unigespc/palabos/tree/master/examples) and resources, 
 and [interact with the user base](http://palabos-forum.unige.ch/).
 
 # Installation
@@ -16,18 +16,18 @@ The mandatory packages are the following:
 
 - A modern C++ compiler `gcc` or `clang`
 - `make`
-- `python2` until Palabos version `2.0` and `python3` for the nigthly version and more recent versions.
+- `python3` for the current version of Palabos.
 
 ### For Debian based distributions
 
 ```
-$ sudo apt install gcc clang python python3 make
+$ sudo apt install gcc clang python3 make
 ```
 
 ### For Arch based distributions
 
 ```
-$ sudo pacman -S gcc clang python2 python make
+$ sudo pacman -S gcc clang python make
 ```
 
 The optional but recommended packages are the following:
@@ -60,11 +60,11 @@ git clone https://gitlab.com/unigespc/palabos.git
 
 or for stable releases download the appropriate version
 from [this link](https://gitlab.com/unigespc/palabos/-/tags).
-If you downloaded `palabos-v2.0r0.tar.gz` (the version 2.0 of Palabos) you
+If you downloaded `palabos-v2.1r0.tar.gz` (the version 2.1 of Palabos) you
 can extract the files from the archive with
 
 ```
-$ tar xzvf palabos-v2.0r0.tar.gz
+$ tar xzvf palabos-v2.1r0.tar.gz
 ```
 
 Congratulations. You should now have a functioning version of Palabos.
