@@ -1,7 +1,7 @@
 # Palabos
 
 [Palabos](https://palabos.unige.ch/) is an open-source CFD solver based on the [lattice Boltzmann method](https://palabos.unige.ch/lattice-boltzmann/what-lattice-boltzmann/). 
-On this page you can download the code, [access examples](http://www.palabos.org/gallery/overview) and resources, 
+On this page you can download the source code, [access examples](https://gitlab.com/unigespc/palabos/tree/master/examples) and resources, 
 and [interact with the user base](http://palabos-forum.unige.ch/).
 
 # Installation
