@@ -869,7 +869,7 @@ int main(int argc, char* argv[])
             model->clone(), voxelizedDomain, lattices.getLevel(param.finestLevel));
     boundaryCondition->insert(rhoBarJarg);
     PLB_ASSERT(boundaryCondition != 0);
-
+    delete model; model = 0;
 
     if (!continueSimulation) {
         pcout << "Generating outer domain zones." << std::endl;
@@ -1046,6 +1046,9 @@ int main(int argc, char* argv[])
     summary << "Total time of the pure solution phase (no output): " << (double) global::timer("solver").getTime() << " s" << std::endl;
     summary.close();
     energyFile.close();
+
+    delete boundaryCondition;
+    delete rhoBarJfield;
 
     return 0;
 }
