@@ -33,7 +33,7 @@ examples:
     script: 
         - pwd
         - cd examples
-        - make
+        - make optimize="false"
 
 ## Test compilation in the utility directory
 utility:
@@ -46,7 +46,7 @@ utility:
     script: 
         - pwd
         - cd utility
-        - make
+        - make optimize="false"
 
 # run tests using the binary built before
 #test:
