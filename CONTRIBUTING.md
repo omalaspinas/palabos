@@ -1,6 +1,12 @@
 # Contibuting to Palabos
 
-Please read carefully 
+Please read carefully before contributing to Palabos.
+
+## Code contribution to the Palabos 
+
+In order to contribute to the Palabos source code it is required that you sign off on the [Developer Certificate of Origin (DCO)](https://gitlab.com/unigespc/palabos/blob/dco/dco/README.md).
+
+In line with our value that everyone can contribute to Palabos, we strive to make our process as developer-friendly and frictionless as possible. As such, we consider the act of contributing to the code by submitting a *Merge Request* as the "Sign off" or agreement to the certifications and terms of the DCO and AGPL3 license. No further action is required.
 
 ## Bug reports
 
