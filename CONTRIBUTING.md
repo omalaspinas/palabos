@@ -16,7 +16,11 @@ Otherwise it is close to impossible for us to try to figure out what is happenin
 
 ## Novel contributions
 
-In order to contribute to Palabos you must create o fork of the project (clic on
+Contributions to Palabos are accepted by community members who prove sufficient programming skills, familiarity with the Palabos source code, and level of maturity with respect to the proposed numerical or physical models.
+
+Before contributing to Palabos, make sure to be familiar with the programming guidelines listed in the User's Guide. Also, before jumping into a large development project, it is good practice to interact with the core developers and the community on the forum, to identify if the development project answers a need in the community and is aligned with the general development goals of Palabos.
+
+In order to contribute to Palabos you must create a fork of the project (click on
 the fork button, see [here](https://docs.gitlab.com/ee/workflow/forking_workflow.html#creating-a-fork) for more info).
 This will create an exact copy of the Palabos repo in your namespace.
 
@@ -24,9 +28,8 @@ On your fork of the project you are free to make any modification you want to
 the source code, but for your code to be reusable by others you should not modify existing classes
 but create your own new classes.
 
-When implementing
-a model from an existing paper please include the reference to the paper in the
-comments. If the paper is not published yet please include a link to a preprint (ideally on arxiv).
+When implementing a model from an existing paper please include the reference to the paper in the
+comments. If the paper is not published yet please include a link to a preprint (ideally on arXiv).
 
 You should illustrate how to use your contribution. To do so
 add an example test case in `examples/codesByTopic`. See how the examples there are built
