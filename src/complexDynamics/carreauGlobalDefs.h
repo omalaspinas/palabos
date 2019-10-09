@@ -1,7 +1,10 @@
 /* This file is part of the Palabos library.
  *
- * Copyright (C) 2011-2019 FlowKit-Numeca Group Sarl
- * Copyright (C) 2011-2019 University of Geneva
+ * The Palabos softare is developed since 2011 by FlowKit-Numeca Group Sarl
+ * (Switzerland) and the University of Geneva (Switzerland), which jointly
+ * own the IP rights for most of the code base. Since October 2019, the
+ * Palabos project is maintained by the University of Geneva and accepts
+ * source code contributions from the community.
  * 
  * Contact:
  * Jonas Latt
@@ -27,9 +30,6 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-
-/* Main author: Orestis Malaspinas
- */
 
 /** \file
  * Global Definitions -- header file.
