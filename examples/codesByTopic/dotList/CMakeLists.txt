@@ -70,6 +70,7 @@ endif()
 ###############################################################################
 
 include_directories("../../../src")
+include_directories("../include")
 include_directories("../../../externalLibraries")
 include_directories("../../../externalLibraries/Eigen3")
 
