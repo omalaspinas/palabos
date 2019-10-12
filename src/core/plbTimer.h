@@ -73,7 +73,7 @@ private:
     double startTime;
 #else
 #if defined PLB_USE_POSIX && defined _POSIX_TIMERS && (_POSIX_TIMERS > 0) && !defined(PLB_NGETTIME)
-    double startTime;
+    timespec startTime;
 #else
     clock_t startClock;
 #endif

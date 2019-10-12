@@ -33,6 +33,7 @@
 
 #include "parallelism/mpiManager.h"
 #include "core/plbTimer.h"
+#include <iostream>
 #include <map>
 
 #include <ctime>
@@ -57,9 +58,7 @@ void PlbTimer::start() {
     startTime = mpi().getTime();
 #else
 #if defined PLB_USE_POSIX && defined _POSIX_TIMERS && (_POSIX_TIMERS > 0) && !defined(PLB_NGETTIME)
-    timespec ts;
-    clock_gettime(CLOCK_REALTIME, &ts);
-    startTime = (double) ts.tv_nsec * (double) 1.0e-9;
+    clock_gettime(CLOCK_REALTIME, &startTime);
 #else
     startClock = clock();
 #endif
@@ -90,8 +89,17 @@ double PlbTimer::getTime() const {
 #if defined PLB_USE_POSIX && defined _POSIX_TIMERS && (_POSIX_TIMERS > 0) && !defined(PLB_NGETTIME)
         timespec ts;
         clock_gettime(CLOCK_REALTIME, &ts);
-        double endTime = (double) ts.tv_nsec * (double) 1.0e-9;
-        return cumulativeTime + endTime-startTime;
+        long seconds = ts.tv_sec - startTime.tv_sec; 
+        long ns = ts.tv_nsec - startTime.tv_nsec; 
+
+        if (startTime.tv_nsec > ts.tv_nsec) { // clock underflow 
+            --seconds; 
+            ns += 1e9; 
+        } 
+
+        double deltaTime = (double) seconds + (double)ns * (double)1e-9;
+
+        return cumulativeTime + deltaTime;
 #else
         return cumulativeTime + (double)(clock()-startClock)
                               / (double)CLOCKS_PER_SEC;
