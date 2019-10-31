@@ -92,8 +92,12 @@ void TRTdynamics<T,Descriptor>::collide (
 {
     const T sPlus = this->getOmega();
     // Pan's model: bounce-back exactly half-way between nodes.
-    if (sMinus == T()) {
-        sMinus = (T)8*((T)2-sPlus)/((T)8-sPlus);
+    // This model is trigerred if sMinus is set to 0. In this case,
+    // sMinus is recomputed at each collision to adjust to
+    // potentially time-dependend omegas.
+    T local_sMinus = sMinus;
+    if (local_sMinus == T()) {
+        local_sMinus = (T)8*((T)2-sPlus)/((T)8-sPlus);
     }
 
     Array<T,Descriptor<T>::q> eq;
@@ -119,8 +123,8 @@ void TRTdynamics<T,Descriptor>::collide (
     cell[0] += -sPlus*cell[0] + sPlus*eq[0];
 
     for (plint i=1; i<=Descriptor<T>::q/2; ++i) {
-        cell[i] += -sPlus*(f_plus[i]-eq_plus[i]) - sMinus*(f_minus[i]-eq_minus[i]);
-        cell[i+Descriptor<T>::q/2] += -sPlus*(f_plus[i]-eq_plus[i]) + sMinus*(f_minus[i]-eq_minus[i]);
+        cell[i] += -sPlus*(f_plus[i]-eq_plus[i]) - local_sMinus*(f_minus[i]-eq_minus[i]);
+        cell[i+Descriptor<T>::q/2] += -sPlus*(f_plus[i]-eq_plus[i]) + local_sMinus*(f_minus[i]-eq_minus[i]);
     }
     
     if (cell.takesStatistics()) {
@@ -134,7 +138,14 @@ void TRTdynamics<T,Descriptor>::collideExternal (
         T thetaBar, BlockStatistics& statistics )
 {
     const T sPlus = this->getOmega();
-    const T sMinus = (T)8*((T)2-sPlus)/((T)8-sPlus);
+    // Pan's model: bounce-back exactly half-way between nodes.
+    // This model is trigerred if sMinus is set to 0. In this case,
+    // sMinus is recomputed at each collision to adjust to
+    // potentially time-dependend omegas.
+    T local_sMinus = sMinus;
+    if (local_sMinus == T()) {
+        local_sMinus = (T)8*((T)2-sPlus)/((T)8-sPlus);
+    }
 
     Array<T,Descriptor<T>::q> eq;
     // In the following, we number the plus/minus variables from 1 to (Q-1)/2.
@@ -156,8 +167,8 @@ void TRTdynamics<T,Descriptor>::collideExternal (
     cell[0] += -sPlus*cell[0] + sPlus*eq[0];
 
     for (plint i=1; i<=Descriptor<T>::q/2; ++i) {
-        cell[i] += -sPlus*(f_plus[i]-eq_plus[i]) - sMinus*(f_minus[i]-eq_minus[i]);
-        cell[i+Descriptor<T>::q/2] += -sPlus*(f_plus[i]-eq_plus[i]) + sMinus*(f_minus[i]-eq_minus[i]);
+        cell[i] += -sPlus*(f_plus[i]-eq_plus[i]) - local_sMinus*(f_minus[i]-eq_minus[i]);
+        cell[i+Descriptor<T>::q/2] += -sPlus*(f_plus[i]-eq_plus[i]) + local_sMinus*(f_minus[i]-eq_minus[i]);
     }
     
     if (cell.takesStatistics()) {

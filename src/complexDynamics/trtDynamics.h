@@ -47,13 +47,13 @@ public:
     /* *************** Construction / Destruction ************************ */
     // sMinus is the relaxation time associated to the anti-symmetric part.
     // If a value of 0 is provided for sMinus, this parameter will default
-    // to a value depending on omega, equal to the one of Pan's model,
-    // which guarantees that the wall is exactly half-way between nodes
-    // (Eq. 11 of
-    //     Pan, Chongxun, Li-Shi Luo, and Cass T. Miller.
-    //     An Evaluation of Lattice Boltzmann Schemes for Porous Medium Flow Simulation.
-    //     Computers & Fluids 35(8), 2006.
-    //     https://doi.org/10.1016/j.compfluid.2005.03.008)
+    // to a value depending on omega, which guarantees that the wall is
+    // exactly half-way between nodes, according to Eq. 11 in Pan et al 2006:
+    // https://doi.org/10.1016/j.compfluid.2005.03.008
+    // The original formulation of the model is probably in Ginzburg and
+    // Adler 1994:
+    // https://doi.org/10.1051/jp2:1994123.
+    // It corresponds to a "magic parameter" of 3/16.
     TRTdynamics(T omega_, T sMinus_ = T());
     TRTdynamics(HierarchicUnserializer& unserializer);
     
