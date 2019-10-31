@@ -91,6 +91,7 @@ void TRTdynamics<T,Descriptor>::collide (
         Cell<T,Descriptor>& cell, BlockStatistics& statistics )
 {
     const T sPlus = this->getOmega();
+    // Pan's model: bounce-back exactly half-way between nodes.
     if (sMinus == T()) {
         sMinus = (T)8*((T)2-sPlus)/((T)8-sPlus);
     }
