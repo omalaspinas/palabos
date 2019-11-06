@@ -528,6 +528,8 @@ void runProgram()
         Box3D injectionDomain(0, 0, centerLB[1]-0.25*param.ny, centerLB[1]+0.25*param.ny,
                 centerLB[2]-0.25*param.nz, centerLB[2]+0.25*param.nz);
 
+        boxLogic::printBox(injectionDomain, "injectionDomain");
+
         // Definition of simple mass-less particles.
         Particle3D<T,DESCRIPTOR>* particleTemplate=0;
         particleTemplate = new PointParticle3D<T,DESCRIPTOR>(0, Array<T,3>(0.,0.,0.), Array<T,3>(0.,0.,0.));
@@ -585,7 +587,7 @@ void runProgram()
             if (param.useParticles) {
                 writeParticleVtk<T,DESCRIPTOR> (
                         *particles, createFileName(outputDir+"particles_", i, PADDING) + ".vtk",
-                        param.maxNumParticlesToWrite );
+                        param.dx, param.maxNumParticlesToWrite );
             }
         }
 
