@@ -341,15 +341,17 @@ void InjectRandomParticlesFunctional3D<T,Descriptor>::processGenericBlocks (
             for (plint iZ=domain.z0; iZ<=domain.z1; ++iZ) {
                 T randNumber = (T)rand() / (T)RAND_MAX;
                 if(randNumber<probabilityPerCell) {
-                    T randX = (T)rand() / (T)RAND_MAX - (T)1;
-                    T randY = (T)rand() / (T)RAND_MAX - (T)1;
-                    T randZ = (T)rand() / (T)RAND_MAX - (T)1;
+                    T randX = (T)rand() / (T)RAND_MAX - (T)0.5;
+                    T randY = (T)rand() / (T)RAND_MAX - (T)0.5;
+                    T randZ = (T)rand() / (T)RAND_MAX - (T)0.5;
                     Particle3D<T,Descriptor>* newparticle = particleTemplate->clone();
                     newparticle->getPosition() =
                             Array<T,3> (
                                     particleField.getLocation().x + iX + randX,
                                     particleField.getLocation().y + iY + randY,
                                     particleField.getLocation().z + iZ + randZ );
+
+                    pcout << newparticle->getPosition()[0] << " "  << newparticle->getPosition()[1] << " "  << newparticle->getPosition()[2] << std::endl;
                     particleField.addParticle(domain, newparticle);
                 }
             }
