@@ -286,7 +286,7 @@ void outerDomainBoundaries(MultiBlockLattice3D<T,DESCRIPTOR> *lattice,
 // Write VTK file for the flow around the obstacle, to be viewed with Paraview.
 void writeVTK(OffLatticeBoundaryCondition3D<T,DESCRIPTOR,Velocity>& bc, plint iT)
 {
-    VtkImageOutput3D<T> vtkOut(createFileName("volume", iT, PADDING));
+    VtkImageOutput3D<T> vtkOut(createFileName("volume", iT, PADDING), param.dx);
     vtkOut.writeData<float>( *bc.computeVelocityNorm(param.boundingBox()),
                              "velocityNorm", param.dx/param.dt );
     vtkOut.writeData<3,float>(*bc.computeVelocity(param.boundingBox()), "velocity", param.dx/param.dt);
@@ -527,8 +527,6 @@ void runProgram()
         // Definition of a domain from which particles will be injected in the flow field.
         Box3D injectionDomain(0, 0, centerLB[1]-0.25*param.ny, centerLB[1]+0.25*param.ny,
                 centerLB[2]-0.25*param.nz, centerLB[2]+0.25*param.nz);
-
-        boxLogic::printBox(injectionDomain, "injectionDomain");
 
         // Definition of simple mass-less particles.
         Particle3D<T,DESCRIPTOR>* particleTemplate=0;
