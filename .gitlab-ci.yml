@@ -29,6 +29,7 @@ examples:
     only:
         - master
         - scons_update
+        - 9-bug-particles-injection-externalflowaroundobstacle
     
     script: 
         - pwd
@@ -42,6 +43,7 @@ utility:
     only:
         - master
         - scons_update
+        - 9-bug-particles-injection-externalflowaroundobstacle
     
     script: 
         - pwd
