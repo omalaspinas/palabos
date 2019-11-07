@@ -480,7 +480,7 @@ void DenseParticleField3D<T,Descriptor>::advanceParticles(Box3D domain, T cutOff
                         Particle3D<T,Descriptor>* particle = particles[iParticle];
                         Array<T,3> oldPos( particle->getPosition() );
                         particle->advance();
-                        if (cutOffValue>=T() && normSqr(oldPos-particle->getPosition())<cutOffValue)
+                        if (cutOffValue>=T() && normSqr(oldPos-particle->getPosition()) < (cutOffValue*cutOffValue))
                         {
                             delete particle;
                         }
@@ -865,7 +865,7 @@ void LightParticleField3D<T,Descriptor>::advanceParticles(Box3D domain, T cutOff
             if (this->isContained(particle->getPosition(),finalDomain)) {
                 Array<T,3> oldPos( particle->getPosition() );
                 particle->advance();
-                if ( (cutOffValue>=T() && normSqr(oldPos-particle->getPosition())<cutOffValue) ||
+                if ( (cutOffValue>=T() && normSqr(oldPos-particle->getPosition()) < cutOffValue*cutOffValue) ||
                      (!this->isContained(particle->getPosition(),this->getBoundingBox()))  )
                 {
                     delete particle;
