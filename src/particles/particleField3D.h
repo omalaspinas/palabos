@@ -72,9 +72,9 @@ public:
     /// Execute fluid-particle interaction for all particles contained in the domain.
     virtual void fluidToParticleCoupling(Box3D domain, BlockLattice3D<T,Descriptor>& lattice, T scaling=0.) =0;
     /// Advance all particles contained in the domain. When the speed of a particle drops
-    ///   below sqrt(cutOffValue), the particle is eliminated. Negative cutOffValue means
+    ///   below sqrt(cutOffSpeedSqr), the particle is eliminated. Negative cutOffSpeedSqr means
     ///   no cutoff.
-    virtual void advanceParticles(Box3D domain, T cutOffValue=-1.) =0;
+    virtual void advanceParticles(Box3D domain, T cutOffSpeedSqr=-1.) =0;
     virtual identifiers::BlockId getBlockId() const { return identifiers::ParticleId; }
 public:
     /// Helper function: returns if a given particle is situated in the indicated (local) domain.
@@ -136,7 +136,7 @@ public:
     virtual void velocityToParticleCoupling(Box3D domain, NTensorField3D<T>& velocity, T scaling=0.);
     virtual void rhoBarJtoParticleCoupling(Box3D domain, NTensorField3D<T>& rhoBarJ, bool velIsJ, T scaling=0.);
     virtual void fluidToParticleCoupling(Box3D domain, BlockLattice3D<T,Descriptor>& lattice, T scaling=0.);
-    virtual void advanceParticles(Box3D domain, T cutOffValue=-1.);
+    virtual void advanceParticles(Box3D domain, T cutOffSpeedSqr=-1.);
 public:
     static std::string getBlockName();
     static std::string basicType();
@@ -197,7 +197,7 @@ public:
     virtual void velocityToParticleCoupling(Box3D domain, NTensorField3D<T>& velocity, T scaling=0.);
     virtual void rhoBarJtoParticleCoupling(Box3D domain, NTensorField3D<T>& rhoBarJ, bool velIsJ, T scaling=0.);
     virtual void fluidToParticleCoupling(Box3D domain, BlockLattice3D<T,Descriptor>& lattice, T scaling=0.);
-    virtual void advanceParticles(Box3D domain, T cutOffValue=-1.);
+    virtual void advanceParticles(Box3D domain, T cutOffSpeedSqr=-1.);
 public:
     static std::string getBlockName();
     static std::string basicType();
