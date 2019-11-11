@@ -7,8 +7,9 @@ cache:
     key: "$CI_PROJECT_ID"
     
 stages:
-    - build_examples
-    - build_utility
+    # - build_examples
+    # - build_utility
+    - pages
 
 #test_pypal:
 #    stage: build
@@ -23,30 +24,41 @@ stages:
 #        - make
         
 ## Test compilation in the examples directory
-examples:
-    stage: build_examples
+# examples:
+#     stage: build_examples
 
-    only:
-        - master
-        - scons_update
+#     only:
+#         - master
     
-    script: 
-        - pwd
-        - cd examples
-        - make optimize="false"
+#     script: 
+#         - pwd
+#         - cd examples
+#         - make optimize="false"
 
 ## Test compilation in the utility directory
-utility:
-    stage: build_utility
+# utility:
+#     stage: build_utility
 
+#     only:
+#         - master
+    
+#     script: 
+#         - pwd
+#         - cd utility
+#         - make optimize="false"
+
+pages:
+    stage: documentation
+    script:
+        - pwd
+        - doxygen Doxyfile
+        - mkdir -p public
+        - mv documentation/html/* public/
+    artifacts:
+        paths:
+        - public
     only:
         - master
-        - scons_update
-    
-    script: 
-        - pwd
-        - cd utility
-        - make optimize="false"
 
 # run tests using the binary built before
 #test:
