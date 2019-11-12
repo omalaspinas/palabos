@@ -51,8 +51,6 @@ pages:
     script:
         - pwd
         - doxygen Doxyfile
-        - mkdir -p public
-        - mv documentation/html/* public/
     artifacts:
         paths:
         - public
