@@ -51,6 +51,7 @@ pages:
     stage: deploy
     script:
         - pwd
+        - mkdir -p public/docs
         - doxygen Doxyfile
     artifacts:
         paths:
