@@ -9,7 +9,7 @@ cache:
 stages:
     # - build_examples
     # - build_utility
-    - deploy
+    # - deploy
 
 #test_pypal:
 #    stage: build
@@ -48,7 +48,6 @@ stages:
 #         - make optimize="false"
 
 pages:
-    stage: deploy
     script:
         - pwd
         - doxygen Doxyfile
