@@ -77,6 +77,7 @@ void MpiManager::init(int *argc, char ***argv, bool verbous) {
 }
 
 void MpiManager::init(MPI_Comm globalCommunicator_) {
+    responsibleForMpiMachine = true;
     globalCommunicator = globalCommunicator_;
     int ok1 = MPI_Comm_rank(getGlobalCommunicator(),&taskId);
     int ok2 = MPI_Comm_size(getGlobalCommunicator(),&numTasks);

@@ -46,6 +46,7 @@
 namespace plb {
 
 void plbInit(int *argc, char ***argv, bool verbous=false);
+void plbInit(MPI_Comm communicator);
 void plbInit();
 
 namespace global {
