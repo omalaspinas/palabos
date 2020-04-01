@@ -124,6 +124,31 @@ average=1.00251; stdDev/average=0.0719342
 average=0.999835; stdDev/average=0.0373279
 3.33333 : Writing VTK.
 ```
+**How to use Cmake to compile your application**
+
+Each example has a _ready-to-use_ Makefile that uses scons "under the hood" and
+a CMakeLists.txt to compile under cmake. To compile the previous example with cmake
+you can write
+```
+cd palabos_root_folder/examples/showCases/boussinesqThermal3d
+mkdir -p build && cd build
+cmake ..
+make
+```
+If you need to create a palabos project with a cmake-based IDE,
+you can use the CMakeLists.txt provided in the palabos root
+folder. With some minor modifications, you can also use this CMakeLists.txt 
+to compile build your own application.
+
+With the CMakeLists.txt you can also test the compilation of the non-templated part of 
+palabos with the following commands
+(for linux)
+```
+cd palabos_root_folder
+mkdir build && cd build
+cmake ..
+make
+```
 
 # Documentation
 

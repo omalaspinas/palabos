@@ -4,16 +4,16 @@ cmake_minimum_required(VERSION 2.8)
 # # # developers.
 
 if (${CMAKE_VERSION} VERSION_LESS "3.0.0")
-    project(palabos) # change to the name of your priject if you whant to compile your application
+    project(palabos) # change to the name of your project if you want to compile your application
     set(CMAKE_LANGUAGES_COMPILER CXX)
     find_package(MPI REQUIRED)
 else ()
-    project(palabos LANGUAGES CXX) # change to the name of your priject if you whant to compile your application
+    project(palabos LANGUAGES CXX) # change to the name of your project if you woant to compile your application
 endif ()
 
 set(DEFAULT ON CACHE INTERNAL "Default options")
 
-# # # If you whant to compile your application uncomment the next line
+# # # If you want to compile your application uncomment the next line
 # set(EXECUTABLE_NAME "my_executable")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "../")
 
@@ -24,7 +24,7 @@ message("Generated with config types: ${CMAKE_CONFIGURATION_TYPES}")
 message(${CMAKE_BUILD_TYPE})
 
 set(PALABOS_ROOT ${CMAKE_CURRENT_SOURCE_DIR})
-# # # If you whant to compile your application, or this file is outside the palabos root folder
+# # # If you want to compile your application, or this file is outside the palabos root folder
 # # # add to PATH the palabos folder, comment set(PALABOS_ROOT ${CMAKE_CURRENT_SOURCE_DIR})
 # # # and uncomment the next line
 #file(TO_CMAKE_PATH $ENV{PALABOS_ROOT} PALABOS_ROOT)
