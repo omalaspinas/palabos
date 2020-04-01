@@ -86,7 +86,6 @@ pages:
         - public
     only:
         - master
-        - tags
 
 # run tests using the binary built before
 #test:
