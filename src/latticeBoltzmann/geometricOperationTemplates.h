@@ -877,6 +877,10 @@ Array<T,3> rotateAtOrigin(Array<T,3> const& p, Array<T,3> const& normedAxis, T t
     */
 }
 
+// This function rotates p with "proper Euler angles" and "intrinsic" rotation zx'z''
+// * phi: represents a rotation around the z axis,
+// * theta: represents a rotation around the x′ axis,
+// * psi: represents a rotation around the z″ axis.
 template<typename T>
 Array<T,3> rotateWithEulerAngles(Array<T,3> const& p, T phi, T theta, T psi)
 {
