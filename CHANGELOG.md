@@ -17,6 +17,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
   * Fixed bug in the `externalflowAroundObstacle` showCase.
   * Fixed bug with TRT dynamics.
   * Fixed bug with timer in the single threaded compilation.
+  * Added custom communicator for possible Cuda additions.
 
 ## [2.1.0]
 
