@@ -11,8 +11,8 @@ stages:
     - build_examples
     - build_utility
     - deploy
-      # - build_examples_cmake
-      # - build_utility_cmake
+    # - build_examples_cmake
+    # - build_utility_cmake
 
 #test_pypal:
 #    stage: build
@@ -51,30 +51,30 @@ utility:
         - make optimize="false"
         
 ## Test compilation in the examples directory
-examples_cmake:
-    stage: build_examples
+# examples_cmake:
+#     stage: build_examples
 
-    only:
-        - master
-        - cmake
+#     only:
+#         - master
+#         - cmake
     
-    script: 
-        - pwd
-        - cd examples
-        - ./cmake_all.sh
+#     script: 
+#         - pwd
+#         - cd examples
+#         - ./cmake_all.sh
 
 ## Test compilation in the utility directory
-utility_cmake:
-    stage: build_utility
+# utility_cmake:
+#     stage: build_utility
 
-    only:
-        - master
-        - cmake
+#     only:
+#         - master
+#         - cmake
     
-    script: 
-        - pwd
-        - cd utility
-        - ./cmake_all.sh
+#     script: 
+#         - pwd
+#         - cd utility
+#         - ./cmake_all.sh
 
 pages:
     stage: deploy
