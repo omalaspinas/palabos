@@ -388,7 +388,7 @@ void OscillatingPoiseuilleProfile3D<T,Descriptor>::getData (
     Array<T,3> radial = pos-center;
     T r = norm(radial) / radius;
     if (r<=(T)1.) {
-        data = ( minUave+(maxUave-minUave)*signal* (T)2*((T)1-r*r) ) * (-normal);
+        data = ((T)2*(minUave+(maxUave-minUave)*signal))*((T)1-r*r)*(-normal);
     }
     else {
         data.resetToZero();
