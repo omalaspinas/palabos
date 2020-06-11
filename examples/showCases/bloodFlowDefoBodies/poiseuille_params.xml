@@ -1,0 +1,109 @@
+<?xml version="1.0" ?>
+
+<Simulation_Type> Poiseuille_Flow </Simulation_Type>
+
+<Case_Study_RBC> RBC_Surface_mesh_258SurfVer </Case_Study_RBC>
+<Case_Study_PLT> PLT_Larger_Surface_mesh_66SurfVer </Case_Study_PLT>
+
+<!--> Length scales are dx_p, dt_p, rho_p, which result in dx_lb = dt_lb = rho_lb = 1 <-->
+<System_Setup>
+    <OutputDir> ./tmp/ </OutputDir>
+    <pos_filename> initialPlacing.pos </pos_filename>
+    <wallStlFileName> ./wallStlFiles/cylinderD50L50.stl </wallStlFileName>
+    <withBodies> true </withBodies>
+
+    <particleEnvelopeWidth> 6 </particleEnvelopeWidth>
+
+    <ht> 35 </ht> <!--> Hematocrit (%) <-->
+    <RBCsToPLT> 5 </RBCsToPLT> <!--> How many RBCs correspond to 1 PLT <-->
+
+    <lx_p> 52 </lx_p> <!--> Physical Length (um) <-->
+    <ly_p> 52 </ly_p> <!--> Physical Length (um) <-->
+    <lz_p> 50 </lz_p> <!--> Physical Length (um) <-->
+    <dx_p> 0.5 </dx_p> <!--> Space discretization: Physical Length (um) <-->
+    <tau_lb> 2 </tau_lb>
+    <inamuro_iT> 1 </inamuro_iT>
+
+    <u_p> 0.15 </u_p> <!--> Physical Velocity (um/us) || Poiseuille Flow: Velocity at the center of the tube (desired) <-->
+    <shear_rate> 0 </shear_rate> <!--> in sec^-1 <-->
+
+    <dt_p> -1 </dt_p> <!--> Fluid solver time step: Physical Length (us) <-->
+    <u_lb> -1 </u_lb>
+
+    <output_timestep> 4000 </output_timestep> <!--> Every how many Palabos timesteps to print results <-->
+    <max_time> 0.6 </max_time> <!--> Simulation stops when Simulated Time is over X seconds <-->
+
+    <printVTKs> true </printVTKs>
+    <!--> ratio: [0..1], applies in VTKs & COMs (Center of Mass) <-->
+    <dump_RBCs_ratio_VTKs> 1.0 </dump_RBCs_ratio_VTKs>
+    <dump_PLTs_ratio_VTKs> 1.0 </dump_PLTs_ratio_VTKs>
+    <dump_RBCs_ratio_COMs> 0.0 </dump_RBCs_ratio_COMs>
+    <dump_PLTs_ratio_COMs> 1.0 </dump_PLTs_ratio_COMs>
+
+    <!--> For CellPacking set both to 1.0 <-->
+    <!--> Krueger's Book (p.278, Table 7.2): U_lb_max < 0.03-0.1 for accuracy <-->
+    <vel_cap> 0.04 </vel_cap>
+    <vel_cap_fin> 0.04 </vel_cap_fin>
+</System_Setup>
+
+<CellPacking>
+    <Run> false </Run>
+    <offset> 5.0 </offset>
+</CellPacking>
+
+<Physical_Properties>
+    <nu_p> 1.0 </nu_p> <!--> Kinematic Viscocity (Physical): um^2/us || * 10^-6 m^2/s <-->
+    <rho_p> 1025.0 </rho_p> <!--> femtoGr/um^3, the resulting force scaling gives immediately picoNewtons (Length in um & Time in us) <-->
+</Physical_Properties>
+
+<CheckPointing>
+    <restartFromCP> true </restartFromCP>
+    <CP_OutputDir> ./CPs/ </CP_OutputDir>
+    <checkpoint_timestep> 4000 </checkpoint_timestep>
+
+    <numRBC> 374 </numRBC>
+    <numPLT> 74 </numPLT>
+</CheckPointing>
+
+<ShapeOp_General>
+    <timestep> 2 </timestep> <!--> refers to every how many Palabos steps ShapeOp is executed. Real time = timestep * dt_p <-->
+
+    <m> 7 </m>
+    <max_iterations> 30 </max_iterations>
+    <max_line_search_loops> 5 </max_line_search_loops>
+    <max_attempts_to_solve_stagnation> 7 </max_attempts_to_solve_stagnation>
+    <convergence_window> 5 </convergence_window>
+    <tol> 1e-5 </tol>
+    <gamma> 1e-4 </gamma>
+    <gamma2> 0.9 </gamma2>
+
+    <!--> Default values to avoid interpenetrations. For repulsive forces just increase the collisions_weight_rep <-->
+
+    <collisions_threshold_nonRep> 2.0 </collisions_threshold_nonRep>
+    <collisions_weight_nonRep> 20.0 </collisions_weight_nonRep>
+
+    <collisions_threshold_rep> 2.0 </collisions_threshold_rep>
+    <collisions_weight_rep> 20.0 </collisions_weight_rep>
+    <beta_morse> 0.0 </beta_morse> <!--> not implemented <-->
+</ShapeOp_General>
+
+<!--> For CellPacking set CALPHA to 0.9 <-->
+<!--> For CellPacking set CBETA to 1.0 <-->
+
+<ShapeOp_RBC>
+    <rho> 1125.0 </rho> <!--> Density of RBC in physical units (femtoGr/um^3) <-->
+    <Calpha> 0.9 </Calpha> <!--> Based on the NoneWheelerExps calibration <-->
+    <Cbeta> 0.01 </Cbeta>
+
+    <applyGlobalVolumeConservation> true </applyGlobalVolumeConservation>
+    <globalVolumeConservationWeight> 250. </globalVolumeConservationWeight>
+</ShapeOp_RBC>
+
+<ShapeOp_PLT>
+    <rho> 1125.0 </rho> <!--> Density of PLT in physical units (femtoGr/um^3) <-->
+    <Calpha> 0.9 </Calpha>
+    <Cbeta> 0.01 </Cbeta>
+
+    <applyGlobalVolumeConservation> true </applyGlobalVolumeConservation>
+    <globalVolumeConservationWeight> 250. </globalVolumeConservationWeight>
+</ShapeOp_PLT>

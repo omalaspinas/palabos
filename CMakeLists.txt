@@ -1,118 +1,172 @@
-cmake_minimum_required(VERSION 2.8)
-# # # This CMakeLists.txt file can be used to test the compilation of palabos using CMake.
-# # # It can be also used as a template to build your own application and serve as "project builder" for IDE for palabos
-# # # developers.
+cmake_minimum_required(VERSION 3.0)
 
-if (${CMAKE_VERSION} VERSION_LESS "3.0.0")
-    project(palabos) # change to the name of your project if you want to compile your application
-    set(CMAKE_LANGUAGES_COMPILER CXX)
-    find_package(MPI REQUIRED)
-else ()
-    project(palabos LANGUAGES CXX) # change to the name of your project if you woant to compile your application
-endif ()
+project(palabos)
 
-set(DEFAULT ON CACHE INTERNAL "Default options")
+enable_language(CXX)
 
-# # # If you want to compile your application uncomment the next line
-# set(EXECUTABLE_NAME "my_executable")
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "../")
+# This compiles Palabos library and all the examples
+# It is used mainly for Continuous Integration (CI)
+set(CI ON CACHE BOOL "Compile Everything (Continuous Integration)")
 
-if (NOT CMAKE_BUILD_TYPE)
+if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE "Release")
-endif ()
+    #set(CMAKE_CONFIGURATION_TYPES "Debug;Release")
+endif()
 message("Generated with config types: ${CMAKE_CONFIGURATION_TYPES}")
 message(${CMAKE_BUILD_TYPE})
 
-set(PALABOS_ROOT ${CMAKE_CURRENT_SOURCE_DIR})
-# # # If you want to compile your application, or this file is outside the palabos root folder
-# # # add to PATH the palabos folder, comment set(PALABOS_ROOT ${CMAKE_CURRENT_SOURCE_DIR})
-# # # and uncomment the next line
-#file(TO_CMAKE_PATH $ENV{PALABOS_ROOT} PALABOS_ROOT)
-
 # Compiler flags
 # Append flags: set(CMAKE_XXX_FLAGS "${CMAKE_XXX_FLAGS} ...")
-if (${CMAKE_CXX_COMPILER_ID} STREQUAL GNU)
+if(${CMAKE_CXX_COMPILER_ID} STREQUAL GNU)
     message("GCC.")
-    if (CYGWIN)
-        set(CMAKE_CXX_FLAGS "-Wa,-mbig-obj -std=c++17 -Wall -Wnon-virtual-dtor")
-    else ()
-        set(CMAKE_CXX_FLAGS "-std=c++17 -Wall -Wnon-virtual-dtor")
-    endif ()
+    set(CMAKE_CXX_FLAGS "-std=c++11 -Wall -Wnon-virtual-dtor")
     set(CMAKE_CXX_FLAGS_RELEASE "-O3 -DNDEBUG")
     set(CMAKE_CXX_FLAGS_DEBUG "-g -DPLB_DEBUG -O0")
-elseif (${CMAKE_CXX_COMPILER_ID} STREQUAL Clang)
+elseif(${CMAKE_CXX_COMPILER_ID} STREQUAL Clang)
     message("Clang.")
-    set(CMAKE_CXX_FLAGS "-std=c++17 -Wall -Wnon-virtual-dtor")
+    set(CMAKE_CXX_FLAGS "-std=c++11 -Wall -Wnon-virtual-dtor")
     set(CMAKE_CXX_FLAGS_RELEASE "-O3 -DNDEBUG")
     set(CMAKE_CXX_FLAGS_DEBUG "-g -DPLB_DEBUG -O0")
-elseif (${CMAKE_CXX_COMPILER_ID} STREQUAL MSVC)
+elseif(${CMAKE_CXX_COMPILER_ID} STREQUAL MSVC)
     message("MSVC.")
-    add_definitions(/DMSVC)
-    set(CMAKE_CXX_FLAGS_RELEASE "/MT /Ox /Ot /GS- /GL /DNDEBUG")
-    set(CMAKE_CXX_FLAGS_DEBUG "/MTd /DPLB_DEBUG")
+    set(CMAKE_CXX_FLAGS_RELEASE "/Ox /Ot /GS- /GL /DNDEBUG")
+    set(CMAKE_CXX_FLAGS_DEBUG "/DPLB_DEBUG")
     set(CMAKE_EXE_LINKER_FLAGS_RELEASE "/LTCG /INCREMENTAL:NO /OPT:REF")
-else ()
-    message(FATAL_ERROR "CXX compiler not recognized. CMake will quit.")
-endif ()
+else()
+    message( FATAL_ERROR "CXX compiler not recognized. CMake will quit." )
+endif()
 
-option(ENABLE_MPI "Enable MPI" ${DEFAULT})
-if (ENABLE_MPI)
+option(ENABLE_MPI "Enable MPI" ON)
+if(ENABLE_MPI)
     message("Enabling MPI")
     find_package(MPI REQUIRED)
-    if (MPI_CXX_FOUND)
-        set(CMAKE_CXX_COMPILER "${MPI_CXX_COMPILER}")
-        include_directories(${MPI_CXX_INCLUDE_DIRS})
+    if(MPI_CXX_FOUND)
+        #set(CMAKE_CXX_COMPILER "${MPI_CXX_COMPILER}")
+        include_directories(${MPI_CXX_INCLUDE_PATH})
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${MPI_CXX_COMPILE_FLAGS}")
         add_definitions(-DPLB_MPI_PARALLEL)
-    endif ()
-endif ()
+    endif()
+endif()
 
-#option(ENABLE_OPENMP "Enabling OpenMP" ${DEFAULT})
-#if (ENABLE_OPENMP)
-#    message("Enabling OpenMP")
-#    find_package(OpenMP QUIET)
-#    if (OPENMP_FOUND)
-#        message("OpenMP found. OpenMP activated in release.")
-#        set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} ${OpenMP_CXX_FLAGS}")
-#        set(CMAKE_EXE_LINKER_FLAGS_RELEASE "${CMAKE_EXE_LINKER_FLAGS_RELEASE} ${OpenMP_EXE_LINKER_FLAGS}")
-#    else ()
-#        message("OpenMP not found.")
-#    endif ()
-#endif ()
-
-if (WIN32)
+if(WIN32)
     option(ENABLE_POSIX "Enable POSIX" OFF)
-else ()
-    option(ENABLE_POSIX "Enable POSIX" ${DEFAULT})
-endif ()
-if (ENABLE_POSIX)
+else()
+    option(ENABLE_POSIX "Enable POSIX" ON)
+endif()
+
+if(ENABLE_POSIX)
     message("Enabling POSIX")
     add_definitions(-DPLB_USE_POSIX)
-endif ()
+endif()
 
-if (APPLE)
+if(APPLE)
     add_definitions(-DPLB_MAC_OS_X)
-endif ()
+endif()
 
-if (WIN32 OR CYGWIN)
+if(WIN32 OR CYGWIN)
     add_definitions(-DPLB_WINDOWS)
-endif ()
+endif()
 
-include_directories("${PALABOS_ROOT}/src")
-include_directories("${PALABOS_ROOT}/externalLibraries")
-include_directories("${PALABOS_ROOT}/externalLibraries/Eigen3")
+###############################################################################
+# Palabos Library
+###############################################################################
 
-file(GLOB_RECURSE PALABOS_SRC "${PALABOS_ROOT}/src/*.cpp")
-file(GLOB_RECURSE EXT_SRC "${PALABOS_ROOT}/externalLibraries/tinyxml/*.cpp")
+include_directories("src")
+include_directories("externalLibraries")
+include_directories("externalLibraries/Eigen3")
+
+file(GLOB_RECURSE PALABOS_SRC "src/*.cpp")
+file(GLOB_RECURSE EXT_SRC "externalLibraries/tinyxml/*.cpp")
 
 add_library(palabos STATIC ${PALABOS_SRC} ${EXT_SRC})
 
-# # # EXAMPLE OF HOW TO COMPILE YOUR OWN APPLICATION:
-#file(GLOB DEPS_H "mypath/*.h")
-#file(GLOB PARAMS "mypathxml/*.xml")
-#add_executable(${EXECUTABLE_NAME} "./${EXECUTABLE_NAME}.cpp" ${DEPS_H} ${PARAMS})
-#
-# # # Link with the compiled libraries
-#target_link_libraries(${EXECUTABLE_NAME} palabos)
-#if(ENABLE_MPI)
-#    target_link_libraries(${EXECUTABLE_NAME} ${MPI_CXX_LIBRARIES})
-#endif()
+###############################################################################
+
+# To link palabos in directories other than this
+cmake_policy(SET CMP0079 NEW)
+
+###############################################################################
+# examples directory
+###############################################################################
+# benchmarks
+add_subdirectory(examples/benchmarks/cavity3d)
+# codesByTopic
+add_subdirectory(examples/codesByTopic/asinariDynamics)
+add_subdirectory(examples/codesByTopic/bounceBack)
+add_subdirectory(examples/codesByTopic/boundaryCondition)
+add_subdirectory(examples/codesByTopic/complexNumbers)
+add_subdirectory(examples/codesByTopic/coProcessor)
+add_subdirectory(examples/codesByTopic/copying)
+add_subdirectory(examples/codesByTopic/couplings)
+add_subdirectory(examples/codesByTopic/cutTriangularSurface)
+add_subdirectory(examples/codesByTopic/d3q13)
+add_subdirectory(examples/codesByTopic/dataAnalysis)
+add_subdirectory(examples/codesByTopic/dotList)
+add_subdirectory(examples/codesByTopic/dynamicsInfo)
+add_subdirectory(examples/codesByTopic/externalMacroscopicVariables)
+add_subdirectory(examples/codesByTopic/io)
+add_subdirectory(examples/codesByTopic/linearAlgebra)
+add_subdirectory(examples/codesByTopic/marchingCube)
+add_subdirectory(examples/codesByTopic/multiBlock)
+add_subdirectory(examples/codesByTopic/navierStokesModels)
+add_subdirectory(examples/codesByTopic/particlesInTube)
+add_subdirectory(examples/codesByTopic/reparallelize)
+add_subdirectory(examples/codesByTopic/scalarField)
+add_subdirectory(examples/codesByTopic/shanChenMultiPhase)
+add_subdirectory(examples/codesByTopic/smagorinskyModel)
+add_subdirectory(examples/codesByTopic/transientStatistics)
+add_subdirectory(examples/codesByTopic/userInput)
+# showCases
+add_subdirectory(examples/showCases/aneurysm)
+add_subdirectory(examples/showCases/bloodFlowDefoBodies)
+add_subdirectory(examples/showCases/boussinesqThermal2d)
+add_subdirectory(examples/showCases/boussinesqThermal3d)
+add_subdirectory(examples/showCases/carreauPoiseuille)
+add_subdirectory(examples/showCases/cavity2d)
+add_subdirectory(examples/showCases/cavity3d)
+add_subdirectory(examples/showCases/collidingBubbles3d)
+add_subdirectory(examples/showCases/cylinder2d)
+add_subdirectory(examples/showCases/externalFlowAroundObstacle)
+add_subdirectory(examples/showCases/generalExternalFlow)
+add_subdirectory(examples/showCases/gridRefinement2d)
+add_subdirectory(examples/showCases/gridRefinement3d)
+add_subdirectory(examples/showCases/heatedObjectInChannel)
+add_subdirectory(examples/showCases/movingWall)
+add_subdirectory(examples/showCases/multiComponent2d)
+add_subdirectory(examples/showCases/multiComponent3d)
+add_subdirectory(examples/showCases/particlesInCone)
+add_subdirectory(examples/showCases/poiseuille)
+add_subdirectory(examples/showCases/rectangularChannel3d)
+add_subdirectory(examples/showCases/vofMultiPhase)
+add_subdirectory(examples/showCases/womersley)
+# tutorial
+add_subdirectory(examples/tutorial/permeability)
+add_subdirectory(examples/tutorial/tutorial_1)
+add_subdirectory(examples/tutorial/tutorial_2)
+
+###############################################################################
+# utility directory
+###############################################################################
+# stl
+add_subdirectory(utility/stl/cutSTL)
+add_subdirectory(utility/stl/mergeSTL)
+add_subdirectory(utility/stl/refineByAreaSTL)
+add_subdirectory(utility/stl/refineSTL)
+add_subdirectory(utility/stl/reverseOrientationSTL)
+add_subdirectory(utility/stl/revoxelize)
+add_subdirectory(utility/stl/rotateAtOriginSTL)
+add_subdirectory(utility/stl/scaleDirectionallySTLraw)
+add_subdirectory(utility/stl/scaleSTL)
+add_subdirectory(utility/stl/scaleSTLraw)
+add_subdirectory(utility/stl/shiftSTLraw)
+add_subdirectory(utility/stl/stlCheck)
+add_subdirectory(utility/stl/stlInfo)
+add_subdirectory(utility/stl/stlProjectedArea)
+add_subdirectory(utility/stl/stlShadowArea)
+add_subdirectory(utility/stl/stlToHtml)
+add_subdirectory(utility/stl/stlToX3D)
+add_subdirectory(utility/stl/toAsciiSTL)
+add_subdirectory(utility/stl/toBinarySTL)
+# vtk
+add_subdirectory(utility/vtk/plb2vtk2D)
+add_subdirectory(utility/vtk/plb2vtk3D)

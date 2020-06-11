@@ -7,10 +7,8 @@ and [interact with the user base](http://palabos-forum.unige.ch/).
 # Installation
 
 Palabos is very easy to install since it does not depend on any external dependencies.
-All the following commands are used for Linux installation. The windows instructions
-will be added soon.
 
-## Prerequisites
+## Linux Prerequisites
 
 The mandatory packages are the following:
 
@@ -50,6 +48,15 @@ $ sudo pacman -S openmpi
 The majority of the output of Palabos is under the form of `VTK` files. We recommend the use
 of [Paraview](https://www.paraview.org/) for their visualization.
 
+## Windows Prerequisites
+
+The mandatory packages are the following:
+
+- Visual Studio (VS).
+- Microsoft C++ compiler, installed with Visual Studio (make sure to enable the installation of C++ compiler in the custom installation option of VS).
+- CMake (preferably latest version).
+- `python3` for the current version of Palabos.
+
 ## The installation steps
 
 For nightly `Palabos` clone this repo
@@ -71,16 +78,27 @@ Congratulations. You should now have a functioning version of Palabos.
 Assuming `palabos` is the directory where the Palabos source is located,
 you can check your installation by typing the following commands
 
+**Linux**
+
 ```
 $ cd palabos/examples/showCases/cavity2d
 $ make
 $ ./cavity2d
 ```
 
+**Windows**
+
+1. ```cd palabos/examples/showCases/cavity2d```
+2. Open CMake (GUI), define source code folder (current folder), and build folder (build/)
+3. Configure project (CMake Configure button). A pop-up windows will ask you to specify the generator for this project (Visual Studio that you installed earlier).
+4. Generate the project (CMake Generate button).
+5. Go to the build folder and open **palabosExample.sln**. This will open Visual Studio, from where you can build the project.
+6. After completing the build, there will be a Release or Debug folder in ```palabos/examples/showCases/cavity2d``` with the cavity2d.exe inside. Move the executable one level up and run it either by clicking it or using the command line.
+
 If your installation is fully functional this should generate the following output:
 
 ```
-$ ./cavity2d
+$ ./cavity2d(.exe)
 step 0; t=0; av energy=3.81587645e-07; av rho=1
 Time spent during previous iteration: 0
 step 1280; t=0.1; av energy=1.143114423e-06; av rho=0.9999958713
@@ -124,31 +142,24 @@ average=1.00251; stdDev/average=0.0719342
 average=0.999835; stdDev/average=0.0373279
 3.33333 : Writing VTK.
 ```
+
 **How to use Cmake to compile your application**
 
 Each example has a _ready-to-use_ Makefile that uses scons "under the hood" and
 a CMakeLists.txt to compile under cmake. To compile the previous example with cmake
-you can write
+you can write (**check installation section for Windows**)
+
 ```
 cd palabos_root_folder/examples/showCases/boussinesqThermal3d
 mkdir -p build && cd build
 cmake ..
 make
 ```
-If you need to create a palabos project with a cmake-based IDE,
-you can use the CMakeLists.txt provided in the palabos root
-folder. With some minor modifications, you can also use this CMakeLists.txt 
-to compile build your own application.
 
-With the CMakeLists.txt you can also test the compilation of the non-templated part of 
-palabos with the following commands
-(for linux)
-```
-cd palabos_root_folder
-mkdir build && cd build
-cmake ..
-make
-```
+If you need to create a palabos project with a cmake-based IDE,
+you can use the CMakeLists.txt provided in any of the examples. With some minor modifications, you can also use this CMakeLists.txt to compile and build your own application.
+
+In palabos root directory, we provide a CMakeLists.txt file that compiles palabos library and all the available examples.
 
 # Documentation
 
