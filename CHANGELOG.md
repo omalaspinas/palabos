@@ -15,6 +15,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
 ### Removed
 
+  * Removed `scons` compilation system to keep only `cmake`.
+
 ### Changed
 
   * Changed CMake system: compile all examples from palabos root directory
