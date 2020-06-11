@@ -58,6 +58,18 @@
 #include "offLattice/immersedWalls3D.h"
 #include "offLattice/immersedAdvectionDiffusionWalls3D.h"
 #include "offLattice/filippovaHaenelOffLatticeModel3D.h"
+#include "offLattice/triangleMesh.h"
+#include "offLattice/rawTriangleMesh.h"
+#include "offLattice/stlFileIO.h"
+#include "offLattice/offFileIO.h"
+#include "offLattice/triangleUtil.h"
+#include "offLattice/connectedTriangleUtil.h"
+#include "offLattice/connectedTriangleMesh.h"
+#include "offLattice/connectedTriangleGenerator.h"
+#include "offLattice/obsoleteFormatWrapper.h"
+#include "offLattice/vtkFileIO.h"
+#include "offLattice/asciiDataFileIO.h"
+#include "offLattice/meshAlgorithm.h"
 
 #ifndef PLB_BGP
 #ifdef PLB_USE_EIGEN

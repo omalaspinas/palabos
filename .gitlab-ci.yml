@@ -8,73 +8,21 @@ cache:
     key: "$CI_PROJECT_ID"
     
 stages:
-    - build_examples
-    - build_utility
+    - build_cmake
     - deploy
-    # - build_examples_cmake
-    # - build_utility_cmake
 
-#test_pypal:
-#    stage: build
-#    
-#    script: 
-#        - apt-get update
-#        - apt-get install -y swig python-dev
-#        - export PALABOS_ROOT=`pwd`
-#        - git clone git@gitlab.com:flowkit/pypal-web.git
-#        - cd pypal-web/scripted-palabos/src
-#        - export PYPAL_ROOT=`pwd`
-#        - make
-        
-# Test compilation in the examples directory
-examples:
-    stage: build_examples
+## Test compilation with CMake, everything in examples & utility directory
+cmake:
+    stage: build_cmake
 
     only:
         - master
     
     script: 
         - pwd
-        - cd examples
-        - make optimize="false"
-
-# Test compilation in the utility directory
-utility:
-    stage: build_utility
-
-    only:
-        - master
-    
-    script: 
-        - pwd
-        - cd utility
-        - make optimize="false"
-        
-## Test compilation in the examples directory
-# examples_cmake:
-#     stage: build_examples
-
-#     only:
-#         - master
-#         - cmake
-    
-#     script: 
-#         - pwd
-#         - cd examples
-#         - ./cmake_all.sh
-
-## Test compilation in the utility directory
-# utility_cmake:
-#     stage: build_utility
-
-#     only:
-#         - master
-#         - cmake
-    
-#     script: 
-#         - pwd
-#         - cd utility
-#         - ./cmake_all.sh
+        - cd build
+        - cmake ..
+        - make -j4
 
 pages:
     stage: deploy
@@ -88,8 +36,4 @@ pages:
     only:
         - master
 
-# run tests using the binary built before
-#test:
-#  stage: test
-#  script:
-#    - ./runmytests.sh
+
