@@ -34,6 +34,7 @@
 /** \file
  * I/O routines for 3D multiblock -- header file.
  */
+
 #ifndef MULTI_BLOCK_READER_3D_H
 #define MULTI_BLOCK_READER_3D_H
 
@@ -57,7 +58,7 @@ void readkXmlSpec (
     std::vector<Box3D>& components, bool& dynamicContent, std::string& data_fName );
 
 MultiBlock3D* load3D(FileName fName);
-
+void loadHDF(FileName fName, MultiBlock3D& intoBlock, bool dynamicContent = true);
 void load(FileName fName, MultiBlock3D& intoBlock, bool dynamicContent = true );
 
 class SavedFullMultiBlockSerializer3D : public DataSerializer {

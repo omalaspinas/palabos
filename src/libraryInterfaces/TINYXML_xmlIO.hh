@@ -1,21 +1,12 @@
 /* This file is part of the Palabos library.
  *
- * The Palabos softare is developed since 2011 by FlowKit-Numeca Group Sarl
- * (Switzerland) and the University of Geneva (Switzerland), which jointly
- * own the IP rights for most of the code base. Since October 2019, the
- * Palabos project is maintained by the University of Geneva and accepts
- * source code contributions from the community.
- * 
- * Contact:
- * Jonas Latt
- * Computer Science Department
- * University of Geneva
- * 7 Route de Drize
- * 1227 Carouge, Switzerland
- * jonas.latt@unige.ch
+ * Copyright (C) 2011-2017 FlowKit Sarl
+ * Route d'Oron 2
+ * 1010 Lausanne, Switzerland
+ * E-mail contact: contact@flowkit.com
  *
  * The most recent release of Palabos can be downloaded at 
- * <https://palabos.unige.ch/>
+ * <http://www.palabos.org/>
  *
  * The library Palabos is free software: you can redistribute it and/or
  * modify it under the terms of the GNU Affero General Public License as
@@ -265,6 +256,49 @@ template<> inline void XMLwriter::set<bool>(bool const& value, plint precision)
     }
     else {
         data_map[currentId].text = "False";
+    }
+}
+
+template<typename ostrT>
+void XMLwriter::toOutputStream_parrallel(ostrT& ostr, int indent) const {
+
+    if (data_map.empty()) return;
+    if (isDocument) {
+        ostr << "<?xml version=\"1.0\" ?>\n";
+        std::vector<XMLwriter*> const& children = data_map.begin()->second.children;
+        for (pluint iNode=0; iNode<children.size(); ++iNode) {
+            children[iNode]->toOutputStream_parrallel(ostr);
+        }
+    } else {
+        std::map<plint,Data>::const_iterator it = data_map.begin();
+        for (; it != data_map.end(); ++it) {
+            std::vector<XMLwriter*> const& children = it->second.children;
+            std::string const& text = it->second.text;
+            std::string indentStr(indent, ' ');
+            ostr << indentStr << "<" << name;
+            if (data_map.size()>1 || it->first!=0) {
+                ostr << " id=\"" << it->first << "\"";
+            }
+            if (children.empty()) {
+                ostr << ">";
+            } else {
+                ostr << ">\n";
+            }
+            if (!text.empty()) {
+                if (children.empty()) {
+                    ostr << " " << text << " ";
+                } else {
+                    ostr << indentStr << "    " << text << "\n";
+                }
+            }
+            for (pluint iNode=0; iNode<children.size(); ++iNode) {
+                children[iNode]->toOutputStream_parrallel(ostr, indent+4);
+            }
+            if (!children.empty()) {
+                ostr << indentStr;
+            }
+            ostr << "</" << name << ">\n";
+        }
     }
 }
 

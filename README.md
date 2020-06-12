@@ -179,3 +179,23 @@ reproduce the bug.
 # Contributing
 
 To see how to open issues, submit bug reports, create feature requests, submit your additions to the Palabos library, see the [Contributing](https://gitlab.com/unigespc/palabos/blob/master/CONTRIBUTING.md) page.
+
+# Contributors
+
+By alphabetic order
+
+* @beny3
+* @daniel-lagrava-niwa
+* @kotsaloscv
+* @dkdk
+* @helenmo
+* @jfburdet
+* @Latt
+* @msguskova
+* @omalaspinas
+* @onmars
+* @parmigiani
+* @YannThorimbert
+* @ysagon
+
+
