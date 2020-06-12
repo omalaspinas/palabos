@@ -42,11 +42,14 @@
 #include "multiBlock/multiBlock3D.h"
 #include "core/serializer.h"
 #include "io/plbFiles.h"
+#include "libraryInterfaces/TINYXML_xmlIO.h"
 
 namespace plb {
 
 
 namespace parallelIO {
+
+void saveHDF(MultiBlock3D& multiBlock, FileName fName, bool dynamicContent = true);
 
 void save( MultiBlock3D& multiBlock, FileName fName,
            bool dynamicContent = true );
@@ -69,8 +72,7 @@ void dumpData( MultiBlock3D& multiBlock, bool dynamicContent,
                std::vector<plint>& offset, std::vector<plint>& myBlockIds,
                std::vector<std::vector<char> >& data );
 
-void writeXmlSpec( MultiBlock3D& multiBlock, FileName fName,
-                   std::vector<plint> const& offset, bool dynamicContent );
+XMLwriter writeXmlSpec( MultiBlock3D& multiBlock, FileName fName, std::vector<plint> const& offset, bool dynamicContent );
 
 }  // namespace parallelIO
 
