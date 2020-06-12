@@ -193,6 +193,7 @@ By alphabetic order
 * @Latt
 * @msguskova
 * @omalaspinas
+* @onmars
 * @parmigiani
 * @YannThorimbert
 * @ysagon
