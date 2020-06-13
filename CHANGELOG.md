@@ -13,6 +13,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
   * Added npFEM library in coupledSimulators folder
   * Added bloodFlowDefoBodies example in examples/showCases for the simuation of cellular blood flow using npFEM (in coupledSimulators)
   * Added support for HDF5 support.
+  * Added cylinder3d example.
 
 ### Removed
 
