@@ -335,6 +335,10 @@ template<typename T, int nDim>
 std::unique_ptr<MultiTensorField2D<T,nDim> > generateMultiTensorField (
         Box2D boundingBox, Array<T,nDim> const& iniVal, plint envelopeWidth=1 );
 
+template<typename T, int nDim>
+std::unique_ptr<MultiTensorField2D<T,nDim> > generateMultiTensorField (
+        MultiBlock2D& multiBlock, plint envelopeWidth );
+
 /// Generate a multi-tensor-field from scratch. As opposed to the standard
 ///   constructor, this factory function takes the explicit block-management
 ///   object, which includes stuff like block-distribution, parallelization,
