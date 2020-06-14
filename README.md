@@ -14,18 +14,18 @@ The mandatory packages are the following:
 
 - A modern C++ compiler `gcc` or `clang`
 - `make`
-- `python3` for the current version of Palabos.
+- `cmake`
 
 ### For Debian based distributions
 
 ```
-$ sudo apt install gcc clang python3 make
+$ sudo apt install gcc clang cmake make
 ```
 
 ### For Arch based distributions
 
 ```
-$ sudo pacman -S gcc clang python make
+$ sudo pacman -S gcc clang make cmake
 ```
 
 The optional but recommended packages are the following:
@@ -55,7 +55,6 @@ The mandatory packages are the following:
 - Visual Studio (VS).
 - Microsoft C++ compiler, installed with Visual Studio (make sure to enable the installation of C++ compiler in the custom installation option of VS).
 - CMake (preferably latest version).
-- `python3` for the current version of Palabos.
 
 ## The installation steps
 
@@ -81,8 +80,10 @@ you can check your installation by typing the following commands
 **Linux**
 
 ```
-$ cd palabos/examples/showCases/cavity2d
+$ cd palabos/examples/showCases/cavity2d/build
+$ cmake ..
 $ make
+$ cd ..
 $ ./cavity2d
 ```
 
@@ -116,8 +117,10 @@ installation directory (see above).
 To compile an example, `boussinesqThermal3d` in this case, do the following commands
 
 ```
-$ cd examples/showCases/boussinesqThermal3d
+$ cd examples/showCases/boussinesqThermal3d/build
+$ cmake ..
 $ make
+$ cd ..
 ```
 
 These commands should generate the `boussinesqThermal3d` executable.
@@ -145,8 +148,7 @@ average=0.999835; stdDev/average=0.0373279
 
 **How to use Cmake to compile your application**
 
-Each example has a _ready-to-use_ Makefile that uses scons "under the hood" and
-a CMakeLists.txt to compile under cmake. To compile the previous example with cmake
+Each example has a CMakeLists.txt to compile under cmake. To compile the previous example with cmake
 you can write (**check installation section for Windows**)
 
 ```
@@ -186,15 +188,16 @@ By alphabetic order
 
 * @beny3
 * @daniel-lagrava-niwa
-* @kotsaloscv
 * @dkdk
 * @helenmo
 * @jfburdet
+* @kotsaloscv
 * @Latt
 * @msguskova
 * @omalaspinas
 * @onmars
 * @parmigiani
+* @swang251 
 * @YannThorimbert
 * @ysagon
 

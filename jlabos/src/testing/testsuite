@@ -1,7 +1,0 @@
-#!/bin/bash
-
-for nproc in 1 2 4 8
-do
-    echo "Running the test suite with " $nproc " processes"
-    mpirun -np $nproc ./test_cylinder.py
-done

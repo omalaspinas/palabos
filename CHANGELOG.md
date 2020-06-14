@@ -14,8 +14,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
   * Added bloodFlowDefoBodies example in examples/showCases for the simuation of cellular blood flow using npFEM (in coupledSimulators)
   * Added support for HDF5 support.
   * Added cylinder3d example.
+  * Added multi block generation from MultiBlock in 2D.
+  * Added `ccache` support for CI.
 
 ### Removed
+
+  * Removed `scons` compilation system to keep only `cmake`.
 
 ### Changed
 
