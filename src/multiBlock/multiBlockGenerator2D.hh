@@ -679,6 +679,28 @@ std::unique_ptr<MultiTensorField2D<T,nDim> > generateMultiTensorField (
 }
 
 template<typename T, int nDim>
+std::unique_ptr<MultiTensorField2D<T,nDim> > generateMultiTensorField (
+        MultiBlock2D& multiBlock, plint envelopeWidth )
+{
+    MultiBlockManagement2D sparseBlockManagement(multiBlock.getMultiBlockManagement());
+    MultiTensorField2D<T,nDim>* field = new MultiTensorField2D<T,nDim> (
+            MultiBlockManagement2D (
+                    sparseBlockManagement.getSparseBlockStructure(),
+                    sparseBlockManagement.getThreadAttribution().clone(),
+                    envelopeWidth,
+                    sparseBlockManagement.getRefinementLevel() ),
+            defaultMultiBlockPolicy2D().getBlockCommunicator(),
+            defaultMultiBlockPolicy2D().getCombinedStatistics(),
+            defaultMultiBlockPolicy2D().getMultiTensorAccess<T,nDim>() );
+
+    field->periodicity().toggle(0, multiBlock.periodicity().get(0));
+    field->periodicity().toggle(1, multiBlock.periodicity().get(1));
+
+    return std::unique_ptr<MultiTensorField2D<T,nDim> >(field);
+}
+
+
+template<typename T, int nDim>
 std::unique_ptr<MultiTensorField2D<T,nDim> > defaultGenerateMultiTensorField2D (
         MultiBlockManagement2D const& management, plint unnamedDummyArg )
 {
