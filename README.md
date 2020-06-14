@@ -188,15 +188,16 @@ By alphabetic order
 
 * @beny3
 * @daniel-lagrava-niwa
-* @kotsaloscv
 * @dkdk
 * @helenmo
 * @jfburdet
+* @kotsaloscv
 * @Latt
 * @msguskova
 * @omalaspinas
 * @onmars
 * @parmigiani
+* @swang251 
 * @YannThorimbert
 * @ysagon
 
