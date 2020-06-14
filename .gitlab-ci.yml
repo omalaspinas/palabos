@@ -2,10 +2,18 @@
 # use the official gcc image, based on debian
 # can use verions as well, like gcc:5.2
 image: omalaspinas/palabos:latest
+
+before_script:
+  - mkdir -p ccache
+  - export CCACHE_BASEDIR=${PWD}
+  - export CCACHE_DIR=${PWD}/ccache
+
     
 cache:
     untracked: false
     key: "$CI_PROJECT_ID"
+    paths:
+        - ccache/
     
 stages:
     - build_cmake
