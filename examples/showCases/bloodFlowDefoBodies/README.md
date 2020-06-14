@@ -23,6 +23,14 @@ Palabos-npFEM has been tested in both UNIX and Windows (provided CMake File):
 
 In Windows, step 4 is executed by opening the Visual Studio solution file (.sln) in the build folder, and building the project/solution using the top **Build** tab. After finishing compilation in /bloodFlowDefoBodies/Release(or)Debug you can find the executable. Move it outside this folder and execute the application with the help of the xml files.
 
+### CUDA-capable workstations - important note
+
+If you have a CUDA capable workstation, you can manually enable the CUDA support, through the CMake file (the npFEM solver can solve bodies in NVIDIA GPUs). However, your GPU should be high-end, because if its Streaming Multiprocessors (SM) do not contain enough CUDA-cores (>258 cores per SM), then the bodies (RBCs) will not be able to fit in them, and the GPU solver will not work.
+
+To check this requirement, go to CUDA samples (comes with the CUDA installation), compile the deviceQuery example, and by running it you will have a detailed list of your GPU specifications. Check how many SMs your GPU has and how may CUDA-cores per SM.
+
+The >258 CUDA-cores per SM is not a random number. It is the number of vertices that the RBC-surface is resolved with. The approach that we follow is to fit the bodies in the Streaming Multiprocessors. If the body is discretized with less vertices (than the maximum number of CUDA-cores per SM), then it fits on the hardware, but if not, the solver will give erroneous results (not moving bodies or it will crash). If you want to resolve RBCs with more surface vertices, you only have to modify the **device_utilities.cu** file in the npFEM library, and change the **_ _launch_bounds_ _** CUDA directive from 258 to the maximum number of vertices that you want to resolve. But again, the maximum number of vertices per body should always be lower than the CUDA-cores per SM. This choice is for optimization reasons and specific to how CUDA-capable-GPUs operate.
+
 ## Perform Cell Packing
 
 Cell Packing is the software that randomly initializes RBCs & PLTs in the flow field, and after some iterations it resolves all the collisions/interpenetrations. The resolved positions per blood cell are stored in the folder CPs. Open/Explore the cellPacking_params.xml to decide the geometry, hematocrit and many other parameters.
@@ -43,11 +51,11 @@ In folder tmp you can find the vtks of RBCs & PLTs, along with profiling and oth
 
 After having the initial positions of the blood cells (stored in the CPs folder), we can perform simulations with a proper flow field.
 
-## Cellular Blood Flow Simuations
+## Cellular Blood Flow Simulations
 
-These simulations either start from a given CPs folder (generated through Cell Packing or provided) or from a file (initialPlacing.pos) that stores the position (center of mass) and orientation of the blood cells. The initialPlacing.pos stores first the RBCs as ID (0: RBC, 1: PLT), position and orientation (in degrees) and after the PLTs. Cell Packing is the prefered way to generate complex flow fields with many parameters.
+These simulations either start from a given CPs folder (generated through Cell Packing or provided) or from a file (initialPlacing.pos) that stores the position (center of mass) and orientation of the blood cells. The initialPlacing.pos stores first the RBCs as ID (0: RBC, 1: PLT), position and orientation (in degrees) and after the PLTs. Cell Packing is the preferred way to generate complex flow fields with many parameters.
 
-For a quick start just extract the provided CPs_X.tar.gz and perform the corresponding Cellular Blood Flow Simuation.
+For a quick start just extract the provided CPs_X.tar.gz and perform the corresponding Cellular Blood Flow Simulation.
 
 ***It is very important to understand that without the right CPs folder (generated through Cell Packing or provided) or initialPlacing.pos file, the Cellular Blood Flow Simuation is not going to start (it crashes).***
 
