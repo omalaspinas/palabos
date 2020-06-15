@@ -31,10 +31,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef FILIPPOVA_HAENEL_OFF_LATTICE_MODEL_3D_HH
-#define FILIPPOVA_HAENEL_OFF_LATTICE_MODEL_3D_HH
+#ifndef MEI_LUO_SHYY_OFF_LATTICE_MODEL_3D_HH
+#define MEI_LUO_SHYY_OFF_LATTICE_MODEL_3D_HH
 
-#include "offLattice/filippovaHaenelOffLatticeModel3D.h"
+#include "offLattice/meiLuoShyyOffLatticeModel3D.h"
 #include "offLattice/nextNeighbors3D.h"
 #include "latticeBoltzmann/geometricOperationTemplates.h"
 #include "latticeBoltzmann/externalFieldAccess.h"
@@ -46,35 +46,28 @@
 namespace plb {
 
 template<typename T, template<typename U> class Descriptor>
-FilippovaHaenelLocalModel3D<T,Descriptor>::FilippovaHaenelLocalModel3D (
+MeiLuoShyyModel3D<T,Descriptor>::MeiLuoShyyModel3D (
         BoundaryShape3D<T,Array<T,3> >* shape_, int flowType_)
     : OffLatticeModel3D<T,Array<T,3> >(shape_, flowType_)
 { }
 
 template<typename T, template<typename U> class Descriptor>
-FilippovaHaenelLocalModel3D<T,Descriptor>* FilippovaHaenelLocalModel3D<T,Descriptor>::clone() const {
-    return new FilippovaHaenelLocalModel3D(*this);
+MeiLuoShyyModel3D<T,Descriptor>* MeiLuoShyyModel3D<T,Descriptor>::clone() const {
+    return new MeiLuoShyyModel3D(*this);
 }
 
 template<typename T, template<typename U> class Descriptor>
-plint FilippovaHaenelLocalModel3D<T,Descriptor>::getNumNeighbors() const {
+plint MeiLuoShyyModel3D<T,Descriptor>::getNumNeighbors() const {
     return 1;
 }
 
-/**
- *  Filippova-Haenel is a completion scheme for a layer of cells on the
- *  "solid" side of the boundary, like Guo.
- * @tparam T
- * @tparam Descriptor
- * @return true
- */
 template<typename T, template<typename U> class Descriptor>
-bool FilippovaHaenelLocalModel3D<T,Descriptor>::isExtrapolated() const {
+bool MeiLuoShyyModel3D<T,Descriptor>::isExtrapolated() const {
     return true;
 }
 
 template<typename T, template<typename U> class Descriptor>
-void FilippovaHaenelLocalModel3D<T,Descriptor>::prepareCell (
+void MeiLuoShyyModel3D<T,Descriptor>::prepareCell (
         Dot3D const& cellLocation,
         AtomicContainerBlock3D& container )
 {
@@ -128,13 +121,13 @@ void FilippovaHaenelLocalModel3D<T,Descriptor>::prepareCell (
 
 template<typename T, template<typename U> class Descriptor>
 ContainerBlockData*
-    FilippovaHaenelLocalModel3D<T,Descriptor>::generateOffLatticeInfo() const
+    MeiLuoShyyModel3D<T,Descriptor>::generateOffLatticeInfo() const
 {
     return new OffLatticeInfo3D;
 }
 
 template<typename T, template<typename U> class Descriptor>
-Array<T,3> FilippovaHaenelLocalModel3D<T,Descriptor>::getLocalForce (
+Array<T,3> MeiLuoShyyModel3D<T,Descriptor>::getLocalForce (
                 AtomicContainerBlock3D& container ) const
 {
     OffLatticeInfo3D* info =
@@ -144,7 +137,7 @@ Array<T,3> FilippovaHaenelLocalModel3D<T,Descriptor>::getLocalForce (
 }
 
 template<typename T, template<typename U> class Descriptor>
-void FilippovaHaenelLocalModel3D<T,Descriptor>::boundaryCompletion (
+void MeiLuoShyyModel3D<T,Descriptor>::boundaryCompletion (
         AtomicBlock3D& nonTypeLattice,
         AtomicContainerBlock3D& container,
         std::vector<AtomicBlock3D *> const& args )
@@ -174,7 +167,7 @@ void FilippovaHaenelLocalModel3D<T,Descriptor>::boundaryCompletion (
 }
 
 template<typename T, template<typename U> class Descriptor>
-void FilippovaHaenelLocalModel3D<T,Descriptor>::cellCompletion (
+void MeiLuoShyyModel3D<T,Descriptor>::cellCompletion (
         BlockLattice3D<T,Descriptor>& lattice, Dot3D const& guoNode,
         std::vector<int> const& dryNodeFluidDirections,
         std::vector<plint> const& dryNodeIds, Dot3D const& absoluteOffset,
@@ -280,13 +273,13 @@ void FilippovaHaenelLocalModel3D<T,Descriptor>::cellCompletion (
         Array<T,3> wf_j; wf_j.resetToZero();
         T omega = f_cell.getDynamics().getOmega();
 
-        if (delta < 0.5) {
-                wf_j = f_j;
-                kappa = (omega * (2.0 * delta - 1.0)) / (1.0 - omega);
 
+        if (delta < 0.5) {
+                wf_j = ff_j;
+                kappa = (omega * (2 * delta - 1.0)) / (1.0 - 2.0 * omega);
         } else {
-                wf_j = f_j * ((delta - 1.0) / delta) + w_j / delta;
-                kappa = omega * (2.0 * delta - 1.0);
+                wf_j = (1.0 - 3.0 / (2.0 * delta)) * f_j + 3.0 / (2.0 * delta) * w_j;
+                kappa = (2.0 * omega * (2.0 * delta - 1.0)) / (2.0 + omega);
         }
 
         T c_i_wf_j_f_j = D::c[iPop][0]*(wf_j[0]-f_j[0]) +
@@ -308,5 +301,5 @@ void FilippovaHaenelLocalModel3D<T,Descriptor>::cellCompletion (
 
 }  // namespace plb
 
-#endif  // FILIPPOVA_HAENEL_OFF_LATTICE_MODEL_3D_HH
+#endif  // MEI_LUO_SHYY_OFF_LATTICE_MODEL_3D_HH
 

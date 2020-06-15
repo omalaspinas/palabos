@@ -869,7 +869,7 @@ int main(int argc, char* argv[])
            new NoDynamics<T,DESCRIPTOR>((T) 1), voxelFlag::innerBorder);     
 
     // Filippova boundary condition
-    FilippovaHaenelModel3D<T,DESCRIPTOR>* model = new FilippovaHaenelModel3D<T,DESCRIPTOR>(
+    FilippovaHaenelLocalModel3D<T,DESCRIPTOR>* model = new FilippovaHaenelLocalModel3D<T,DESCRIPTOR>(
             new TriangleFlowShape3D<T,Array<T,3> >(voxelizedDomain.getBoundary(), profiles),
             flowType);
 
