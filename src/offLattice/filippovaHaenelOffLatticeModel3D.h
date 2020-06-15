@@ -40,11 +40,28 @@
 
 namespace plb {
 
+    /**
+     * This class implements the Filippova-Haenel [1] boundary condition on a BoundaryShape.
+     * The BoundaryShape determines whether the points of the discrete lattice are "inside"
+     * or "outside" some geometry.
+     * This class is actually implementing both the Filippova-Haenel and its Mei-Luo-Shyy (MLS) [2]
+     * variant. The MLS is the default version in this class because is more stable. If you want
+     * the original implementation set bool meiLuoShyyVariant_=false in the constructor.
+     * [1] O. Filippova and D. Hänel, “Grid Refinement for Lattice-BGK Models,”
+     *     Journal of Computational Physics, vol. 147, no. 1, pp. 219–228, Nov. 1998, doi: 10.1006/jcph.1998.6089.
+     * [2] R. Mei, L.-S. Luo, and W. Shyy, “An Accurate Curved Boundary Treatment in the Lattice Boltzmann Method,”
+     *     Journal of Computational Physics, vol. 155, no. 2, pp. 307–330, Nov. 1999, doi: 10.1006/jcph.1999.6334.
+     * @tparam T
+     * @tparam Descriptor
+     */
 template<typename T, template<typename U> class Descriptor>
 class FilippovaHaenelModel3D : public OffLatticeModel3D<T,Array<T,3> >
 {
 public:
-    FilippovaHaenelModel3D(BoundaryShape3D<T,Array<T,3> >* shape_, int flowType_, bool useAllDirections_=true);
+    FilippovaHaenelModel3D(BoundaryShape3D<T,Array<T,3> >* shape_,
+            int flowType_,
+            bool useAllDirections_=true,
+            bool meiLuoShyyVariant_=true);
     virtual FilippovaHaenelModel3D<T,Descriptor>* clone() const;
     virtual plint getNumNeighbors() const;
     virtual bool isExtrapolated() const;
@@ -67,6 +84,7 @@ private:
             Array<T,3>& localForce, std::vector<AtomicBlock3D *> const& args );
 private:
     bool computeStat;
+    bool meiLuoShyyVariant;
 private:
     /// Store the location of wall nodes, as well as the pattern of missing vs. known
     ///   populations.

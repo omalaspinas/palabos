@@ -45,11 +45,22 @@
 
 namespace plb {
 
+    /**
+     * For more info check the class level documentation in filippovaHaenelOffLatticeModel3D.h.
+     * @tparam T Real number type (eg double or float)
+     * @tparam Descriptor Lattice topology
+     * @param shape_ BoundaryShape3D<T,Array<T,3> >*
+     * @param flowType_ inside or outside flow type
+     * @param useAllDirections_
+     * @param meiLuoShyyVariant_ if set to `false` the original Filippova-Haenel (1998) variant is used, instead of the default
+     *        Mei Luo Shyy (1999)
+     */
 template<typename T, template<typename U> class Descriptor>
 FilippovaHaenelModel3D<T,Descriptor>::FilippovaHaenelModel3D (
-        BoundaryShape3D<T,Array<T,3> >* shape_, int flowType_, bool useAllDirections_ )
+        BoundaryShape3D<T,Array<T,3> >* shape_, int flowType_, bool useAllDirections_,
+        bool meiLuoShyyVariant_)
     : OffLatticeModel3D<T,Array<T,3> >(shape_, flowType_),
-      computeStat(true)
+      computeStat(true), meiLuoShyyVariant(meiLuoShyyVariant_)
 { }
 
 template<typename T, template<typename U> class Descriptor>
@@ -62,10 +73,15 @@ plint FilippovaHaenelModel3D<T,Descriptor>::getNumNeighbors() const {
     return 1;
 }
 
+/**
+ *  Filippova-Haenel is a completion scheme for a layer of cells on the
+ *  "solid" side of the boundary, like Guo.
+ * @tparam T
+ * @tparam Descriptor
+ * @return true
+ */
 template<typename T, template<typename U> class Descriptor>
 bool FilippovaHaenelModel3D<T,Descriptor>::isExtrapolated() const {
-    // Filippova-Haenel is a completion scheme for a layer of cells on the
-    // "solid" side of the boundary, like Guo.
     return true;
 }
 
@@ -277,19 +293,25 @@ void FilippovaHaenelModel3D<T,Descriptor>::cellCompletion (
         T omega = f_cell.getDynamics().getOmega();
 
 
-        if (delta<0.5) {
-            //wf_j = f_j;
-            //kappa = (omega*(2.0*delta-1.0))/(1.0-omega);
+        if (delta < 0.5) {
 
-            wf_j = ff_j;
-            kappa = (omega*(2*delta-1.0))/(1.0-2.0*omega);
-        }
-        else {
-            //wf_j = f_j * ((delta-1.0)/delta) + w_j / delta;
-            //kappa = omega*(2.0*delta-1.0)
+            if (meiLuoShyyVariant) {
+                wf_j = ff_j;
+                kappa = (omega * (2 * delta - 1.0)) / (1.0 - 2.0 * omega);
+            } else {
+                wf_j = f_j;
+                kappa = (omega * (2.0 * delta - 1.0)) / (1.0 - omega);
+            }
+        } else {
 
-            wf_j = (1.0-3.0/(2.0*delta))*f_j+3.0/(2.0*delta)*w_j;
-            kappa = (2.0*omega*(2.0*delta-1.0))/(2.0+omega);
+            if (meiLuoShyyVariant) {
+                wf_j = (1.0 - 3.0 / (2.0 * delta)) * f_j + 3.0 / (2.0 * delta) * w_j;
+                kappa = (2.0 * omega * (2.0 * delta - 1.0)) / (2.0 + omega);
+            } else {
+                wf_j = f_j * ((delta - 1.0) / delta) + w_j / delta;
+                kappa = omega * (2.0 * delta - 1.0);
+            }
+
         }
 
         T c_i_wf_j_f_j = D::c[iPop][0]*(wf_j[0]-f_j[0]) +
