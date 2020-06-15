@@ -40,7 +40,7 @@ endif()
 
 cmake_minimum_required(VERSION 3.0)
 
-project(aneurysm_hdf5)
+project(aneurysm)
 enable_language(CXX)
 
 option(BUILD_HDF5 "compile with hdf5" ON)
@@ -52,7 +52,7 @@ if(BUILD_HDF5)
 	add_definitions(-DHDF5)
 endif()
 
-set(EXECUTABLE_NAME "aneurysm_hdf5")
+set(EXECUTABLE_NAME "aneurysm")
 set (CMAKE_RUNTIME_OUTPUT_DIRECTORY "./")
 
 if(NOT CMAKE_BUILD_TYPE)
