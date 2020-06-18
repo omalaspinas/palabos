@@ -45,6 +45,31 @@
 
 namespace plb {
 
+/**
+ * This class implements the Filippova-Haenel (FH,1998) boundary condition on a BoundaryShape.
+ * The BoundaryShape determines whether the points of the discrete lattice are "inside"
+ * or "outside" some geometry.
+ *
+ * It can handle moving boundaries using the momentum correction of ladd (LADD, 1994).
+ * The wall velocity is recovered from SurfaceData stored in BoundaryShape3D<T,SurfaceData>*
+ *
+ * IMPORTANT NOTE: in Palabos versions before June 2020 the FilippovaHaenelLocalModel3D boundary condition
+ * refers to the MeiLuoShyy (MLS,1999) variant than now has a independent implementation in
+ * offLattice/meiLuoShyyOffLatticeModel3D.h. The name of the class has been changed to have a BREAKING CHANGE
+ * in order to encourage the user to choose and check the implementation they need in their application.
+ *
+ * (FH,1998) O. Filippova and D. Hänel, “Grid Refinement for Lattice-BGK Models,”
+ *     Journal of Computational Physics, vol. 147, no. 1, pp. 219–228, Nov. 1998, doi: 10.1006/jcph.1998.6089.
+ *
+ * (MLS,1999) R. Mei, L.-S. Luo, and W. Shyy, “An Accurate Curved Boundary Treatment in the Lattice Boltzmann Method,”
+ *     Journal of Computational Physics, vol. 155, no. 2, pp. 307–330, Nov. 1999, doi: 10.1006/jcph.1999.6334.
+ *
+ * (LADD, 1994) A. J. C. Ladd, “Numerical simulations of particulate suspensions via a discretized Boltzmann equation. Part 1. Theoretical foundation,”
+ *              Journal of Fluid Mechanics, vol. 271, pp. 285–309, Jul. 1994, doi: 10.1017/S0022112094001771.
+ *
+ * @tparam T
+ * @tparam Descriptor
+ */
 template<typename T, template<typename U> class Descriptor>
 FilippovaHaenelLocalModel3D<T,Descriptor>::FilippovaHaenelLocalModel3D (
         BoundaryShape3D<T,Array<T,3> >* shape_, int flowType_)

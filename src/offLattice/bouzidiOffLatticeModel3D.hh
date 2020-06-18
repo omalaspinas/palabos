@@ -55,6 +55,7 @@ namespace plb {
      *
      * (BFL, 2001) M. Bouzidi, M. Firdaouss, and P. Lallemand, “Momentum transfer of a Boltzmann-lattice fluid with boundaries,”
      *             Physics of Fluids, vol. 13, no. 11, pp. 3452–3459, Oct. 2001, doi: 10.1063/1.1399290.
+     *
      * (LADD, 1994) A. J. C. Ladd, “Numerical simulations of particulate suspensions via a discretized Boltzmann equation. Part 1. Theoretical foundation,”
      *              Journal of Fluid Mechanics, vol. 271, pp. 285–309, Jul. 1994, doi: 10.1017/S0022112094001771.
      *
