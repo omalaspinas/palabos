@@ -54,11 +54,10 @@ of [Paraview](https://www.paraview.org/) for their visualization.
 
 ## Windows Prerequisites
 
-The mandatory packages are the following:
-
-- Visual Studio (VS).
-- Microsoft C++ compiler, installed with Visual Studio (make sure to enable the installation of C++ compiler in the custom installation option of VS).
-- CMake (preferably latest version).
+- Microsoft Visual Studio (VS).
+- Microsoft C++ compiler, installed with Visual Studio (make sure to enable the installation of C++ compiler in the custom installation option of VS). This step can be done even after installing VS for the first time in your system. Simply, re-run the installer and customize it to include the extra features. For more information on how to install C/C++ support in Visual Studio follow [link1](https://docs.microsoft.com/en-us/cpp/build/vscpp-step-0-installation?view=vs-2019) & [link2](https://visualstudio.microsoft.com/vs/features/cplusplus/).
+- Microsoft Message Passing Interface (MPI). To install MPI follow this [link](https://docs.microsoft.com/en-us/message-passing-interface/microsoft-mpi).
+- [CMake](https://cmake.org/download/) (preferably latest version).
 - Optionally the [HDF5](https://www.hdfgroup.org/downloads/hdf5/) library.
 
 ## The installation steps
