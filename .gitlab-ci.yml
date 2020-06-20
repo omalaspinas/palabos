@@ -7,7 +7,8 @@ before_script:
   - mkdir -p ccache
   - export CCACHE_BASEDIR=${PWD}
   - export CCACHE_DIR=${PWD}/ccache
-
+  - ccache --set-config=compression=true
+  - ccache --set-config=max_size=500M
     
 cache:
     untracked: false
