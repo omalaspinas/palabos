@@ -16,6 +16,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
   * Added cylinder3d example.
   * Added multi block generation from MultiBlock in 2D.
   * Added `ccache` support for CI.
+  * Added references for off-lattice BCs.
+  * Added Mei-Luo-Shyy BC.
 
 ### Removed
 
@@ -24,6 +26,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 ### Changed
 
   * Changed CMake system: compile all examples from palabos root directory
+  * Changed the Filippova-Haenel BC to be consistent with the paper.
 
 ### Fixed
 

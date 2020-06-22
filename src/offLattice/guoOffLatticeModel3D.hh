@@ -66,6 +66,24 @@ bool GuoOffLatticeModel3D<T,Descriptor>::LiquidNeighbor::
     return cosAngle < rhs.cosAngle;
 }
 
+
+/**
+ * This class implements the Guo (GZS,2002) boundary condition on a BoundaryShape.
+ * The BoundaryShape determines whether the points of the discrete lattice are "inside"
+ * or "outside" some geometry.
+ *
+ * It can handle moving boundaries using the momentum correction of ladd (LADD, 1994).
+ * The wall velocity is recovered from SurfaceData stored in BoundaryShape3D<T,SurfaceData>*
+ *
+ * (GZS, 2002) Z. Guo, C. Zheng, and B. Shi, “An extrapolation method for boundary conditions in lattice Boltzmann method,”
+ * Physics of Fluids, vol. 14, no. 6, pp. 2007–2010, Jun. 2002, doi: 10.1063/1.1471914.
+
+ * (LADD, 1994) A. J. C. Ladd, “Numerical simulations of particulate suspensions via a discretized Boltzmann equation. Part 1. Theoretical foundation,”
+ *              Journal of Fluid Mechanics, vol. 271, pp. 285–309, Jul. 1994, doi: 10.1017/S0022112094001771.
+ *
+ * @tparam T
+ * @tparam Descriptor
+ */
 template<typename T, template<typename U> class Descriptor>
 GuoOffLatticeModel3D<T,Descriptor>::GuoOffLatticeModel3D (
         BoundaryShape3D<T,Array<T,3> >* shape_, int flowType_, bool useAllDirections_ )
