@@ -17,11 +17,13 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
   * Added multi block generation from MultiBlock in 2D.
   * Added `ccache` support for CI.
   * Added references for off-lattice BCs.
-  * Added Mei-Luo-Shyy BC.
+  * Added `FilippovaHaenelLocalModel3D` that implements the original Filippova-Haenel boundary condition.
+  * Added `MeiLuoShyyModel3D` as a replacement fot the `FilippovaHaenelModel3D` off-lattice boundary condition which was wrongly named FH as it was the MLS version that was implemented.
 
 ### Removed
 
   * Removed `scons` compilation system to keep only `cmake`.
+  * Removed the `FilippovaHaenelModel3D` for off-lattice boundary conditions. **This is a breaking change**. To continue using that former FH BC one should switch to `MeiLuoShyyModel3D`.
 
 ### Changed
 
