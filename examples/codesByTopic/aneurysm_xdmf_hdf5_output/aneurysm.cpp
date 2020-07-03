@@ -208,11 +208,13 @@ void writeImagesT(
     Array<T,3> lxz_plane((xz_plane-location)/dx);
     Array<T,3> lxy_plane((xy_plane-location)/dx);
 
-
+    #ifdef HDF5
 	ParallelXdmfDataWriter3D xdmfOut("aneurysm");
+    #endif
 	Box3D b  = boundaryCondition.getLattice().getBoundingBox();
+    #ifdef HDF5
 	xdmfOut.writeDataField<T>(*boundaryCondition.computeVelocity(b), "velocity");
-
+    #endif
     Box3D yz_imageDomain (
             util::roundToInt(lyz_plane[0]), util::roundToInt(lyz_plane[0]),
             0, ny-1, 0, nz-1 );
