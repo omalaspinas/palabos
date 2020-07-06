@@ -6,7 +6,7 @@
 <!-- Dynamics used for the simulation -->
     <dynName> RR </dynName>
 <!-- Relaxation of high-order moments (either SRT (BGK) or REG (1.0))-->
-    <hoOmega> REG </hoOmega>
+    <hoOmega> SRT </hoOmega>
 </lattice>
 
 <simuParam>
