@@ -38,4 +38,4 @@
 #include "basicDynamics/thermalDynamics.hh"
 #include "basicDynamics/externalForceDynamics.hh"
 #include "basicDynamics/dynamicsProcessor2D.hh"
-
+#include "basicDynamics/comprehensiveIsoThermalDynamics.hh"

@@ -38,3 +38,5 @@
 #include "latticeBoltzmann/extendedNeighborhoodLattices2D.h"
 #include "latticeBoltzmann/advectionDiffusionLattices.h"
 #include "latticeBoltzmann/mrtLattices.h"
+#include "latticeBoltzmann/comprehensiveModelsTemplates.h"
+
