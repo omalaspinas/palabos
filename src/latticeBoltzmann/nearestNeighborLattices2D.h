@@ -70,6 +70,7 @@ namespace descriptors {
     /// D2Q9 lattice constants
     template <typename T> struct D2Q9Constants
     {
+        enum { numRelaxationTimes = 4 };
         enum { d = 2, q = 9 };        ///< number of dimensions/distr. functions
         static const T invD;          ///< 1 / (number of dimensions)
         static const int vicinity;    ///< size of neighborhood
