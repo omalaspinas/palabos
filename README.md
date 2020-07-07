@@ -132,13 +132,13 @@ If you have a functioning MPI installation you can run it on 4 cores for example
 using the command
 
 ```
-$ mpirun -np 4 ./boussinesqThermal3d 10000
+$ mpirun -np 4 ./rayleighBenard3D 10000
 ```
 
 The output should look like
 
 ```
-$ mpirun -np 4 ./boussinesqThermal3d 10000
+$ mpirun -np 4 ./rayleighBenard3D 10000
 10000 1
 time elapsed for rayleighBenardSetup:0.0661382
 0 : Writing VTK.
