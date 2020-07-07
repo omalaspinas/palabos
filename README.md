@@ -191,6 +191,7 @@ To see how to open issues, submit bug reports, create feature requests, submit y
 By alphabetic order
 
 * @beny3
+* @ccoreixas
 * @daniel-lagrava-niwa
 * @dkdk
 * @helenmo
