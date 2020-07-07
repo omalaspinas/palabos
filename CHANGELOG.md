@@ -8,6 +8,16 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
 ### Added
 
+### Removed
+
+### Changed
+
+### Fixed
+
+## [2.2.1]
+
+### Added
+
 * The D2Q9 version of collision models: Raw (RM), Hermite (HM), Central (CM), Central Hermite (CHM) and Cumulant (K),  Gauss-Hermite formalism (GH), weighted version of populations in the HM formalism,  Regularized approaches: standard (REG-HM) and recursive (SRT-RR).
 * Added test case: `isothermCoVo2D`
 
