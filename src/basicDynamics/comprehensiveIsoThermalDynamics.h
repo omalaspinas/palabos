@@ -81,7 +81,9 @@ public:
     static Array<T, Descriptor<T>::numRelaxationTimes> allOmega;
 private:
     virtual void decomposeOrder0(Cell<T,Descriptor> const& cell, std::vector<T>& rawData) const;
+    virtual void decomposeOrder1(Cell<T,Descriptor> const& cell, std::vector<T>& rawData) const;
     virtual void recomposeOrder0(Cell<T,Descriptor>& cell, std::vector<T> const& rawData) const;
+    virtual void recomposeOrder1(Cell<T,Descriptor>& cell, std::vector<T> const& rawData) const;
 private:
     static int id;
 };
@@ -124,7 +126,9 @@ public:
 
 private:
     virtual void decomposeOrder0(Cell<T,Descriptor> const& cell, std::vector<T>& rawData) const;
+    virtual void decomposeOrder1(Cell<T,Descriptor> const& cell, std::vector<T>& rawData) const;
     virtual void recomposeOrder0(Cell<T,Descriptor>& cell, std::vector<T> const& rawData) const;
+    virtual void recomposeOrder1(Cell<T,Descriptor>& cell, std::vector<T> const& rawData) const;
 private:
     static int id;
 };
@@ -167,7 +171,9 @@ public:
 
 private:
     virtual void decomposeOrder0(Cell<T,Descriptor> const& cell, std::vector<T>& rawData) const;
+    virtual void decomposeOrder1(Cell<T,Descriptor> const& cell, std::vector<T>& rawData) const;
     virtual void recomposeOrder0(Cell<T,Descriptor>& cell, std::vector<T> const& rawData) const;
+    virtual void recomposeOrder1(Cell<T,Descriptor>& cell, std::vector<T> const& rawData) const;
 private:
     static int id;
 };
@@ -210,7 +216,9 @@ public:
 
 private:
     virtual void decomposeOrder0(Cell<T,Descriptor> const& cell, std::vector<T>& rawData) const;
+    virtual void decomposeOrder1(Cell<T,Descriptor> const& cell, std::vector<T>& rawData) const;
     virtual void recomposeOrder0(Cell<T,Descriptor>& cell, std::vector<T> const& rawData) const;
+    virtual void recomposeOrder1(Cell<T,Descriptor>& cell, std::vector<T> const& rawData) const;
 private:
     static int id;
 };
@@ -252,7 +260,9 @@ public:
 
 private:
     virtual void decomposeOrder0(Cell<T,Descriptor> const& cell, std::vector<T>& rawData) const;
+    virtual void decomposeOrder1(Cell<T,Descriptor> const& cell, std::vector<T>& rawData) const;
     virtual void recomposeOrder0(Cell<T,Descriptor>& cell, std::vector<T> const& rawData) const;
+    virtual void recomposeOrder1(Cell<T,Descriptor>& cell, std::vector<T> const& rawData) const;
 private:
     static int id;
 };
@@ -294,7 +304,9 @@ public:
 
 private:
     virtual void decomposeOrder0(Cell<T,Descriptor> const& cell, std::vector<T>& rawData) const;
+    virtual void decomposeOrder1(Cell<T,Descriptor> const& cell, std::vector<T>& rawData) const;
     virtual void recomposeOrder0(Cell<T,Descriptor>& cell, std::vector<T> const& rawData) const;
+    virtual void recomposeOrder1(Cell<T,Descriptor>& cell, std::vector<T> const& rawData) const;
 private:
     static int id;
 };
@@ -336,7 +348,9 @@ public:
 
 private:
     virtual void decomposeOrder0(Cell<T,Descriptor> const& cell, std::vector<T>& rawData) const;
+    virtual void decomposeOrder1(Cell<T,Descriptor> const& cell, std::vector<T>& rawData) const;
     virtual void recomposeOrder0(Cell<T,Descriptor>& cell, std::vector<T> const& rawData) const;
+    virtual void recomposeOrder1(Cell<T,Descriptor>& cell, std::vector<T> const& rawData) const;
 private:
     static int id;
 };

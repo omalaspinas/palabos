@@ -223,6 +223,13 @@ void RMdynamics<T,Descriptor>::decomposeOrder0 (
 }
 
 template<typename T, template<typename U> class Descriptor>
+void RMdynamics<T,Descriptor>::decomposeOrder1 (
+        Cell<T,Descriptor> const& cell, std::vector<T>& rawData ) const
+{
+    PLB_ASSERT(false);
+}
+
+template<typename T, template<typename U> class Descriptor>
 void RMdynamics<T,Descriptor>::recomposeOrder0 (
         Cell<T,Descriptor>& cell, std::vector<T> const& rawData ) const
 {
@@ -253,6 +260,12 @@ void RMdynamics<T,Descriptor>::recomposeOrder0 (
     }
 }
 
+template<typename T, template<typename U> class Descriptor>
+void RMdynamics<T,Descriptor>::recomposeOrder1 (
+        Cell<T,Descriptor>& cell, std::vector<T> const& rawData ) const
+{
+    PLB_ASSERT(false);
+}
 
 /* *************** Class HMdynamics *********************************************** */
 
@@ -421,6 +434,13 @@ void HMdynamics<T,Descriptor>::decomposeOrder0 (
 }
 
 template<typename T, template<typename U> class Descriptor>
+void HMdynamics<T,Descriptor>::decomposeOrder1 (
+        Cell<T,Descriptor> const& cell, std::vector<T>& rawData ) const
+{
+    PLB_ASSERT(false);
+}
+
+template<typename T, template<typename U> class Descriptor>
 void HMdynamics<T,Descriptor>::recomposeOrder0 (
         Cell<T,Descriptor>& cell, std::vector<T> const& rawData ) const
 {
@@ -451,6 +471,12 @@ void HMdynamics<T,Descriptor>::recomposeOrder0 (
     }
 }
 
+template<typename T, template<typename U> class Descriptor>
+void HMdynamics<T,Descriptor>::recomposeOrder1 (
+        Cell<T,Descriptor>& cell, std::vector<T> const& rawData ) const
+{
+    PLB_ASSERT(false);
+}
 
 
 /* *************** Class CMdynamics *********************************************** */
@@ -615,6 +641,13 @@ void CMdynamics<T,Descriptor>::decomposeOrder0 (
 }
 
 template<typename T, template<typename U> class Descriptor>
+void CMdynamics<T,Descriptor>::decomposeOrder1 (
+        Cell<T,Descriptor> const& cell, std::vector<T>& rawData ) const
+{
+    PLB_ASSERT(false);
+}
+
+template<typename T, template<typename U> class Descriptor>
 void CMdynamics<T,Descriptor>::recomposeOrder0 (
         Cell<T,Descriptor>& cell, std::vector<T> const& rawData ) const
 {
@@ -645,6 +678,12 @@ void CMdynamics<T,Descriptor>::recomposeOrder0 (
     }
 }
 
+template<typename T, template<typename U> class Descriptor>
+void CMdynamics<T,Descriptor>::recomposeOrder1 (
+        Cell<T,Descriptor>& cell, std::vector<T> const& rawData ) const
+{
+    PLB_ASSERT(false);
+}
 
 /* *************** Class CHMdynamics *********************************************** */
 
@@ -808,6 +847,13 @@ void CHMdynamics<T,Descriptor>::decomposeOrder0 (
 }
 
 template<typename T, template<typename U> class Descriptor>
+void CHMdynamics<T,Descriptor>::decomposeOrder1 (
+        Cell<T,Descriptor> const& cell, std::vector<T>& rawData ) const
+{
+    PLB_ASSERT(false);
+}
+
+template<typename T, template<typename U> class Descriptor>
 void CHMdynamics<T,Descriptor>::recomposeOrder0 (
         Cell<T,Descriptor>& cell, std::vector<T> const& rawData ) const
 {
@@ -838,6 +884,12 @@ void CHMdynamics<T,Descriptor>::recomposeOrder0 (
     }
 }
 
+template<typename T, template<typename U> class Descriptor>
+void CHMdynamics<T,Descriptor>::recomposeOrder1 (
+        Cell<T,Descriptor>& cell, std::vector<T> const& rawData ) const
+{
+    PLB_ASSERT(false);
+}
 
 /* *************** Class Kdynamics *********************************************** */
 
@@ -1001,6 +1053,13 @@ void Kdynamics<T,Descriptor>::decomposeOrder0 (
 }
 
 template<typename T, template<typename U> class Descriptor>
+void Kdynamics<T,Descriptor>::decomposeOrder1 (
+        Cell<T,Descriptor> const& cell, std::vector<T>& rawData ) const
+{
+    PLB_ASSERT(false);
+}
+
+template<typename T, template<typename U> class Descriptor>
 void Kdynamics<T,Descriptor>::recomposeOrder0 (
         Cell<T,Descriptor>& cell, std::vector<T> const& rawData ) const
 {
@@ -1031,6 +1090,12 @@ void Kdynamics<T,Descriptor>::recomposeOrder0 (
     }
 }
 
+template<typename T, template<typename U> class Descriptor>
+void Kdynamics<T,Descriptor>::recomposeOrder1 (
+        Cell<T,Descriptor>& cell, std::vector<T> const& rawData ) const
+{
+    PLB_ASSERT(false);
+}
 
 /* *************** Class GHdynamics *********************************************** */
 
@@ -1204,6 +1269,13 @@ void GHdynamics<T,Descriptor>::decomposeOrder0 (
 }
 
 template<typename T, template<typename U> class Descriptor>
+void GHdynamics<T,Descriptor>::decomposeOrder1 (
+        Cell<T,Descriptor> const& cell, std::vector<T>& rawData ) const
+{
+    PLB_ASSERT(false);
+}
+
+template<typename T, template<typename U> class Descriptor>
 void GHdynamics<T,Descriptor>::recomposeOrder0 (
         Cell<T,Descriptor>& cell, std::vector<T> const& rawData ) const
 {
@@ -1234,6 +1306,12 @@ void GHdynamics<T,Descriptor>::recomposeOrder0 (
     }
 }
 
+template<typename T, template<typename U> class Descriptor>
+void GHdynamics<T,Descriptor>::recomposeOrder1 (
+        Cell<T,Descriptor>& cell, std::vector<T> const& rawData ) const
+{
+    PLB_ASSERT(false);
+}
 
 /* *************** Class RRdynamics *********************************************** */
 
@@ -1407,6 +1485,13 @@ void RRdynamics<T,Descriptor>::decomposeOrder0 (
 }
 
 template<typename T, template<typename U> class Descriptor>
+void RRdynamics<T,Descriptor>::decomposeOrder1 (
+        Cell<T,Descriptor> const& cell, std::vector<T>& rawData ) const
+{
+    PLB_ASSERT(false);
+}
+
+template<typename T, template<typename U> class Descriptor>
 void RRdynamics<T,Descriptor>::recomposeOrder0 (
         Cell<T,Descriptor>& cell, std::vector<T> const& rawData ) const
 {
@@ -1437,7 +1522,12 @@ void RRdynamics<T,Descriptor>::recomposeOrder0 (
     }
 }
 
-
+template<typename T, template<typename U> class Descriptor>
+void RRdynamics<T,Descriptor>::recomposeOrder1 (
+        Cell<T,Descriptor>& cell, std::vector<T> const& rawData ) const
+{
+    PLB_ASSERT(false);
+}
 
 
 }  // namespace plb
