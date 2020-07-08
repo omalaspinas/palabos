@@ -39,4 +39,5 @@
 #include "basicDynamics/thermalDynamics.h"
 #include "basicDynamics/externalForceDynamics.h"
 #include "basicDynamics/dynamicsProcessor2D.h"
+#include "basicDynamics/comprehensiveIsoThermalDynamics.h"
 

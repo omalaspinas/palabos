@@ -112,6 +112,7 @@ namespace descriptors {
     /// D3Q19 lattice
     template <typename T> struct D3Q19Constants
     {
+        enum { numRelaxationTimes = 4 };
         enum { d = 3, q = 19 };       ///< number of dimensions/distr. functions
         static const T invD;          ///< 1 / (number of dimensions)
         static const int vicinity;    ///< size of neighborhood
@@ -132,6 +133,7 @@ namespace descriptors {
     /// D3Q27 lattice
     template <typename T> struct D3Q27Constants
     {
+        enum { numRelaxationTimes = 8 };
         enum { d = 3, q = 27 };       ///< number of dimensions/distr. functions
         static const T invD;          ///< 1 / (number of dimensions)
         static const int vicinity;    ///< size of neighborhood

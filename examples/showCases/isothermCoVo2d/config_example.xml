@@ -1,0 +1,37 @@
+<?xml version="1.0" ?>
+
+<lattice>
+<!-- Valocity discretizazion -->
+    <lbm> D2Q9 </lbm>
+<!-- Dynamics used for the simulation -->
+    <dynName> K </dynName>
+<!-- Relaxation of high-order moments (either SRT (BGK) or REG (1.0))-->
+    <hoOmega> REG </hoOmega>
+</lattice>
+
+<simuParam>
+<!-- Speed of sound [m/s] is defined here to avoid hard coded value -->
+<!-- (For air at ambient conditions (293.15 K, 1013.25 hPa), it is approximately 340 [m/s]) -->
+    <soundSpeed> 340. </soundSpeed>
+<!-- Space step [m] is defined here to avoid hard coded value-->
+    <dx> 0.01 </dx>
+<!-- Smagorinsky constant -->
+    <cSmago> 0.16 </cSmago>
+</simuParam>
+
+<initialization>
+<!-- Add fNeq using finite differences -->
+    <intIniFneq> 0 </intIniFneq>
+<!-- Poisson solver (incompressible) -->
+    <intIniPressure> 0 </intIniPressure>
+</initialization>
+
+<io>
+<!-- Directory where the output will be stored (must end with /) -->
+    <output> ./tmp/ </output>
+<!-- Number of caracteristic times before the simulation stops-->
+    <tAdim> 1.0 </tAdim>
+<!-- .vti output frequency (in terms of caracteristic time) -->
+    <vtsT> 0.1 </vtsT>
+</io>
+
