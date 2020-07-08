@@ -228,12 +228,12 @@ void defineDynamics( MultiBlockLattice2D<T,Descriptor>& lattice, MultiScalarFiel
 
 template<typename T, template<typename U> class Descriptor>
 void recomposeFromFlowVariables ( MultiBlockLattice2D<T,Descriptor>& lattice,
-                                  MultiScalarField2D<T>& density, TensorField2D<T,2>& velocity,
+                                  MultiScalarField2D<T>& density, MultiTensorField2D<T,2>& velocity,
                                   MultiTensorField2D<T,3>& strainRate, Box2D domain );
 
 template<typename T, template<typename U> class Descriptor>
 void recomposeFromFlowVariables ( MultiBlockLattice2D<T,Descriptor>& lattice,
-                                  MultiScalarField2D<T>& density, TensorField2D<T,2>& velocity,
+                                  MultiScalarField2D<T>& density, MultiTensorField2D<T,2>& velocity,
                                   MultiTensorField2D<T,3>& strainRate );
 
 template<typename T, template<class U> class Descriptor>
