@@ -52,12 +52,14 @@ void plbInit(int *argc, char ***argv, bool verbous) {
     global::plbRandom<plint>().seed(10);
 }
 
+#ifdef PLB_MPI_PARALLEL
 void plbInit(MPI_Comm communicator) {
     global::mpi().init(communicator);
     global::plbRandom<float>().seed(10);
     global::plbRandom<double>().seed(10);
     global::plbRandom<plint>().seed(10);
 }
+#endif
 
 void plbInit() {
     global::mpi().init();
