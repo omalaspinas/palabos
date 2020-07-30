@@ -1,5 +1,11 @@
 cmake_minimum_required(VERSION 3.0)
 
+find_program(CCACHE_PROGRAM ccache)
+if(CCACHE_PROGRAM)
+    set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE "${CCACHE_PROGRAM}")
+    message("ccache used.")
+endif() 
+
 project(palabos)
 
 enable_language(CXX)
@@ -116,6 +122,7 @@ add_subdirectory(examples/codesByTopic/shanChenMultiPhase)
 add_subdirectory(examples/codesByTopic/smagorinskyModel)
 add_subdirectory(examples/codesByTopic/transientStatistics)
 add_subdirectory(examples/codesByTopic/userInput)
+add_subdirectory(examples/codesByTopic/aneurysm_xdmf_hdf5_output)
 # showCases
 add_subdirectory(examples/showCases/aneurysm)
 add_subdirectory(examples/showCases/bloodFlowDefoBodies)
@@ -126,6 +133,7 @@ add_subdirectory(examples/showCases/cavity2d)
 add_subdirectory(examples/showCases/cavity3d)
 add_subdirectory(examples/showCases/collidingBubbles3d)
 add_subdirectory(examples/showCases/cylinder2d)
+add_subdirectory(examples/showCases/cylinder3d)
 add_subdirectory(examples/showCases/externalFlowAroundObstacle)
 add_subdirectory(examples/showCases/generalExternalFlow)
 add_subdirectory(examples/showCases/gridRefinement2d)

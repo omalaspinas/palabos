@@ -39,6 +39,25 @@
 
 namespace plb {
 
+    /**
+     * This class implements the Bouzidi (BFL,2001) boundary condition on a BoundaryShape.
+     * The BoundaryShape determines whether the points of the discrete lattice are voxelFlag::inside
+     * or voxelFlag::outside some geometry.
+     *
+     * It can handle moving boundaries using the momentum correction of ladd (LADD, 1994).
+     * The wall velocity is recovered from SurfaceData stored in BoundaryShape3D<T,SurfaceData>*
+     *
+     * The core of the algorithm is executed by the function cellCompletion().
+     *
+     * (BFL, 2001) M. Bouzidi, M. Firdaouss, and P. Lallemand, “Momentum transfer of a Boltzmann-lattice fluid with boundaries,”
+     *             Physics of Fluids, vol. 13, no. 11, pp. 3452–3459, Oct. 2001, doi: 10.1063/1.1399290.
+     *
+     * (LADD, 1994) A. J. C. Ladd, “Numerical simulations of particulate suspensions via a discretized Boltzmann equation. Part 1. Theoretical foundation,”
+     *              Journal of Fluid Mechanics, vol. 271, pp. 285–309, Jul. 1994, doi: 10.1017/S0022112094001771.
+     *
+     * @tparam T
+     * @tparam Descriptor
+     */
 template<typename T, template<typename U> class Descriptor>
 class BouzidiOffLatticeModel3D : public OffLatticeModel3D<T,Array<T,3> >
 {

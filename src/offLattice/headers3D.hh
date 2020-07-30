@@ -57,6 +57,7 @@
 #include "offLattice/immersedWalls3D.hh"
 #include "offLattice/immersedAdvectionDiffusionWalls3D.hh"
 #include "offLattice/filippovaHaenelOffLatticeModel3D.hh"
+#include "offLattice/meiLuoShyyOffLatticeModel3D.hh"
 #include "offLattice/rawTriangleMesh.hh"
 #include "offLattice/stlFileIO.hh"
 #include "offLattice/offFileIO.hh"
