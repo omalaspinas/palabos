@@ -94,6 +94,13 @@ T computeAverageEnergy(BlockLattice2D<T,Descriptor>& lattice) {
     return computeAverageEnergy(lattice, lattice.getBoundingBox());
 }
 
+template<typename T, template<typename U> class Descriptor>
+T computeAverageVelocityComponent(BlockLattice2D<T,Descriptor>& lattice, DotList2D dotList, plint iComponent) {
+    DotSumVelocityComponentFunctional2D<T,Descriptor> functional(iComponent);
+    applyProcessingFunctional(functional, dotList, lattice);
+    return functional.getSumVelocityComponent() / (T) dotList.getN();
+}
+
 
 template<typename T, template<typename U> class Descriptor, class BoolMask> 
 plint count(BlockLattice2D<T,Descriptor>& lattice, Box2D domain, BoolMask boolMask)
@@ -1248,6 +1255,12 @@ T computeAverageEnergy(MultiBlockLattice2D<T,Descriptor>& lattice) {
     return computeAverageEnergy(lattice, lattice.getBoundingBox());
 }
 
+template<typename T, template<typename U> class Descriptor>
+T computeAverageVelocityComponent(MultiBlockLattice2D<T,Descriptor>& lattice, DotList2D dotList, plint iComponent) {
+    DotSumVelocityComponentFunctional2D<T,Descriptor> functional(iComponent);
+    applyProcessingFunctional(functional, dotList, lattice);
+    return functional.getSumVelocityComponent() / (T) dotList.getN();
+}
 
 template<typename T, template<typename U> class Descriptor, class BoolMask> 
 plint count(MultiBlockLattice2D<T,Descriptor>& lattice, Box2D domain, BoolMask boolMask)

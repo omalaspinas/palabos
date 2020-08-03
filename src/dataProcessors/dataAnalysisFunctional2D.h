@@ -83,6 +83,22 @@ private:
     plint sumEnergyId;
 };
 
+template<typename T, template<typename U> class Descriptor>
+class DotSumVelocityComponentFunctional2D : public ReductiveDotProcessingFunctional2D_L<T,Descriptor>
+{
+  public:
+    DotSumVelocityComponentFunctional2D(int iComponent_);
+    virtual void process(DotList2D const& dotList, BlockLattice2D<T,Descriptor>& lattice);
+    virtual DotSumVelocityComponentFunctional2D<T,Descriptor>* clone() const;
+    virtual void getTypeOfModification(std::vector<modif::ModifT>& modified) const {
+        modified[0] = modif::nothing;
+    }
+    T getSumVelocityComponent() const;
+  private:
+    plint sumVelocityComponentId;
+    int iComponent;
+};
+
 template<typename T, template<typename U> class Descriptor, class BoolMask> 
 class CountLatticeElementsFunctional2D : public ReductiveBoxProcessingFunctional2D_L<T,Descriptor>
 {
