@@ -80,6 +80,12 @@ T computeAverageRhoBar(BlockLattice2D<T,Descriptor>& lattice) {
     return computeAverageRhoBar(lattice, lattice.getBoundingBox());
 }
 
+template<typename T, template<typename U> class Descriptor> 
+T computeAverageRhoBar(BlockLattice2D<T,Descriptor>& lattice, DotList2D dotList) {
+    DotSumRhoBarFunctional2D<T,Descriptor> functional;
+    applyProcessingFunctional(functional, dotList, lattice);
+    return functional.getSumRhoBar() / (T) dotList.getN();
+}
 
 template<typename T, template<typename U> class Descriptor> 
 T computeAverageEnergy(BlockLattice2D<T,Descriptor>& lattice, Box2D domain) 
@@ -1234,6 +1240,12 @@ T computeAverageRhoBar(MultiBlockLattice2D<T,Descriptor>& lattice) {
     return computeAverageRhoBar(lattice, lattice.getBoundingBox());
 }
 
+template<typename T, template<typename U> class Descriptor>
+T computeAverageRhoBar(MultiBlockLattice2D<T,Descriptor>& lattice, DotList2D dotList) {
+	DotSumRhoBarFunctional2D<T,Descriptor> functional;
+	applyProcessingFunctional(functional, dotList, lattice);
+    return functional.getSumRhoBar() / (T) dotList.getN();
+}
 
 template<typename T, template<typename U> class Descriptor> 
 T computeAverageEnergy(MultiBlockLattice2D<T,Descriptor>& lattice, Box2D domain) 

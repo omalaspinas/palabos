@@ -67,6 +67,21 @@ private:
 };
 
 template<typename T, template<typename U> class Descriptor> 
+class DotSumRhoBarFunctional2D : public ReductiveDotProcessingFunctional2D_L<T,Descriptor>
+{
+public:
+    DotSumRhoBarFunctional2D();
+    virtual void process(DotList2D const& dotList, BlockLattice2D<T,Descriptor>& lattice);
+    virtual DotSumRhoBarFunctional2D<T,Descriptor>* clone() const;
+    virtual void getTypeOfModification(std::vector<modif::ModifT>& modified) const {
+        modified[0] = modif::nothing;
+    }
+    T getSumRhoBar() const;
+private:
+    plint sumRhoBarId;
+};
+
+template<typename T, template<typename U> class Descriptor> 
 class BoxSumEnergyFunctional2D : public ReductiveBoxProcessingFunctional2D_L<T,Descriptor>
 {
 public:
