@@ -147,6 +147,24 @@ private:
     T xi;
 };
 
+// Declaration of a specific 2D "sigma" function for WaveAbsorptionDynamics
+
+template<typename T>
+class WaveAbsorptionSigmaFunction2D {
+public:
+    WaveAbsorptionSigmaFunction2D(Box2D domain_, Array<plint,4> const& numCells_, T omega_);
+    T operator()(plint iX, plint iY) const;
+
+private:
+    void addDistance(plint from, plint pos, std::vector<plint>& distances, plint i) const;
+    T sigma(T x0, T x1, T x) const;
+
+private:
+    Box2D domain;
+    Array<plint,4> numCells;
+    T xi;
+};
+
 }  // namespace plb
 
 #endif  // WAVE_PROPAGATION_H
