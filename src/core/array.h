@@ -954,7 +954,7 @@ public:
         return *this;
     }
     static Array<T,4> zero() {
-        return Array<T,3>(T(), T(), T(), T());
+        return Array<T,4>(T(), T(), T(), T());
     }
 private:
     T data[4];
