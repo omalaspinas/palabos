@@ -379,6 +379,68 @@ T WaveAbsorptionSigmaFunction3D<T>::sigma(T x0, T x1, T x) const
     return((T) 3125 * (x1 - x) * std::pow(x - x0, (T) 4)) / ((T) 256 * std::pow(x1 - x0, (T) 5));
 }
 
+// Implementation of a 2D specific "sigma" function for WaveAbsorptionDynamics.
+
+template<typename T>
+WaveAbsorptionSigmaFunction2D<T>::WaveAbsorptionSigmaFunction2D(Box2D domain_, Array<plint,4> const& numCells_, T omega_)
+        : domain(domain_),
+          numCells(numCells_),
+          xi((T) 4 / omega_ - (T) 1.0e-3) // using (xi < 4/omega) or (xi < 4 * tau) to maintain the stability
+          // xi = 4/s - epsilon, where epsilon = 0.001
+{ }
+
+template<typename T>
+T WaveAbsorptionSigmaFunction2D<T>::operator()(plint iX, plint iY) const
+{
+    std::vector<plint> distances(4, 0);
+
+    // if numCells[X] != 0  --> addDistance, else --> (void) 0;
+    numCells[0] ? addDistance(domain.x0 + numCells[0], iX, distances, 0) : (void) 0;
+    numCells[1] ? addDistance(iX, domain.x1 - numCells[1], distances, 1) : (void) 0;
+    numCells[2] ? addDistance(domain.y0 + numCells[2], iY, distances, 2) : (void) 0;
+    numCells[3] ? addDistance(iY, domain.y1 - numCells[3], distances, 3) : (void) 0;
+
+    // traverse distances[i] to find the largest distance and use it to calculate the sigma
+    plint distance = 0;
+    plint ind = -1;
+    for (pluint i = 0; i < distances.size(); ++i) {
+        if (distances[i] > distance) {
+            distance = distances[i];
+            ind = i;
+        }
+    }
+
+    if (distance == 0) {
+        return(T());
+    } else {
+        // Kam's form
+        // return 0.3 * pow((T)distance/(T)numCells[ind],2);
+        // Xu and Sagaut's form
+        return (xi*sigma(T(), (T) numCells[ind], (T) distance));
+    }
+}
+
+template<typename T>
+void WaveAbsorptionSigmaFunction2D<T>::addDistance(plint from, plint pos, std::vector<plint>& distances, plint i) const
+{
+    plint dist = from - pos;
+    if (dist > 0) {
+        distances[i] = dist;
+    }
+}
+
+template<typename T>
+T WaveAbsorptionSigmaFunction2D<T>::sigma(T x0, T x1, T x) const
+{
+    return ((T) 3125 * (x1 - x) * std::pow(x - x0, (T) 4)) / ((T) 256 * std::pow(x1 - x0, (T) 5));
+
+    /*            3125(L-x)(x-x0)^4
+     * sigma_x = -------------------
+     *               256(L-x0)^5
+     * , where x0 = 0, L or x1 = numCells[ind] and x = distance.
+     */
+}
+
 }  // namespace plb
 
 #endif  // WAVE_PROPAGATION_HH
