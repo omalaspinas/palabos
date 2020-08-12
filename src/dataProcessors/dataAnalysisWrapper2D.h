@@ -68,6 +68,8 @@ T computeAverageRhoBar(BlockLattice2D<T,Descriptor>& lattice, Box2D domain);
 template<typename T, template<typename U> class Descriptor> 
 T computeAverageRhoBar(BlockLattice2D<T,Descriptor>& lattice);
 
+template<typename T, template<typename U> class Descriptor>
+T computeAverageRhoBar(BlockLattice2D<T,Descriptor>& lattice, DotList2D dotList);
 
 template<typename T, template<typename U> class Descriptor> 
 T computeAverageEnergy(BlockLattice2D<T,Descriptor>& lattice, Box2D domain);
@@ -629,6 +631,8 @@ T computeAverageRhoBar(MultiBlockLattice2D<T,Descriptor>& lattice, Box2D domain)
 template<typename T, template<typename U> class Descriptor> 
 T computeAverageRhoBar(MultiBlockLattice2D<T,Descriptor>& lattice);
 
+template<typename T, template<typename U> class Descriptor>
+T computeAverageRhoBar(MultiBlockLattice2D<T,Descriptor>& lattice, DotList2D dotList);
 
 template<typename T, template<typename U> class Descriptor> 
 T computeAverageEnergy(MultiBlockLattice2D<T,Descriptor>& lattice, Box2D domain);
