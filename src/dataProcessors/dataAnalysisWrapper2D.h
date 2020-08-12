@@ -77,6 +77,8 @@ T computeAverageEnergy(BlockLattice2D<T,Descriptor>& lattice, Box2D domain);
 template<typename T, template<typename U> class Descriptor> 
 T computeAverageEnergy(BlockLattice2D<T,Descriptor>& lattice);
 
+template<typename T, template<typename U> class Descriptor>
+T computeAverageVelocityComponent(BlockLattice2D<T,Descriptor>& lattice, DotList2D dotList, plint iComponent);
 
 template<typename T, template<typename U> class Descriptor, class BoolMask> 
 plint count(BlockLattice2D<T,Descriptor>& lattice, Box2D domain, BoolMask boolMask);
@@ -640,6 +642,8 @@ T computeAverageEnergy(MultiBlockLattice2D<T,Descriptor>& lattice, Box2D domain)
 template<typename T, template<typename U> class Descriptor> 
 T computeAverageEnergy(MultiBlockLattice2D<T,Descriptor>& lattice);
 
+template<typename T, template<typename U> class Descriptor>
+T computeAverageVelocityComponent(MultiBlockLattice2D<T,Descriptor>& lattice, DotList2D dotList, plint iComponent);
 
 template<typename T, template<typename U> class Descriptor, class BoolMask> 
 plint count(MultiBlockLattice2D<T,Descriptor>& lattice, Box2D domain, BoolMask boolMask);
