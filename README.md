@@ -54,11 +54,34 @@ of [Paraview](https://www.paraview.org/) for their visualization.
 
 ## Windows Prerequisites
 
-- Microsoft Visual Studio (VS).
+- Microsoft Visual Studio (VS). VS2019 is recommended, due to its integration with CMake project management.
 - Microsoft C++ compiler, installed with Visual Studio (make sure to enable the installation of C++ compiler in the custom installation option of VS). This step can be done even after installing VS for the first time in your system. Simply, re-run the installer and customize it to include the extra features. For more information on how to install C/C++ support in Visual Studio follow [link1](https://docs.microsoft.com/en-us/cpp/build/vscpp-step-0-installation?view=vs-2019) & [link2](https://visualstudio.microsoft.com/vs/features/cplusplus/).
-- Microsoft Message Passing Interface (MPI). To install MPI follow this [link](https://docs.microsoft.com/en-us/message-passing-interface/microsoft-mpi).
-- [CMake](https://cmake.org/download/) (preferably latest version).
+- Optionally the Microsoft Message Passing Interface (MPI). To install MPI follow this [link](https://docs.microsoft.com/en-us/message-passing-interface/microsoft-mpi).
 - Optionally the [HDF5](https://www.hdfgroup.org/downloads/hdf5/) library.
+- If you use Visual Studio older than VS2019, you may want to install [CMake](https://cmake.org/download/), preferably the latest version, to generate a Visual Studio project file (.sln) from Palabos' CMakeLists.txt
+
+### For Visual Studio 2019
+Start Visual Studio 2019 and select "Clone a repository" from the "Get
+started" section. Provide the following repository location:
+
+```
+https://gitlab.com/unigespc/palabos
+```
+
+and click "clone". Watch the messages that unfold in the "Output
+messages" window for potential errors. If there is no error, select an
+example program from the "Select Startup Item" button in the toolbar.
+Click the little arrow next to the selected example to build and
+execute it.
+
+You may get error messages in the "Output messages" window if MPI
+and/or HDF5 are not installed on your system. In these cases,
+deactivate MPI and/or HDF5 by selecting "Manage Configurations" in the
+"Configuration" button in the toolbar. In the section "CMake variables
+and cache", you should be able to un-click ENABLE_MPI and/or
+BUILD_HDF5 (you may need to wait a bit for these to appear). After
+this, click "Save and generate CMake cache to load variables" and
+proceed as indicated above.
 
 ## The installation steps
 
