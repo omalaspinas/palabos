@@ -107,6 +107,34 @@ void VtkDataWriter3D::writeDataField(DataSerializer const* serializer,
 }
 
 
+////////// class VtkDataWriter3D ////////////////////////////////////////
+
+template<typename T>
+void VtkAsciiDataWriter3D::writeDataField(Block3D const &block,
+                                     std::string const& name, plint nDim)
+{
+    if (!mainProcOnly || global::mpi().isMainProcessor()) {
+        (*ostr) << "<DataArray type=\"" << VtkTypeNames<T>::getName()
+                << "\" Name=\"" << name
+                << "\" format=\"ascii";
+        if (nDim>1) {
+            (*ostr) << "\" NumberOfComponents=\"" << nDim;
+        }
+        (*ostr) << "\">\n";
+    }
+
+    plint numDigits = 0; // Number of digits is handled by iostream manipulators,
+                        // as opposed to being imposed here.
+    serializerToAsciiStream<T>( block.getBlockSerializer (
+                                block.getBoundingBox(),
+                                IndexOrdering::backward ),
+                                ostr, numDigits );
+
+    if (!mainProcOnly || global::mpi().isMainProcessor()) {
+        (*ostr) << "\n</DataArray>\n";
+    }
+}
+
 ////////// class ParallelVtkDataWriter3D ////////////////////////////////////////
 
 template<typename T>
@@ -419,6 +447,132 @@ void VtkImageOutput3D<T>::writeData( MultiNTensorField3D<T>& nTensorField,
             transformedField->getBoundingBox(), transformedField->getNdim(),
             transformedField->getBlockSerializer(transformedField->getBoundingBox(), IndexOrdering::backward),
             nTensorFieldName );
+    delete transformedField;
+}
+
+////////// class VtkAsciiImageOutput3D ////////////////////////////////////
+
+template<typename T>
+VtkAsciiImageOutput3D<T>::VtkAsciiImageOutput3D(std::string fName, std::string const &scalars_, double deltaX_)
+    : fullName ( global::directories().getVtkOutDir() + fName+".vti" ),
+      vtkOut( fullName ),
+      scalars( scalars_ ),
+      deltaX(deltaX_),
+      offset(T(),T(),T()),
+      headerWritten( false )
+{ }
+
+template<typename T>
+VtkAsciiImageOutput3D<T>::VtkAsciiImageOutput3D(std::string fName, std::string const &scalars_, double deltaX_, Array<double,3> offset_)
+    : fullName ( global::directories().getVtkOutDir() + fName+".vti" ),
+      vtkOut( fullName ),
+      scalars( scalars_ ),
+      deltaX(deltaX_),
+      offset(offset_),
+      headerWritten( false )
+{ }
+
+template<typename T>
+VtkAsciiImageOutput3D<T>::~VtkAsciiImageOutput3D() {
+    writeFooter();
+}
+
+template<typename T>
+void VtkAsciiImageOutput3D<T>::writeHeader(plint nx_, plint ny_, plint nz_) {
+    writeHeader(Box3D(0, nx_-1, 0, ny_-1, 0, nz_-1));
+}
+
+template<typename T>
+void VtkAsciiImageOutput3D<T>::writeHeader(Box3D boundingBox_) {
+    if (headerWritten) {
+        PLB_PRECONDITION(boundingBox == boundingBox_);
+    }
+    else {
+        boundingBox = boundingBox_;
+        vtkOut.writeHeader(boundingBox, offset, deltaX);
+        vtkOut.startPiece(boundingBox, scalars);
+        headerWritten = true;
+    }
+}
+
+template<typename T>
+void VtkAsciiImageOutput3D<T>::writeFooter() {
+    if (headerWritten) {
+        vtkOut.endPiece();
+        vtkOut.writeFooter();
+        headerWritten = false;
+    }
+}
+
+template<typename T>
+template<typename TConv>
+void VtkAsciiImageOutput3D<T>::writeData( ScalarField3D<T>& scalarField,
+                                     std::string scalarFieldName, TConv scalingFactor,
+                                     TConv additiveOffset )
+{
+    std::unique_ptr<ScalarField3D<TConv> > transformedField = copyConvert<T,TConv>(scalarField);
+    if (!util::isOne(scalingFactor)) {
+        multiplyInPlace(*transformedField, scalingFactor);
+    }
+    if (!util::isZero(additiveOffset)) {
+        addInPlace(*transformedField, additiveOffset);
+    }
+    writeHeader(transformedField->getNx(), transformedField->getNy(), transformedField->getNz());
+    vtkOut.writeDataField<TConv> (*transformedField, scalarFieldName, 1);
+}
+
+template<typename T>
+template<typename TConv>
+void VtkAsciiImageOutput3D<T>::writeData( MultiScalarField3D<T>& scalarField,
+                                     std::string scalarFieldName, TConv scalingFactor,
+                                     TConv additiveOffset )
+{
+    std::unique_ptr<MultiScalarField3D<TConv> > transformedField = copyConvert<T,TConv>(scalarField);
+    if (!util::isOne(scalingFactor)) {
+        multiplyInPlace(*transformedField, scalingFactor);
+    }
+    if (!util::isZero(additiveOffset)) {
+        addInPlace(*transformedField, additiveOffset);
+    }
+    writeHeader(transformedField->getBoundingBox());
+    vtkOut.writeDataField<TConv> (*transformedField, scalarFieldName, 1);
+}
+
+template<typename T>
+template<plint n, typename TConv>
+void VtkAsciiImageOutput3D<T>::writeData( TensorField3D<T,n>& tensorField,
+                                     std::string tensorFieldName, TConv scalingFactor )
+{
+    std::unique_ptr<TensorField3D<TConv,n> > transformedField = copyConvert<T,TConv,n>(tensorField);
+    if (!util::isOne(scalingFactor)) {
+        multiplyInPlace(*transformedField, scalingFactor);
+    }
+    writeHeader(transformedField->getNx(), transformedField->getNy(), transformedField->getNz());
+    vtkOut.writeDataField<TConv> (*transformedField, tensorFieldName, n);
+}
+
+template<typename T>
+template<plint n, typename TConv>
+void VtkAsciiImageOutput3D<T>::writeData( MultiTensorField3D<T,n>& tensorField,
+                                     std::string tensorFieldName, TConv scalingFactor )
+{
+    std::unique_ptr<MultiTensorField3D<TConv,n> > transformedField = copyConvert<T,TConv,n>(tensorField);
+    if (!util::isOne(scalingFactor)) {
+        multiplyInPlace(*transformedField, scalingFactor);
+    }
+    writeHeader(transformedField->getBoundingBox());
+    vtkOut.writeDataField<TConv> (*transformedField, tensorFieldName, n);
+}
+
+
+template<typename T>
+template<typename TConv>
+void VtkAsciiImageOutput3D<T>::writeData( MultiNTensorField3D<T>& nTensorField,
+                                     std::string nTensorFieldName )
+{
+    MultiNTensorField3D<TConv>* transformedField = copyConvert<T,TConv>(nTensorField, nTensorField.getBoundingBox());
+    writeHeader(transformedField->getBoundingBox());
+    vtkOut.writeDataField<TConv> (*transformedField, nTensorFieldName, transformedField->getNdim());
     delete transformedField;
 }
 

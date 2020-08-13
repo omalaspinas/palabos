@@ -130,6 +130,93 @@ void VtkDataWriter3D::writeFooter() {
         (*ostr) << "</VTKFile>\n";
     }
 }
+    
+////////// class VtkAsciiDataWriter3D ////////////////////////////////////////
+
+VtkAsciiDataWriter3D::VtkAsciiDataWriter3D(std::string const& fileName_, bool pointData_, bool mainProcOnly_)
+    : fileName(fileName_),
+      ostr(0),
+      pointData(pointData_),
+      mainProcOnly(mainProcOnly_)
+{
+    if (!mainProcOnly || global::mpi().isMainProcessor()) {
+        ostr = new std::ofstream(fileName.c_str());
+        if (!(*ostr)) {
+            std::cerr << "could not open file " <<  fileName << "\n";
+            return;
+        }
+    }
+}
+
+VtkAsciiDataWriter3D::~VtkAsciiDataWriter3D() {
+    delete ostr;
+}
+
+void VtkAsciiDataWriter3D::writeHeader(Box3D domain, Array<double,3> origin, double deltaX)
+{
+    if (!mainProcOnly || global::mpi().isMainProcessor()) {
+        (*ostr) << "<?xml version=\"1.0\"?>\n";
+#ifdef PLB_BIG_ENDIAN
+        (*ostr) << "<VTKFile type=\"ImageData\" version=\"0.1\" byte_order=\"BigEndian\">\n";
+#else
+        (*ostr) << "<VTKFile type=\"ImageData\" version=\"0.1\" byte_order=\"LittleEndian\">\n";
+#endif
+        if (!pointData) {
+            origin -= Array<double,3>(deltaX/2.,deltaX/2.,deltaX/2.);
+            domain.x1++;
+            domain.y1++;
+            domain.z1++;
+        }
+
+        (*ostr) << "<ImageData WholeExtent=\""
+                << domain.x0 << " " << domain.x1 << " "
+                << domain.y0 << " " << domain.y1 << " "
+                << domain.z0 << " " << domain.z1 << "\" "
+                << "Origin=\""
+                << origin[0] << " " << origin[1] << " " << origin[2] << "\" "
+                << "Spacing=\""
+                << deltaX << " " << deltaX << " " << deltaX << "\">\n";
+    }
+}
+
+void VtkAsciiDataWriter3D::startPiece(Box3D domain, std::string const &scalars) {
+    if (!mainProcOnly || global::mpi().isMainProcessor()) {
+        if (!pointData) {
+            domain.x1++;
+            domain.y1++;
+            domain.z1++;
+        }
+        (*ostr) << "<Piece Extent=\""
+                << domain.x0 << " " << domain.x1 << " "
+                << domain.y0 << " " << domain.y1 << " "
+                << domain.z0 << " " << domain.z1 << "\">\n";
+        if (pointData) {
+            (*ostr) << "<PointData Scalars=\"" << scalars << "\">\n";
+        }
+        else {
+            (*ostr) << "<CellData>\n";
+        }
+    }
+}
+
+void VtkAsciiDataWriter3D::endPiece() {
+    if (!mainProcOnly || global::mpi().isMainProcessor()) {
+        if (pointData) {
+            (*ostr) << "</PointData>\n";
+        }
+        else {
+            (*ostr) << "</CellData>\n";
+        }
+        (*ostr) << "</Piece>\n";
+    }
+}
+
+void VtkAsciiDataWriter3D::writeFooter() {
+    if (!mainProcOnly || global::mpi().isMainProcessor()) {
+        (*ostr) << "</ImageData>\n";
+        (*ostr) << "</VTKFile>\n";
+    }
+}
 
 
 ////////// class ParallelVtkDataWriter3D ////////////////////////////////////////
