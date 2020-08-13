@@ -71,6 +71,27 @@ private:
     bool mainProcOnly;
 };
 
+class VtkAsciiDataWriter3D {
+public:
+    VtkAsciiDataWriter3D(std::string const& fileName_, bool pointData_=true, bool mainProcOnly_=true);
+    ~VtkAsciiDataWriter3D();
+    void writeHeader(Box3D domain, Array<double,3> origin, double deltaX);
+    void startPiece(Box3D domain, std::string const &scalars);
+    void endPiece();
+    void writeFooter();
+    template<typename T>
+    void writeDataField( Block3D const &block,
+                         std::string const& name, plint nDim );
+private:
+    VtkAsciiDataWriter3D(VtkAsciiDataWriter3D const& rhs);
+    VtkAsciiDataWriter3D operator=(VtkAsciiDataWriter3D const& rhs);
+private:
+    std::string fileName;
+    std::ofstream *ostr;
+    bool pointData;
+    bool mainProcOnly;
+};
+
 class ParallelVtkDataWriter3D {
 public:
     ParallelVtkDataWriter3D(std::string const& fileName_);
@@ -163,6 +184,40 @@ private:
 private:
     std::string fullName;
     VtkDataWriter3D vtkOut;
+    double deltaX;
+    Array<T,3> offset;
+    bool headerWritten;
+    Box3D boundingBox;
+};
+
+template<typename T>
+class VtkAsciiImageOutput3D {
+public:
+    VtkAsciiImageOutput3D(std::string fName, std::string const &scalars_, double deltaX_=1.);
+    VtkAsciiImageOutput3D(std::string fName, std::string const &scalars_, double deltaX_, Array<double,3> offset);
+    ~VtkAsciiImageOutput3D();
+    template<typename TConv>
+    void writeData(ScalarField3D<T>& scalarField,
+                   std::string scalarFieldName, TConv scalingFactor=(TConv)1, TConv additiveOffset=(TConv)0);
+    template<typename TConv>
+    void writeData(MultiScalarField3D<T>& scalarField,
+                   std::string scalarFieldName, TConv scalingFactor=(TConv)1, TConv additiveOffset=(TConv)0);
+    template<plint n, typename TConv>
+    void writeData(TensorField3D<T,n>& tensorField,
+                   std::string tensorFieldName, TConv scalingFactor=(TConv)1);
+    template<plint n, typename TConv>
+    void writeData(MultiTensorField3D<T,n>& tensorField,
+                   std::string tensorFieldName, TConv scalingFactor=(TConv)1);
+    template<typename TConv>
+    void writeData(MultiNTensorField3D<T>& nTensorField, std::string nTensorFieldName);
+private:
+    void writeHeader(plint nx_, plint ny_, plint nz_);
+    void writeHeader(Box3D boundingBox_);
+    void writeFooter();
+private:
+    std::string fullName;
+    VtkAsciiDataWriter3D vtkOut;
+    std::string scalars;
     double deltaX;
     Array<T,3> offset;
     bool headerWritten;
