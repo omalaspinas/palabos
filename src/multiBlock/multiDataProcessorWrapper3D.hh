@@ -434,7 +434,7 @@ void integrateProcessingFunctional (
     multiBlocks[1] = dynamic_cast<MultiBlock3D*>(&field2);
     multiBlocks[2] = dynamic_cast<MultiBlock3D*>(&mask);
     addInternalProcessor( BoxProcessorGenerator3D(functional, domain),
-                          multiBlocks );
+                          multiBlocks, level );
 }
 
 

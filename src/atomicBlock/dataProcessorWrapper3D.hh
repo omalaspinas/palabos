@@ -419,8 +419,8 @@ void integrateProcessingFunctional (
         BlockLattice3D<T1,Descriptor>& lattice,
         TensorField3D<T2,nDim>& field, plint level )
 {
-    executeDataProcessor( BoxProcessorGenerator3D(functional, domain),
-                          lattice, field );
+    addInternalProcessor( BoxProcessorGenerator3D(functional, domain),
+                          lattice, field, level );
 }
 
 /* *************** BoxProcessing3D_LN ****************************************** */
@@ -443,8 +443,8 @@ void integrateProcessingFunctional (
         BlockLattice3D<T1,Descriptor>& lattice,
         NTensorField3D<T2>& field, plint level )
 {
-    executeDataProcessor( BoxProcessorGenerator3D(functional, domain),
-                          lattice, field );
+    addInternalProcessor( BoxProcessorGenerator3D(functional, domain),
+                          lattice, field, level );
 }
 
 /* *************** LatticeDotProcessing3D ****************************************** */
