@@ -44,6 +44,7 @@
 #include "dataProcessors/ntensorAnalysisWrapper3D.h"
 #include "io/vtkDataOutput.h"
 #include "io/serializerIO.h"
+#include "io/plbFiles.h"
 
 #include <iostream>
 #include <iomanip>
@@ -299,7 +300,7 @@ void VtkImageOutput2D<T>::writeData( MultiNTensorField2D<T>& nTensorField,
 
 template<typename T>
 VtkImageOutput3D<T>::VtkImageOutput3D(std::string fName, double deltaX_)
-    : fullName ( global::directories().getVtkOutDir() + fName+".vti" ),
+    : fullName ( FileName(fName+".vti").defaultPath(global::directories().getVtkOutDir()) ),
       vtkOut( fullName ),
       deltaX(deltaX_),
       offset(T(),T(),T()),
@@ -308,7 +309,7 @@ VtkImageOutput3D<T>::VtkImageOutput3D(std::string fName, double deltaX_)
 
 template<typename T>
 VtkImageOutput3D<T>::VtkImageOutput3D(std::string fName, double deltaX_, Array<double,3> offset_)
-    : fullName ( global::directories().getVtkOutDir() + fName+".vti" ),
+    : fullName ( FileName(fName+".vti").defaultPath(global::directories().getVtkOutDir()) ),
       vtkOut( fullName ),
       deltaX(deltaX_),
       offset(offset_),
