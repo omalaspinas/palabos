@@ -1347,18 +1347,18 @@ int main(int argc, char* argv[])
 
 	// See Kruger-LBM-Book p.273
 	if (sp.dt_p < 0. && sp.u_lb < 0.) {
-		PLB_ASSERT(tau_lb <= 3.);
+		PLB_ASSERT(sp.tau_lb <= 3.);
 
         sp.dt_p = DESCRIPTOR<T>::cs2 * (sp.tau_lb - 0.5) * sp.dx_p * sp.dx_p / sp.nu_p;
 		plb::global::logfile("DATA.log").flushEntry("dt_p: " + util::val2str(sp.dt_p));
 
         sp.u_lb = sp.u_p * (sp.dt_p / sp.dx_p);
 		plb::global::logfile("DATA.log").flushEntry("u_lb: " + util::val2str(sp.u_lb));
-		PLB_ASSERT(u_lb <= 0.04);
+		PLB_ASSERT(sp.u_lb <= 0.04);
 	}
 	else if (sp.tau_lb < 0. && sp.u_lb < 0.) {
         sp.tau_lb = (sp.dt_p * sp.nu_p) / (DESCRIPTOR<T>::cs2 * sp.dx_p * sp.dx_p) + 0.5;
-		PLB_ASSERT(tau_lb <= 3.);
+		PLB_ASSERT(sp.tau_lb <= 3.);
 		plb::global::logfile("DATA.log").flushEntry("tau_lb: " + util::val2str(sp.tau_lb));
 
         sp.u_lb = sp.u_p * (sp.dt_p / sp.dx_p);
@@ -1370,7 +1370,7 @@ int main(int argc, char* argv[])
 		plb::global::logfile("DATA.log").flushEntry("dt_p: " + util::val2str(sp.dt_p));
 
         sp.tau_lb = (sp.dt_p * sp.nu_p) / (DESCRIPTOR<T>::cs2 * sp.dx_p * sp.dx_p) + 0.5;
-		PLB_ASSERT(tau_lb <= 3.);
+		PLB_ASSERT(sp.tau_lb <= 3.);
 		plb::global::logfile("DATA.log").flushEntry("tau_lb: " + util::val2str(sp.tau_lb));
 	}
 
