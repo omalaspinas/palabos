@@ -400,11 +400,9 @@ void ComputeParticleForce3D<T,Descriptor>::processGenericBlocks (
             position -= (T)1.e-1*n;
             ++numTrials;
         }
-        if (numUsableCells==0) {
-            pcout << "Offending vertex: " << position[0] << "," << position[1] << "," << position[2] << std::endl;
-        }
         //PLB_ASSERT(numUsableCells>0);
-        if (numUsableCells <= 0) { // TODO: This code is temporary!! Must be changed!!!
+        if (numUsableCells <= 0) { // TODO: This is a quick fix around cases where no usable cell was found around the vertex.
+                                   //       It would be better to find a more robust handling of the geometry.
             std::vector<Array<T,3> > vectors;
             Array<T,3> forceOnWall((T)0., (T)0., (T)0.);
             vectors.push_back(forceOnWall);
