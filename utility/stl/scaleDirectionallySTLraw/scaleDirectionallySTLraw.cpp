@@ -72,7 +72,7 @@ int main(int argc, char* argv[])
         return -1;
     }
     triangleSet->scale(xScale, yScale, zScale);
-    triangleSet->writeAsciiSTL(outFileName);
+    triangleSet->writeBinarySTL(outFileName);
 
     return 0;
 }

@@ -138,7 +138,7 @@ int main(int argc, char* argv[])
 
     TriangleSet<T>* projectedSet = new TriangleSet<T>(projectedTriangles, precision);
     pcout << "Saving projectedGeometry.stl" << std::endl;
-    projectedSet->writeAsciiSTL("projectedGeometry.stl");
+    projectedSet->writeBinarySTL("projectedGeometry.stl");
 
     Cuboid<T> cuboid = projectedSet->getBoundingCuboid();
     T lx = cuboid.x1() - cuboid.x0();

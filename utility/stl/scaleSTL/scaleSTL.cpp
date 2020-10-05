@@ -96,7 +96,7 @@ int main(int argc, char* argv[])
         }
         pcout << "The scale factor is " << scale << std::endl;
         defMesh->getMesh().scale(scale);
-        defMesh->getMesh().writeAsciiSTL(outFileName);
+        defMesh->getMesh().writeBinarySTL(outFileName);
     }
     catch (PlbIOException& exception) {
             pcout << "Error in STL file " << stlFileName

@@ -135,13 +135,13 @@ int main(int argc, char* argv[])
     std::vector<TriangleSet<T>::Triangle> triangles;
     isoSurfaceMarchingCube(triangles, voxelizedDomain, flagMatrix.getBoundingBox());
     TriangleSet<T> newTriangleSet(triangles, FLT);
-    newTriangleSet.writeAsciiSTL(outFileName);
+    newTriangleSet.writeBinarySTL(outFileName);
 
     DEFscaledMesh<T> newMesh(newTriangleSet);
     TriangleBoundary3D<T> newBoundary(newMesh);
     newBoundary.getMesh().scale(dx);
     newBoundary.getMesh().translate(location);
-    newBoundary.getMesh().writeAsciiSTL(outFileName);
+    newBoundary.getMesh().writeBinarySTL(outFileName);
 
     return 0;
 }

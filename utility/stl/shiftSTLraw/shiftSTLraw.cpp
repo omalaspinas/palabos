@@ -73,7 +73,7 @@ int main(int argc, char* argv[])
     }
 
     triangleSet->translate(Array<T,3>(shiftX,shiftY,shiftZ));
-    triangleSet->writeAsciiSTL(outFileName);
+    triangleSet->writeBinarySTL(outFileName);
 
     return 0;
 }

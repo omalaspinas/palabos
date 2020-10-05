@@ -179,7 +179,7 @@ int main(int argc, char* argv[])
         numWarnings++;
 
         TriangleSet<T> badTriangleSet(badTriangles, precision);
-        badTriangleSet.writeAsciiSTL("badTriangles.stl");
+        badTriangleSet.writeBinarySTL("badTriangles.stl");
     } else {
         pcout << "Computation of triangle areas and unit normals SUCCESSFUL!" << std::endl;
     }
@@ -222,7 +222,7 @@ int main(int argc, char* argv[])
         numWarnings++;
 
         TriangleSet<T> badTriangleSet(badTriangles, precision);
-        badTriangleSet.writeAsciiSTL("badVertices.stl");
+        badTriangleSet.writeBinarySTL("badVertices.stl");
     } else {
         pcout << "Computation of vertex areas and unit normals SUCCESSFUL!" << std::endl;
     }
@@ -288,7 +288,7 @@ int main(int argc, char* argv[])
         numWarnings++;
     }
 
-    boundary->getMesh().writeAsciiSTL(baseFileName + "_TriangleBoundary3D.stl");
+    boundary->getMesh().writeBinarySTL(baseFileName + "_TriangleBoundary3D.stl");
 
     TriangleBoundary3D<T>* closedBoundary = 0;
     if (numHoles) {
@@ -308,7 +308,7 @@ int main(int argc, char* argv[])
         pcout << "  Number of vertices : " << numClosedTriangleBoundaryVertices << std::endl;
         pcout << "  Number of triangles: " << numClosedTriangleBoundaryTriangles << std::endl;
 
-        closedBoundary->getMesh().writeAsciiSTL(baseFileName + "_closed_TriangleBoundary3D.stl");
+        closedBoundary->getMesh().writeBinarySTL(baseFileName + "_closed_TriangleBoundary3D.stl");
     }
 
     pcout << std::endl << "All checks SUCCESSFUL! ";
