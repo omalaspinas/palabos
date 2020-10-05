@@ -95,7 +95,7 @@ int main(int argc, char* argv[])
     }
     TriangleSet<T> outSet;
     outSet.merge(inSets);
-    outSet.writeAsciiSTL(outFileName);
+    outSet.writeBinarySTL(outFileName);
 
     for (pluint i=0; i<inSets.size(); ++i) {
         delete inSets[i];

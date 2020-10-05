@@ -86,7 +86,7 @@ int main(int argc, char* argv[])
         T pi = std::acos((T) -1);
         theta *= (pi/(T)180.0);
         triangleSet->rotateAtOrigin(normedAxis, theta);
-        triangleSet->writeAsciiSTL(outFileName);
+        triangleSet->writeBinarySTL(outFileName);
     }
     catch (PlbIOException& exception) {
             pcout << "Error in STL file " << stlFileName

@@ -102,7 +102,7 @@ int main(int argc, char* argv[])
         pcout << "Problem with the surface cutting." << std::endl;
         exit(1);
     }
-    normalNegativePart.writeAsciiSTL("normalNegativePart.stl");
+    normalNegativePart.writeBinarySTL("normalNegativePart.stl");
 
     TriangleSet<T> normalPositivePart;
     cutPlane.normal = -cutPlane.normal;
@@ -112,7 +112,7 @@ int main(int argc, char* argv[])
         pcout << "Problem with the surface cutting." << std::endl;
         exit(1);
     }
-    normalPositivePart.writeAsciiSTL("normalPositivePart.stl");
+    normalPositivePart.writeBinarySTL("normalPositivePart.stl");
 
     delete set;
 

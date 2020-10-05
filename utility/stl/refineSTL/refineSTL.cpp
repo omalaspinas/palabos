@@ -97,7 +97,7 @@ int main(int argc, char* argv[])
     }
 
     try {
-        triangleSet->writeAsciiSTL(outFileName);
+        triangleSet->writeBinarySTL(outFileName);
     }
     catch (PlbIOException& exception) {
             pcout << "Error, could not write STL file " << outFileName

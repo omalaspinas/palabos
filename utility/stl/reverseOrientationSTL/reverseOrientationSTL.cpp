@@ -66,7 +66,7 @@ int main(int argc, char* argv[])
         return -1;
     }
     triangleSet->reverseOrientation();
-    triangleSet->writeAsciiSTL(outFileName);
+    triangleSet->writeBinarySTL(outFileName);
 
     return 0;
 }
