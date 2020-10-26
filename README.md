@@ -4,6 +4,19 @@
 On this page you can download the source code, [access examples](https://gitlab.com/unigespc/palabos/tree/master/examples) and resources, 
 and [interact with the user base](http://palabos-forum.unige.ch/).
 
+## How to cite Palabos
+
+```
+@article{Palabos2020,
+    title = "Palabos: Parallel Lattice Boltzmann Solver",
+    journal = "Computers & Mathematics with Applications",
+    year = "2020",
+    issn = "0898-1221",
+    doi = "https://doi.org/10.1016/j.camwa.2020.03.022",
+    author = "Jonas Latt and Orestis Malaspinas and Dimitrios Kontaxakis and Andrea Parmigiani and Daniel Lagrava and Federico Brogi and Mohamed Ben Belgacem and Yann Thorimbert and Sébastien Leclaire and Sha Li and Francesco Marson and Jonathan Lemus and Christos Kotsalos and Raphaël Conradin and Christophe Coreixas and Rémy Petkantchin and Franck Raynaud and Joël Beny and Bastien Chopard",
+}
+```
+
 # Installation
 
 Palabos is very easy to install since it does not depend on any external dependencies.
