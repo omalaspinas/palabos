@@ -68,8 +68,7 @@ void cavitySetup( MultiBlockLattice3D<T,DESCRIPTOR>& lattice,
     T u = std::sqrt((T)2)/(T)2 * parameters.getLatticeU();
     initializeAtEquilibrium(lattice, everythingButTopLid, (T) 1., Array<T,3>((T)0.,(T)0.,(T)0.) );
     initializeAtEquilibrium(lattice, topLid, (T) 1., Array<T,3>(u,(T)0.,u) );
-    //setBoundaryVelocity(lattice, topLid, Array<T,3>(u,(T)0.,u) );
-    setBoundaryVelocity(lattice, topLid, Array<T,3>(u,(T)0.,u/2.0) );
+    setBoundaryVelocity(lattice, topLid, Array<T,3>(u,(T)0.,u) );
 
     lattice.initialize();
 }
