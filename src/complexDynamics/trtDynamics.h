@@ -90,6 +90,10 @@ public:
             setMagicParam(magic);
     };
 
+    virtual T getParameter(plint whichParameter) const;
+    /// Set local value of any generic parameter.
+    virtual void setParameter(plint whichParameter, T value);
+
     /// Set local relaxation parameter of the dynamics
     virtual void setOmegaMinus(T omegaMinus_);
 

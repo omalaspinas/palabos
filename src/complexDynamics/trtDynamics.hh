@@ -192,6 +192,35 @@ void TRTdynamics<T, Descriptor>::setMagicParam(T magic_) {
     this->omegaMinus = (4.-2.*omegaPlus)/(2.-omegaPlus+4.*magic_*omegaPlus);
 }
 
+template<typename T, template<typename U> class Descriptor>
+T TRTdynamics<T, Descriptor>::getParameter(plint whichParameter) const {
+    if (whichParameter == dynamicParams::omega_shear) {
+        return this->getOmega();
+    } else if(whichParameter == dynamicParams::omega_q){
+        return this->getOmegaMinus();
+    }else if(whichParameter == dynamicParams::magicParameter){
+        return this->getMagicParam();
+    } else {
+        pcout << "Can't get the parameter\n";
+        abort();
+    }
+    return 0.;
+}
+
+template<typename T, template<typename U> class Descriptor>
+void TRTdynamics<T,Descriptor>::setParameter(plint whichParameter, T value) {
+    if (whichParameter == dynamicParams::omega_shear) {
+        setOmega(value);
+    } else if(whichParameter == dynamicParams::omega_q){
+        setOmegaMinus(value);
+    } else if(whichParameter == dynamicParams::magicParameter){
+        setMagicParam(value);
+    } else {
+        pcout << "Can't set the parameter\n";
+        abort();
+    }
+}
+
 /* *************** Class IncTRTdynamics *********************************************** */
 
 template<typename T, template<typename U> class Descriptor>

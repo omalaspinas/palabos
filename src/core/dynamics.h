@@ -62,6 +62,7 @@ namespace dynamicParams {
     // Use 1000 and higher for custom user-defined constants
     const plint smagorinskyConstant = 1010;
     const plint dynamicOmega = 1011;
+    const plint magicParameter = 1012; // magic parameter of TRT = (tau+ - 1/2)(tau- - 1/2)
 }
 
 template<typename T, template<typename U> class Descriptor> class Cell;
