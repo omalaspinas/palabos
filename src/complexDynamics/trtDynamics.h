@@ -162,7 +162,7 @@ public:
     virtual void computeVelocity( Cell<T,Descriptor> const& cell,
                                   Array<T,Descriptor<T>::d>& u ) const;
 private:
-    static const T sMinus;
+    static const T omegaMinus;
     static int id;
 };
 
