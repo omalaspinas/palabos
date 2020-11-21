@@ -56,6 +56,9 @@ namespace dynamicParams {
     
     const plint psi        = 4; // used for complete trt dynamics
 
+    const plint omega_minus = 11; // used for TRT dynamics
+    const plint omega_plus = 12; // used for TRT dynamics
+
     // Use 100-199 for material constants
     const plint sqrSpeedOfSound = 100; // Speed of sound squared
 
