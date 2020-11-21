@@ -205,7 +205,7 @@ In palabos root directory, we provide a CMakeLists.txt file that compiles palabo
 
 # Documentation
 
-The documentation of Palabos can be found following this [link](http://www.palabos.org/documentation/userguide/).
+The documentation of Palabos can be found following this [link](https://palabos.unige.ch/get-started/palabos-documentation/).
 
 # Getting help
 

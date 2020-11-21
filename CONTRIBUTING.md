@@ -19,7 +19,7 @@ Otherwise it is close to impossible for us to try to figure out what is happenin
 Contributions to Palabos are accepted by community members who prove sufficient programming skills, familiarity with the Palabos source code, and level of maturity with respect to the proposed numerical or physical models.
 
 Before contributing to Palabos, make sure to be familiar with the programming 
-guidelines listed in the User's Guide (see [here](https://palabos.unige.ch/palabos-documentation/)). Also, before jumping into a large development project, it is good practice to interact with the core developers and the community on the forum, to identify if the development project answers a need in the community and is aligned with the general development goals of Palabos.
+guidelines listed in the User's Guide (see [here](https://palabos.unige.ch/get-started/palabos-documentation/)). Also, before jumping into a large development project, it is good practice to interact with the core developers and the community on the forum, to identify if the development project answers a need in the community and is aligned with the general development goals of Palabos.
 
 In order to contribute to Palabos you must create a fork of the project (click on
 the fork button, see [here](https://docs.gitlab.com/ee/workflow/forking_workflow.html#creating-a-fork) for more info).
