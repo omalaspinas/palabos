@@ -49,13 +49,17 @@ template<typename T, template<typename U> class Descriptor>
 int TRTdynamics<T,Descriptor>::id =
     meta::registerGeneralDynamics<T,Descriptor,TRTdynamics<T,Descriptor> >("TRT");
 
-/** \param omega_ relaxation parameter, related to the dynamic viscosity
+/** \param omegaPlus_ relaxation parameter, related to the dynamic viscosity
  */
 template<typename T, template<typename U> class Descriptor>
-TRTdynamics<T,Descriptor>::TRTdynamics(T omega_, T sMinus_ )
-    : IsoThermalBulkDynamics<T,Descriptor>(omega_),
-      sMinus(sMinus_)
-{ }
+    TRTdynamics<T,Descriptor>::TRTdynamics(T omegaPlus_, T omegaMinus_, bool constant_magic)
+    : IsoThermalBulkDynamics<T,Descriptor>(omegaPlus_),keep_magic_constant_when_setting_omega(constant_magic)
+{
+          if(omegaMinus_ not_eq T())
+              omegaMinus = omegaMinus_;
+          else
+              omegaMinus= (T)8*((T)2-omegaPlus_)/((T)8-omegaPlus_);
+}
 
 template<typename T, template<typename U> class Descriptor>
 TRTdynamics<T,Descriptor>::TRTdynamics(HierarchicUnserializer& unserializer)
@@ -66,19 +70,19 @@ TRTdynamics<T,Descriptor>::TRTdynamics(HierarchicUnserializer& unserializer)
 
 template<typename T, template<typename U> class Descriptor>
 TRTdynamics<T,Descriptor>* TRTdynamics<T,Descriptor>::clone() const {
-    return new TRTdynamics<T,Descriptor>(*this);
+    return new TRTdynamics<T, Descriptor>(*this);
 }
 
 template<typename T, template<typename U> class Descriptor>
 void TRTdynamics<T,Descriptor>::serialize(HierarchicSerializer& serializer) const {
     IsoThermalBulkDynamics<T,Descriptor>::serialize(serializer);
-    serializer.addValue(sMinus);
+    serializer.addValue(omegaMinus);
 }
 
 template<typename T, template<typename U> class Descriptor>
 void TRTdynamics<T,Descriptor>::unserialize(HierarchicUnserializer& unserializer) {
     IsoThermalBulkDynamics<T,Descriptor>::unserialize(unserializer);
-    sMinus = unserializer.readValue<T>();
+    omegaMinus = unserializer.readValue<T>();
 }
  
 template<typename T, template<typename U> class Descriptor>
@@ -90,15 +94,7 @@ template<typename T, template<typename U> class Descriptor>
 void TRTdynamics<T,Descriptor>::collide (
         Cell<T,Descriptor>& cell, BlockStatistics& statistics )
 {
-    const T sPlus = this->getOmega();
-    // Pan's model: bounce-back exactly half-way between nodes.
-    // This model is trigerred if sMinus is set to 0. In this case,
-    // sMinus is recomputed at each collision to adjust to
-    // potentially time-dependend omegas.
-    T local_sMinus = sMinus;
-    if (local_sMinus == T()) {
-        local_sMinus = (T)8*((T)2-sPlus)/((T)8-sPlus);
-    }
+    const T omegaPlus = this->getOmega();
 
     Array<T,Descriptor<T>::q> eq;
     // In the following, we number the plus/minus variables from 1 to (Q-1)/2.
@@ -120,11 +116,11 @@ void TRTdynamics<T,Descriptor>::collide (
         f_minus[i]  = 0.5*(cell[i] - cell[i+Descriptor<T>::q/2]);
     }
 
-    cell[0] += -sPlus*cell[0] + sPlus*eq[0];
+    cell[0] += -omegaPlus * cell[0] + omegaPlus * eq[0];
 
     for (plint i=1; i<=Descriptor<T>::q/2; ++i) {
-        cell[i] += -sPlus*(f_plus[i]-eq_plus[i]) - local_sMinus*(f_minus[i]-eq_minus[i]);
-        cell[i+Descriptor<T>::q/2] += -sPlus*(f_plus[i]-eq_plus[i]) + local_sMinus*(f_minus[i]-eq_minus[i]);
+        cell[i] += -omegaPlus * (f_plus[i] - eq_plus[i]) - omegaMinus * (f_minus[i] - eq_minus[i]);
+        cell[i+Descriptor<T>::q/2] += -omegaPlus * (f_plus[i] - eq_plus[i]) + omegaMinus * (f_minus[i] - eq_minus[i]);
     }
     
     if (cell.takesStatistics()) {
@@ -137,15 +133,7 @@ void TRTdynamics<T,Descriptor>::collideExternal (
         Cell<T,Descriptor>& cell, T rhoBar, Array<T,Descriptor<T>::d> const& j,
         T thetaBar, BlockStatistics& statistics )
 {
-    const T sPlus = this->getOmega();
-    // Pan's model: bounce-back exactly half-way between nodes.
-    // This model is trigerred if sMinus is set to 0. In this case,
-    // sMinus is recomputed at each collision to adjust to
-    // potentially time-dependend omegas.
-    T local_sMinus = sMinus;
-    if (local_sMinus == T()) {
-        local_sMinus = (T)8*((T)2-sPlus)/((T)8-sPlus);
-    }
+    const T omegaPlus = this->getOmega();
 
     Array<T,Descriptor<T>::q> eq;
     // In the following, we number the plus/minus variables from 1 to (Q-1)/2.
@@ -164,11 +152,11 @@ void TRTdynamics<T,Descriptor>::collideExternal (
         f_minus[i]  = 0.5*(cell[i] - cell[i+Descriptor<T>::q/2]);
     }
 
-    cell[0] += -sPlus*cell[0] + sPlus*eq[0];
+    cell[0] += -omegaPlus * cell[0] + omegaPlus * eq[0];
 
     for (plint i=1; i<=Descriptor<T>::q/2; ++i) {
-        cell[i] += -sPlus*(f_plus[i]-eq_plus[i]) - local_sMinus*(f_minus[i]-eq_minus[i]);
-        cell[i+Descriptor<T>::q/2] += -sPlus*(f_plus[i]-eq_plus[i]) + local_sMinus*(f_minus[i]-eq_minus[i]);
+        cell[i] += -omegaPlus * (f_plus[i] - eq_plus[i]) - omegaMinus * (f_minus[i] - eq_minus[i]);
+        cell[i+Descriptor<T>::q/2] += -omegaPlus * (f_plus[i] - eq_plus[i]) + omegaMinus * (f_minus[i] - eq_minus[i]);
     }
     
     if (cell.takesStatistics()) {
@@ -184,10 +172,59 @@ T TRTdynamics<T,Descriptor>::computeEquilibrium(plint iPop, T rhoBar, Array<T,De
     return dynamicsTemplates<T,Descriptor>::bgk_ma2_equilibrium(iPop, rhoBar, invRho, j, jSqr);
 }
 
+template<typename T, template<typename U> class Descriptor>
+T TRTdynamics<T, Descriptor>::getOmegaMinus() const {
+    return this->omegaMinus;
+}
+
+template<typename T, template<typename U> class Descriptor>
+void TRTdynamics<T, Descriptor>::setOmegaMinus(T omegaMinus_) {
+    this->omegaMinus = omegaMinus_;
+}
+template<typename T, template<typename U> class Descriptor>
+T TRTdynamics<T, Descriptor>::getMagicParam() const {
+    return (1./this->getOmega()-0.5)*(1./omegaMinus-0.5);
+}
+
+template<typename T, template<typename U> class Descriptor>
+void TRTdynamics<T, Descriptor>::setMagicParam(T magic_) {
+    auto omegaPlus = this->getOmega();
+    this->omegaMinus = (4.-2.*omegaPlus)/(2.-omegaPlus+4.*magic_*omegaPlus);
+}
+
+template<typename T, template<typename U> class Descriptor>
+T TRTdynamics<T, Descriptor>::getParameter(plint whichParameter) const {
+    if (whichParameter == dynamicParams::omega_plus) {
+        return this->getOmega();
+    } else if(whichParameter == dynamicParams::omega_minus){
+        return this->getOmegaMinus();
+    }else if(whichParameter == dynamicParams::magicParameter){
+        return this->getMagicParam();
+    } else {
+        pcout << "Can't get the parameter\n";
+        abort();
+    }
+    return 0.;
+}
+
+template<typename T, template<typename U> class Descriptor>
+void TRTdynamics<T,Descriptor>::setParameter(plint whichParameter, T value) {
+    if (whichParameter == dynamicParams::omega_plus) {
+        setOmega(value);
+    } else if(whichParameter == dynamicParams::omega_minus){
+        setOmegaMinus(value);
+    } else if(whichParameter == dynamicParams::magicParameter){
+        setMagicParam(value);
+    } else {
+        pcout << "Can't set the parameter\n";
+        abort();
+    }
+}
+
 /* *************** Class IncTRTdynamics *********************************************** */
 
 template<typename T, template<typename U> class Descriptor>
-const T IncTRTdynamics<T,Descriptor>::sMinus = 1.1;
+const T IncTRTdynamics<T,Descriptor>::omegaMinus = 1.1;
 
 template<typename T, template<typename U> class Descriptor>
 int IncTRTdynamics<T,Descriptor>::id =
@@ -221,7 +258,7 @@ template<typename T, template<typename U> class Descriptor>
 void IncTRTdynamics<T,Descriptor>::collide (
         Cell<T,Descriptor>& cell, BlockStatistics& statistics )
 {
-    const T sPlus = this->getOmega();
+    const T omegaPlus = this->getOmega();
 
     Array<T,Descriptor<T>::q> eq;
     // In the following, we number the plus/minus variables from 1 to (Q-1)/2.
@@ -243,11 +280,11 @@ void IncTRTdynamics<T,Descriptor>::collide (
         f_minus[i]  = 0.5*(cell[i] - cell[i+Descriptor<T>::q/2]);
     }
 
-    cell[0] += -sPlus*cell[0] + sPlus*eq[0];
+    cell[0] += -omegaPlus * cell[0] + omegaPlus * eq[0];
 
     for (plint i=1; i<=Descriptor<T>::q/2; ++i) {
-        cell[i] += -sPlus*(f_plus[i]-eq_plus[i]) - sMinus*(f_minus[i]-eq_minus[i]);
-        cell[i+Descriptor<T>::q/2] += -sPlus*(f_plus[i]-eq_plus[i]) + sMinus*(f_minus[i]-eq_minus[i]);
+        cell[i] += -omegaPlus * (f_plus[i] - eq_plus[i]) - omegaMinus * (f_minus[i] - eq_minus[i]);
+        cell[i+Descriptor<T>::q/2] += -omegaPlus * (f_plus[i] - eq_plus[i]) + omegaMinus * (f_minus[i] - eq_minus[i]);
     }
     
     if (cell.takesStatistics()) {
@@ -260,7 +297,7 @@ void IncTRTdynamics<T,Descriptor>::collideExternal (
         Cell<T,Descriptor>& cell, T rhoBar, Array<T,Descriptor<T>::d> const& j,
         T thetaBar, BlockStatistics& statistics )
 {
-    const T sPlus = this->getOmega();
+    const T omegaPlus = this->getOmega();
 
     Array<T,Descriptor<T>::q> eq;
     // In the following, we number the plus/minus variables from 1 to (Q-1)/2.
@@ -279,11 +316,11 @@ void IncTRTdynamics<T,Descriptor>::collideExternal (
         f_minus[i]  = 0.5*(cell[i] - cell[i+Descriptor<T>::q/2]);
     }
 
-    cell[0] += -sPlus*cell[0] + sPlus*eq[0];
+    cell[0] += -omegaPlus * cell[0] + omegaPlus * eq[0];
 
     for (plint i=1; i<=Descriptor<T>::q/2; ++i) {
-        cell[i] += -sPlus*(f_plus[i]-eq_plus[i]) - sMinus*(f_minus[i]-eq_minus[i]);
-        cell[i+Descriptor<T>::q/2] += -sPlus*(f_plus[i]-eq_plus[i]) + sMinus*(f_minus[i]-eq_minus[i]);
+        cell[i] += -omegaPlus * (f_plus[i] - eq_plus[i]) - omegaMinus * (f_minus[i] - eq_minus[i]);
+        cell[i+Descriptor<T>::q/2] += -omegaPlus * (f_plus[i] - eq_plus[i]) + omegaMinus * (f_minus[i] - eq_minus[i]);
     }
     
     if (cell.takesStatistics()) {

@@ -56,12 +56,16 @@ namespace dynamicParams {
     
     const plint psi        = 4; // used for complete trt dynamics
 
+    const plint omega_minus = 11; // used for TRT dynamics
+    const plint omega_plus = 12; // used for TRT dynamics
+
     // Use 100-199 for material constants
     const plint sqrSpeedOfSound = 100; // Speed of sound squared
 
     // Use 1000 and higher for custom user-defined constants
     const plint smagorinskyConstant = 1010;
     const plint dynamicOmega = 1011;
+    const plint magicParameter = 1012; // magic parameter of TRT = (tau+ - 1/2)(tau- - 1/2)
 }
 
 template<typename T, template<typename U> class Descriptor> class Cell;

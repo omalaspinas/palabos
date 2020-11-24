@@ -44,18 +44,29 @@ namespace plb {
 template<typename T, template<typename U> class Descriptor>
 class TRTdynamics : public IsoThermalBulkDynamics<T,Descriptor> {
 public:
-    /* *************** Construction / Destruction ************************ */
-    // sMinus is the relaxation time associated to the anti-symmetric part.
-    // If a value of 0 is provided for sMinus, this parameter will default
-    // to a value depending on omega, which guarantees that the wall is
-    // exactly half-way between nodes, according to Eq. 11 in Pan et al 2006:
-    // https://doi.org/10.1016/j.compfluid.2005.03.008
-    // The original formulation of the model is probably in Ginzburg and
-    // Adler 1994:
-    // https://doi.org/10.1051/jp2:1994123.
-    // It corresponds to a "magic parameter" of 3/16.
-    TRTdynamics(T omega_, T sMinus_ = T());
-    TRTdynamics(HierarchicUnserializer& unserializer);
+
+    /// If a value of 0 is provided for omegaMinus, this parameter will default
+    /// to a value depending on omega, which guarantees that the wall is
+    /// exactly half-way between nodes for parallel walls, according to Eq. (49) in Ginzburg and Adler 1994 [1]
+    /// [https://doi.org/10.1051/jp2:1994123],
+    /// (where lambda_{2c}->-omegaMinus and lambda_{psi}->-omegaPlus).
+    /// It corresponds to a "magic parameter" of Lambda = 3/16 (see Eq. (10.43) pag 426 of [2]).
+    /// See also Eq. 11 in Pan et al 2006 [3] for application to porous media
+    /// \param omegaPlus_       viscosity relaxation rate
+    /// \param omegaMinus_      relaxation time associated to the anti-symmetric part.
+    /// \param constant_magic   if set to true (default) it recomputes omegaMinus every time setOmega() is called in order
+    ///                         to keep the original magic parameter
+    /// \examples 1. set omegaPlus and omegaMinus and disable auto-recalculation of omegaMinus: TRTdynamics(omegaPlus_,omegaMinus_, false)
+    /// \examples 2. set omegaPlus and omegaMinus with auto-recalculation of omegaMinus: TRTdynamics(omegaPlus_,omegaMinus_)
+    /// \examples 3. set omegaPlus and magicParameter: auto trt = new TRTdynamics<T,Descriptor>(omegaPlus_); trt->setMagicParam(magic);
+    /// \references [1] I. Ginzbourg, P. M. Adler, “Boundary flow condition analysis for the three-dimensional lattice Boltzmann model,”
+    /// J. Phys. II France, vol. 4, no. 2, pp. 191–214, Feb. 1994, doi: 10.1051/jp2:1994123.    ///
+    /// \references [2]Kruger et al., The lattice Boltzmann method: principles and practice. New York, NY: Springer Berlin Heidelberg, 2016.    ///
+    /// \references [3] C. Pan, L.S. Luo, C. T. Miller,“An evaluation of lattice Boltzmann schemes for porous medium flow simulation,”
+    ///      Computers & Fluids, vol. 35, no. 8, pp. 898–909, Sep. 2006, doi: 10.1016/j.compfluid.2005.03.008.
+    ///      https://doi.org/10.1016/j.compfluid.2005.03.008
+    explicit TRTdynamics(T omegaPlus_, T omegaMinus_ = T(), bool constant_magic = true);
+    explicit TRTdynamics(HierarchicUnserializer& unserializer);
     
     /// Serialize the dynamics object.
     virtual void serialize(HierarchicSerializer& serializer) const;
@@ -66,7 +77,32 @@ public:
     
     /// Return a unique ID for this class.
     virtual int getId() const;
-    
+
+    /* *************** Access to Dynamics variables, e.g. omega ***************** */
+    /// Get local relaxation parameter of the dynamics
+    virtual T getOmegaMinus() const;
+
+    /// Set local relaxation parameter of the dynamics
+    virtual void setOmega(T omega_){
+        T magic = getMagicParam();
+        BasicBulkDynamics<T,Descriptor>::setOmega(omega_);
+        if(keep_magic_constant_when_setting_omega)
+            setMagicParam(magic);
+    };
+
+    virtual T getParameter(plint whichParameter) const;
+    /// Set local value of any generic parameter.
+    virtual void setParameter(plint whichParameter, T value);
+
+    /// Set local relaxation parameter of the dynamics
+    virtual void setOmegaMinus(T omegaMinus_);
+
+    /// Get the value of the magic parameter from the value of omega and omegaMinus
+    virtual T getMagicParam() const;
+
+    /// Set omegaMinus according to the value of the provided magic parameter (see Eq. (10.43) pag 426 of [2])
+    virtual void setMagicParam(T magic_);
+
     /* *************** Collision and Equilibrium ************************* */
     
     /// Implementation of the collision step
@@ -81,7 +117,8 @@ public:
     virtual T computeEquilibrium(plint iPop, T rhoBar, Array<T,Descriptor<T>::d> const& j,
                                  T jSqr, T thetaBar=T()) const;
 private:
-    T sMinus;
+    T omegaMinus;
+    bool keep_magic_constant_when_setting_omega;
     static int id;
 };
 
@@ -125,7 +162,7 @@ public:
     virtual void computeVelocity( Cell<T,Descriptor> const& cell,
                                   Array<T,Descriptor<T>::d>& u ) const;
 private:
-    static const T sMinus;
+    static const T omegaMinus;
     static int id;
 };
 
