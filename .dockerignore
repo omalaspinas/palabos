@@ -1,0 +1,7 @@
+.git
+**/build/
+**/test/
+**/tmp/
+**/*.stl
+**/*.vti
+**/*.vtk
