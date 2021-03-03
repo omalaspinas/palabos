@@ -53,6 +53,17 @@ template<typename T, class Descriptor> struct dynamicsTemplatesImpl;
 template<typename T, template<typename U> class Descriptor>
 struct dynamicsTemplates {
 
+static T bgk_ma0_equilibrium(plint iPop, T rhoBar, Array<T,Descriptor<T>::d> const& jEq)
+{
+    return dynamicsTemplatesImpl<T, typename Descriptor<T>::BaseDescriptor>
+    ::bgk_ma0_equilibrium(iPop, rhoBar);
+}
+static T bgk_ma1_equilibrium(plint iPop, T rhoBar, Array<T,Descriptor<T>::d> const& jEq)
+{
+    return dynamicsTemplatesImpl<T,typename Descriptor<T>::BaseDescriptor>
+    ::bgk_ma1_equilibrium(iPop, rhoBar, jEq);
+}
+
 static T bgk_ma2_equilibrium(plint iPop, T rhoBar, T invRho, Array<T,Descriptor<T>::d> const& j, T jSqr) {
     return dynamicsTemplatesImpl<T,typename Descriptor<T>::BaseDescriptor>
         ::bgk_ma2_equilibrium(iPop, rhoBar, invRho, j, jSqr);
@@ -230,6 +241,20 @@ static T bgk_ma4_collision(Cell<T,Descriptor>& cell, T rhoBar, Array<T,Descripto
 /// All helper functions are inside this structure
 template<typename T, class Descriptor>
 struct dynamicsTemplatesImpl {
+
+static T bgk_ma0_equilibrium(plint iPop, T rhoBar)
+{
+    return Descriptor::t[iPop] * rhoBar;
+}
+
+static T bgk_ma1_equilibrium(plint iPop, T rhoBar, Array<T,Descriptor::d> const& jEq)
+{
+    T c_j = Descriptor::c[iPop][0]*jEq[0];
+    for (int iD=1; iD < Descriptor::d; ++iD) {
+        c_j += Descriptor::c[iPop][iD]*jEq[iD];
+    }
+    return Descriptor::t[iPop] * (rhoBar + Descriptor::invCs2 * c_j);
+}
 
 static T bgk_ma2_equilibrium(plint iPop, T rhoBar, T invRho, Array<T,Descriptor::d> const& j, T jSqr) {
     T c_j = Descriptor::c[iPop][0]*j[0];
