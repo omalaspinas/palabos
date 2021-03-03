@@ -123,6 +123,7 @@ add_subdirectory(examples/codesByTopic/smagorinskyModel)
 add_subdirectory(examples/codesByTopic/transientStatistics)
 add_subdirectory(examples/codesByTopic/userInput)
 add_subdirectory(examples/codesByTopic/aneurysm_xdmf_hdf5_output)
+add_subdirectory(examples/codesByTopic/TRTdynamics)
 # showCases
 add_subdirectory(examples/showCases/aneurysm)
 add_subdirectory(examples/showCases/bloodFlowDefoBodies)

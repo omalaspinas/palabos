@@ -40,9 +40,11 @@
 
 namespace plb {
 
+
+
 /// Implementation of the TRT collision step
 template<typename T, template<typename U> class Descriptor>
-class TRTdynamics : public IsoThermalBulkDynamics<T,Descriptor> {
+class BaseTRTdynamics : public IsoThermalBulkDynamics<T,Descriptor> {
 public:
 
     /// If a value of 0 is provided for omegaMinus, this parameter will default
@@ -56,43 +58,35 @@ public:
     /// \param omegaMinus_      relaxation time associated to the anti-symmetric part.
     /// \param constant_magic   if set to true (default) it recomputes omegaMinus every time setOmega() is called in order
     ///                         to keep the original magic parameter
-    /// \examples 1. set omegaPlus and omegaMinus and disable auto-recalculation of omegaMinus: TRTdynamics(omegaPlus_,omegaMinus_, false)
-    /// \examples 2. set omegaPlus and omegaMinus with auto-recalculation of omegaMinus: TRTdynamics(omegaPlus_,omegaMinus_)
-    /// \examples 3. set omegaPlus and magicParameter: auto trt = new TRTdynamics<T,Descriptor>(omegaPlus_); trt->setMagicParam(magic);
+    /// \examples 1. set omegaPlus and omegaMinus and disable auto-recalculation of omegaMinus: BaseTRTdynamics(omegaPlus_,omegaMinus_, false)
+    /// \examples 2. set omegaPlus and omegaMinus with auto-recalculation of omegaMinus: BaseTRTdynamics(omegaPlus_,omegaMinus_)
+    /// \examples 3. set omegaPlus and magicParameter: auto trt = new BaseTRTdynamics<T,Descriptor>(omegaPlus_); trt->setMagicParam(magic);
     /// \references [1] I. Ginzbourg, P. M. Adler, “Boundary flow condition analysis for the three-dimensional lattice Boltzmann model,”
     /// J. Phys. II France, vol. 4, no. 2, pp. 191–214, Feb. 1994, doi: 10.1051/jp2:1994123.    ///
     /// \references [2]Kruger et al., The lattice Boltzmann method: principles and practice. New York, NY: Springer Berlin Heidelberg, 2016.    ///
     /// \references [3] C. Pan, L.S. Luo, C. T. Miller,“An evaluation of lattice Boltzmann schemes for porous medium flow simulation,”
     ///      Computers & Fluids, vol. 35, no. 8, pp. 898–909, Sep. 2006, doi: 10.1016/j.compfluid.2005.03.008.
     ///      https://doi.org/10.1016/j.compfluid.2005.03.008
-    explicit TRTdynamics(T omegaPlus_, T omegaMinus_ = T(), bool constant_magic = true);
-    explicit TRTdynamics(HierarchicUnserializer& unserializer);
+    explicit BaseTRTdynamics(T omegaPlus_, T omegaMinus_ = T(), bool constant_magic = true);
+    explicit BaseTRTdynamics(HierarchicUnserializer& unserializer);
     
     /// Serialize the dynamics object.
-    virtual void serialize(HierarchicSerializer& serializer) const;
+    void serialize(HierarchicSerializer& serializer) const override;
     /// Un-Serialize the dynamics object.
-    virtual void unserialize(HierarchicUnserializer& unserializer);
+    void unserialize(HierarchicUnserializer& unserializer) override;
     /// Clone the object on its dynamic type.
-    virtual TRTdynamics<T,Descriptor>* clone() const;
-    
-    /// Return a unique ID for this class.
-    virtual int getId() const;
+    virtual BaseTRTdynamics<T,Descriptor>* clone() const = 0;
 
     /* *************** Access to Dynamics variables, e.g. omega ***************** */
     /// Get local relaxation parameter of the dynamics
     virtual T getOmegaMinus() const;
 
     /// Set local relaxation parameter of the dynamics
-    virtual void setOmega(T omega_){
-        T magic = getMagicParam();
-        BasicBulkDynamics<T,Descriptor>::setOmega(omega_);
-        if(keep_magic_constant_when_setting_omega)
-            setMagicParam(magic);
-    };
+    void setOmega(T omega_) override;
 
-    virtual T getParameter(plint whichParameter) const;
+    T getParameter(plint whichParameter) const override;
     /// Set local value of any generic parameter.
-    virtual void setParameter(plint whichParameter, T value);
+    void setParameter(plint whichParameter, T value) override;
 
     /// Set local relaxation parameter of the dynamics
     virtual void setOmegaMinus(T omegaMinus_);
@@ -107,35 +101,92 @@ public:
     
     /// Implementation of the collision step
     virtual void collide(Cell<T,Descriptor>& cell,
-                         BlockStatistics& statistics_);
+                         BlockStatistics& statistics_) = 0;
     
     /// Implementation of the collision step, with imposed macroscopic variables
     virtual void collideExternal(Cell<T,Descriptor>& cell, T rhoBar,
-                                 Array<T,Descriptor<T>::d> const& j, T thetaBar, BlockStatistics& stat);
+                                 Array<T,Descriptor<T>::d> const& j, T thetaBar, BlockStatistics& stat) = 0;
     
     /// Compute equilibrium distribution function
     virtual T computeEquilibrium(plint iPop, T rhoBar, Array<T,Descriptor<T>::d> const& j,
-                                 T jSqr, T thetaBar=T()) const;
+                                 T jSqr, T thetaBar=T()) const = 0;
 private:
     T omegaMinus;
     bool keep_magic_constant_when_setting_omega;
-    static int id;
 };
+
+template<typename T, template<typename U> class Descriptor>
+class TRTdynamics : public BaseTRTdynamics<T,Descriptor>{
+public:
+    // inherit constructors
+    using BaseTRTdynamics<T, Descriptor>::BaseTRTdynamics;
+    /// Clone the object on its dynamic type.
+    TRTdynamics<T,Descriptor>* clone() const override;
+
+    /// Return a unique ID for this class.
+    int getId() const override;
+    /* *************** Collision and Equilibrium ************************* */
+
+    /// Implementation of the collision step
+    void collide(Cell<T,Descriptor>& cell,
+                         BlockStatistics& statistics_) override;
+
+    /// Implementation of the collision step, with imposed macroscopic variables
+    void collideExternal(Cell<T,Descriptor>& cell, T rhoBar,
+                                 Array<T,Descriptor<T>::d> const& j, T thetaBar, BlockStatistics& stat) override;
+
+    /// Compute equilibrium distribution function
+    T computeEquilibrium(plint iPop, T rhoBar, Array<T,Descriptor<T>::d> const& j,
+                                 T jSqr, T thetaBar=T()) const override;
+private:
+    static int id;
+
+};
+
+template<typename T, template<typename U> class Descriptor>
+class Ma1TRTdynamics : public BaseTRTdynamics<T,Descriptor>{
+public:
+    // inherit constructors
+    using BaseTRTdynamics<T, Descriptor>::BaseTRTdynamics;
+    /// Clone the object on its dynamic type.
+    Ma1TRTdynamics<T,Descriptor>* clone() const override;;
+
+    /// Return a unique ID for this class.
+    int getId() const override;
+    /* *************** Collision and Equilibrium ************************* */
+
+    /// Implementation of the collision step
+    void collide(Cell<T,Descriptor>& cell,
+                         BlockStatistics& statistics_) override;
+
+    /// Implementation of the collision step, with imposed macroscopic variables
+    void collideExternal(Cell<T,Descriptor>& cell, T rhoBar,
+                                 Array<T,Descriptor<T>::d> const& j, T thetaBar, BlockStatistics& stat) override;
+
+    /// Compute equilibrium distribution function
+    T computeEquilibrium(plint iPop, T rhoBar, Array<T,Descriptor<T>::d> const& j,
+                                 T jSqr, T thetaBar=T()) const override;
+private:
+    static int id;
+
+};
+
 
 /// Implementation of incompressible TRT dynamics.
 /** This is the TRT equivalent of IncBGKdynamics: the "rho" moment of the
  *  populations appears only as a pressure term in the equilibrium, while
  *  the other terms are multiplied by the constant rho0.
+ *  breaking change omegaMinus != 1.1, now follows the baseClass default
  **/
 template<typename T, template<typename U> class Descriptor>
-class IncTRTdynamics : public IsoThermalBulkDynamics<T,Descriptor> {
+class IncTRTdynamics : public BaseTRTdynamics<T,Descriptor> {
 public:
 /* *************** Construction / Destruction ************************ */
-    IncTRTdynamics(T omega_);
-    IncTRTdynamics(HierarchicUnserializer& unserializer);
+    // inherit constructors
+    using BaseTRTdynamics<T, Descriptor>::BaseTRTdynamics;
     
     /// Clone the object on its dynamic type.
-    virtual IncTRTdynamics<T,Descriptor>* clone() const;
+    IncTRTdynamics<T,Descriptor>* clone() const override;
 
     /// Return a unique ID for this class.
     virtual int getId() const;
@@ -162,8 +213,7 @@ public:
     virtual void computeVelocity( Cell<T,Descriptor> const& cell,
                                   Array<T,Descriptor<T>::d>& u ) const;
 private:
-    static const T omegaMinus;
-    static int id;
+        static int id;
 };
 
 }  // namespace plb
