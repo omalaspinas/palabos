@@ -52,7 +52,7 @@ template<typename T, template<typename U> class Descriptor>
     BaseTRTdynamics<T,Descriptor>::BaseTRTdynamics(T omegaPlus_, T omegaMinus_, bool constant_magic)
     : IsoThermalBulkDynamics<T,Descriptor>(omegaPlus_),keep_magic_constant_when_setting_omega(constant_magic)
 {
-          if(omegaMinus_ not_eq (T)0.0)
+          if(!util::fpequal(omegaMinus_,(T)0.0))
               omegaMinus = omegaMinus_;
           else
               omegaMinus= (T)8*((T)2-omegaPlus_)/((T)8-omegaPlus_);
