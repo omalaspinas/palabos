@@ -12,7 +12,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
 ### Changed
 
+* Made TRTdynamics more consistent with original paper.
+
 ### Fixed
+
+* Fixed error in the He forcing scheme implementation.
 
 ## [2.2.1]
 
