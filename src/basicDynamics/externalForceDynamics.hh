@@ -820,9 +820,15 @@ void HeExternalForceBGKdynamics<T,Descriptor>::collide (
         Cell<T,Descriptor>& cell,
         BlockStatistics& statistics )
 {
-    T rhoBar;
-    Array<T,Descriptor<T>::d> j;
-    momentTemplates<T,Descriptor>::get_rhoBar_j(cell, rhoBar, j);
+    T rhoBar = this->computeRhoBar(cell);
+    Array<T,Descriptor<T>::d> u, j;
+    this->computeVelocity(cell, u);
+    T rho = Descriptor<T>::fullRho(rhoBar);
+    for (plint iD = 0; iD < Descriptor<T>::d; ++iD)
+    {
+        j[iD] = rho * u[iD];
+    }
+
     T uSqr = externalForceTemplates<T,Descriptor>::heForcedBGKCollision (
             cell, rhoBar, j, this->getOmega());
     if (cell.takesStatistics()) {
@@ -834,8 +840,17 @@ template<typename T, template<typename U> class Descriptor>
 void HeExternalForceBGKdynamics<T,Descriptor>::collideExternal (
         Cell<T,Descriptor>& cell, T rhoBar, Array<T,Descriptor<T>::d> const& j, T thetaBar, BlockStatistics& stat)
 {
+    Array<T,Descriptor<T>::d> u;
+    this->computeVelocityExternal(cell, rhoBar, j, u);
+    T rho = Descriptor<T>::fullRho(rhoBar);
+    Array<T,Descriptor<T>::d> newJ;
+    for (plint iD = 0; iD < Descriptor<T>::d; ++iD)
+    {
+        newJ[iD] = rho * u[iD];
+    }
+
     T uSqr = externalForceTemplates<T,Descriptor>::heForcedBGKCollision (
-            cell, rhoBar, j, this->getOmega());
+            cell, rhoBar, newJ, this->getOmega());
     if (cell.takesStatistics()) {
         gatherStatistics(stat, rhoBar, uSqr);
     }
