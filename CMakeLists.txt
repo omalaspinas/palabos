@@ -146,6 +146,7 @@ add_subdirectory(examples/showCases/multiComponent3d)
 add_subdirectory(examples/showCases/particlesInCone)
 add_subdirectory(examples/showCases/poiseuille)
 add_subdirectory(examples/showCases/rectangularChannel3d)
+add_subdirectory(examples/showCases/rectangularChannelWithCylinder3d)
 add_subdirectory(examples/showCases/vofMultiPhase)
 add_subdirectory(examples/showCases/womersley)
 # tutorial
