@@ -308,8 +308,7 @@ static void compute_rhoBar_thetaBar_j_PiNeq(Array<T,Descriptor::q> const& f, T& 
                                             Array<T,3> const& j, Array<T,6>& PiNeq )
 {
     get_rhoBar_j(f, rhoBar, j);
-    bool incompr=false;
-    compute_PiNeq(f, rhoBar, j, PiNeq, incompr);
+    compute_PiNeq(f, rhoBar, j, PiNeq);
     T rhoThetaBar = compute_rhoThetaBar(f);
     thetaBar = rhoThetaBar * Descriptor::invRho(rhoBar);
     compute_thermal_PiNeq(f, rhoBar, thetaBar, j, PiNeq);
@@ -485,7 +484,7 @@ static T compute_rhoEpsilon(Array<T,Descriptor::q> const& f, T rhoBar, T jSqr) {
 static void compute_PiNeq(Array<T,Descriptor::q> const& f, T rhoBar, Array<T,3> const& j, Array<T,6>& PiNeq)
 {
     T invRho = Descriptor::invRho(rhoBar);
-    compute_PiNeq(f, rhoBar, j, PiNeq, rhoBar);
+    compute_PiNeq(f, rhoBar, j, PiNeq, invRho);
 }
 
 static void compute_PiNeq(Array<T,Descriptor::q> const& f, T rhoBar, Array<T,3> const& j, Array<T,6>& PiNeq, T invRho)
@@ -574,8 +573,7 @@ static void compute_rhoBar_thetaBar_j_PiNeq(Array<T,Descriptor::q> const& f, T& 
                                             Array<T,3> const& j, Array<T,6>& PiNeq )
 {
     get_rhoBar_j(f, rhoBar, j);
-    bool incompr = false;
-    compute_PiNeq(f, rhoBar, j, PiNeq, incompr);
+    compute_PiNeq(f, rhoBar, j, PiNeq);
     T rhoThetaBar = compute_rhoThetaBar(f);
     thetaBar = rhoThetaBar * Descriptor::invRho(rhoBar);
     compute_thermal_PiNeq(f, rhoBar, thetaBar, j, PiNeq);
@@ -843,8 +841,7 @@ static void compute_rhoBar_thetaBar_j_PiNeq(Array<T,Descriptor::q> const& f, T& 
                                             Array<T,3> const& j, Array<T,6>& PiNeq )
 {
     get_rhoBar_j(f, rhoBar, j);
-    bool incompr = false;
-    compute_PiNeq(f, rhoBar, j, PiNeq, incompr);
+    compute_PiNeq(f, rhoBar, j, PiNeq);
     T rhoThetaBar = compute_rhoThetaBar(f);
     thetaBar = rhoThetaBar * Descriptor::invRho(rhoBar);
     compute_thermal_PiNeq(f, rhoBar, thetaBar, j, PiNeq);
