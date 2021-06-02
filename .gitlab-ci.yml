@@ -21,11 +21,9 @@ build_base_docker_img:
   image: docker:latest
   services:
      - docker:dind
-  only:
-    changes:
-      - docker/*
   script:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - docker image pull $DOCKER_BASE_IMG || true
     - cd docker
     - docker build --tag $DOCKER_BASE_IMG .
     - docker push $DOCKER_BASE_IMG
