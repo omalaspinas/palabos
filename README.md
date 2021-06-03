@@ -239,6 +239,7 @@ By alphabetic order
 * @onmars
 * @parmigiani
 * @rconradin
+* @remy.pet
 * @swang251 
 * @vmapelli
 * @YannThorimbert
