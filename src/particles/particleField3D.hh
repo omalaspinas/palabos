@@ -466,6 +466,24 @@ void DenseParticleField3D<T,Descriptor>::fluidToParticleCoupling (
 }
 
 template<typename T, template<typename U> class Descriptor>
+void DenseParticleField3D<T,Descriptor>::fluidToParticleCoupling(Box3D domain, BlockLattice3D<T,Descriptor>& lattice, ScalarField3D<T>& sF, T scaling)
+{
+    Box3D finalDomain;
+    if( intersect(domain, particleGrid.getBoundingBox(), finalDomain) )
+    {
+        for (plint iX=finalDomain.x0; iX<=finalDomain.x1; ++iX) {
+            for (plint iY=finalDomain.y0; iY<=finalDomain.y1; ++iY) {
+                for (plint iZ=finalDomain.z0; iZ<=finalDomain.z1; ++iZ) {
+                    for (pluint iParticle=0; iParticle<particleGrid.get(iX,iY,iZ).size(); ++iParticle) {
+                        particleGrid.get(iX,iY,iZ)[iParticle]->fluidToParticle(lattice, sF, scaling);
+                    }
+                }
+            }
+        }
+    }
+}
+
+template<typename T, template<typename U> class Descriptor>
 void DenseParticleField3D<T,Descriptor>::advanceParticles(Box3D domain, T cutOffSpeedSqr) {
     Box3D finalDomain;
     if( intersect(domain, particleGrid.getBoundingBox(), finalDomain) )
@@ -480,7 +498,7 @@ void DenseParticleField3D<T,Descriptor>::advanceParticles(Box3D domain, T cutOff
                         Particle3D<T,Descriptor>* particle = particles[iParticle];
                         Array<T,3> oldPos( particle->getPosition() );
                         particle->advance();
-                        if (cutOffSpeedSqr>=T() && normSqr(oldPos-particle->getPosition()) < cutOffSpeedSqr)
+                        if (cutOffSpeedSqr>=T() && normSqr(oldPos-particle->getPosition())<cutOffSpeedSqr)
                         {
                             delete particle;
                         }
@@ -865,7 +883,7 @@ void LightParticleField3D<T,Descriptor>::advanceParticles(Box3D domain, T cutOff
             if (this->isContained(particle->getPosition(),finalDomain)) {
                 Array<T,3> oldPos( particle->getPosition() );
                 particle->advance();
-                if ( (cutOffSpeedSqr>=T() && normSqr(oldPos-particle->getPosition()) < cutOffSpeedSqr) ||
+                if ( (cutOffSpeedSqr>=T() && normSqr(oldPos-particle->getPosition())<cutOffSpeedSqr) ||
                      (!this->isContained(particle->getPosition(),this->getBoundingBox()))  )
                 {
                     delete particle;

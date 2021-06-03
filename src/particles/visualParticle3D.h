@@ -57,6 +57,7 @@ public:
     virtual void rhoBarJtoParticle(NTensorField3D<T>& rhoBarJfield, bool velIsJ,
                                    T scaling=1.) { }
     virtual void fluidToParticle(BlockLattice3D<T,Descriptor>& fluid, T scaling=1.) { }
+    virtual void fluidToParticle(BlockLattice3D<T,Descriptor>& fluid, ScalarField3D<T>& sF, T scaling=1.) { }
     virtual void advance() { }
     virtual void serialize(HierarchicSerializer& serializer) const;
     virtual void unserialize(HierarchicUnserializer& unserializer);

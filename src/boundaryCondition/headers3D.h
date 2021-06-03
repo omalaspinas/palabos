@@ -52,6 +52,7 @@
 #include "boundaryCondition/NLD_boundaryDynamics3D.h"
 #include "boundaryCondition/NLD_boundaries3D.h"
 #include "boundaryCondition/spongeZones3D.h"
+#include "boundaryCondition/partialBBdynamics.h"
 
 #ifndef PLB_BGP
 #ifdef PLB_USE_EIGEN
