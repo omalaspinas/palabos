@@ -136,6 +136,7 @@ public:
     virtual void velocityToParticleCoupling(Box3D domain, NTensorField3D<T>& velocity, T scaling=0.);
     virtual void rhoBarJtoParticleCoupling(Box3D domain, NTensorField3D<T>& rhoBarJ, bool velIsJ, T scaling=0.);
     virtual void fluidToParticleCoupling(Box3D domain, BlockLattice3D<T,Descriptor>& lattice, T scaling=0.);
+    virtual void fluidToParticleCoupling(Box3D domain, BlockLattice3D<T,Descriptor>& lattice, ScalarField3D<T>& sF, T scaling=0.);
     virtual void advanceParticles(Box3D domain, T cutOffSpeedSqr=-1.);
 public:
     static std::string getBlockName();

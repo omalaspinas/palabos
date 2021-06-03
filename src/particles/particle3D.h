@@ -59,6 +59,7 @@ public:
     /// Couple fluid velocity to particle. Requirement: fluid velocity<0.25 in lattice units.
     /// If this condition is violated, the velocity is trimmed to a 0.25 velocity norm.
     virtual void fluidToParticle(BlockLattice3D<T,Descriptor>& fluid, T scaling=1.) =0;
+    virtual void fluidToParticle(BlockLattice3D<T,Descriptor>& fluid, ScalarField3D<T>& sF, T scaling=1.) =0;
     virtual void advance() =0;
     Array<T,3> const& getPosition() const { return position; }
     Array<T,3>& getPosition() { return position; }
@@ -107,6 +108,7 @@ public:
     virtual void velocityToParticle(NTensorField3D<T>& velocityField, T scaling=1.);
     virtual void rhoBarJtoParticle(NTensorField3D<T>& rhoBarJfield, bool velIsJ, T scaling=1.);
     virtual void fluidToParticle(BlockLattice3D<T,Descriptor>& fluid, T scaling=1.);
+    virtual void fluidToParticle(BlockLattice3D<T,Descriptor>& fluid, ScalarField3D<T>& sF, T scaling=1.);
     virtual void advance();
     virtual void serialize(HierarchicSerializer& serializer) const;
     virtual void unserialize(HierarchicUnserializer& unserializer);
@@ -152,6 +154,7 @@ public:
     virtual void velocityToParticle(NTensorField3D<T>& velocityField, T scaling=1.);
     virtual void rhoBarJtoParticle(NTensorField3D<T>& rhoBarJfield, bool velIsJ, T scaling=1.);
     virtual void fluidToParticle(BlockLattice3D<T,Descriptor>& fluid, T scaling=1.);
+    virtual void fluidToParticle(BlockLattice3D<T,Descriptor>& fluid, ScalarField3D<T>& sF, T scaling=1.);
     virtual void advance();
     virtual int getId() const;
     virtual RestParticle3D<T,Descriptor>* clone() const;
@@ -172,6 +175,7 @@ public:
     virtual void velocityToParticle(NTensorField3D<T>& velocityField, T scaling=1.);
     virtual void rhoBarJtoParticle(NTensorField3D<T>& rhoBarJfield, bool velIsJ, T scaling=1.);
     virtual void fluidToParticle(BlockLattice3D<T,Descriptor>& fluid, T scaling=1.);
+    virtual void fluidToParticle(BlockLattice3D<T,Descriptor>& fluid, ScalarField3D<T>& sF, T scaling=1.);
     /// Implements "steps 1 and 2" of the Rest algorithm: given
     ///   x(t), v(t), and a(t), it computes v(t+1/2) and x(t+1).
     virtual void advance();
