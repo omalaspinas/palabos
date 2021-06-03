@@ -9,6 +9,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 ### Added
 
 * Added example of a 3D flow past a cylinder in a rectangular channel.
+* Added example of 3D porous media with partial bounce back.
+* Added partial bounce back boundary condition.
 
 ### Removed
 
