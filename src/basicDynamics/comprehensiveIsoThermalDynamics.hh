@@ -101,7 +101,7 @@ void RMdynamics<T,Descriptor>::collide (
     for (int i=0; i<Descriptor<T>::d; ++i) {
         u[i] = RM[i+1];
     }
-    comprehensiveDynamicsTemplates<T,Descriptor>::RMcomputeEquilibriumMoments(rho, u, RMeq);
+    comprehensiveDynamicsTemplates<T,Descriptor>::RMcomputeEquilibriumMoments(u, RMeq);
     // All relaxation times are static class members, except for the first one
     // (the viscous relaxation time), which is dynamic.
     Array<T, Descriptor<T>::numRelaxationTimes> allOmegaTmp(allOmega);
@@ -119,26 +119,14 @@ void RMdynamics<T,Descriptor>::collideExternal (
         Cell<T,Descriptor>& cell, T rhoBar,
         Array<T,Descriptor<T>::d> const& j, T thetaBar, BlockStatistics& stat )
 {
-    T falseRho;
+    T rho;
     Array<T, Descriptor<T>::q> RM, RMeq;
-    comprehensiveDynamicsTemplates<T,Descriptor>::RMcomputeMoments(cell, RM, falseRho);
-    T rho = rhoBar + 1.0;
-    for (int i = (Descriptor<T>::q + 1); i < Descriptor<T>::q; ++i) {
-        RM[i] *= falseRho / rho;
-    }
-    // RM[0] = 1.0;
-    // for (int i=0; i<Descriptor<T>::d; ++i) {
-    //     RM[i+1] = j[i] / rho;
-    // }
-    // Array<T, Descriptor<T>::d> u;
-    // for (int i=0; i<Descriptor<T>::d; ++i) {
-    //     u[i] = RM[i+1];
-    // }
+    comprehensiveDynamicsTemplates<T,Descriptor>::RMcomputeMoments(cell, RM, rho);
     Array<T, Descriptor<T>::d> u;
     for (int i=0; i<Descriptor<T>::d; ++i) {
         u[i] = j[i] / rho;
     }
-    comprehensiveDynamicsTemplates<T,Descriptor>::RMcomputeEquilibriumMoments(rho, u, RMeq);
+    comprehensiveDynamicsTemplates<T,Descriptor>::RMcomputeEquilibriumMoments(u, RMeq);
     // All relaxation times are static class members, except for the first one
     // (the viscous relaxation time), which is dynamic.
     Array<T, Descriptor<T>::numRelaxationTimes> allOmegaTmp(allOmega);
@@ -162,7 +150,7 @@ void RMdynamics<T,Descriptor>::computeEquilibria( Array<T,Descriptor<T>::q>& fEq
         u[i] = j[i]/rho;
     }
     Array<T, Descriptor<T>::q> RMeq;
-    comprehensiveDynamicsTemplates<T,Descriptor>::RMcomputeEquilibriumMoments(rho, u, RMeq);
+    comprehensiveDynamicsTemplates<T,Descriptor>::RMcomputeEquilibriumMoments(u, RMeq);
     Array<T, Descriptor<T>::q> eq;
     comprehensiveDynamicsTemplates<T,Descriptor>::RMcomputeEquilibrium(rho, RMeq, eq);
     for (int i = 0; i < Descriptor<T>::q; ++i) {
@@ -205,7 +193,7 @@ void RMdynamics<T,Descriptor>::decomposeOrder0 (
     for (int i = 0; i < Descriptor<T>::d; ++i) {
         u[i] = j[i]/rho;
     }
-    comprehensiveDynamicsTemplates<T,Descriptor>::RMcomputeEquilibriumMoments(rho, u, RMeq);
+    comprehensiveDynamicsTemplates<T,Descriptor>::RMcomputeEquilibriumMoments(u, RMeq);
     comprehensiveDynamicsTemplates<T,Descriptor>::RMcomputeEquilibrium(rho, RMeq, eq);
     for (int i = 0; i < Descriptor<T>::q; ++i) {
         fEq[i] = eq[i] - Descriptor<T>::t[i];
@@ -244,7 +232,7 @@ void RMdynamics<T,Descriptor>::recomposeOrder0 (
     for (int i = 0; i < Descriptor<T>::d; ++i) {
         u[i] = j[i]/rho;
     }
-    comprehensiveDynamicsTemplates<T,Descriptor>::RMcomputeEquilibriumMoments(rho, u, RMeq);
+    comprehensiveDynamicsTemplates<T,Descriptor>::RMcomputeEquilibriumMoments(u, RMeq);
     comprehensiveDynamicsTemplates<T,Descriptor>::RMcomputeEquilibrium(rho, RMeq, eq);
     for (int i = 0; i < Descriptor<T>::q; ++i) {
         fEq[i] = eq[i] - Descriptor<T>::t[i];
@@ -312,7 +300,7 @@ void HMdynamics<T,Descriptor>::collide (
     for (int i=0; i<Descriptor<T>::d; ++i) {
         u[i] = HM[i+1];
     }
-    comprehensiveDynamicsTemplates<T,Descriptor>::HMcomputeEquilibriumMoments(rho, u, HMeq);
+    comprehensiveDynamicsTemplates<T,Descriptor>::HMcomputeEquilibriumMoments(u, HMeq);
     // All relaxation times are static class members, except for the first one
     // (the viscous relaxation time), which is dynamic.
     Array<T, Descriptor<T>::numRelaxationTimes> allOmegaTmp(allOmega);
@@ -349,7 +337,7 @@ void HMdynamics<T,Descriptor>::collideExternal (
     for (int i=0; i<Descriptor<T>::d; ++i) {
         u[i] = j[i] / rho;
     }
-    comprehensiveDynamicsTemplates<T,Descriptor>::HMcomputeEquilibriumMoments(rho, u, HMeq);
+    comprehensiveDynamicsTemplates<T,Descriptor>::HMcomputeEquilibriumMoments(u, HMeq);
     // All relaxation times are static class members, except for the first one
     // (the viscous relaxation time), which is dynamic.
     Array<T, Descriptor<T>::numRelaxationTimes> allOmegaTmp(allOmega);
@@ -373,7 +361,7 @@ void HMdynamics<T,Descriptor>::computeEquilibria( Array<T,Descriptor<T>::q>& fEq
         u[i] = j[i]/rho;
     }
     Array<T, Descriptor<T>::q> HMeq;
-    comprehensiveDynamicsTemplates<T,Descriptor>::HMcomputeEquilibriumMoments(rho, u, HMeq);
+    comprehensiveDynamicsTemplates<T,Descriptor>::HMcomputeEquilibriumMoments(u, HMeq);
     Array<T, Descriptor<T>::q> eq;
     comprehensiveDynamicsTemplates<T,Descriptor>::HMcomputeEquilibrium(rho, HMeq, eq);
     for (int i = 0; i < Descriptor<T>::q; ++i) {
@@ -416,7 +404,7 @@ void HMdynamics<T,Descriptor>::decomposeOrder0 (
     for (int i = 0; i < Descriptor<T>::d; ++i) {
         u[i] = j[i]/rho;
     }
-    comprehensiveDynamicsTemplates<T,Descriptor>::HMcomputeEquilibriumMoments(rho, u, HMeq);
+    comprehensiveDynamicsTemplates<T,Descriptor>::HMcomputeEquilibriumMoments(u, HMeq);
     comprehensiveDynamicsTemplates<T,Descriptor>::HMcomputeEquilibrium(rho, HMeq, eq);
     for (int i = 0; i < Descriptor<T>::q; ++i) {
         fEq[i] = eq[i] - Descriptor<T>::t[i];
@@ -455,7 +443,7 @@ void HMdynamics<T,Descriptor>::recomposeOrder0 (
     for (int i = 0; i < Descriptor<T>::d; ++i) {
         u[i] = j[i]/rho;
     }
-    comprehensiveDynamicsTemplates<T,Descriptor>::HMcomputeEquilibriumMoments(rho, u, HMeq);
+    comprehensiveDynamicsTemplates<T,Descriptor>::HMcomputeEquilibriumMoments(u, HMeq);
     comprehensiveDynamicsTemplates<T,Descriptor>::HMcomputeEquilibrium(rho, HMeq, eq);
     for (int i = 0; i < Descriptor<T>::q; ++i) {
         fEq[i] = eq[i] - Descriptor<T>::t[i];
@@ -934,7 +922,7 @@ void Kdynamics<T,Descriptor>::collide (
     Array<T, Descriptor<T>::q> K, Keq;
     comprehensiveDynamicsTemplates<T,Descriptor>::KcomputeMoments(cell, K, rho, u);
     // Here we cannot use CMs to compute u... That is why it is done during KcomputeMoments 
-    comprehensiveDynamicsTemplates<T,Descriptor>::KcomputeEquilibriumMoments(Keq);
+    comprehensiveDynamicsTemplates<T,Descriptor>::KcomputeEquilibriumMoments(u, Keq);
     // All relaxation times are static class members, except for the first one
     // (the viscous relaxation time), which is dynamic.
     Array<T, Descriptor<T>::numRelaxationTimes> allOmegaTmp(allOmega);
@@ -968,7 +956,7 @@ void Kdynamics<T,Descriptor>::collideExternal (
     // for (int i=0; i<Descriptor<T>::d; ++i) {
     //     u[i] = j[i] / rho;
     // }
-    comprehensiveDynamicsTemplates<T,Descriptor>::KcomputeEquilibriumMoments(Keq);
+    comprehensiveDynamicsTemplates<T,Descriptor>::KcomputeEquilibriumMoments(u, Keq);
     // All relaxation times are static class members, except for the first one
     // (the viscous relaxation time), which is dynamic.
     Array<T, Descriptor<T>::numRelaxationTimes> allOmegaTmp(allOmega);
@@ -992,7 +980,7 @@ void Kdynamics<T,Descriptor>::computeEquilibria( Array<T,Descriptor<T>::q>& fEq,
         u[i] = j[i]/rho;
     }
     Array<T, Descriptor<T>::q> Keq;
-    comprehensiveDynamicsTemplates<T,Descriptor>::KcomputeEquilibriumMoments(Keq);
+    comprehensiveDynamicsTemplates<T,Descriptor>::KcomputeEquilibriumMoments(u, Keq);
     Array<T, Descriptor<T>::q> eq;
     comprehensiveDynamicsTemplates<T,Descriptor>::KcomputeEquilibrium(rho, u, Keq, eq);
     for (int i = 0; i < Descriptor<T>::q; ++i) {
@@ -1035,7 +1023,7 @@ void Kdynamics<T,Descriptor>::decomposeOrder0 (
     for (int i = 0; i < Descriptor<T>::d; ++i) {
         u[i] = j[i]/rho;
     }
-    comprehensiveDynamicsTemplates<T,Descriptor>::KcomputeEquilibriumMoments(Keq);
+    comprehensiveDynamicsTemplates<T,Descriptor>::KcomputeEquilibriumMoments(u, Keq);
     comprehensiveDynamicsTemplates<T,Descriptor>::KcomputeEquilibrium(rho, u, Keq, eq);
     for (int i = 0; i < Descriptor<T>::q; ++i) {
         fEq[i] = eq[i] - Descriptor<T>::t[i];
@@ -1074,7 +1062,7 @@ void Kdynamics<T,Descriptor>::recomposeOrder0 (
     for (int i = 0; i < Descriptor<T>::d; ++i) {
         u[i] = j[i]/rho;
     }
-    comprehensiveDynamicsTemplates<T,Descriptor>::KcomputeEquilibriumMoments(Keq);
+    comprehensiveDynamicsTemplates<T,Descriptor>::KcomputeEquilibriumMoments(u, Keq);
     comprehensiveDynamicsTemplates<T,Descriptor>::KcomputeEquilibrium(rho, u, Keq, eq);
     for (int i = 0; i < Descriptor<T>::q; ++i) {
         fEq[i] = eq[i] - Descriptor<T>::t[i];
@@ -1146,7 +1134,7 @@ void GHdynamics<T,Descriptor>::collide (
     for (int i=0; i<Descriptor<T>::d; ++i) {
         u[i] = GH[i+1];
     }
-    comprehensiveDynamicsTemplates<T,Descriptor>::GHcomputeEquilibriumMoments(rho, u, GHeq);
+    comprehensiveDynamicsTemplates<T,Descriptor>::GHcomputeEquilibriumMoments(u, GHeq);
     // All relaxation times are static class members, except for the first one
     // (the viscous relaxation time), which is dynamic.
     Array<T, Descriptor<T>::numRelaxationTimes> allOmegaTmp(allOmega);
@@ -1184,7 +1172,7 @@ void GHdynamics<T,Descriptor>::collideExternal (
         u[i] = j[i] / rho;
     }
 
-    comprehensiveDynamicsTemplates<T,Descriptor>::GHcomputeEquilibriumMoments(rho, u, GHeq);
+    comprehensiveDynamicsTemplates<T,Descriptor>::GHcomputeEquilibriumMoments(u, GHeq);
     // All relaxation times are static class members, except for the first one
     // (the viscous relaxation time), which is dynamic.
     Array<T, Descriptor<T>::numRelaxationTimes> allOmegaTmp(allOmega);
@@ -1208,7 +1196,7 @@ void GHdynamics<T,Descriptor>::computeEquilibria( Array<T,Descriptor<T>::q>& fEq
         u[i] = j[i]/rho;
     }
     Array<T, Descriptor<T>::q> GHeq;
-    comprehensiveDynamicsTemplates<T,Descriptor>::GHcomputeEquilibriumMoments(rho, u, GHeq);
+    comprehensiveDynamicsTemplates<T,Descriptor>::GHcomputeEquilibriumMoments(u, GHeq);
     Array<T, Descriptor<T>::q> eq;
     comprehensiveDynamicsTemplates<T,Descriptor>::GHcomputeEquilibrium(rho, GHeq, eq);
     for (int i = 0; i < Descriptor<T>::q; ++i) {
@@ -1251,7 +1239,7 @@ void GHdynamics<T,Descriptor>::decomposeOrder0 (
     for (int i = 0; i < Descriptor<T>::d; ++i) {
         u[i] = j[i]/rho;
     }
-    comprehensiveDynamicsTemplates<T,Descriptor>::GHcomputeEquilibriumMoments(rho, u, GHeq);
+    comprehensiveDynamicsTemplates<T,Descriptor>::GHcomputeEquilibriumMoments(u, GHeq);
     comprehensiveDynamicsTemplates<T,Descriptor>::GHcomputeEquilibrium(rho, GHeq, eq);
     for (int i = 0; i < Descriptor<T>::q; ++i) {
         fEq[i] = eq[i] - Descriptor<T>::t[i];
@@ -1290,7 +1278,7 @@ void GHdynamics<T,Descriptor>::recomposeOrder0 (
     for (int i = 0; i < Descriptor<T>::d; ++i) {
         u[i] = j[i]/rho;
     }
-    comprehensiveDynamicsTemplates<T,Descriptor>::GHcomputeEquilibriumMoments(rho, u, GHeq);
+    comprehensiveDynamicsTemplates<T,Descriptor>::GHcomputeEquilibriumMoments(u, GHeq);
     comprehensiveDynamicsTemplates<T,Descriptor>::GHcomputeEquilibrium(rho, GHeq, eq);
     for (int i = 0; i < Descriptor<T>::q; ++i) {
         fEq[i] = eq[i] - Descriptor<T>::t[i];
@@ -1362,7 +1350,7 @@ void RRdynamics<T,Descriptor>::collide (
     for (int i=0; i<Descriptor<T>::d; ++i) {
         u[i] = RR[i+1];
     }
-    comprehensiveDynamicsTemplates<T,Descriptor>::RRcomputeEquilibriumMoments(rho, u, RReq);
+    comprehensiveDynamicsTemplates<T,Descriptor>::RRcomputeEquilibriumMoments(u, RReq);
     // All relaxation times are static class members, except for the first one
     // (the viscous relaxation time), which is dynamic.
     Array<T, Descriptor<T>::numRelaxationTimes> allOmegaTmp(allOmega);
@@ -1400,7 +1388,7 @@ void RRdynamics<T,Descriptor>::collideExternal (
         u[i] = j[i] / rho;
     }
 
-    comprehensiveDynamicsTemplates<T,Descriptor>::RRcomputeEquilibriumMoments(rho, u, RReq);
+    comprehensiveDynamicsTemplates<T,Descriptor>::RRcomputeEquilibriumMoments(u, RReq);
     // All relaxation times are static class members, except for the first one
     // (the viscous relaxation time), which is dynamic.
     Array<T, Descriptor<T>::numRelaxationTimes> allOmegaTmp(allOmega);
@@ -1424,7 +1412,7 @@ void RRdynamics<T,Descriptor>::computeEquilibria( Array<T,Descriptor<T>::q>& fEq
         u[i] = j[i]/rho;
     }
     Array<T, Descriptor<T>::q> RReq;
-    comprehensiveDynamicsTemplates<T,Descriptor>::RRcomputeEquilibriumMoments(rho, u, RReq);
+    comprehensiveDynamicsTemplates<T,Descriptor>::RRcomputeEquilibriumMoments(u, RReq);
     Array<T, Descriptor<T>::q> eq;
     comprehensiveDynamicsTemplates<T,Descriptor>::RRcomputeEquilibrium(rho, RReq, eq);
     for (int i = 0; i < Descriptor<T>::q; ++i) {
@@ -1467,7 +1455,7 @@ void RRdynamics<T,Descriptor>::decomposeOrder0 (
     for (int i = 0; i < Descriptor<T>::d; ++i) {
         u[i] = j[i]/rho;
     }
-    comprehensiveDynamicsTemplates<T,Descriptor>::RRcomputeEquilibriumMoments(rho, u, RReq);
+    comprehensiveDynamicsTemplates<T,Descriptor>::RRcomputeEquilibriumMoments(u, RReq);
     comprehensiveDynamicsTemplates<T,Descriptor>::RRcomputeEquilibrium(rho, RReq, eq);
     for (int i = 0; i < Descriptor<T>::q; ++i) {
         fEq[i] = eq[i] - Descriptor<T>::t[i];
@@ -1506,7 +1494,7 @@ void RRdynamics<T,Descriptor>::recomposeOrder0 (
     for (int i = 0; i < Descriptor<T>::d; ++i) {
         u[i] = j[i]/rho;
     }
-    comprehensiveDynamicsTemplates<T,Descriptor>::RRcomputeEquilibriumMoments(rho, u, RReq);
+    comprehensiveDynamicsTemplates<T,Descriptor>::RRcomputeEquilibriumMoments(u, RReq);
     comprehensiveDynamicsTemplates<T,Descriptor>::RRcomputeEquilibrium(rho, RReq, eq);
     for (int i = 0; i < Descriptor<T>::q; ++i) {
         fEq[i] = eq[i] - Descriptor<T>::t[i];

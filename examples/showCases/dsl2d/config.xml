@@ -1,0 +1,30 @@
+<?xml version="1.0" ?>
+
+<lattice>
+<!-- Velocity discretizazion -->
+    <lbm> D2Q9 </lbm>
+<!-- Dynamics used for the simulation -->
+    <dynName> BGK_Ma2 </dynName>
+<!-- Relaxation of high-order moments (either SRT (BGK) or REG (1.0))-->
+    <hoOmega> SRT </hoOmega>
+<!-- Equilibration of bulk viscosity related moments (false (omega) or true (1.0))-->
+    <bulk> false </bulk>
+</lattice>
+
+<simuParam>
+<!-- Speed of sound [m/s] is defined here to avoid hard coded value -->
+<!-- (For air at ambient conditions (293.15 K, 1013.25 hPa), it is approximately 343 [m/s]) -->
+    <soundSpeed> 343. </soundSpeed>
+<!-- Space step [m] is defined here to avoid hard coded value-->
+    <dx> 0.01 </dx>
+</simuParam>
+
+<io>
+<!-- Directory where the output will be stored (must end with /) -->
+    <output> ./tmp/ </output>
+<!-- Number of caracteristic times before the simulation stops-->
+    <tAdim> 1.0 </tAdim>
+<!-- .vti output frequency (in terms of caracteristic time) -->
+    <vtkT> 0.1 </vtkT>
+</io>
+

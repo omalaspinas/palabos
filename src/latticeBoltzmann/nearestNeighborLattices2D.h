@@ -70,15 +70,15 @@ namespace descriptors {
     /// D2Q9 lattice constants
     template <typename T> struct D2Q9Constants
     {
-        enum { numRelaxationTimes = 4 };
-        enum { d = 2, q = 9 };        ///< number of dimensions/distr. functions
-        static const T invD;          ///< 1 / (number of dimensions)
-        static const int vicinity;    ///< size of neighborhood
-        static const int c[q][d];     ///< lattice directions
-        static const int cNormSqr[q]; ///< norm-square of the vector c
-        static const T t[q];          ///< lattice weights
-        static const T cs2;           ///< lattice constant cs2 (in BGK, this is the square-speed-of-sound)
-        static const T invCs2;        ///< 1 / cs2
+        enum { numRelaxationTimes = 5 }; ///< number of relaxation times used for MRT formulations
+        enum { d = 2, q = 9 };           ///< number of dimensions/distr. functions
+        static const T invD;             ///< 1 / (number of dimensions)
+        static const int vicinity;       ///< size of neighborhood
+        static const int c[q][d];        ///< lattice directions
+        static const int cNormSqr[q];    ///< norm-square of the vector c
+        static const T t[q];             ///< lattice weights
+        static const T cs2;              ///< lattice constant cs2 (in BGK, this is the square-speed-of-sound)
+        static const T invCs2;           ///< 1 / cs2
     };
 
     template <typename T> struct D2Q9DescriptorBase

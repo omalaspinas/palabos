@@ -112,15 +112,15 @@ namespace descriptors {
     /// D3Q19 lattice
     template <typename T> struct D3Q19Constants
     {
-        enum { numRelaxationTimes = 4 };
-        enum { d = 3, q = 19 };       ///< number of dimensions/distr. functions
-        static const T invD;          ///< 1 / (number of dimensions)
-        static const int vicinity;    ///< size of neighborhood
-        static const int c[q][d];     ///< lattice directions
-        static const int cNormSqr[q]; ///< norm-square of the vector c
-        static const T t[q];          ///< lattice weights
-        static const T cs2;           ///< lattice constant cs2 (in BGK, this is the square-speed-of-sound)
-        static const T invCs2;        ///< 1 / cs2
+        enum { numRelaxationTimes = 5 }; ///< number of relaxation times used for MRT formulations
+        enum { d = 3, q = 19 };          ///< number of dimensions/distr. functions
+        static const T invD;             ///< 1 / (number of dimensions)
+        static const int vicinity;       ///< size of neighborhood
+        static const int c[q][d];        ///< lattice directions
+        static const int cNormSqr[q];    ///< norm-square of the vector c
+        static const T t[q];             ///< lattice weights
+        static const T cs2;              ///< lattice constant cs2 (in BGK, this is the square-speed-of-sound)
+        static const T invCs2;           ///< 1 / cs2
     };
 
     template <typename T> struct D3Q19DescriptorBase
@@ -133,15 +133,15 @@ namespace descriptors {
     /// D3Q27 lattice
     template <typename T> struct D3Q27Constants
     {
-        enum { numRelaxationTimes = 8 };
-        enum { d = 3, q = 27 };       ///< number of dimensions/distr. functions
-        static const T invD;          ///< 1 / (number of dimensions)
-        static const int vicinity;    ///< size of neighborhood
-        static const int c[q][d];     ///< lattice directions
-        static const int cNormSqr[q]; ///< norm-square of the vector c
-        static const T t[q];          ///< lattice weights
-        static const T cs2;           ///< lattice constant cs2 (in BGK, this is the square-speed-of-sound)
-        static const T invCs2;        ///< 1 / cs2
+        enum { numRelaxationTimes = 9 }; ///< number of relaxation times used for MRT formulations
+        enum { d = 3, q = 27 };          ///< number of dimensions/distr. functions
+        static const T invD;             ///< 1 / (number of dimensions)
+        static const int vicinity;       ///< size of neighborhood
+        static const int c[q][d];        ///< lattice directions
+        static const int cNormSqr[q];    ///< norm-square of the vector c
+        static const T t[q];             ///< lattice weights
+        static const T cs2;              ///< lattice constant cs2 (in BGK, this is the square-speed-of-sound)
+        static const T invCs2;           ///< 1 / cs2
     };
 
     template <typename T> struct D3Q27DescriptorBase
