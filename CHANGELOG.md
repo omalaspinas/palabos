@@ -11,12 +11,15 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 * Added example of a 3D flow past a cylinder in a rectangular channel.
 * Added example of 3D porous media with partial bounce back.
 * Added partial bounce back boundary condition.
+* Added 3D collision models: Raw (RM), Hermite (HM), Central (CM), Central Hermite (CHM) and Cumulant (K),  Gauss-Hermite formalism (GH), weighted version of populations in the HM formalism,  Regularized approaches: standard (REG-HM) and recursive (SRT-RR).
+* Added dsl2d and dsl3d examples.
 
 ### Removed
 
 ### Changed
 
 * Made TRTdynamics more consistent with original paper.
+* Added a parameter to modify the bulk viscosity for 2D and 3D formulations of the RM, HM, CM, CHM, GH collision models.
 
 ### Fixed
 
