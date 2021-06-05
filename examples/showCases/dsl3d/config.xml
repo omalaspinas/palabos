@@ -1,0 +1,33 @@
+<?xml version="1.0" ?>
+
+<lattice>
+<!-- Velocity discretizazion (make sure you use the proper DESCRIPTOR in dsl3d.cpp!)-->
+    <lbm> D3Q27 </lbm>
+<!-- Dynamics used for the simulation -->
+    <dynName> BGK_Ma2 </dynName>
+<!-- Relaxation of high-order moments (either SRT (BGK) or REG (1.0))-->
+    <hoOmega> SRT </hoOmega>
+<!-- Equilibration of bulk viscosity related moments (false (omega) or true (1.0))-->
+    <bulk> false </bulk>
+</lattice>
+
+<simuParam>
+<!-- Speed of sound [m/s] is defined here to avoid hard coded value -->
+<!-- (For air at ambient conditions (293.15 K, 1013.25 hPa), it is approximately 343 [m/s]) -->
+    <soundSpeed> 343. </soundSpeed>
+<!-- Space step [m] is defined here to avoid hard coded value -->
+    <dx> 0.01 </dx>
+<!-- Number of points in the z-direction to avoid any hard coded value -->
+<!-- (since the 3D DSL is a 2D extruded test case) -->
+    <nz> 2 </nz>
+</simuParam>
+
+<io>
+<!-- Directory where the output will be stored (must end with /) -->
+    <output> ./tmp/ </output>
+<!-- Number of caracteristic times before the simulation stops-->
+    <tAdim> 1.0 </tAdim>
+<!-- .vti output frequency (in terms of caracteristic time) -->
+    <vtkT> 0.1 </vtkT>
+</io>
+

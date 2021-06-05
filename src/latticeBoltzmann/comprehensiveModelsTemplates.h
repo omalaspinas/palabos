@@ -64,10 +64,10 @@ static void RMcomputeMoments(Cell<T,Descriptor> const& cell, Array<T, Descriptor
         ::RMcomputeMoments(cell.getRawPopulations(), RM, rho);
 }
 
-static void RMcomputeEquilibriumMoments(T rho, Array<T,Descriptor<T>::d> const& u, Array<T, Descriptor<T>::q>& RMeq)
+static void RMcomputeEquilibriumMoments(Array<T,Descriptor<T>::d> const& u, Array<T, Descriptor<T>::q>& RMeq)
 {
     comprehensiveDynamicsTemplatesImpl<T, typename Descriptor<T>::BaseDescriptor>
-        ::RMcomputeEquilibriumMoments(rho, u, RMeq);
+        ::RMcomputeEquilibriumMoments(u, RMeq);
 }
 
 static void RMcomputeEquilibrium(T rho, Array<T, Descriptor<T>::q> const& RMeq, Array<T, Descriptor<T>::q>& eq)
@@ -92,10 +92,10 @@ static void HMcomputeMoments(Cell<T,Descriptor> const& cell, Array<T, Descriptor
         ::HMcomputeMoments(cell.getRawPopulations(), HM, rho);
 }
 
-static void HMcomputeEquilibriumMoments(T rho, Array<T,Descriptor<T>::d> const& u, Array<T, Descriptor<T>::q>& HMeq)
+static void HMcomputeEquilibriumMoments(Array<T,Descriptor<T>::d> const& u, Array<T, Descriptor<T>::q>& HMeq)
 {
     comprehensiveDynamicsTemplatesImpl<T, typename Descriptor<T>::BaseDescriptor>
-        ::HMcomputeEquilibriumMoments(rho, u, HMeq);
+        ::HMcomputeEquilibriumMoments(u, HMeq);
 }
 
 static void HMcomputeEquilibrium(T rho, Array<T, Descriptor<T>::q> const& HMeq, Array<T, Descriptor<T>::q>& eq)
@@ -177,10 +177,10 @@ static void KcomputeMoments(Cell<T,Descriptor> const& cell, Array<T, Descriptor<
         ::KcomputeMoments(cell.getRawPopulations(), K, rho, u);
 }
 
-static void KcomputeEquilibriumMoments(Array<T, Descriptor<T>::q>& Keq)
+static void KcomputeEquilibriumMoments(Array<T,Descriptor<T>::d> const& u, Array<T, Descriptor<T>::q>& Keq)
 {
     comprehensiveDynamicsTemplatesImpl<T, typename Descriptor<T>::BaseDescriptor>
-        ::KcomputeEquilibriumMoments(Keq);
+        ::KcomputeEquilibriumMoments(u, Keq);
 }
 static void KcomputeEquilibrium(T rho, Array<T,Descriptor<T>::d> const& u, Array<T, Descriptor<T>::q> const& Keq, Array<T, Descriptor<T>::q>& eq)
 {
@@ -205,10 +205,10 @@ static void GHcomputeMoments(Cell<T,Descriptor> const& cell, Array<T, Descriptor
         ::GHcomputeMoments(cell.getRawPopulations(), GH, rho);
 }
 
-static void GHcomputeEquilibriumMoments(T rho, Array<T,Descriptor<T>::d> const& u, Array<T, Descriptor<T>::q>& GHeq)
+static void GHcomputeEquilibriumMoments(Array<T,Descriptor<T>::d> const& u, Array<T, Descriptor<T>::q>& GHeq)
 {
     comprehensiveDynamicsTemplatesImpl<T, typename Descriptor<T>::BaseDescriptor>
-        ::GHcomputeEquilibriumMoments(rho, u, GHeq);
+        ::GHcomputeEquilibriumMoments(u, GHeq);
 }
 
 static void GHcomputeEquilibrium(T rho, Array<T, Descriptor<T>::q> const& GHeq, Array<T, Descriptor<T>::q>& eq)
@@ -234,10 +234,10 @@ static void RRcomputeMoments(Cell<T,Descriptor> const& cell, Array<T, Descriptor
         ::RRcomputeMoments(cell.getRawPopulations(), GH, rho);
 }
 
-static void RRcomputeEquilibriumMoments(T rho, Array<T,Descriptor<T>::d> const& u, Array<T, Descriptor<T>::q>& GHeq)
+static void RRcomputeEquilibriumMoments(Array<T,Descriptor<T>::d> const& u, Array<T, Descriptor<T>::q>& GHeq)
 {
     comprehensiveDynamicsTemplatesImpl<T, typename Descriptor<T>::BaseDescriptor>
-        ::RRcomputeEquilibriumMoments(rho, u, GHeq);
+        ::RRcomputeEquilibriumMoments(u, GHeq);
 }
 
 static void RRcomputeEquilibrium(T rho, Array<T, Descriptor<T>::q> const& GHeq, Array<T, Descriptor<T>::q>& eq)
@@ -269,7 +269,7 @@ static void RMcomputeMoments(Array<T,Descriptor::q> const& cell, Array<T, Descri
     PLB_ASSERT( false );
 }
 
-static void RMcomputeEquilibriumMoments(T rho, Array<T,Descriptor::d> const& u, Array<T, Descriptor::q>& RMeq)
+static void RMcomputeEquilibriumMoments(Array<T,Descriptor::d> const& u, Array<T, Descriptor::q>& RMeq)
 {
     // We only provide specialized implementations.
     PLB_ASSERT( false );
@@ -297,7 +297,7 @@ static void HMcomputeMoments(Array<T,Descriptor::q> const& cell, Array<T, Descri
     PLB_ASSERT( false );
 }
 
-static void HMcomputeEquilibriumMoments(T rho, Array<T,Descriptor::d> const& u, Array<T, Descriptor::q>& HMeq)
+static void HMcomputeEquilibriumMoments(Array<T,Descriptor::d> const& u, Array<T, Descriptor::q>& HMeq)
 {
     // We only provide specialized implementations.
     PLB_ASSERT( false );
@@ -411,7 +411,7 @@ static void GHcomputeMoments(Array<T,Descriptor::q> const& cell, Array<T, Descri
     PLB_ASSERT( false );
 }
 
-static void GHcomputeEquilibriumMoments(T rho, Array<T,Descriptor::d> const& u, Array<T, Descriptor::q>& GHeq)
+static void GHcomputeEquilibriumMoments(Array<T,Descriptor::d> const& u, Array<T, Descriptor::q>& GHeq)
 {
     // We only provide specialized implementations.
     PLB_ASSERT( false );
@@ -440,7 +440,7 @@ static void RRcomputeMoments(Array<T,Descriptor::q> const& cell, Array<T, Descri
     PLB_ASSERT( false );
 }
 
-static void RRcomputeEquilibriumMoments(T rho, Array<T,Descriptor::d> const& u, Array<T, Descriptor::q>& GHeq)
+static void RRcomputeEquilibriumMoments(Array<T,Descriptor::d> const& u, Array<T, Descriptor::q>& GHeq)
 {
     // We only provide specialized implementations.
     PLB_ASSERT( false );
@@ -466,6 +466,7 @@ static void RRcollide(Array<T,Descriptor::q>& cell, T rho, Array<T, Descriptor::
 
 }  // namespace plb
 
+#include "latticeBoltzmann/comprehensiveModelsTemplates3D.h"
 #include "latticeBoltzmann/comprehensiveModelsTemplates2D.h"
 
 #endif  // COMPREHENSIVE_MODELS_TEMPLATES_H
