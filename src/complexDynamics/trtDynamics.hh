@@ -58,27 +58,45 @@ template<typename T, template<typename U> class Descriptor>
               omegaMinus= (T)8*((T)2-omegaPlus_)/((T)8-omegaPlus_);
 }
 
+// construct the class and initialize it using the serializer
 template<typename T, template<typename U> class Descriptor>
 BaseTRTdynamics<T,Descriptor>::BaseTRTdynamics(HierarchicUnserializer& unserializer)
-    : IsoThermalBulkDynamics<T,Descriptor>(T())
+    : IsoThermalBulkDynamics<T,Descriptor>(T()),// dummy init, true variables values will be set by the unserializer
+        keep_magic_constant_when_setting_omega(bool()),
+        omegaMinus(T())
 {
     this->unserialize(unserializer);
 }
 
 
-
+/**
+ * Here, we need to add the additional members of the TRT class to the serializer.
+ * @tparam T
+ * @tparam Descriptor
+ * @param serializer
+ */
 template<typename T, template<typename U> class Descriptor>
-void BaseTRTdynamics<T,Descriptor>::serialize(HierarchicSerializer& serializer) const {
-    IsoThermalBulkDynamics<T,Descriptor>::serialize(serializer);
+void BaseTRTdynamics<T, Descriptor>::serialize(HierarchicSerializer &serializer) const {
     serializer.addValue(omegaMinus);
+    serializer.addValue(keep_magic_constant_when_setting_omega);
+    IsoThermalBulkDynamics<T, Descriptor>::serialize(serializer);
 }
 
+/**
+ * Here, we need to read the value of keep_magic_constant_when_setting_omega BEFORE unserializing
+ * the object, because Dynamics<T, Descriptor>::unserialize calls this->setOmega(unserializer.readValue<T>()), which
+ * reads keep_magic_constant_when_setting_omega. If keep_magic_constant_when_setting_omega is not initizlized, this leads
+ * to undefined behavior.
+ * @tparam T
+ * @tparam Descriptor
+ * @param unserializer
+ */
 template<typename T, template<typename U> class Descriptor>
-void BaseTRTdynamics<T,Descriptor>::unserialize(HierarchicUnserializer& unserializer) {
-    IsoThermalBulkDynamics<T,Descriptor>::unserialize(unserializer);
+void BaseTRTdynamics<T, Descriptor>::unserialize(HierarchicUnserializer &unserializer) {
     omegaMinus = unserializer.readValue<T>();
+    keep_magic_constant_when_setting_omega = unserializer.readValue<bool>();
+    IsoThermalBulkDynamics<T, Descriptor>::unserialize(unserializer);
 }
-
 
 template<typename T, template<typename U> class Descriptor>
 T BaseTRTdynamics<T, Descriptor>::getOmegaMinus() const {
