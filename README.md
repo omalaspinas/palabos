@@ -231,8 +231,10 @@ By alphabetic order
 * @daniel-lagrava-niwa
 * @dkdk
 * @helenmo
+* @izumiko
 * @jfburdet
 * @kotsaloscv
+* @liuanjun
 * @Latt
 * @msguskova
 * @omalaspinas
