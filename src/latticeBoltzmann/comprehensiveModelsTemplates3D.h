@@ -259,7 +259,7 @@ static void RMcomputeMoments(Array<T,D::q> const& cell, Array<T, D::q>& RM, T& r
     RM[M001] = invRho * (Z_P1 - Z_M1);
 
     // Order 0
-    RM[M001] = 1.;
+    RM[M000] = 1.;
 };
 
 static void RMcomputeEquilibriumMoments(Array<T,D::d> const& u, Array<T, D::q>& RMeq) {
@@ -653,7 +653,7 @@ static void HMcomputeMoments(Array<T,D::q> const& cell, Array<T, D::q>& HM, T& r
     HM[M010] = invRho * (Y_P1 - Y_M1); 
     HM[M001] = invRho * (Z_P1 - Z_M1);
     // Order 0
-    HM[M001] = 1.;
+    HM[M000] = 1.;
 
     // We come back to Hermite moments
     T cs4 = D::cs2*D::cs2;
@@ -1053,7 +1053,7 @@ static void CMcomputeMoments(Array<T,D::q> const& cell, Array<T, D::q>& CM, T& r
     CM[M010] = 0.;
     CM[M001] = 0.;
     // Order 0
-    CM[M001] = 1.;
+    CM[M000] = 1.;
 
     // Compute CMs from RMs using binomial formulas
     u[0] = invRho * (X_P1 - X_M1);
@@ -1482,7 +1482,7 @@ static void CHMcomputeMoments(Array<T,D::q> const& cell, Array<T, D::q>& CHM, T&
     CHM[M010] = 0.;
     CHM[M001] = 0.;
     // Order 0
-    CHM[M001] = 1.;
+    CHM[M000] = 1.;
 
     // Compute CMs from RMs using binomial formulas
     u[0] = invRho * (X_P1 - X_M1);
@@ -1995,7 +1995,7 @@ static void KcomputeMoments(Array<T,D::q> const& cell, Array<T, D::q>& K, T& rho
     K[M010] = 0.;
     K[M001] = 0.;
     // Order 0
-    K[M001] = 1.;
+    K[M000] = 1.;
 
     // Compute CMs from RMs using binomial formulas
     u[0] = invRho * (X_P1 - X_M1);
@@ -2470,7 +2470,7 @@ static void GHcomputeMoments(Array<T,D::q> const& cell, Array<T, D::q>& GH, T& r
     GH[M010] = invRho * (Y_P1 - Y_M1); 
     GH[M001] = invRho * (Z_P1 - Z_M1);
     // Order 0
-    GH[M001] = 1.;
+    GH[M000] = 1.;
 
     // We come back to Hermite moments
     T cs4 = D::cs2*D::cs2;
@@ -2776,7 +2776,7 @@ static void RRcomputeMoments(Array<T,D::q> const& cell, Array<T, D::q>& RR, T& r
     T invRho = 1. / rho;
 
     // Order 0
-    RR[M100] = 1.;
+    RR[M000] = 1.;
     // Order 1
     RR[M100] = invRho * (X_P1 - X_M1);
     RR[M010] = invRho * (Y_P1 - Y_M1); 
@@ -3245,7 +3245,7 @@ static void RMcomputeMoments(Array<T,D::q> const& cell, Array<T, D::q>& RM, T& r
     T two_invRho= 2.*invRho;
 
     // Order 0
-    RM[M100] = 1.;
+    RM[M000] = 1.;
     // Order 1
     RM[M100] = invRho * (X_P1 - X_M1);
     RM[M010] = invRho * (Y_P1 - Y_M1); 
@@ -3516,7 +3516,7 @@ static void HMcomputeMoments(Array<T,D::q> const& cell, Array<T, D::q>& HM, T& r
     T two_invRho= 2.*invRho;
 
     // Order 0
-    HM[M100] = 1.;
+    HM[M000] = 1.;
     // Order 1
     HM[M100] = invRho * (X_P1 - X_M1);
     HM[M010] = invRho * (Y_P1 - Y_M1); 
@@ -3825,7 +3825,7 @@ static void CMcomputeMoments(Array<T,D::q> const& cell, Array<T, D::q>& CM, T& r
     T two_invRho= 2.*invRho;
 
     // Order 0
-    CM[M100] = 1.;
+    CM[M000] = 1.;
     // Order 1
     CM[M100] = 0.;
     CM[M010] = 0.; 
@@ -4151,7 +4151,7 @@ static void CHMcomputeMoments(Array<T,D::q> const& cell, Array<T, D::q>& CHM, T&
     T two_invRho= 2.*invRho;
 
     // Order 0
-    CHM[M100] = 1.;
+    CHM[M000] = 1.;
     // Order 1
     CHM[M100] = 0.;
     CHM[M010] = 0.; 
@@ -4523,7 +4523,7 @@ static void KcomputeMoments(Array<T,D::q> const& cell, Array<T, D::q>& K, T& rho
     T two_invRho= 2.*invRho;
 
     // Order 0
-    K[M100] = 1.;
+    K[M000] = 1.;
     // Order 1
     K[M100] = invRho * (X_P1 - X_M1);
     K[M010] = invRho * (Y_P1 - Y_M1); 
@@ -4892,7 +4892,7 @@ static void GHcomputeMoments(Array<T,D::q> const& cell, Array<T, D::q>& GH, T& r
     T two_invRho= 2.*invRho;
 
     // Order 0
-    GH[M100] = 1.;
+    GH[M000] = 1.;
     // Order 1
     GH[M100] = invRho * (X_P1 - X_M1);
     GH[M010] = invRho * (Y_P1 - Y_M1); 
@@ -5183,7 +5183,7 @@ static void RRcomputeMoments(Array<T,D::q> const& cell, Array<T, D::q>& RR, T& r
     T invRho = 1. / rho;
 
     // Order 0
-    RR[M100] = 1.;
+    RR[M000] = 1.;
     // Order 1
     RR[M100] = invRho * (X_P1 - X_M1);
     RR[M010] = invRho * (Y_P1 - Y_M1); 
