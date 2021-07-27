@@ -616,5 +616,8 @@ int main(int argc, char* argv[])
         pcout << exception.what() << std::endl;
         return -1;
     }
+
+    delete triangleSet;
+
 }
 
