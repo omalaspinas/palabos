@@ -90,7 +90,6 @@ private:
 Sparse linear system solver based on MINRES. This class implements a
 sparse linear system solver based on the MINRES algorithm from Eigen.
 
-/*
 class SHAPEOP_API MINRESSolver : public LSSolver {
 public:
     virtual ~MINRESSolver(){};

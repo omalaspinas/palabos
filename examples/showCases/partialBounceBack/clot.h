@@ -358,10 +358,6 @@ public:
     porosity = clot.porosity;
   }
 
-	~Clot(){
-    delete this;
-  }
-
   // wrapper function that generates the clot
 	void generateFibrin(MultiScalarField3D<plint> & flags, MultiScalarField3D<double> & clotSolidFraction, 
 		MultiScalarField3D<double> & clotSolidFractionPhys, double frac){

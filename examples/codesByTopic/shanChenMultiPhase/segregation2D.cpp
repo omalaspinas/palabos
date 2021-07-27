@@ -98,8 +98,12 @@ int main(int argc, char *argv[])
     const int nx   = 400;
     const int ny   = 400;
     const T G      = -120.0;
+#ifndef PLB_REGRESSION
     const int maxIter  = 100001;
     const int saveIter = 100;
+#else
+    const int maxIter  = 1001;
+#endif
     const int statIter = 100;
     
     const T rho0 = 200.0;
@@ -132,10 +136,12 @@ int main(int argc, char *argv[])
             pcout << "Minimum density: " << computeMin(*rho) << endl;
             pcout << "Maximum density: " << computeMax(*rho) << endl;
         }
+#ifndef PLB_REGRESSION
         if (iT%saveIter == 0) {
             ImageWriter<T>("leeloo").writeScaledGif (
                     createFileName("rho", iT, 6), *computeDensity(lattice) );
         }
+#endif
 
         lattice.collideAndStream();
     }

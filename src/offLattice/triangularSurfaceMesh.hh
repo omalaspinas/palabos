@@ -1747,6 +1747,7 @@ void TriangularSurfaceMesh<T>::writeHTML(std::string fname)
     writeHTML(fname, "Palabos html output", T(), Array<T,3>((T)0.,(T)0.,(T)0.));
 }
 
+// TODO: title unused could we remove it?
 template<typename T>
 void TriangularSurfaceMesh<T>::writeHTML (
         std::string fname, std::string title, T phys_dx, Array<T,3> phys_location)
@@ -1852,6 +1853,7 @@ void TriangularSurfaceMesh<T>::writeX3D(std::string fname)
     writeX3D(fname, "Palabos X3D output", T(), Array<T,3>((T)0.,(T)0.,(T)0.));
 }
 
+// TODO: title, phys_dx and phys_location unused could we remove them?
 template<typename T>
 void TriangularSurfaceMesh<T>::writeX3D (
         std::string fname, std::string title, T phys_dx, Array<T,3> phys_location)

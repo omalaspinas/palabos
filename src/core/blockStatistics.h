@@ -87,6 +87,7 @@ class BlockStatistics {
 public:
     BlockStatistics();
     BlockStatistics(BlockStatistics const& rhs);
+    BlockStatistics& operator= (BlockStatistics const& rhs );
     
     void swap(BlockStatistics& rhs);
     /// evaluate() must be called after each lattice iteration.

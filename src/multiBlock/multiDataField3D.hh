@@ -265,6 +265,7 @@ int MultiScalarField3D<T>::getStaticId() const {
     return staticId;
 }
 
+// TODO: whichData is unused, why?
 template<typename T>
 void MultiScalarField3D<T>::copyReceive (
                 MultiBlock3D const& fromBlock, Box3D const& fromDomain,
@@ -561,8 +562,9 @@ plint MultiTensorField3D<T,nDim>::getCellDim() const {
 template<typename T, int nDim>
 int MultiTensorField3D<T,nDim>::getStaticId() const {
     return staticId;
-}
 
+}
+// TODO: whichData is unused, why?
 template<typename T, int nDim>
 void MultiTensorField3D<T,nDim>::copyReceive (
                 MultiBlock3D const& fromBlock, Box3D const& fromDomain,
@@ -891,6 +893,7 @@ int MultiNTensorField3D<T>::getStaticId() const {
     return staticId;
 }
 
+// TODO: whichData and toDomain is unused, why?
 template<typename T>
 void MultiNTensorField3D<T>::copyReceive (
                 MultiBlock3D const& fromBlock, Box3D const& fromDomain,

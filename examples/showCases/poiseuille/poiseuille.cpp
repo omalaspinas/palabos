@@ -235,9 +235,13 @@ int main(int argc, char* argv[]) {
             1.         // ly 
     );
     const T logT     = (T)0.1;
+#ifndef PLB_REGRESSION
     const T imSave   = (T)0.5;
     const T vtkSave  = (T)2.;
     const T maxT     = (T)15.1;
+#else
+    const T maxT     = 1.01;
+#endif
     // Change this variable to "pressure" if you prefer a pressure boundary
     //   condition with Poiseuille profile for the inlet and the outlet.
     const InletOutletT inletOutlet = velocity;
@@ -255,6 +259,7 @@ int main(int argc, char* argv[]) {
 
     // Main loop over time iterations.
     for (plint iT=0; iT*parameters.getDeltaT()<maxT; ++iT) {
+#ifndef PLB_REGRESSION
        if (iT%parameters.nStep(imSave)==0) {
             pcout << "Saving Gif ..." << endl;
             writeGif(lattice, iT);
@@ -264,6 +269,7 @@ int main(int argc, char* argv[]) {
             pcout << "Saving VTK file ..." << endl;
             writeVTK(lattice, parameters, iT);
         }
+#endif
 
         if (iT%parameters.nStep(logT)==0) {
             pcout << "step " << iT

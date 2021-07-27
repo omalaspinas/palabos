@@ -299,7 +299,7 @@ static void bgk_ma2_off_equilibra(T phi, Array<T,D::d> const& u, Array<T,D::d> c
 static void complete_bgk_ma2_regularize(Array<T,D::q>& f, T rhoPhiBar, T rhoBar,
                                         Array<T,D::d> const& jEq, Array<T,D::d> const& jNeq, 
                                         const Array<T,SymmetricTensorImpl<T,D::d>::n> &piNeq, T omega, T omegaNonPhys, T omegaFluid, T omegaFluidNonPhys )
-{
+{ // TODO: should check omegaNonPhys, and omegaNonPhysFluid that are unused. Looks suspicious.
     T invRho = D::invRho(rhoBar);
     T phi = invRho*D::fullRho(rhoPhiBar);
     T invRhoPhi = D::invRho(rhoPhiBar);
@@ -454,7 +454,7 @@ static T no_corr_rlb_collision (
 static void complete_bgk_ma2_regularize(Array<T,D::q>& f, T rhoPhiBar, T rhoBar,
                                         Array<T,D::d> const& jEq, Array<T,D::d> const& jNeq, 
                                         const Array<T,SymmetricTensorImpl<T,D::d>::n> &piNeq, T omega, T omegaNonPhys, T omegaFluid, T omegaFluidNonPhys )
-{
+{ // TODO: check both unused seem suspicious (and misleading)
     T invRho = D::invRho(rhoBar);
     T phi = invRho*D::fullRho(rhoPhiBar);
     T invRhoPhi = D::invRho(rhoPhiBar);
@@ -472,7 +472,7 @@ static T complete_bgk_ma2_regularized_collision(Array<T,D::q>& f, T rhoPhiBar, T
                                                    Array<T,D::d> const& jEq, Array<T,D::d> const& jNeq, 
                                                    const Array<T,SymmetricTensorImpl<T,D::d>::n> &piNeq, T omega, T omegaNonPhys, 
                                                    T omegaFluid, T omegaFluidNonPhys )
-{
+{ // TODO: check both unused omegas. Misleading.
     T invRho = D::invRho(rhoBar);
     T phi = invRho*D::fullRho(rhoPhiBar);
     T invRhoPhi = D::invRho(rhoPhiBar);

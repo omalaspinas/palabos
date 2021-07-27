@@ -80,6 +80,15 @@ void BlockStatistics::swap(BlockStatistics& rhs)
     std::swap(numCells, rhs.numCells);
 }
 
+BlockStatistics& BlockStatistics::operator= (
+        BlockStatistics const& rhs )
+{
+    BlockStatistics tmp(rhs);
+    swap(tmp);
+    return *this;
+}
+
+
 /** In the reset function, running statistics are copied to public statistics,
  *  and running statistics are reset to zero.
  */

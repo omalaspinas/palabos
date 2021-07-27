@@ -658,7 +658,7 @@ MultiBlock2D* MultiBlockRegistration2D::find(id_t id) {
     }
 }
 
-
+// TODO: Why are copy const and equal doing nothing?
 MultiBlockRegistration2D::MultiBlockRegistration2D(MultiBlockRegistration2D const& rhs)
 { }
 

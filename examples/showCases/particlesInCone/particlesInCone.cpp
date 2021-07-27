@@ -76,11 +76,18 @@ T Reynolds = 50.;    // Reynolds number wrt. inlet diameter.
 T uInject = 0.02;    // Injection velocity in lattice units.
 T omega    = 0.;     // Relaxation parameter.
 
+#ifndef PLB_REGRESSION
 plint maxIter  = 1000000; // Maximum number of iterations for the simulation.
-plint outIter  = 100;     // Iteration intervals for printing the average kinetic energy on the screen.
-plint saveIter = 100;     // Iteration intervals for saving data in the disk.
 plint maxFluidIter = 1200;      // Stop iterating the fluid after this iteration.
 plint startParticleIter = 1200; // Start iterating the particles after this iteration.
+#else
+plint maxFluidIter = 200;      // Stop iterating the fluid after this iteration.
+plint startParticleIter = 200; // Start iterating the particles after this iteration.
+plint maxIter  = 1201; // Maximum number of iterations for the simulation.
+#endif
+plint outIter  = 100;     // Iteration intervals for printing the average kinetic energy on the screen.
+plint saveIter = 100;     // Iteration intervals for saving data in the disk.
+
 
 T particleProbabilityPerCell = 4.e-6; // Per-cell rate of particle injection.
 T fluidCompliance = 6.e-5;            // The fluid->particle force is equal to the velocity difference times the fluid-compliance.
@@ -449,6 +456,7 @@ int main(int argc, char* argv[])
             pcout << "Number of particles in the tube: "
                   << countParticles(*particles, particles->getBoundingBox()) << std::endl;
         }
+#ifndef PLB_REGRESSION
         if (i == maxFluidIter) {
             pcout << "Writing fluid data.." << std::endl;
             VtkImageOutput3D<T> vtkOut("volume", 1.); 
@@ -461,6 +469,8 @@ int main(int argc, char* argv[])
             std::string fName = createFileName("particles_",i,8)+".vtk";
             writeSelectedParticleVtk<T,DESCRIPTOR>(*particles, fName, particles->getBoundingBox(), util::SelectLargerEqualInt(1));
         }
+#endif
     }
+    delete particleTemplate;
 }
 

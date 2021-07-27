@@ -107,8 +107,12 @@ int main(int argc, char* argv[]) {
             1.         // ly 
     );
     const T logT     = (T)0.02;
+#ifndef PLB_REGRESSION
     const T imSave   = (T)0.1;
     const T maxT     = (T)10.1;
+#else
+    const T maxT     = (T)0.51;
+#endif
 
     writeLogFile(parameters, "Poiseuille flow");
 
@@ -136,10 +140,12 @@ int main(int argc, char* argv[]) {
                   << getStoredAverageDensity<T>(lattice) << endl;
         }
 
+#ifndef PLB_REGRESSION
         if (iT%parameters.nStep(imSave)==0) {
             pcout << "Saving Gif ..." << endl;
             writeGifs(lattice, iT);
         }
+#endif
 
         // Lattice Boltzmann iteration step.
         lattice.collideAndStream();

@@ -1,0 +1,14 @@
+uMaxRef=0.01
+uMax=0.01
+Starting simulation
+Omega = 1.25, it period = 1571
+For N = 10, Error = 0.000378573
+For N = 10, Error = 0.0409727
+For N = 10, Error = 0.00359662
+For N = 10, Error = 0.00359661
+For N = 10, Error = 0.00359661
+For N = 10, Error = 0.00359661
+average=0.0110718; stdDev/average=1.5097
+For N = 10, Error = 0.00359661
+Simulation converged!
+For N = 10, Error = 0.00463819

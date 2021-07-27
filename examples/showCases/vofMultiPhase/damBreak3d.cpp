@@ -55,7 +55,9 @@ const T lz = 1.0;
 
 const T rhoEmpty = T(1);
     
+#ifndef PLB_REGRESSION
 plint writeImagesIter   = 100;
+#endif
 plint getStatisticsIter = 20;
 
 plint maxIter;
@@ -219,6 +221,7 @@ int main(int argc, char **argv)
     FreeSurfaceFields3D<T,DESCRIPTOR> fields( blockStructure, dynamics->clone(), rhoEmpty,
                                               surfaceTensionLB, contactAngle, externalForce );
     //integrateProcessingFunctional(new ShortenBounceBack3D<T,DESCRIPTOR>, fields.lattice.getBoundingBox(), fields.freeSurfaceArgs, 0);
+    delete dynamics;
 
     // Set all outer-wall cells to "wall" (here, bulk-cells are also set to "wall", but it
     // doesn't matter, because they are overwritten on the next line).
@@ -228,9 +231,10 @@ int main(int argc, char **argv)
     setToFunction(fields.flag, fields.flag.getBoundingBox().enlarge(-1), initialFluidFlags);
     
     fields.defaultInitialize();
-
+#ifndef PLB_REGRESSION
     pcout << "Time spent for setting up lattices: "
           << global::timer("initialization").stop() << std::endl;
+#endif
     T lastIterationTime = T();
 
     for (plint iT = 0; iT <= maxIter; ++iT) {
@@ -241,7 +245,9 @@ int main(int argc, char **argv)
         if (iT % getStatisticsIter==0) {
             pcout << std::endl;
             pcout << "ITERATION = " << iT << std::endl;
+#ifndef PLB_REGRESSION
             pcout << "Time of last iteration is " << lastIterationTime << " seconds" << std::endl;
+#endif
             writeStatistics(fields);
             sum_of_mass_matrix = fields.lattice.getInternalStatistics().getSum(0);
             pcout << "Sum of mass matrix: " << sum_of_mass_matrix << std::endl;
@@ -251,12 +257,14 @@ int main(int argc, char **argv)
             pcout << "Interface cells: " << fields.lattice.getInternalStatistics().getIntSum(0) << std::endl;
         }
 
+#ifndef PLB_REGRESSION
         if (iT % writeImagesIter == 0) {
             global::timer("images").start();
             writeResults(fields.lattice, fields.volumeFraction, iT);
             pcout << "Total time spent for writing images: "
                 << global::timer("images").stop() << std::endl;
-        }                           
+        }                
+#endif
 
         // This includes the collision-streaming cycle, plus all free-surface operations.
         fields.lattice.executeInternalProcessors();

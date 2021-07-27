@@ -1,0 +1,39 @@
+omega= 1.99641
+Adding block with ID=0: [0,6 | 0,6 | 0,6]
+Adding block with ID=1: [0,6 | 0,6 | 7,22]
+Adding block with ID=2: [0,6 | 0,6 | 23,30]
+Adding block with ID=3: [0,6 | 7,22 | 0,6]
+Adding block with ID=4: [0,6 | 7,22 | 7,22]
+Adding block with ID=5: [0,6 | 7,22 | 23,30]
+Adding block with ID=6: [0,6 | 23,30 | 0,6]
+Adding block with ID=7: [0,6 | 23,30 | 7,22]
+Adding block with ID=8: [0,6 | 23,30 | 23,30]
+Adding block with ID=9: [7,22 | 0,6 | 0,6]
+Adding block with ID=10: [7,22 | 0,6 | 7,22]
+Adding block with ID=11: [7,22 | 0,6 | 23,30]
+Adding block with ID=12: [7,22 | 7,22 | 0,6]
+Adding block with ID=13: [7,22 | 7,22 | 7,22]
+Adding block with ID=14: [7,22 | 7,22 | 23,30]
+Adding block with ID=15: [7,22 | 23,30 | 0,6]
+Adding block with ID=16: [7,22 | 23,30 | 7,22]
+Adding block with ID=17: [7,22 | 23,30 | 23,30]
+Adding block with ID=18: [23,30 | 0,6 | 0,6]
+Adding block with ID=19: [23,30 | 0,6 | 7,22]
+Adding block with ID=20: [23,30 | 0,6 | 23,30]
+Adding block with ID=21: [23,30 | 7,22 | 0,6]
+Adding block with ID=22: [23,30 | 7,22 | 7,22]
+Adding block with ID=23: [23,30 | 7,22 | 23,30]
+Adding block with ID=24: [23,30 | 23,30 | 0,6]
+Adding block with ID=25: [23,30 | 23,30 | 7,22]
+Adding block with ID=26: [23,30 | 23,30 | 23,30]
+   0;       
+   1;          2;          3;          4;          5;          6;       
+   7;          8;          9;         10;         11;         12;       
+  13: ( 1.99641);   14;         15;         16;         17;         18;       
+  19;         20;         21;         22;         23;         24;       
+  25;         26;       
+step 0; t=0; av energy=1.622824826e-10; av rho=1
+step 300; t=0.001; av energy=1.75664243e-10; av rho=1
+step 600; t=0.002; av energy=1.803765879e-10; av rho=1.000000001
+step 900; t=0.003; av energy=1.841077983e-10; av rho=1.000000001
+step 1200; t=0.004; av energy=1.874325094e-10; av rho=1.000000002

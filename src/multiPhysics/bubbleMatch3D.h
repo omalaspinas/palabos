@@ -83,6 +83,7 @@ private:
     // Parallel bucket-fill algorithm to assign a unique ID to every contiguous region.
     void bubbleBucketFill(MultiScalarField3D<int>& flag);
 private:
+    // TODO: Why is the copy constructor and = doing nothing?
     BubbleMatch3D(BubbleMatch3D const& rhs) : mpiData(rhs.mpiData) { PLB_ASSERT( false ); }
     BubbleMatch3D& operator=(BubbleMatch3D const& rhs) { PLB_ASSERT( false ); return *this; }
 private:

@@ -76,6 +76,7 @@ inline void transferDataProcessors(MultiBlock2D const& from, MultiBlock2D& to)
 
 /* *************** 1. MultiScalarField ************************************** */
 
+// TODO: Does it make sense to have a useless domain here?
 template<typename T>
 void transferScalarFieldLocal (
         MultiScalarField2D<T>& from, MultiScalarField2D<T>& to, Box2D const& domain )
@@ -430,6 +431,7 @@ MultiNTensorField2D<T>* generateMultiNTensorField2D(Box2D const& domain, plint n
 template<typename T>
 void transferNTensorFieldLocal (
         MultiNTensorField2D<T>& from, MultiNTensorField2D<T>& to, Box2D const& domain )
+// TODO: Remove the domain argument. Not used and can be misleading.
 {
     // 1. Copy all data from the old to the new field.
     plb::copy(from, to, from.getBoundingBox());
@@ -634,6 +636,7 @@ MultiNTensorField2D<T>* reparallelize (
 template<typename T, int nDim>
 void transferTensorFieldLocal (
         MultiTensorField2D<T,nDim>& from, MultiTensorField2D<T,nDim>& to, Box2D const& domain )
+// TODO: remove the domain argument. It is not used and can be misleading.
 {
     // 1. Copy all data from the old to the new field.
     plb::copy(from, to, from.getBoundingBox());
@@ -699,7 +702,7 @@ std::unique_ptr<MultiTensorField2D<T,nDim> > generateMultiTensorField (
     return std::unique_ptr<MultiTensorField2D<T,nDim> >(field);
 }
 
-
+// TODO: why is there an unnamed arg?
 template<typename T, int nDim>
 std::unique_ptr<MultiTensorField2D<T,nDim> > defaultGenerateMultiTensorField2D (
         MultiBlockManagement2D const& management, plint unnamedDummyArg )
@@ -926,10 +929,11 @@ std::unique_ptr<MultiTensorField2D<T,nDim> > reparallelize (
 
 /* *************** 4. MultiBlockLattice ************************************** */
 
+// QUESTION: Does it make sense to have a useless domain here?
 template<typename T, template<typename U> class Descriptor>
 void transferBlockLatticeLocal (
         MultiBlockLattice2D<T,Descriptor>& from,
-        MultiBlockLattice2D<T,Descriptor>& to, Box2D const& domain )
+        MultiBlockLattice2D<T,Descriptor>& to, [[maybe_unused]] Box2D const& domain )
 {
     // 1. Copy static and dynamic data to the new block.
     copyRegenerate(from, to, from.getBoundingBox());
@@ -965,9 +969,10 @@ std::unique_ptr<MultiBlockLattice2D<T,Descriptor> > generateMultiBlockLattice (
     );
 }
 
+// QUESTION: Why this dummy arg
 template<typename T, template<typename U> class Descriptor>
 std::unique_ptr<MultiBlockLattice2D<T,Descriptor> > defaultGenerateMultiBlockLattice2D (
-        MultiBlockManagement2D const& management, plint unnamedDummyArg )
+        MultiBlockManagement2D const& management, [[maybe_unused]] plint unnamedDummyArg )
 {
     return std::unique_ptr<MultiBlockLattice2D<T,Descriptor> > (
         new MultiBlockLattice2D<T,Descriptor> (

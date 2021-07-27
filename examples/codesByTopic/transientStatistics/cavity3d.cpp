@@ -208,10 +208,14 @@ int main(int argc, char* argv[]) {
             1.,        // ly
             1.         // lz
     );
-    const T logT     = (T)1/(T)10;
-    const T imSave   = (T)1/(T)10;
+    const T logT     = (T)1/(T)100;
     const T vtkSave  = (T)1/(T)100;
+#ifndef PLB_REGRESSION
+    const T imSave   = (T)1/(T)10;
     const T maxT     = (T)10.1;
+#else
+    const T maxT     = (T)0.051;
+#endif
 
     pcout << "omega= " << parameters.getOmega() << endl;
     writeLogFile(parameters, "3D diagonal cavity");
@@ -242,19 +246,25 @@ int main(int argc, char* argv[]) {
     TransientStatistics3D<T,DESCRIPTOR> transientStatistics(lattice, domainForTransientStatistics);
     initializeTransientStatistics(transientStatistics);
 
+#ifndef PLB_REGRESSION
     T previousIterationTime = T();
+#endif
     // Loop over main time iteration.
     for (plint iT=0; iT<parameters.nStep(maxT); ++iT) {
         global::timer("mainLoop").restart();
 
+#ifndef PLB_REGRESSION
         if (iT%parameters.nStep(imSave)==0) {
             pcout << "Writing Gif ..." << endl;
             writeGifs(lattice, parameters, iT);
         }
+#endif
 
         if (iT%parameters.nStep(vtkSave)==0 && iT>0) {
+#ifndef PLB_REGRESSION
             pcout << "Saving VTK file ..." << endl;
             writeVTK(lattice, parameters, iT);
+#endif
 
             // Next we update and save all transient statistics.
             transientStatistics.update();
@@ -284,11 +294,15 @@ int main(int argc, char* argv[]) {
                   << setprecision(10) << getStoredAverageEnergy<T>(lattice)
                   << "; av rho="
                   << setprecision(10) << getStoredAverageDensity<T>(lattice) << endl;
+#ifndef PLB_REGRESSION
             pcout << "Time spent during previous iteration: "
                   << previousIterationTime << endl;
+#endif
         }
 
+#ifndef PLB_REGRESSION
         previousIterationTime = global::timer("mainLoop").stop();
+#endif
     }
 
     delete boundaryCondition;

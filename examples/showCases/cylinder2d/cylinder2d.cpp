@@ -208,10 +208,15 @@ int main(int argc, char* argv[]) {
             6.,        // lx
             1.         // ly 
     );
+
     const T logT     = (T)0.02;
+#ifdef PLB_REGRESSION
+    const T maxT     = (T)0.1;
+#else
     const T imSave   = (T)0.06;
     const T vtkSave  = (T)1.;
     const T maxT     = (T)20.1;
+#endif
 
     writeLogFile(parameters, "Poiseuille flow");
 
@@ -230,6 +235,7 @@ int main(int argc, char* argv[]) {
         //   discrete time iT. However, the stored averages (getStoredAverageEnergy
         //   and getStoredAverageDensity) correspond to the previous time iT-1.
 
+#ifndef PLB_REGRESSION
        if (iT%parameters.nStep(imSave)==0) {
             pcout << "Saving Gif ..." << endl;
             writeGif(lattice, iT);
@@ -239,6 +245,7 @@ int main(int argc, char* argv[]) {
             pcout << "Saving VTK file ..." << endl;
             writeVTK(lattice, parameters, iT);
         }
+#endif
 
         if (iT%parameters.nStep(logT)==0) {
             pcout << "step " << iT

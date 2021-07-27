@@ -208,6 +208,7 @@ int MultiParticleField2D<ParticleFieldT>::getStaticId() const {
     return staticId;
 }
 
+// TODO: whichData is not used. Should we remove it?
 template<class ParticleFieldT>
 void MultiParticleField2D<ParticleFieldT>::copyReceive (
                 MultiBlock2D const& fromBlock, Box2D const& fromDomain,

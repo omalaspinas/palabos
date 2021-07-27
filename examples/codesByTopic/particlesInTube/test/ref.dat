@@ -1,0 +1,23 @@
+Number of inlets/outlets which were closed: 2
+Inlet center: 1,41,41
+Outlet center: 81,41,41
+omega=1.69491
+Number of triangles: 37920
+
+Voxelizing the domain.
+Size of the multi-block:     83-by-83-by-83
+Number of atomic-blocks:     64
+Smallest atomic-block:       20-by-20-by-20
+Largest atomic-block:        21-by-21-by-21
+Number of allocated cells:   0.571787 million
+Fraction of allocated domain: 100 percent
+
+Creating boundary condition.
+
+Initializing lattice.
+
+Starting simulation.
+Iteration= 0; Average energy: 0
+Number of particles in the tube: 3
+Iteration= 100; Average energy: 1.59756e-05
+Number of particles in the tube: 177

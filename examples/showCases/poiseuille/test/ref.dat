@@ -1,0 +1,11 @@
+step 0; t=0; RMS error=0.720273; center velocity=0
+step 300; t=0.1; RMS error=0.502123; center velocity=1.56934
+step 600; t=0.2; RMS error=0.346005; center velocity=0.539729
+step 900; t=0.3; RMS error=0.218922; center velocity=1.28722
+step 1200; t=0.4; RMS error=0.115657; center velocity=0.860306
+step 1500; t=0.5; RMS error=0.0457585; center velocity=1.0167
+step 1800; t=0.6; RMS error=0.0391739; center velocity=1.06818
+step 2100; t=0.7; RMS error=0.062303; center velocity=0.885006
+step 2400; t=0.8; RMS error=0.074172; center velocity=1.13022
+step 2700; t=0.9; RMS error=0.0748599; center velocity=0.874922
+step 3000; t=1; RMS error=0.0672; center velocity=1.107

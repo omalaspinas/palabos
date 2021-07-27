@@ -422,18 +422,22 @@ int main(int argc, char *argv[])
     util::ValueTracer<T> converge(uMax,Nref,1.0e-4);
 
     T tIni = global::timer("simTime").stop();
+#ifndef PLB_REGRESSION
     pcout << "time elapsed for iniGeometry:" << tIni << endl;
+#endif
     global::timer("simTime").start();
 
     plint iT = 0;
     for (iT=0; iT<maxT; ++iT)
     {
         converge.takeValue(getStoredAverageEnergy(lattice),true);
+#ifndef PLB_REGRESSION
         if (iT % 1000 == 0)
         {
             pcout << iT << " : Writing image." << endl;
             writeVTK(lattice,velField, parameters,iT);
         }
+#endif
         
         if (converge.hasConverged())
         {
@@ -443,6 +447,7 @@ int main(int argc, char *argv[])
 
         lattice.collideAndStream();
     }
+#ifndef PLB_REGRESSION
 
     T tEnd = global::timer("simTime").stop();
 
@@ -461,6 +466,7 @@ int main(int argc, char *argv[])
     fout.open("tmp/ana_vel.dat");
     fout << velField;
     fout.close();
+#endif
 
     pcout << "For N = " << N << ", Error = " << computeRMSerror(lattice, velField,parameters ) << endl;
 

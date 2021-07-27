@@ -1,0 +1,577 @@
+Processing analysis of the strain rate ...
+==========================================
+
+Max LB 0.0141421
+Max FD 0.0141421
+Absolute difference range: [0,0.118921]
+Relative difference range: [0,8.40896]
+Compute averages at time step 0
+================================
+t=0
+Av energy=4.87804878e-06; av rho=1
+
+Access internal statistics for time step 0
+===========================================
+Av energy=4.87804878e-06; av rho=1
+
+Compute averages at time step 20
+================================
+t=0.01
+Av energy=5.448243956e-06; av rho=0.999998973
+
+Access internal statistics for time step 20
+===========================================
+Av energy=5.448243956e-06; av rho=0.999998973
+
+Compute averages at time step 40
+================================
+t=0.02
+Av energy=5.857310194e-06; av rho=0.9999979554
+
+Access internal statistics for time step 40
+===========================================
+Av energy=5.857310194e-06; av rho=0.9999979554
+
+Compute averages at time step 60
+================================
+t=0.03
+Av energy=6.228289424e-06; av rho=0.9999969028
+
+Access internal statistics for time step 60
+===========================================
+Av energy=6.228289424e-06; av rho=0.9999969028
+
+Compute averages at time step 80
+================================
+t=0.04
+Av energy=6.568576981e-06; av rho=0.9999956401
+
+Access internal statistics for time step 80
+===========================================
+Av energy=6.568576981e-06; av rho=0.9999956401
+
+Compute averages at time step 100
+================================
+t=0.05
+Av energy=6.84747904e-06; av rho=0.9999947824
+
+Access internal statistics for time step 100
+===========================================
+Av energy=6.84747904e-06; av rho=0.9999947824
+
+Compute averages at time step 120
+================================
+t=0.06
+Av energy=7.074703071e-06; av rho=0.9999939303
+
+Access internal statistics for time step 120
+===========================================
+Av energy=7.074703071e-06; av rho=0.9999939303
+
+Compute averages at time step 140
+================================
+t=0.07
+Av energy=7.269717965e-06; av rho=0.9999929801
+
+Access internal statistics for time step 140
+===========================================
+Av energy=7.269717965e-06; av rho=0.9999929801
+
+Compute averages at time step 160
+================================
+t=0.08
+Av energy=7.478390116e-06; av rho=0.9999918615
+
+Access internal statistics for time step 160
+===========================================
+Av energy=7.478390116e-06; av rho=0.9999918615
+
+Compute averages at time step 180
+================================
+t=0.09
+Av energy=7.660674519e-06; av rho=0.9999908979
+
+Access internal statistics for time step 180
+===========================================
+Av energy=7.660674519e-06; av rho=0.9999908979
+
+Compute averages at time step 200
+================================
+t=0.1
+Av energy=7.816548262e-06; av rho=0.9999899699
+
+Access internal statistics for time step 200
+===========================================
+Av energy=7.816548262e-06; av rho=0.9999899699
+
+Compute averages at time step 220
+================================
+t=0.11
+Av energy=7.991750319e-06; av rho=0.9999888015
+
+Access internal statistics for time step 220
+===========================================
+Av energy=7.991750319e-06; av rho=0.9999888015
+
+Compute averages at time step 240
+================================
+t=0.12
+Av energy=8.1569824e-06; av rho=0.9999877789
+
+Access internal statistics for time step 240
+===========================================
+Av energy=8.1569824e-06; av rho=0.9999877789
+
+Compute averages at time step 260
+================================
+t=0.13
+Av energy=8.305892447e-06; av rho=0.9999867773
+
+Access internal statistics for time step 260
+===========================================
+Av energy=8.305892447e-06; av rho=0.9999867773
+
+Compute averages at time step 280
+================================
+t=0.14
+Av energy=8.43475422e-06; av rho=0.9999858596
+
+Access internal statistics for time step 280
+===========================================
+Av energy=8.43475422e-06; av rho=0.9999858596
+
+Compute averages at time step 300
+================================
+t=0.15
+Av energy=8.548721873e-06; av rho=0.9999848491
+
+Access internal statistics for time step 300
+===========================================
+Av energy=8.548721873e-06; av rho=0.9999848491
+
+Compute averages at time step 320
+================================
+t=0.16
+Av energy=8.647227027e-06; av rho=0.9999839502
+
+Access internal statistics for time step 320
+===========================================
+Av energy=8.647227027e-06; av rho=0.9999839502
+
+Compute averages at time step 340
+================================
+t=0.17
+Av energy=8.746988615e-06; av rho=0.9999828917
+
+Access internal statistics for time step 340
+===========================================
+Av energy=8.746988615e-06; av rho=0.9999828917
+
+Compute averages at time step 360
+================================
+t=0.18
+Av energy=8.881694779e-06; av rho=0.9999817045
+
+Access internal statistics for time step 360
+===========================================
+Av energy=8.881694779e-06; av rho=0.9999817045
+
+Compute averages at time step 380
+================================
+t=0.19
+Av energy=9.013660943e-06; av rho=0.9999806358
+
+Access internal statistics for time step 380
+===========================================
+Av energy=9.013660943e-06; av rho=0.9999806358
+
+Processing analysis of the strain rate ...
+==========================================
+
+Max LB 0.01814124491
+Max FD 0.01414213562
+Absolute difference range: [0,0.07687775851]
+Relative difference range: [0,4.237733348]
+Compute averages at time step 400
+================================
+t=0.2
+Av energy=9.109129345e-06; av rho=0.99997975
+
+Access internal statistics for time step 400
+===========================================
+Av energy=9.109129345e-06; av rho=0.99997975
+
+Compute averages at time step 420
+================================
+t=0.21
+Av energy=9.188188531e-06; av rho=0.9999788343
+
+Access internal statistics for time step 420
+===========================================
+Av energy=9.188188531e-06; av rho=0.9999788343
+
+Compute averages at time step 440
+================================
+t=0.22
+Av energy=9.264960988e-06; av rho=0.9999777812
+
+Access internal statistics for time step 440
+===========================================
+Av energy=9.264960988e-06; av rho=0.9999777812
+
+Compute averages at time step 460
+================================
+t=0.23
+Av energy=9.344535435e-06; av rho=0.9999767675
+
+Access internal statistics for time step 460
+===========================================
+Av energy=9.344535435e-06; av rho=0.9999767675
+
+Compute averages at time step 480
+================================
+t=0.24
+Av energy=9.430379718e-06; av rho=0.9999757459
+
+Access internal statistics for time step 480
+===========================================
+Av energy=9.430379718e-06; av rho=0.9999757459
+
+Compute averages at time step 500
+================================
+t=0.25
+Av energy=9.521889591e-06; av rho=0.9999746419
+
+Access internal statistics for time step 500
+===========================================
+Av energy=9.521889591e-06; av rho=0.9999746419
+
+Compute averages at time step 520
+================================
+t=0.26
+Av energy=9.610552563e-06; av rho=0.9999736197
+
+Access internal statistics for time step 520
+===========================================
+Av energy=9.610552563e-06; av rho=0.9999736197
+
+Compute averages at time step 540
+================================
+t=0.27
+Av energy=9.684167638e-06; av rho=0.9999726585
+
+Access internal statistics for time step 540
+===========================================
+Av energy=9.684167638e-06; av rho=0.9999726585
+
+Compute averages at time step 560
+================================
+t=0.28
+Av energy=9.753367793e-06; av rho=0.9999716645
+
+Access internal statistics for time step 560
+===========================================
+Av energy=9.753367793e-06; av rho=0.9999716645
+
+Compute averages at time step 580
+================================
+t=0.29
+Av energy=9.820682466e-06; av rho=0.9999706077
+
+Access internal statistics for time step 580
+===========================================
+Av energy=9.820682466e-06; av rho=0.9999706077
+
+Compute averages at time step 600
+================================
+t=0.3
+Av energy=9.876568022e-06; av rho=0.99996966
+
+Access internal statistics for time step 600
+===========================================
+Av energy=9.876568022e-06; av rho=0.99996966
+
+Compute averages at time step 620
+================================
+t=0.31
+Av energy=9.931982875e-06; av rho=0.9999686733
+
+Access internal statistics for time step 620
+===========================================
+Av energy=9.931982875e-06; av rho=0.9999686733
+
+Compute averages at time step 640
+================================
+t=0.32
+Av energy=9.998434464e-06; av rho=0.9999675635
+
+Access internal statistics for time step 640
+===========================================
+Av energy=9.998434464e-06; av rho=0.9999675635
+
+Compute averages at time step 660
+================================
+t=0.33
+Av energy=1.007594858e-05; av rho=0.9999664678
+
+Access internal statistics for time step 660
+===========================================
+Av energy=1.007594858e-05; av rho=0.9999664678
+
+Compute averages at time step 680
+================================
+t=0.34
+Av energy=1.014681882e-05; av rho=0.9999654909
+
+Access internal statistics for time step 680
+===========================================
+Av energy=1.014681882e-05; av rho=0.9999654909
+
+Compute averages at time step 700
+================================
+t=0.35
+Av energy=1.019940738e-05; av rho=0.9999645216
+
+Access internal statistics for time step 700
+===========================================
+Av energy=1.019940738e-05; av rho=0.9999645216
+
+Compute averages at time step 720
+================================
+t=0.36
+Av energy=1.024249054e-05; av rho=0.9999635256
+
+Access internal statistics for time step 720
+===========================================
+Av energy=1.024249054e-05; av rho=0.9999635256
+
+Compute averages at time step 740
+================================
+t=0.37
+Av energy=1.028402926e-05; av rho=0.9999625389
+
+Access internal statistics for time step 740
+===========================================
+Av energy=1.028402926e-05; av rho=0.9999625389
+
+Compute averages at time step 760
+================================
+t=0.38
+Av energy=1.033202961e-05; av rho=0.9999615053
+
+Access internal statistics for time step 760
+===========================================
+Av energy=1.033202961e-05; av rho=0.9999615053
+
+Compute averages at time step 780
+================================
+t=0.39
+Av energy=1.039203985e-05; av rho=0.9999603971
+
+Access internal statistics for time step 780
+===========================================
+Av energy=1.039203985e-05; av rho=0.9999603971
+
+Processing analysis of the strain rate ...
+==========================================
+
+Max LB 0.01815193447
+Max FD 0.01414213562
+Absolute difference range: [0,0.07691092198]
+Relative difference range: [0,4.237064766]
+Compute averages at time step 800
+================================
+t=0.4
+Av energy=1.045476111e-05; av rho=0.9999593461
+
+Access internal statistics for time step 800
+===========================================
+Av energy=1.045476111e-05; av rho=0.9999593461
+
+Compute averages at time step 820
+================================
+t=0.41
+Av energy=1.050645474e-05; av rho=0.9999583795
+
+Access internal statistics for time step 820
+===========================================
+Av energy=1.050645474e-05; av rho=0.9999583795
+
+Compute averages at time step 840
+================================
+t=0.42
+Av energy=1.054642896e-05; av rho=0.9999573945
+
+Access internal statistics for time step 840
+===========================================
+Av energy=1.054642896e-05; av rho=0.9999573945
+
+Compute averages at time step 860
+================================
+t=0.43
+Av energy=1.058508383e-05; av rho=0.9999563607
+
+Access internal statistics for time step 860
+===========================================
+Av energy=1.058508383e-05; av rho=0.9999563607
+
+Compute averages at time step 880
+================================
+t=0.44
+Av energy=1.062544984e-05; av rho=0.9999553522
+
+Access internal statistics for time step 880
+===========================================
+Av energy=1.062544984e-05; av rho=0.9999553522
+
+Compute averages at time step 900
+================================
+t=0.45
+Av energy=1.066380424e-05; av rho=0.9999543434
+
+Access internal statistics for time step 900
+===========================================
+Av energy=1.066380424e-05; av rho=0.9999543434
+
+Compute averages at time step 920
+================================
+t=0.46
+Av energy=1.070609268e-05; av rho=0.9999532884
+
+Access internal statistics for time step 920
+===========================================
+Av energy=1.070609268e-05; av rho=0.9999532884
+
+Compute averages at time step 940
+================================
+t=0.47
+Av energy=1.075464142e-05; av rho=0.9999522265
+
+Access internal statistics for time step 940
+===========================================
+Av energy=1.075464142e-05; av rho=0.9999522265
+
+Compute averages at time step 960
+================================
+t=0.48
+Av energy=1.080086556e-05; av rho=0.9999512131
+
+Access internal statistics for time step 960
+===========================================
+Av energy=1.080086556e-05; av rho=0.9999512131
+
+Compute averages at time step 980
+================================
+t=0.49
+Av energy=1.084062326e-05; av rho=0.9999502077
+
+Access internal statistics for time step 980
+===========================================
+Av energy=1.084062326e-05; av rho=0.9999502077
+
+Compute averages at time step 1000
+================================
+t=0.5
+Av energy=1.087378629e-05; av rho=0.9999491989
+
+Access internal statistics for time step 1000
+===========================================
+Av energy=1.087378629e-05; av rho=0.9999491989
+
+Compute averages at time step 1020
+================================
+t=0.51
+Av energy=1.090195202e-05; av rho=0.9999482065
+
+Access internal statistics for time step 1020
+===========================================
+Av energy=1.090195202e-05; av rho=0.9999482065
+
+Compute averages at time step 1040
+================================
+t=0.52
+Av energy=1.09299908e-05; av rho=0.9999471997
+
+Access internal statistics for time step 1040
+===========================================
+Av energy=1.09299908e-05; av rho=0.9999471997
+
+Compute averages at time step 1060
+================================
+t=0.53
+Av energy=1.096638787e-05; av rho=0.999946129
+
+Access internal statistics for time step 1060
+===========================================
+Av energy=1.096638787e-05; av rho=0.999946129
+
+Compute averages at time step 1080
+================================
+t=0.54
+Av energy=1.10110348e-05; av rho=0.9999450534
+
+Access internal statistics for time step 1080
+===========================================
+Av energy=1.10110348e-05; av rho=0.9999450534
+
+Compute averages at time step 1100
+================================
+t=0.55
+Av energy=1.105171358e-05; av rho=0.9999440433
+
+Access internal statistics for time step 1100
+===========================================
+Av energy=1.105171358e-05; av rho=0.9999440433
+
+Compute averages at time step 1120
+================================
+t=0.56
+Av energy=1.108262055e-05; av rho=0.9999430588
+
+Access internal statistics for time step 1120
+===========================================
+Av energy=1.108262055e-05; av rho=0.9999430588
+
+Compute averages at time step 1140
+================================
+t=0.57
+Av energy=1.110767676e-05; av rho=0.9999420479
+
+Access internal statistics for time step 1140
+===========================================
+Av energy=1.110767676e-05; av rho=0.9999420479
+
+Compute averages at time step 1160
+================================
+t=0.58
+Av energy=1.113200316e-05; av rho=0.9999410311
+
+Access internal statistics for time step 1160
+===========================================
+Av energy=1.113200316e-05; av rho=0.9999410311
+
+Compute averages at time step 1180
+================================
+t=0.59
+Av energy=1.115905936e-05; av rho=0.9999400106
+
+Access internal statistics for time step 1180
+===========================================
+Av energy=1.115905936e-05; av rho=0.9999400106
+
+Processing analysis of the strain rate ...
+==========================================
+
+Max LB 0.01815411297
+Max FD 0.01414213562
+Absolute difference range: [0,0.07692472976]
+Relative difference range: [0,4.237316904]
+Compute averages at time step 1200
+================================
+t=0.6
+Av energy=1.119048049e-05; av rho=0.9999389589
+
+Access internal statistics for time step 1200
+===========================================
+Av energy=1.119048049e-05; av rho=0.9999389589
+

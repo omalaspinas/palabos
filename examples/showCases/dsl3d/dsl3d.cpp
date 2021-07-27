@@ -218,7 +218,7 @@ int main(int argc, char* argv[]) {
         allOmega[8] = param.omegaBulk; // relaxation of bulk moment (M200 + M020 + M002)
     } else {
         pcout << "Error: lbm name does not exist." << std::endl;
-        exit(-1);
+        return EXIT_FAILURE;
     }
     
     ///// Generate the dynamics and the corresponding lattice from the .xml file.
@@ -245,13 +245,17 @@ int main(int argc, char* argv[]) {
     ///// Initialization from analytical profiles
     simulationSetup(lattice, param);
 
+#ifndef PLB_REGRESSION
     ///// Initial state is outputed
     pcout << "Writing VTK file at iteration = 0" << std::endl;
     writeVTK(lattice, param, 0);
     writeGif(lattice, param, 0);
+#endif
 
     ///// Simulation maximal time, and output frequency (in terms of convective times).
+#ifndef PLB_REGRESSION
     plint vtkTout = param.vtkT * param.tc;
+#endif
     plint tMax = param.tAdim * param.tc;
     
     ///// Output the evolution of the kinetic energy      
@@ -264,30 +268,38 @@ int main(int argc, char* argv[]) {
         ///// Lattice Boltzmann iteration step.
         lattice.collideAndStream();
         
+#ifndef PLB_REGRESSION
         ///// Output.
         if (iT % vtkTout == 0 and iT != 0) {
             pcout << "Writing VTK file at iteration = " << iT << std::endl;
             writeVTK(lattice, param, iT);
             writeGif(lattice, param, iT);
         }
+#endif
 
         ///// Compute kinetic energy for stats and stability criterion
         T kinEnergy = computeAverageEnergy(lattice);
         T kinEnergyAdim = kinEnergy/(0.5*param.u0*param.u0);
+#ifndef PLB_REGRESSION
         statsOut << iT/param.tc << " " << kinEnergyAdim << std::endl;    
+#else
+        pcout << iT/param.tc << " " << kinEnergyAdim << std::endl;    
+#endif
 
         ///// Stability test based on the kinetic energy.
         // Here, the kinetic energy should be smaller than 2 times its initial value
         if (iT == 0) initial_energy = kinEnergyAdim;
         if (kinEnergyAdim > 2.*initial_energy) {
             pcout << "Catastrophic error: energy has increased or is NaN!" << std::endl;
+#ifndef PLB_REGRESSION
             writeVTK(lattice, param, iT);
             writeGif(lattice, param, iT);
-            return 0;
+#endif
+            return EXIT_FAILURE;
         }
     }
     /// Close stats file
     statsOut.close();
 
-    return 0;
+    return EXIT_SUCCESS;
 }

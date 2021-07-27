@@ -289,3 +289,4 @@ void receiveBodiesVelocities(std::map<pluint, pluint>& bodyToProc, std::vector<S
 
 } // namespace npfem
 } // namespace plb
+

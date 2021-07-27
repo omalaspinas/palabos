@@ -1,0 +1,46 @@
+Number of inlets/outlets which were closed: 2
+Number of triangles: 21240
+Number of vertices: 10622
+
+Voxelizing the domain.
+Size of the multi-block:     63-by-63-by-63
+Number of atomic-blocks:     1
+Smallest atomic-block:       63-by-63-by-63
+Largest atomic-block:        63-by-63-by-63
+Number of allocated cells:   0.250047 million
+Fraction of allocated domain: 100 percent
+
+Inlet center: 0.999684,31,31
+Outlet center: 60.9997,31,31
+omega=1.90839
+Creating boundary condition.
+
+Initializing lattice.
+
+Starting simulation.
+Iteration= 0; Average energy: 1.75287e-06
+Number of particles in the tube: 10622
+Iteration= 100; Average energy: 3.00262e-05
+Number of particles in the tube: 10622
+Iteration= 200; Average energy: 3.83226e-05
+Number of particles in the tube: 10622
+Iteration= 300; Average energy: 3.83226e-05
+Number of particles in the tube: 10622
+Iteration= 400; Average energy: 3.83226e-05
+Number of particles in the tube: 10622
+Iteration= 500; Average energy: 3.83226e-05
+Number of particles in the tube: 10622
+Iteration= 600; Average energy: 3.83226e-05
+Number of particles in the tube: 10622
+Iteration= 700; Average energy: 3.83226e-05
+Number of particles in the tube: 10622
+Iteration= 800; Average energy: 3.83226e-05
+Number of particles in the tube: 10622
+Iteration= 900; Average energy: 3.83226e-05
+Number of particles in the tube: 10622
+Iteration= 1000; Average energy: 3.83226e-05
+Number of particles in the tube: 10622
+Iteration= 1100; Average energy: 3.83226e-05
+Number of particles in the tube: 10622
+Iteration= 1200; Average energy: 3.83226e-05
+Number of particles in the tube: 10622

@@ -109,6 +109,7 @@ void copy_generic (
     to.getBlockCommunicator().duplicateOverlaps(to, typeOfModif);
 }
 
+// TODO: This one is suspicious, domain is ununsed.
 void copyNonLocal_generic (
         MultiBlock3D const& from, MultiBlock3D& to,
         Box3D const& domain, modif::ModifT typeOfModif )

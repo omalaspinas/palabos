@@ -52,6 +52,10 @@ public :
 	NewtonRaphson(FunctionAndDerivative<T> *function_, T tol_, int maxIter_)
 		: function(function_), tol(tol_), maxIter(maxIter_)
 	{   }
+
+    ~NewtonRaphson() {
+        delete function;
+    }
 	
 	virtual T operator()(T y) const 
 	{

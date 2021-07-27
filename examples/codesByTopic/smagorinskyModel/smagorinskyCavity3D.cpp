@@ -123,10 +123,16 @@ int main(int argc, char* argv[]) {
             1.,        // ly
             1.         // lz
     );
+
     const T logT     = (T)1/(T)500;
+
+#ifdef PLB_REGRESSION    
+    const T maxT     = (T)0.05;
+#else
+    const T maxT     = (T)50;
     const T imSave   = (T)1/(T)10;
     const T vtkSave  = (T)10;
-    const T maxT     = (T)50;
+#endif
 
     writeLogFile(parameters, "3D diagonal cavity");
 
@@ -148,12 +154,15 @@ int main(int argc, char* argv[]) {
 
     cavitySetup(lattice, parameters, *boundaryCondition);
 
+#ifndef PLB_REGRESSION
     T previousIterationTime = T();
+#endif
 
     // Main loop over time iterations.
     for (plint iT=0; iT<parameters.nStep(maxT); ++iT) {
         global::timer("mainLoop").restart();
 
+#ifndef PLB_REGRESSION
         if (iT%parameters.nStep(imSave)==0) {
             pcout << "Writing Gif ..." << endl;
             writeGifs(lattice, parameters, iT);
@@ -163,6 +172,7 @@ int main(int argc, char* argv[]) {
             pcout << "Saving VTK file ..." << endl;
             writeVTK(lattice, parameters, iT);
         }
+#endif
         
         if (iT%parameters.nStep(logT)==0) {
             pcout << "step " << iT
@@ -177,10 +187,15 @@ int main(int argc, char* argv[]) {
                   << setprecision(10) << getStoredAverageEnergy<T>(lattice)
                   << "; av rho="
                   << setprecision(10) << getStoredAverageDensity<T>(lattice) << endl;
+#ifndef PLB_REGRESSION
             pcout << "Time spent during previous iteration: "
                   << previousIterationTime << endl;
+#endif
         }
+#ifndef PLB_REGRESSION
+    
         previousIterationTime = global::timer("mainLoop").stop();
+#endif
     }
 
     delete boundaryCondition;

@@ -16,6 +16,24 @@ if(ENABLE_MPI)
     target_link_libraries(${PROJECT_NAME} ${MPI_CXX_LIBRARIES})
 endif()
 
+if(BUILD_TESTING)
+    add_custom_target(${PROJECT_NAME}_test
+        ALL
+        DEPENDS ${PROJECT_NAME}
+        COMMAND "LSAN_OPTIONS=suppressions=${LSAN_SUPPRESSION_FILE}" ./${PROJECT_NAME} config.xml 10000 128 0.1 > test/output.dat || (cat test/output.dat\; exit 1)
+        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+        COMMENT "run generated test in ${CMAKE_CURRENT_SOURCE_DIR}"
+        SOURCES ./${EXECUTABLE_NAME}.cpp
+    )
+endif()
+
+if (BUILD_TESTING)
+    enable_testing()
+    add_test(NAME ${CMAKE_CURRENT_SOURCE_DIR}_test
+             WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/test
+             COMMAND ${CMAKE_COMMAND} -E compare_files ref.dat output.dat)
+endif()
+
 ###############################################################################
 
 # This returns when you compile Palabos and all the examples (root CMakeLists.txt)

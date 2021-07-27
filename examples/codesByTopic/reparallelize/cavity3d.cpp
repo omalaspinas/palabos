@@ -74,7 +74,7 @@ void cavitySetup( MultiBlockLattice3D<T,DESCRIPTOR>& lattice,
 
 template<class BlockLatticeT>
 void writeGifs(BlockLatticeT& lattice,
-               IncomprFlowParam<T> const& parameters, plint iter)
+                plint iter)
 {
     const plint imSize = 600;
     const plint nx = lattice.getNx();
@@ -139,9 +139,13 @@ int main(int argc, char* argv[]) {
             1.         // lz
     );
     const T logT     = (T)1/(T)100;
+#ifndef PLB_REGRESSION
     //const T imSave   = (T)1/(T)40;
     const T vtkSave  = (T)1;
     const T maxT     = (T)10.1;
+#else
+    const T maxT     = (T)0.051;
+#endif
 
     writeLogFile(parameters, "3D diagonal cavity");
 
@@ -191,21 +195,25 @@ int main(int argc, char* argv[]) {
     MultiBlockLattice3D<T,DESCRIPTOR> dummyLattice(nx/2, ny/2, nz/2, new BounceBack<T,DESCRIPTOR>(1.));
     std::unique_ptr<MultiBlockLattice3D<T,DESCRIPTOR> > lattice = align(*intermediateLattice, dummyLattice);
 
+#ifndef PLB_REGRESSION
     T previousIterationTime = T();
+#endif
     // Loop over main time iteration.
     for (plint iT=0; iT<parameters.nStep(maxT); ++iT) {
         global::timer("mainLoop").restart();
 
+#ifndef PLB_REGRESSION
         if (iT%100==0) {
         //if (iT%parameters.nStep(imSave)==0) {
             pcout << "Writing Gif ..." << endl;
-            writeGifs(*lattice, parameters, iT);
+            writeGifs(*lattice, iT);
         }
 
         if (iT%parameters.nStep(vtkSave)==0 && iT>0) {
             pcout << "Saving VTK file ..." << endl;
             writeVTK(*lattice, parameters, iT);
         }
+#endif
 
         if (iT%parameters.nStep(logT)==0) {
             pcout << "step " << iT
@@ -222,11 +230,15 @@ int main(int argc, char* argv[]) {
                   << setprecision(10) << getStoredAverageEnergy<T>(*lattice)
                   << "; av rho="
                   << setprecision(10) << getStoredAverageDensity<T>(*lattice) << endl;
+#ifndef PLB_REGRESSION
             pcout << "Time spent during previous iteration: "
                   << previousIterationTime << endl;
+#endif
         }
 
+#ifndef PLB_REGRESSION
         previousIterationTime = global::timer("mainLoop").stop();
+#endif
     }
 
     delete boundaryCondition;

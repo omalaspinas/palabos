@@ -1,0 +1,6 @@
+step 0; t=0; av energy=3.81587645e-07; av rho=1
+step 1280; t=0.1; av energy=1.143114423e-06; av rho=0.9999958713
+step 2560; t=0.2; av energy=1.464417219e-06; av rho=0.9999917465
+step 3840; t=0.3; av energy=1.688556804e-06; av rho=0.9999876179
+step 5120; t=0.4; av energy=1.862383106e-06; av rho=0.9999834936
+step 6400; t=0.5; av energy=2.005200026e-06; av rho=0.9999793665

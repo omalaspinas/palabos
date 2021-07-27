@@ -169,9 +169,13 @@ int main(int argc, char* argv[]) {
             1.         // lz
     );
     const T logT     = (T)1/(T)1000;
+#ifndef PLB_REGRESSION
     const T imSave   = (T)1/(T)40;
     const T vtkSave  = (T)1;
     const T maxT     = (T)10.1;
+#else
+    const T maxT     = (T)0.005;
+#endif
 
     pcout << "omega= " << parameters.getOmega() << std::endl;
     writeLogFile(parameters, "3D diagonal cavity");
@@ -226,11 +230,14 @@ int main(int argc, char* argv[]) {
     bool printInfo=true;
     initiateCoProcessors(lattice, BGKdynamics<T,DESCRIPTOR>(parameters.getOmega()).getId(), printInfo);
 
+#ifndef PLB_REGRESSION
     T previousIterationTime = T();
+#endif
     // Loop over main time iteration.
     for (plint iT=0; iT<parameters.nStep(maxT); ++iT) {
         global::timer("mainLoop").restart();
 
+#ifndef PLB_REGRESSION
         if (iT%parameters.nStep(imSave)==0) {
             pcout << "Writing Gif ..." << endl;
             writeGifs(lattice, parameters, iT);
@@ -240,6 +247,7 @@ int main(int argc, char* argv[]) {
             pcout << "Saving VTK file ..." << endl;
             writeVTK(lattice, parameters, iT);
         }
+#endif
 
         if (iT%parameters.nStep(logT)==0) {
             pcout << "step " << iT
@@ -269,11 +277,15 @@ int main(int argc, char* argv[]) {
                   << setprecision(10) << computeAverageEnergy<T>(lattice)
                   << "; av rho="
                   << setprecision(10) << computeAverageDensity<T>(lattice) << endl;
+#ifndef PLB_REGRESSION
             pcout << "Time spent during previous iteration: "
                   << previousIterationTime << endl;
+#endif
         }
 
+#ifndef PLB_REGRESSION
         previousIterationTime = global::timer("mainLoop").stop();
+#endif
     }
 
     delete boundaryCondition;

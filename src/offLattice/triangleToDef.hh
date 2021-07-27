@@ -404,24 +404,26 @@ void TriangleToDef<T>::findBoundaryVertices()
                 node_j->second.counter++;
 
                 plint localVertex_i = -1;
-                if (iVertex == globalVertex(triangle, 0))
+                if (iVertex == globalVertex(triangle, 0)) {
                     localVertex_i = 0;
-                else if (iVertex == globalVertex(triangle, 1))
+                } else if (iVertex == globalVertex(triangle, 1)) {
                     localVertex_i = 1;
-                else if (iVertex == globalVertex(triangle, 2))
+                } else if (iVertex == globalVertex(triangle, 2)) {
                     localVertex_i = 2;
-                else
+                } else {
                     PLB_ASSERT(false); // Problem with the boundary of the surface mesh.
+                }
 
                 plint localVertex_j = -1;
-                if (jVertex == globalVertex(triangle, 0))
+                if (jVertex == globalVertex(triangle, 0)) {
                     localVertex_j = 0;
-                else if (jVertex == globalVertex(triangle, 1))
+                } else if (jVertex == globalVertex(triangle, 1)) {
                     localVertex_j = 1;
-                else if (jVertex == globalVertex(triangle, 2))
+                } else if (jVertex == globalVertex(triangle, 2)) {
                     localVertex_j = 2;
-                else
+                } else {
                     PLB_ASSERT(false); // Problem with the boundary of the surface mesh.
+                }
 
                 if ((localVertex_i == 0 && localVertex_j == 1) ||
                     (localVertex_i == 1 && localVertex_j == 2) ||
@@ -470,16 +472,17 @@ void TriangleToDef<T>::computeNeighboringEdges()
             plint id2 = globalVertex(triangle1, 2);
 
             if ((iVertex == id0 && jVertex == id1) ||
-                (iVertex == id1 && jVertex == id0))
+                (iVertex == id1 && jVertex == id0)) {
                 localEdge1 = 0;
-            else if ((iVertex == id1 && jVertex == id2) ||
-                     (iVertex == id2 && jVertex == id1))
+            } else if ((iVertex == id1 && jVertex == id2) ||
+                     (iVertex == id2 && jVertex == id1)) {
                 localEdge1 = 1;
-            else if ((iVertex == id2 && jVertex == id0) ||
-                     (iVertex == id0 && jVertex == id2))
+            } else if ((iVertex == id2 && jVertex == id0) ||
+                     (iVertex == id0 && jVertex == id2)) {
                 localEdge1 = 2;
-            else
+            } else {
                 PLB_ASSERT(false); // Problem with the surface mesh connectivity.
+            }
 
             if (triangle2 != -1) { /* Internal edge */
                 plint va1 = globalVertex(triangle1, localEdge1);

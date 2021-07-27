@@ -42,7 +42,10 @@
 #include "multiPhysics/freeSurfaceUtil3D.h"
 
 #ifdef PLB_MPI_PARALLEL
-#include "mpi.h"
+// DISABLE_WARNING_PUSH
+// DISABLE_WARNING_CAST_FUNCTION_TYPE
+#include <mpi.h>
+// DISABLE_WARNING_POP
 #endif
 
 namespace plb {

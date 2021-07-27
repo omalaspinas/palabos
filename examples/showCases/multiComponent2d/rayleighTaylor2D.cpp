@@ -152,8 +152,12 @@ int main(int argc, char *argv[])
     const plint ny   = 400;
     const T G      = 1.2;
     T force        = 0.15/(T)ny;
+#ifndef PLB_REGRESSION
     const plint maxIter  = 16000;
     const plint saveIter = 100;
+#else
+    const plint maxIter  = 101;
+#endif
     const plint statIter = 10;
 
     // Use regularized BGK dynamics to improve numerical stability (but note that
@@ -197,9 +201,11 @@ int main(int argc, char *argv[])
     pcout << "Starting simulation" << endl;
     // Main loop over time iterations.
     for (plint iT=0; iT<maxIter; ++iT) {
+#ifndef PLB_REGRESSION
         if (iT%saveIter==0) {
             writeGifs(heavyFluid, lightFluid, iT);
         }
+#endif
 
         // Time iteration for the light fluid.
         lightFluid.collideAndStream();

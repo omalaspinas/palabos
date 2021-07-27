@@ -76,6 +76,7 @@ inline void transferDataProcessors(MultiBlock3D const& from, MultiBlock3D& to)
 
 /* *************** 1. MultiScalarField ************************************** */
 
+// TODO: Does it make sense to have a useless domain here?
 template<typename T>
 void transferScalarFieldLocal (
         MultiScalarField3D<T>& from, MultiScalarField3D<T>& to, Box3D const& domain )
@@ -445,7 +446,8 @@ MultiNTensorField3D<T>* generateMultiNTensorField3D(Box3D const& domain, plint n
 
 template<typename T>
 void transferNTensorFieldLocal (
-        MultiNTensorField3D<T>& from, MultiNTensorField3D<T>& to, Box3D const& domain )
+        MultiNTensorField3D<T>& from, MultiNTensorField3D<T>& to, [[maybe_unused]] Box3D const& domain )
+// TODO: Remove the domain argument. Not used and misleading.
 {
     // 1. Copy all data from the old to the new field.
     plb::copy(from, to, from.getBoundingBox());
@@ -670,7 +672,8 @@ MultiNTensorField3D<T>* reparallelize (
 
 template<typename T, int nDim>
 void transferTensorFieldLocal (
-        MultiTensorField3D<T,nDim>& from, MultiTensorField3D<T,nDim>& to, Box3D const& domain )
+        MultiTensorField3D<T,nDim>& from, MultiTensorField3D<T,nDim>& to, [[maybe_unused]] Box3D const& domain )
+// TODO: Remove thedomain argument. Not used and misleading.
 {
     // 1. Copy all data from the old to the new field.
     plb::copy(from, to, from.getBoundingBox());
@@ -737,9 +740,10 @@ std::unique_ptr<MultiTensorField3D<T,nDim> > generateMultiTensorField (
     return std::unique_ptr<MultiTensorField3D<T,nDim> >(field);
 }
 
+// QUESTION: Why do we have this unnamedDummyArg ?
 template<typename T, int nDim>
 std::unique_ptr<MultiTensorField3D<T,nDim> > defaultGenerateMultiTensorField3D (
-        MultiBlockManagement3D const& management, plint unnamedDummyArg )
+        MultiBlockManagement3D const& management, [[maybe_unused]] plint unnamedDummyArg )
 {
     Array<T,nDim> iniVal;
     iniVal.resetToZero();
@@ -977,10 +981,11 @@ std::unique_ptr<MultiTensorField3D<T,nDim> > reparallelize (
 
 /* *************** 4. MultiBlockLattice ************************************** */
 
+// QUESTION: Does it make sense to have a useless domain here?
 template<typename T, template<typename U> class Descriptor>
 void transferBlockLatticeLocal (
         MultiBlockLattice3D<T,Descriptor>& from,
-        MultiBlockLattice3D<T,Descriptor>& to, Box3D const& domain )
+        MultiBlockLattice3D<T,Descriptor>& to, [[maybe_unused]] Box3D const& domain )
 {
     // 1. Copy static and dynamic data to the new block.
     copyRegenerate(from, to, from.getBoundingBox());
@@ -1015,9 +1020,10 @@ std::unique_ptr<MultiBlockLattice3D<T,Descriptor> > generateMultiBlockLattice (
     );
 }
 
+// QUESTION: Why do we have this unnamedDummyArg?
 template<typename T, template<typename U> class Descriptor>
 std::unique_ptr<MultiBlockLattice3D<T,Descriptor> > defaultGenerateMultiBlockLattice3D (
-        MultiBlockManagement3D const& management, plint unnamedDummyArg )
+        MultiBlockManagement3D const& management, [[maybe_unused]] plint unnamedDummyArg )
 {
     return std::unique_ptr<MultiBlockLattice3D<T,Descriptor> > (
         new MultiBlockLattice3D<T,Descriptor> (

@@ -105,7 +105,7 @@ void iniLattice( MultiBlockLattice3D<T,DESCRIPTOR>& lattice,
 //   condition with constant pressure is prescribed.
 void setOpenings (
     std::vector<BoundaryProfile3D<T,Velocity>*>& inletOutlets,
-    TriangleBoundary3D<T>& boundary, T uLB, T dx, T dt )
+    TriangleBoundary3D<T>& boundary, T uLB)
 {
     for (pluint i=0; i<openings.size(); ++i) {
         Opening<T>& opening = openings[i];
@@ -290,7 +290,7 @@ std::unique_ptr<MultiBlockLattice3D<T,DESCRIPTOR> > run (
     // Next the inlets and outlets are identified (according to what the user has specified)
     //   in the input XML file, and proper boundary conditions are assigned.
     std::vector<BoundaryProfile3D<T,Velocity>*> inletOutlets;
-    setOpenings(inletOutlets, boundary, uAveLB, dx, dt);
+    setOpenings(inletOutlets, boundary, uAveLB);
     Array<T,3> inletCenter(0.0, 0.0, 0.0);
     for (pluint i=0; i<openings.size(); ++i) {
         if (openings[i].inlet) {

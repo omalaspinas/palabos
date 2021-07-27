@@ -187,10 +187,14 @@ int main(int argc, char* argv[]) {
             0.5,        // ly
             50.         // lz
     );
-    const T logT     = (T)1/(T)10;
+    const T logT     = (T)1/(T)100;
+#ifndef PLB_REGRESSION
     const T imSave   = (T)1/(T)10;
     const T vtkSave  = (T)1/(T)100;
     const T maxT     = (T)10.1;
+#else
+    const T maxT     = (T)0.051;
+#endif
 
     pcout << "omega= " << parameters.getOmega() << std::endl;
     writeLogFile(parameters, "3D cylinder");
@@ -208,11 +212,14 @@ int main(int argc, char* argv[]) {
     Array<plint,3> forceIds;
     cylinderSetup(lattice, parameters, *boundaryCondition, forceIds);
 
+#ifndef PLB_REGRESSION
     T previousIterationTime = T();
+#endif
     // Loop over main time iteration.
     for (plint iT=0; iT<parameters.nStep(maxT); ++iT) {
         global::timer("mainLoop").restart();
 
+#ifndef PLB_REGRESSION
         if (iT%parameters.nStep(imSave)==0) {
             pcout << "Writing Gif ..." << endl;
             writeGifs(lattice, parameters, iT);
@@ -222,6 +229,7 @@ int main(int argc, char* argv[]) {
             pcout << "Saving VTK file ..." << endl;
             writeVTK(lattice, parameters, iT);
         }
+#endif
 
         if (iT%parameters.nStep(logT)==0) {
             pcout << "step " << iT
@@ -238,8 +246,10 @@ int main(int argc, char* argv[]) {
                   << setprecision(10) << getStoredAverageEnergy<T>(lattice)
                   << "; av rho="
                   << setprecision(10) << getStoredAverageDensity<T>(lattice) << endl;
+#ifndef PLB_REGRESSION
             pcout << "Time spent during previous iteration: "
                   << previousIterationTime << endl;
+#endif
 
             T drag = lattice.getInternalStatistics().getSum(forceIds[0]);
             T lift = lattice.getInternalStatistics().getSum(forceIds[2]);
@@ -258,7 +268,9 @@ int main(int argc, char* argv[]) {
             pcout << std::endl;
         }
 
+#ifndef PLB_REGRESSION
         previousIterationTime = global::timer("mainLoop").stop();
+#endif
     }
 
     delete boundaryCondition;

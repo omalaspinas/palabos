@@ -1,0 +1,36 @@
+version: 1.0.{build}
+branches:
+  only:
+  - appveyor
+
+image: 
+  - Previous Visual Studio 2019
+  - macOS
+
+install:
+- pwsh: >-
+    if ($isWindows) {
+      $msmpidl = 'https://download.microsoft.com/download/2/9/e/29efe9b1-16d7-4912-a229-6734b0c4e235/msmpisdk.msi'
+
+      Start-FileDownload $msmpidl -FileName msmpisdk.msi
+
+      msiexec /i "C:\projects\palabos\msmpisdk.msi" /qn /norestart /log install.log
+
+      sleep 5; restart-computer -f; sleep 5
+    } else {
+      brew install open-mpi hdf5-mpi
+    }
+    
+build_script:
+- pwsh: >-
+    if ($isWindows) {
+        cd C:\projects\palabos\build
+        cmake .. -DBUILD_HDF5=OFF
+    } else {
+        cd build
+        cmake ..
+    }
+
+    cmake --build . -j4
+test: off
+deploy: off

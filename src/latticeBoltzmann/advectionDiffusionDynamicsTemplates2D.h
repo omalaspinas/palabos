@@ -226,6 +226,7 @@ static T no_corr_rlb_collision (
     return jSqr*invRho*invRho;
 }
 
+// TODO: this omegaFluidNonPhys looks suspicious. Should check it.
 static void bgk_ma2_off_equilibra(T phi, Array<T,D::d> const& u, Array<T,D::d> const& jNeq, 
     const Array<T,SymmetricTensorImpl<T,D::d>::n> &piNeq, T omega, T omegaNonPhys, T omegaFluid, T omegaFluidNonPhys, Array<T,D::q> &fNeq) 
 {

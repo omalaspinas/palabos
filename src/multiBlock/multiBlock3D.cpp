@@ -693,7 +693,7 @@ MultiBlock3D* MultiBlockRegistration3D::find(id_t id) {
     }
 }
 
-
+// TODO: WHy copy const and equal do nothing?
 MultiBlockRegistration3D::MultiBlockRegistration3D(MultiBlockRegistration3D const& rhs)
 { }
 

@@ -1,0 +1,45 @@
+lx = 29.5
+ly = 9
+lz = 9
+resolution = 10
+xSide = 2
+ySide = 1
+ampl = 0.785398
+freq = 0.1
+dt = 0.00082
+maxIter = 100
+statIter = 200
+outIter = 500
+inletVelocity = 1
+nu = 0.02
+Re = 50
+mountPoint = (4.5, 4.5, 4.5)
+ibIter = 4
+nx = 267
+ny = 81
+nz = 81
+inletVelocityLB = 0.00738
+mountPointLB = (40.5, 40.5, 40.5)
+omega = 1.98419
+tau = 0.503985
+dx = 0.111111
+dt / dx = 0.00738
+dt / (dx * dx) = 0.06642
+xSideLB = 18
+ySideLB = 9
+amplLB = 0.785398
+freqLB = 8.2e-05
+
+Generating multi-blocks.
+Dynamics: Incompressible BGK.
+Generating boundary conditions.
+Periodic lateral boundaries.
+Initial average kinetic energy: 0
+
+Creating the immersed rectangle surface.
+The rectangle has 648 vertices and 1190 triangles.
+
+Starting simulation.
+At iteration 99, t = 0.08118
+Average kinetic energy: 0.000240376
+

@@ -228,9 +228,13 @@ int main(int argc, char* argv[]) {
             1.         // ly 
     );
     const T logT     = (T)0.02;
+#ifndef PLB_REGRESSION
     const T imSave   = (T)0.06;
     const T vtkSave  = (T)0.06;
     const T maxT     = (T)20.1;
+#else
+    const T maxT     = (T)0.2;
+#endif
 	pcout<<"  " << parameters.getDeltaT().imaginary()<<endl;
 
     //writeLogFile(parameters, "Poiseuille flow");
@@ -258,6 +262,7 @@ int main(int argc, char* argv[]) {
         //   discrete time iT. However, the stored averages (getStoredAverageEnergy
         //   and getStoredAverageDensity) correspond to the previous time iT-1.
 
+#ifndef PLB_REGRESSION
        if (iT%parameters.nStep(imSave)==0) {
             //pcout << "Saving Gif ..." << endl;
             //writeGif(lattice, iT);
@@ -275,6 +280,7 @@ int main(int argc, char* argv[]) {
 			pcout << "Velocity in the middle of the lattice: ("
 			      << velocity[0].real()<<" "<<velocity[0].imaginary() << "," << velocity[1].real()<<" "<<velocity[1].imaginary()  << ")" << endl;
         }
+#endif
 
         if (iT%parameters.nStep(logT)==0) {
             pcout << "step " << iT

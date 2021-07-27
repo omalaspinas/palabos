@@ -151,9 +151,13 @@ int main(int argc, char* argv[]) {
             1.         // ly
     );
     const T logT     = (T)0.1;
+#ifndef PLB_REGRESSION
     const T imSave   = (T)0.01;
     const T vtkSave  = (T)1.;
     const T maxT     = (T)1.1;
+#else
+    const T maxT     = (T)0.51;
+#endif
 
     writeLogFile(parameters, "2D cavity");
     T tau_plus = parameters.getTau();
@@ -176,10 +180,13 @@ int main(int argc, char* argv[]) {
 
     cavitySetup(lattice, parameters, *boundaryCondition);
 
+#ifndef PLB_REGRESSION
     T previousIterationTime = T();
+#endif
 
     // Main loop over time iterations.
     for (plint iT=0; iT*parameters.getDeltaT()<maxT; ++iT) {
+#ifndef PLB_REGRESSION
         global::timer("mainLoop").restart();
 
         if (iT%parameters.nStep(imSave)==0 && iT>0) {
@@ -192,6 +199,7 @@ int main(int argc, char* argv[]) {
             pcout << "Saving VTK file ..." << endl;
             writeVTK(lattice, parameters, iT);
         }
+#endif
 
         if (iT%parameters.nStep(logT)==0) {
             pcout << "step " << iT
@@ -206,11 +214,15 @@ int main(int argc, char* argv[]) {
                   << setprecision(10) << getStoredAverageEnergy(lattice)
                   << "; av rho="
                   << getStoredAverageDensity(lattice) << endl;
+#ifndef PLB_REGRESSION
             pcout << "Time spent during previous iteration: "
                   << previousIterationTime << endl;
+#endif
         }
 
+#ifndef PLB_REGRESSION
         previousIterationTime = global::timer("mainLoop").stop();
+#endif
     }
 
     delete boundaryCondition;

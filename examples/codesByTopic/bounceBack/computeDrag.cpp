@@ -128,8 +128,12 @@ int main(int argc, char* argv[]) {
             1.         // ly 
     );
     const T logT     = (T)0.01;
+#ifndef PLB_REGRESSION
     const T imSave   = (T)1.;
     const T maxT     = (T)10.1;
+#else
+    const T maxT     = (T)0.5;
+#endif
 
     writeLogFile(parameters, "Poiseuille flow");
 
@@ -153,10 +157,12 @@ int main(int argc, char* argv[]) {
 
     // Main loop over time iterations.
     for (plint iT=0; iT*parameters.getDeltaT()<maxT; ++iT) {
+#ifndef PLB_REGRESSION
         if (iT%parameters.nStep(imSave)==0) {
             pcout << "Saving Gif ..." << endl;
             writeGifs(lattice, iT);
         }
+#endif
 
 
         if (iT%parameters.nStep(logT)==0) {
