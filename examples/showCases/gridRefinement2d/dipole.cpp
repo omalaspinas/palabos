@@ -254,20 +254,18 @@ int main(int argc, char* argv[]) {
     T uMaxRef = 0.005*(util::twoToThePower(numLevel-1));
     
     plint N;
+    bool computePoisson;
     try {
         global::argv(1).read(N);
+        global::argv(2).read(computePoisson);
     }
     catch(...)
     {
         pcout << "Wrong parameters. The syntax is " << std::endl;
-        pcout << argv[0] << " N" << std::endl;
-        pcout << "where N is the resolution." << std::endl;
+        pcout << argv[0] << " N computePoisson" << std::endl;
+        pcout << "where N is the resolution, and computePoisson if the poisson equation is solved." << std::endl;
         exit(1);
     }
-
-    // variable to put to false if you have at least once computed the pressure field
-    // from the Poisson equation
-    bool computePoisson = true;
 
     // Rescaling of the velocity for 
     T uMax = uMaxRef*(T)NRef/(T)N;
@@ -281,10 +279,12 @@ int main(int argc, char* argv[]) {
 
     // different times in the simulation
     const T logT   = (T)0.1; // show the information
+#ifndef PLB_REGRESSION
     const T imSave = (T)0.1; // save an image
+#endif
     const T maxT   = (T)0.4; // final dimensionless time
-    const T t0     = (T)0.5; // initial time to compute max of the enstrophy 
-    const T t1     = (T)0.6; // final time to compute the max of the enstrophy
+    const T t0     = (T)0.3; // initial time to compute max of the enstrophy 
+    const T t1     = (T)0.4; // final time to compute the max of the enstrophy
     
     // we choose a convective refinement dx=dt and compute parameters for each level
     ConvectiveRefinementParameters<T> parameters (
@@ -323,8 +323,9 @@ int main(int argc, char* argv[]) {
     );
 
     
+#ifndef PLB_REGRESSION
     T previousIterationTime = T();
-    
+
     // Small code that allows us to visualize the refined domain as SVG
     ////////////////////////////////////////////////////////////////////////////
     std::vector<MultiScalarField2D<int> > dyn;
@@ -350,6 +351,7 @@ int main(int argc, char* argv[]) {
     SVGWriter2D test(management);
     test.writeDomainsWithDynamicsInfo("dipole.svg", 3, dyn, idToName, nameToColor);
     ////////////////////////////////////////////////////////////////////////////
+#endif
     
     // create the initial conditions
     geometrySetup(lattice, parameters, *boundaryCondition);
@@ -377,20 +379,24 @@ int main(int argc, char* argv[]) {
         
     // read the file containing the poisson result
     for (plint iLevel=0; iLevel<lattice.getNumLevels(); ++iLevel){
-        pcout << "Reading poisson file for level " << 
-            createFileName("GS",lattice.getComponent(iLevel).getNx(),6) << std::endl;
-
-        plb_ifstream poisson(createFileName("GS",lattice.getComponent(iLevel).getNx(),6).c_str());
-        
         MultiScalarField2D<T> press(lattice.getComponent(iLevel));
+
+        if (computePoisson) {
+            pcout << "Reading poisson file for level " << 
+                createFileName("GS",lattice.getComponent(iLevel).getNx(),6) << std::endl;
+
+            plb_ifstream poisson(createFileName("GS",lattice.getComponent(iLevel).getNx(),6).c_str());
+            poisson >> press;
+
+        } else {
+            setToConstant(press, press.getBoundingBox(), 1.0);
+        }
+        
    
-        poisson >> press;
         std::unique_ptr<MultiTensorField2D<T,2> > vel = computeVelocity(lattice.getComponent(iLevel));
         std::unique_ptr<MultiTensorField2D<T,3> > S = computeStrainRate(*vel);
         recomposeFromFlowVariables(lattice.getComponent(iLevel), press, *vel, *S);
     }
-
-    
     
     // output for the enstrophy for post-processing
     std::string fname = "enstrophy"+stringify(N)+".dat";
@@ -403,6 +409,7 @@ int main(int argc, char* argv[]) {
     for (plint iT=0; iT*baseParameters.getDeltaT()<maxT; ++iT) {
         global::timer("mainLoop").restart();
 
+#ifndef PLB_REGRESSION
         if (iT%baseParameters.nStep(imSave)==0 ) {
             pcout << "Saving Gif ..." << endl;
             // in order to compute statistics and view the lattice, we interpolate all levels to
@@ -411,6 +418,7 @@ int main(int argc, char* argv[]) {
             MultiBlockLattice2D<T,DESCRIPTOR> r = *lattice.convertToLevel(interpLevel);
             writeGifs(r,iT,"dipole");
         }
+#endif
 
         if (iT%baseParameters.nStep(logT)==0) {
             pcout << "step " << iT << "; t=" << iT*baseParameters.getDeltaT();
@@ -431,16 +439,21 @@ int main(int argc, char* argv[]) {
             pcout << "; Entstrophy= " << 4.0*e;
             pcout << std::endl;
             out << iT*baseParameters.getDeltaT() << " " << 4.0*e << endl;
+#ifndef PLB_REGRESSION
             pcout << "Previous iteration time = " << previousIterationTime << std::endl;
-            
+#endif
         }
    
+#ifndef PLB_REGRESSION
         previousIterationTime = global::timer("mainLoop").stop();
+#endif
     }
     
+#ifndef PLB_REGRESSION
     previousIterationTime = global::timer("total").stop();
     pcout << "total time: " << previousIterationTime << std::endl;    
-    
+#endif    
+
     T maxEnsTime = T();
     T maxEnstrophy = T();
     for (unsigned iT = 0; iT < enstrophy.size(); ++iT) {

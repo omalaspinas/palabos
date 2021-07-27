@@ -134,8 +134,10 @@ int MultiGridScalarField2D<T>::getBlockId() const {
     return fields[0]->getStaticId();
 }
 
+// TODO: This function does nothing.
 template<typename T>
 std::unique_ptr<MultiScalarField2D<T> > MultiGridScalarField2D<T>::convertToCoarsest(plint dimDx, plint dimDt){
+    PLB_ASSERT(false);
     
 //TODO: modify avec new functions
 //     plint levels = this->getNumLevels();
@@ -156,9 +158,10 @@ std::unique_ptr<MultiScalarField2D<T> > MultiGridScalarField2D<T>::convertToCoar
 //     return std::unique_ptr<MultiScalarField2D<T> >(copy);
 }
 
+// TODO: This function does nothing.
 template<typename T>
 std::unique_ptr<MultiScalarField2D<T> > MultiGridScalarField2D<T>::convertToFinest(plint dimDx, plint dimDt){
-    
+    PLB_ASSERT(false);
 //TODO: modify avec new functions
 //     MultiScalarField2D<T> *copy, *tmp;
 //     copy = joinMultiScalarInFinest(
@@ -179,6 +182,7 @@ std::unique_ptr<MultiScalarField2D<T> > MultiGridScalarField2D<T>::convertToFine
 
 /* ************** MultiGridTensorField2D ******************* */
 
+// TODO: Unused management_and behaviorLevel_
 template<typename T, int nDim>
 MultiGridTensorField2D<T,nDim>::MultiGridTensorField2D ( MultiGridManagement2D management_,
                                                     std::vector<BlockCommunicator2D* > communicators_,
@@ -188,6 +192,7 @@ MultiGridTensorField2D<T,nDim>::MultiGridTensorField2D ( MultiGridManagement2D m
     allocateFields(communicators_,combinedStatistics_);
 }
 
+// TODO: Unused management_and behaviorLevel_
 template<typename T, int nDim>
 MultiGridTensorField2D<T,nDim>::MultiGridTensorField2D (
                 MultiGridManagement2D management_,
@@ -196,7 +201,8 @@ MultiGridTensorField2D<T,nDim>::MultiGridTensorField2D (
     allocateFields( defaultMultiGridPolicy2D().getBlockCommunicator<T>(this->getNumLevels()),
                     defaultMultiGridPolicy2D().getCombinedStatistics(this->getNumLevels()) );
 }
-                
+
+// TODO: Unused rhs
 template<typename T, int nDim>
 MultiGridTensorField2D<T,nDim>::MultiGridTensorField2D(MultiGridTensorField2D<T,nDim> const& rhs)
 {
@@ -278,8 +284,10 @@ void MultiGridTensorField2D<T,nDim>::allocateFields( std::vector<BlockCommunicat
 }
 
 
+// TODO: This function does nothing
 template<typename T, int nDim>
 std::unique_ptr<MultiTensorField2D<T,nDim> > MultiGridTensorField2D<T,nDim>::convertToCoarsest(plint dimDx, plint dimDt){
+    PLB_ASSERT(false);
 //TODO: modify avec new functions
 //     plint levels = this->getNumLevels();
 // 
@@ -299,6 +307,7 @@ std::unique_ptr<MultiTensorField2D<T,nDim> > MultiGridTensorField2D<T,nDim>::con
 //     return std::unique_ptr<MultiTensorField2D<T,nDim> >(copy);
 }
 
+// TODO: This function does nothing
 template<typename T, int nDim>
 std::unique_ptr<MultiTensorField2D<T,nDim> > MultiGridTensorField2D<T,nDim>::convertToFinest(plint dimDx, plint dimDt){
 //TODO: modify avec new functions

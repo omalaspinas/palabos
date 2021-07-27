@@ -344,7 +344,8 @@ MultiGridTensorField3D<T,nDim>::MultiGridTensorField3D (
     allocateFields( defaultMultiGridPolicy3D().getBlockCommunicator(this->getNumLevels()),
                     defaultMultiGridPolicy3D().getCombinedStatistics(this->getNumLevels()) );
 }
-                
+
+// TODO: Unused rhs                
 template<typename T, int nDim>
 MultiGridTensorField3D<T,nDim>::MultiGridTensorField3D(MultiGridTensorField3D<T,nDim> const& rhs)
 {

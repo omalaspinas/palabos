@@ -1,0 +1,7 @@
+omega= 1.25
+step 0; t=0; av energy=4.95049505e-07; av rho=1
+step 100; t=0.01; av energy=1.132009393e-06; av rho=0.9999995609
+step 200; t=0.02; av energy=1.465024477e-06; av rho=0.9999990693
+step 300; t=0.03; av energy=1.640339821e-06; av rho=0.9999986676
+step 400; t=0.04; av energy=1.769870075e-06; av rho=0.999998229
+step 500; t=0.05; av energy=1.875786341e-06; av rho=0.9999977936

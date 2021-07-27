@@ -1,0 +1,74 @@
+delta_t= 0.001
+delta_x= 0.025
+delta_t*delta_t/delta_x= 4e-05
+externalForce= -0.000392
+relaxation time= 0.500048
+omega= 1.99981
+kinematic viscosity physical units = 1e-05
+kinematic viscosity lattice units= 1.6e-05
+
+ITERATION = 0
+ -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*- 
+Average Mass: 0.200954
+Average Density: 1
+Average Volume-Fraction: 0.968500443656
+ -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*- 
+Sum of mass matrix: 0
+Lost mass: 0
+Total mass: 0
+Interface cells: 0
+
+ITERATION = 20
+ -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*- 
+Average Mass: 0.200954457364
+Average Density: 1.00272008676
+Average Volume-Fraction: 0.965673333767
+ -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*- 
+Sum of mass matrix: 41477
+Lost mass: 0
+Total mass: 41477
+Interface cells: 2698
+
+ITERATION = 40
+ -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*- 
+Average Mass: 0.200954457364
+Average Density: 1.01058484871
+Average Volume-Fraction: 0.957596690939
+ -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*- 
+Sum of mass matrix: 41477
+Lost mass: 0
+Total mass: 41477
+Interface cells: 2736
+
+ITERATION = 60
+ -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*- 
+Average Mass: 0.200954457364
+Average Density: 1.01775954813
+Average Volume-Fraction: 0.979032072321
+ -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*- 
+Sum of mass matrix: 41477
+Lost mass: 0
+Total mass: 41477
+Interface cells: 2906
+
+ITERATION = 80
+ -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*- 
+Average Mass: 0.200954457364
+Average Density: 1.01792030218
+Average Volume-Fraction: 0.97238516845
+ -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*- 
+Sum of mass matrix: 41477
+Lost mass: 0
+Total mass: 41477
+Interface cells: 2860
+
+ITERATION = 100
+ -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*- 
+Average Mass: 0.200954457364
+Average Density: 1.01397913961
+Average Volume-Fraction: 0.969164476273
+ -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*- 
+Sum of mass matrix: 41477
+Lost mass: 0
+Total mass: 41477
+Interface cells: 2912

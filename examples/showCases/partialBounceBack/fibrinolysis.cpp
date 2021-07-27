@@ -216,7 +216,7 @@ int main(int argc, char* argv[])
     plint clotEndZ = clotBeginZ + countClotZLength()-1;
     simParam.clotEndZ = double(clotEndZ)/double(simParam.nz);
 
-    Clot clot = *(new Clot(*lattice, clotBeginZ, clotEndZ));
+    Clot clot(*lattice, clotBeginZ, clotEndZ);
 
     if(simParam.usesParticles)
     {
@@ -272,6 +272,13 @@ int main(int argc, char* argv[])
     pcout << "Starting the iterations" << std::endl;
     pcout << std::endl;
 
+#ifdef PLB_REGRESSION
+    simParam.maxTime = 3.0;
+    simParam.startParticleTime = 1.0;
+    simParam.startClotTime = 2.0;
+    simParam.outIter = 1000;
+#endif
+
     for (plint iter = simParam.iniIter; iter < simParam.maxTime/simParam.dt; iter++) {
 
 		// generate clot
@@ -287,8 +294,9 @@ int main(int argc, char* argv[])
         T t = iter*simParam.dt;
         
         // constant inlet density
-        if (t==0)
-            *simParam.rhoWK_t_in = simParam.DeltaP/simParam.C_P * DESCRIPTOR<T>::invCs2 + 1;
+        if (t==0) {
+            simParam.rhoWK_t_in = simParam.DeltaP/simParam.C_P * DESCRIPTOR<T>::invCs2 + 1;
+        }
 
     /******* BCs set ******/
 
@@ -375,12 +383,14 @@ int main(int argc, char* argv[])
             exit(1);
         }
 
+#ifndef PLB_REGRESSION
         // write vtk
         if (simParam.writeVtk && iter % simParam.outIter == 0) {
             pcout << "Output (vtk) to disk at iteration: " << iter << ", t = " << iter * simParam.dt << std::endl;
             writeVtk(*lattice, clotFlags, clotSolidFraction, clotSolidFractionPhys, iter);
             pcout << std::endl;
         }
+#endif
         // count particles and write in output file
         if (simParam.writeVtk && simParam.usesParticles && iter % simParam.outIter == 0){
             findNumParticlesPerCell(particles,iter);
@@ -422,7 +432,11 @@ int main(int argc, char* argv[])
             T permeability = computeVSeepage(*lattice, clotSolidFraction)*(simParam.dx/simParam.dt)*simParam.rho*simParam.nu/gradPClot;
             T permeAdim = computeVSeepage(*lattice, clotSolidFraction)*simParam.rho_LB*simParam.nu_LB/gradPClotAdim;
 
+#ifndef PLB_REGRESSION
             flowFile << velInlet[0]*simParam.dx/simParam.dt << " " << velInlet[1]*simParam.dx/simParam.dt<< " " 
+#else
+            pcout << velInlet[0]*simParam.dx/simParam.dt << " " << velInlet[1]*simParam.dx/simParam.dt<< " " 
+#endif
             << velInlet[2]*simParam.dx/simParam.dt<< " "<< rhoInlet*convRhoToPressure+offsetRhoToPressure << " "
             << velInlet_1[0]*simParam.dx/simParam.dt << " " << velInlet_1[1]*simParam.dx/simParam.dt<< " " 
             << velInlet_1[2]*simParam.dx/simParam.dt<< " "<< rhoInlet_1*convRhoToPressure+offsetRhoToPressure<<" "
@@ -441,7 +455,7 @@ int main(int argc, char* argv[])
         Box3D outlet(0,simParam.nx-1, 0,simParam.ny-1, simParam.nz-1,simParam.nz-1);
         applyProcessingFunctional(new MyFluidPressureOutlet3D<T,DESCRIPTOR,2,1>(), outlet, *lattice);
         Box3D inlet(0,simParam.nx-1, 0,simParam.ny-1, 0,0);
-        applyProcessingFunctional(new FluidPressureInlet3D<T,DESCRIPTOR,2,-1>(*simParam.rhoWK_t_in), inlet, *lattice);
+        applyProcessingFunctional(new FluidPressureInlet3D<T,DESCRIPTOR,2,-1>(simParam.rhoWK_t_in), inlet, *lattice);
         
         
     }
@@ -449,6 +463,10 @@ int main(int argc, char* argv[])
     statFile.close();
     partStatFile.close();
     flowFile.close();
+
+    delete particles;
+    delete lattice;
+
 
     return 0;
 }

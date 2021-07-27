@@ -1,0 +1,31 @@
+omega= 1.88679
+step 0; t=0; av energy=5e-05; av rho=1
+Drag coefficient: 224.3148124
+Lift coefficient: 4.354641273e-16
+Average rho: 0.9996772921
+
+step 10; t=0.01; av energy=4.998158452e-05; av rho=1.000000004
+Drag coefficient: 13.47165098
+Lift coefficient: -1.314608685e-15
+Average rho: 0.9996772928
+
+step 20; t=0.02; av energy=4.99777434e-05; av rho=1.000000006
+Drag coefficient: 38.74706399
+Lift coefficient: -5.829467856e-15
+Average rho: 0.9996772983
+
+step 30; t=0.03; av energy=4.99753999e-05; av rho=1.000000007
+Drag coefficient: -12.49320238
+Lift coefficient: -9.77740204e-16
+Average rho: 0.9996772985
+
+step 40; t=0.04; av energy=4.997352313e-05; av rho=1.000000008
+Drag coefficient: 9.523684805
+Lift coefficient: 3.468512829e-14
+Average rho: 0.9996772997
+
+step 50; t=0.05; av energy=4.997145222e-05; av rho=1.000000007
+Drag coefficient: -6.281693451
+Lift coefficient: -9.255666714e-15
+Average rho: 0.9996772993
+

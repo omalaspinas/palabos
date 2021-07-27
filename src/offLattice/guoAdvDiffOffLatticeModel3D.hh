@@ -258,8 +258,8 @@ void GuoAdvDiffOffLatticeModel3D<T,Descriptor>::cellCompletion (
 template<typename T, template<typename U> class Descriptor>
 void GuoAdvDiffOffLatticeModel3D<T,Descriptor>::computeRhoBarJNeq (
           BlockLattice3D<T,Descriptor> const& lattice, Dot3D const& guoNode,
-          Dot3D const& fluidDirection, int depth, Array<T,3> const& wallNode, T delta,
-          Array<T,2> wallData, OffBoundary::Type bdType, Array<T,3> const& wallNormal,
+          Dot3D const& fluidDirection, int depth, [[maybe_unused]] Array<T,3> const& wallNode, T delta,
+          Array<T,2> wallData, OffBoundary::Type bdType, [[maybe_unused]] Array<T,3> const& wallNormal,
           T& rhoBar, Array<T,Descriptor<T>::d>& jNeq ) const
 {
     if (!usesSecondOrder()) {

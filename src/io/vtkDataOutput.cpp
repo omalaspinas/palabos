@@ -229,6 +229,7 @@ ParallelVtkDataWriter3D::ParallelVtkDataWriter3D(std::string const& fileName_)
 
 ParallelVtkDataWriter3D::~ParallelVtkDataWriter3D() { }
 
+// QUESTION: Suspicious: sizeOfScalar not used.
 void ParallelVtkDataWriter3D::writeDataField( MultiBlock3D& block, IndexOrdering::OrderingT ordering, plint sizeOfScalar,
                                               plint dataSize)
 {

@@ -53,7 +53,10 @@
 #include "latticeBoltzmann/geometricOperationTemplates.h"
 
 #ifdef PLB_MPI_PARALLEL
-#include "mpi.h"
+// DISABLE_WARNING_PUSH
+// DISABLE_WARNING_CAST_FUNCTION_TYPE
+#include <mpi.h>
+// DISABLE_WARNING_POP
 #endif
 
 namespace plb {
@@ -879,7 +882,7 @@ private:
 
 template<typename T,template<typename U> class Descriptor>
 class InitializeInterfaceLists3D : public BoxProcessingFunctional3D {
-    virtual void processGenericBlocks(Box3D domain, std::vector<AtomicBlock3D*> atomicBlocks)
+    virtual void processGenericBlocks([[maybe_unused]] Box3D domain, std::vector<AtomicBlock3D*> atomicBlocks)
     {
         PLB_ASSERT(atomicBlocks.size()==1);
         
@@ -1992,8 +1995,8 @@ public:
     }
 
     template<class VelFunction>
-    Actions3D immersedWallActions (
-            plint numIBIterations, MultiContainerBlock3D& container,
+    Actions3D immersedWallActions ( // TODO: maybe remove container?
+            plint numIBIterations, [[maybe_unused]] MultiContainerBlock3D& container,
             std::vector<Array<T,3> > const& vertices,
             std::vector<T> const& areas, std::vector<int> const& flags,
             VelFunction velFunction, bool strongRepelling )
@@ -2213,7 +2216,8 @@ public:
         return incompressibleModel;
     }
 private:
-    bool fieldExists(std::string name, plint envelopeWidth)
+    // TODO: maybe replace ASSERTS with exceptions.
+    bool fieldExists(std::string name, [[maybe_unused]] plint envelopeWidth)
     {
         if (group.hasBlock(name)) {
             PLB_ASSERT( group.get(name).getMultiBlockManagement().getEnvelopeWidth() >= envelopeWidth );
@@ -3318,7 +3322,8 @@ public:
         return reductionData.numInterfaceCells;
     }
 private:
-    bool fieldExists(std::string name, plint envelopeWidth)
+    // TODO: maybe replace ASSERTS with exceptions.
+    bool fieldExists(std::string name, [[maybe_unused]] plint envelopeWidth)
     {
         if (group.hasBlock(name)) {
             PLB_ASSERT( group.get(name).getMultiBlockManagement().getEnvelopeWidth() >= envelopeWidth );

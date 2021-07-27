@@ -131,7 +131,7 @@ T Dynamics<T,Descriptor>::getParameter(plint whichParameter) const {
 }
 
 template<typename T, template<typename U> class Descriptor>
-T Dynamics<T,Descriptor>::getDynamicParameter(plint whichParameter, Cell<T,Descriptor> const& cell) const {
+T Dynamics<T,Descriptor>::getDynamicParameter([[maybe_unused]] plint whichParameter, [[maybe_unused]] Cell<T,Descriptor> const& cell) const {
     // Parameter not implemented.
     return ((T) 0);
 }
@@ -830,7 +830,7 @@ T BounceBack<T,Descriptor>::computeDensity(Cell<T,Descriptor> const& cell) const
 
 template<typename T, template<typename U> class Descriptor>
 T BounceBack<T,Descriptor>::computePressure(Cell<T,Descriptor> const& cell) const {
-    return T();
+    return Descriptor<T>::cs2 * computeDensity(cell);
 }
 
 template<typename T, template<typename U> class Descriptor>

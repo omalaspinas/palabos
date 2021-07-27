@@ -1,0 +1,13 @@
+600  0.6
+  0
+1.9802   1.96059e-05
+step 0; t=0; av energy =2.621108334e-05; av rho =0.9999999473
+step 200; t=0.02; av energy =2.579040899e-05; av rho =0.9999994195
+step 400; t=0.04; av energy =2.704733021e-05; av rho =1.000000513
+step 600; t=0.06; av energy =2.719778467e-05; av rho =0.999996329
+step 800; t=0.08; av energy =2.749497421e-05; av rho =1.000249692
+step 1000; t=0.1; av energy =2.738536407e-05; av rho =1.000314863
+step 1200; t=0.12; av energy =2.742207391e-05; av rho =1.000312208
+step 1400; t=0.14; av energy =2.741410792e-05; av rho =0.9999798692
+step 1600; t=0.16; av energy =2.748586153e-05; av rho =0.9999500907
+step 1800; t=0.18; av energy =2.745640526e-05; av rho =0.999894426

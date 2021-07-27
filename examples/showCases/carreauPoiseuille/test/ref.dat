@@ -1,0 +1,7 @@
+nu0 = 0.5, nuInf = 0
+gradP = -1.54617
+lattice totally initialized.
+average=3.13521e-05; stdDev/average=0.00457169
+average=3.13577e-05; stdDev/average=0.000204066
+Simulation converged.
+For N = 50, Error = 0.000340264

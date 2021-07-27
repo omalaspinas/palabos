@@ -204,6 +204,7 @@ static void closeHDFfile() {
     H5Fclose(file_id_g);
 }
 
+// QUESTION: int mpi_rank, MPI_Comm comm are unused. should we remove them?
 //for this to work the file has to be already open (the file descriptor is a global var), 
 //this is an optimization it allows to read data and metadata without having to close and reopen the file
 static std::vector< std::vector<char> > readParallelHDF5(std::vector<plb::plint> const& my_block_id, std::vector<plb::plint> const& i_offset, int mpi_rank, MPI_Comm comm) {

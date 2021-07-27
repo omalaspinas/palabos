@@ -73,7 +73,11 @@ T uRef = 0.02;
 
 T uAverage = uRef * n0 / ny;
 
+#ifndef PLB_REGRESSION
 plint maxIter  = 100000; // Maximum number of iterations for the simulation.
+#else
+plint maxIter = 101;
+#endif
 plint outIter  = 100; // Number of iterations for printing the average kinetic energy on the screen.
 plint saveIter = 100; // Number of iterations for saving data in the disk.
 
@@ -249,6 +253,7 @@ int main(int argc, char* argv[])
                   << countParticles(*particles, particles->getBoundingBox()) << std::endl;
                   
         }
+#ifndef PLB_REGRESSION
         if (i%saveIter==0 && i>0) {
             pcout << "Write visualization files." << std::endl;
             VtkImageOutput3D<T> vtkOut("volume", 1.); 
@@ -259,6 +264,7 @@ int main(int argc, char* argv[])
             writeAsciiParticlePos(*particles, "particle_positions.dat");
             writeParticleVtk(*particles, "particles.vtk");
         }
+#endif
 
         lattice->collideAndStream();
 

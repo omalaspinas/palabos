@@ -175,7 +175,7 @@ public:
 
     plint antiFnQtyPerCell;
     double V0antiFn;    // volume before clot where particles are injected
-    double * rhoWK_t_in;    // inlet density
+    double rhoWK_t_in;    // inlet density
 
     double C_P; // conversion factor for pressure : P = C_P*P_adim ; and rho_adim = P/(C_P*cs2) + rho_LB = P_adim/cs2 + rho_LB
 
@@ -285,7 +285,7 @@ public:
         antiFnQtyPerCell = (double)antiFnConcentration*V0antiFn*avogadro/(double)particlesNum;      // but consider the whole volume before clot for initial antiFn
 
         // initialize the pointer that will contain the inlet density
-        rhoWK_t_in = new double(DeltaP/C_P * DESCRIPTOR<T>::invCs2 + 1);
+        rhoWK_t_in = double(DeltaP/C_P * DESCRIPTOR<T>::invCs2 + 1);
 
         lattice.get()->initialize();
         

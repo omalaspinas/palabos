@@ -52,6 +52,44 @@
 
 #endif  // PLB_DEBUG
 
+// #if defined(_MSC_VER)
+//     #define DISABLE_WARNING_PUSH           __pragma(warning( push ))
+//     #define DISABLE_WARNING_POP            __pragma(warning( pop )) 
+//     #define DISABLE_WARNING(warningNumber) __pragma(warning( disable : warningNumber ))
+// 
+//     // TODO : find warning numbers for those 3 (add DISABLE_WARNING(4100))
+//     #define DISABLE_WARNING_CAST_FUNCTION_TYPE
+//     #define DISABLE_WARNING_INT_IN_BOOL
+//     #define DISABLE_WARNING_DEPRECATED_COPY
+//     // other warnings you want to deactivate...
+//     
+// #elif defined(__GNUC__) || defined(__clang__)
+//     #define DO_PRAGMA(X) _Pragma(#X)
+//     #define DISABLE_WARNING_PUSH           DO_PRAGMA(GCC diagnostic push)
+//     #define DISABLE_WARNING_POP            DO_PRAGMA(GCC diagnostic pop) 
+//     #define DISABLE_WARNING(warningName)   DO_PRAGMA(GCC diagnostic ignored #warningName)
+//     
+//     #if defined(__clang__) // GNUC is defined for clang too
+//         #define DISABLE_WARNING_CAST_FUNCTION_TYPE    
+//     #else
+//         #define DISABLE_WARNING_CAST_FUNCTION_TYPE    DISABLE_WARNING(-Wcast-function-type)
+//     #endif
+//     #define DISABLE_WARNING_INT_IN_BOOL           DISABLE_WARNING(-Wint-in-bool-context)
+//     #define DISABLE_WARNING_DEPRECATED_COPY       DISABLE_WARNING(-Wdeprecated-copy)
+//     
+//    // other warnings you want to deactivate... 
+//     
+// #else
+//     #define DISABLE_WARNING_PUSH
+//     #define DISABLE_WARNING_POP
+//     
+//     #define DISABLE_WARNING_CAST_FUNCTION_TYPE
+//     #define DISABLE_WARNING_INT_IN_BOOL
+//     #define DISABLE_WARNING_DEPRECATED_COPY
+//     // other warnings you want to deactivate... 
+//  
+// #endif
+
 namespace plb {
 
 // Programmatically enable core dumps for POSIX systems.

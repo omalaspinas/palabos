@@ -52,6 +52,10 @@ public :
 	TrapeziumIntegration(Function<T> *function_, T y0_, int numberSteps_)
 		: function(function_), y0(y0_), numberSteps(numberSteps_)
 	{   }
+
+    ~TrapeziumIntegration() {
+        delete function;
+    }
 	
 	T operator()(T y) const 
 	{	

@@ -61,7 +61,7 @@ T womersleyVelocity(plint iY, T t, T A, T omega, T alpha, IncomprFlowParam<T> co
 }
 
 /// Time dependent but space-independent Womersley force.
-T womersleyForce(T t, T A, T omega, IncomprFlowParam<T> const& parameters) 
+T womersleyForce(T t, T A, T omega) 
 {
     return A * std::cos(omega * t);
 }
@@ -90,7 +90,7 @@ private:
 void channelSetup( MultiBlockLattice2D<T,NSDESCRIPTOR>& lattice,
                    IncomprFlowParam<T> const& parameters,
                    OnLatticeBoundaryCondition2D<T,NSDESCRIPTOR>& boundaryCondition,
-                   T alpha, T frequency, T amplitude)
+                   T frequency, T amplitude)
 {
     const plint nx = parameters.getNx();
     const plint ny = parameters.getNy();
@@ -105,7 +105,7 @@ void channelSetup( MultiBlockLattice2D<T,NSDESCRIPTOR>& lattice,
     setBoundaryVelocity( lattice, lattice.getBoundingBox(), u );
     initializeAtEquilibrium(lattice,lattice.getBoundingBox(),(T)1.0,u);
 
-    Array<T,NSDESCRIPTOR<T>::d> force(womersleyForce((T)0, amplitude, frequency, parameters),0.);
+    Array<T,NSDESCRIPTOR<T>::d> force(womersleyForce((T)0, amplitude, frequency),0.);
     setExternalVector(lattice,lattice.getBoundingBox(),NSDESCRIPTOR<T>::ExternalField::forceBeginsAt,force);
     
     lattice.initialize();
@@ -134,7 +134,7 @@ void writeGif(BlockLatticeT& lattice,plint iT)
 
 T computeRMSerror ( MultiBlockLattice2D<T,NSDESCRIPTOR>& lattice,
                     IncomprFlowParam<T> const& parameters,
-                    T alpha, plint iT, bool createImage=false)
+                    T alpha, plint iT)
 {
     MultiTensorField2D<T,2> analyticalVelocity(lattice);
     setToFunction( analyticalVelocity, analyticalVelocity.getBoundingBox(),
@@ -207,7 +207,7 @@ int main(int argc, char *argv[])
 
     lattice.periodicity().toggle(0,true);
     
-    channelSetup( lattice, parameters, *boundaryCondition, alpha, frequency, amplitude);
+    channelSetup( lattice, parameters, *boundaryCondition, frequency, amplitude);
 
     pcout << "Starting simulation" << endl;
 
@@ -220,12 +220,15 @@ int main(int argc, char *argv[])
     lattice.resetTime(1);
     
     pcout << "Omega = " << omega << ", it period = " << tPeriod << endl;
-
+#ifndef PLB_REGRESSION
     util::ValueTracer<T> converge(uMax,N,1.0e-3);
+#else
+    util::ValueTracer<T> converge(1.0,N,1.0e-3);
+#endif
     plint iT = 0;
     for (iT = 0; iT < maxIter; ++iT) {
 //         Updating the force in the whole domain
-        Array<T,NSDESCRIPTOR<T>::d> force(womersleyForce((T)iT, amplitude, frequency, parameters),0.);
+        Array<T,NSDESCRIPTOR<T>::d> force(womersleyForce((T)iT, amplitude, frequency),0.);
         setExternalVector(lattice,lattice.getBoundingBox(),
                           NSDESCRIPTOR<T>::ExternalField::forceBeginsAt,force);
         
@@ -254,6 +257,7 @@ int main(int argc, char *argv[])
         lattice.collideAndStream();
     }
     
-    pcout << "For N = " << N << ", Error = " << computeRMSerror ( lattice,parameters,alpha,iT, true) << endl;
+    pcout << "For N = " << N << ", Error = " << computeRMSerror ( lattice,parameters,alpha,iT) << endl;
+    delete boundaryCondition;
 }
 

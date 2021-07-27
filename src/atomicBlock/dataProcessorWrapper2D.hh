@@ -419,8 +419,8 @@ void integrateProcessingFunctional (
         BlockLattice2D<T1,Descriptor>& lattice,
         TensorField2D<T2,nDim>& field, plint level )
 {
-    executeDataProcessor( BoxProcessorGenerator2D(functional, domain),
-                          lattice, field );
+    addInternalProcessor( BoxProcessorGenerator2D(functional, domain),
+                          lattice, field, level );
 }
 
 /* *************** BoxProcessing2D_LN ****************************************** */
@@ -443,8 +443,8 @@ void integrateProcessingFunctional (
         BlockLattice2D<T1,Descriptor>& lattice,
         NTensorField2D<T2>& field, plint level )
 {
-    executeDataProcessor( BoxProcessorGenerator2D(functional, domain),
-                          lattice, field );
+    addInternalProcessor( BoxProcessorGenerator2D(functional, domain),
+                          lattice, field, level );
 }
 
 /* *************** LatticeDotProcessing2D ****************************************** */

@@ -75,6 +75,7 @@ plb_ofstream::plb_ofstream(const char* filename, std::ostream::openmode mode)
             new std::ofstream(filename,mode) : 0 )
 { }
 
+// QUESTION: Why is the copy const and equal doing nothing?
 plb_ofstream::plb_ofstream(plb_ofstream const& rhs)
     : devNullStream(&devNullBuffer),
       original(0)
@@ -156,6 +157,7 @@ plb_ifstream::plb_ifstream(const char * filename, std::istream::openmode mode)
             new std::ifstream(filename,mode) : 0 )
 { }
 
+// QUESTION: Why copy and equal are doing nothing?
 plb_ifstream::plb_ifstream(plb_ifstream const& rhs)
     : devNullStream(&devNullBuffer),
       original(0)

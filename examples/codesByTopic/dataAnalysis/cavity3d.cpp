@@ -78,6 +78,7 @@ void analyzeStrainRate(MultiBlockLattice3D<T,DESCRIPTOR>& lattice)
     std::unique_ptr<MultiScalarField3D<T> > Snorm_FD (
             computeSymmetricTensorNorm(*strainRate_FD) );
 
+#ifndef PLB_REGRESSION
     const plint imSize = 400;
     ImageWriter<T> imageWriter("leeloo");
     imageWriter.writeScaledGif( "S_LB",
@@ -95,14 +96,17 @@ void analyzeStrainRate(MultiBlockLattice3D<T,DESCRIPTOR>& lattice)
         if (err != 0)
             exit(err);
     }
+#endif
 
     std::unique_ptr<MultiScalarField3D<T> > differenceSqr (
             computeSymmetricTensorNorm (
                 *subtract (
                     *strainRate_LB, *strainRate_FD ) ) );
 
+#ifndef PLB_REGRESSION
     imageWriter.writeScaledGif( "differenceSqr",
             *extractSubDomain(*differenceSqr, slice), imSize,imSize );
+#endif
 
     T maxSnorm_LB = computeMax(*Snorm_LB);
     T maxSnorm_FD = computeMax(*Snorm_FD);
@@ -132,7 +136,11 @@ int main(int argc, char* argv[]) {
     );
     const T logT     = (T)1/(T)100;
     const T imSave   = (T)0.2;
+#ifndef PLB_REGRESSION
     const T maxT     = (T)10.1;
+#else
+    const T maxT     = 0.61;
+#endif
 
     writeLogFile(parameters, "3D diagonal cavity");
 

@@ -104,9 +104,17 @@ void setParam()
     param.lz = 9.0;
     param.xSide = 2.0;
     param.ySide = 1.0;
+#ifndef PLB_REGRESSION
     param.resolution = 25;
+#else
+    param.resolution = 10;
+#endif
     param.dt = 0.00082;
+#ifndef PLB_REGRESSION
     param.maxIter = 500000;
+#else
+    param.maxIter = 100;
+#endif
     param.statIter = 200;
     param.outIter = 500;
     param.startIter = 24000;
@@ -486,12 +494,14 @@ int main(int argc, char* argv[])
             pcout << std::endl;
         }
 
+#ifndef PLB_REGRESSION
         if (iT % param.outIter == 0 || iT == param.maxIter - 1) {
             pcout << "Output to disk at iteration: " << iT << std::endl;
             writeVTK(*lattice, param.mountPointLB, iT);
             writeSurface(rectangleTriangleSet, iT);
             pcout << std::endl;
         }
+#endif
 
         lattice->executeInternalProcessors(); // Execute all processors and communicate appropriately.
 

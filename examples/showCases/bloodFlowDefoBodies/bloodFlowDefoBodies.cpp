@@ -2378,7 +2378,7 @@ int main(int argc, char* argv[])
                     pluint numRBCs_toPrint_tmp = 0;
                     pluint numPLTs_toPrint_tmp = 0;
 
-					for (pluint j = 0; j < sp.centers_log.cols(); j += 3)
+					for (pluint j = 0; j < (pluint)sp.centers_log.cols(); j += 3)
 					{
 						if ((j / 3) < sp.shapeOpRBCs.size())
 						{
@@ -2400,17 +2400,23 @@ int main(int argc, char* argv[])
 							bodyID_tmp = sp.shapeOpPLTs[cnt]->bodyID_;
 						}
 
-                        if (RBC_printing)
-                            if (numRBCs_toPrint_tmp > numRBCs_toPrint_COMs)
+			// QUESTION: Why not write this as:
+			// print = !(numRBCs_toPrint_tmp > numRBCs_toPrint_COMs) ?
+                        if (RBC_printing) {
+                            if (numRBCs_toPrint_tmp > numRBCs_toPrint_COMs) {
                                 print = false;
-                            else
+			    } else {
                                 print = true;
+			    }
+			}
                         
-                        if (PLT_printing)
-                            if (numPLTs_toPrint_tmp > numPLTs_toPrint_COMs)
+                        if (PLT_printing) {
+                            if (numPLTs_toPrint_tmp > numPLTs_toPrint_COMs) {
                                 print = false;
-                            else
+			    } else {
                                 print = true;
+			    }
+			}
 
                         if (print)
                         {

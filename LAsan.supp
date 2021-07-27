@@ -1,0 +1,3 @@
+# The syntax must be leak:<pattern>
+leak:strdup
+leak:__interceptor_malloc

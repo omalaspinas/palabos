@@ -1091,7 +1091,7 @@ bool GuoFdCompletionAlgorithm3D<T,Descriptor>::computeNeighborData()
 }
 
 template<typename T, template<typename U> class Descriptor>
-void GuoFdCompletionAlgorithm3D<T,Descriptor>::reduceVariables(T sumWeights) 
+void GuoFdCompletionAlgorithm3D<T,Descriptor>::reduceVariables([[maybe_unused]] T sumWeights) 
 { 
     if (this->args.empty()) {
         this->cell.getDynamics().computeRhoBarJ(this->cell, this->rhoBar, this->j);

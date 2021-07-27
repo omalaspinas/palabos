@@ -303,21 +303,28 @@ int main(int argc, char *argv[])
             nsLattice.getBoundingBox(),
             nsLattice, adLattice, processorLevel );
     
+#ifndef PLB_REGRESSION
     T tIni = global::timer("simTime").stop();
     pcout << "time elapsed for rayleighBenardSetup:" << tIni << endl;
+#endif
     global::timer("simTime").start();
     
+#ifndef PLB_REGRESSION
     plint evalTime =10000;
+#endif
     plint iT = 0;
     plint maxT = 1000000000;
     plint statIter = 10;
+#ifndef PLB_REGRESSION
     plint saveIter = 1000;
+#endif
     util::ValueTracer<T> converge((T)1,(T)100,1.0e-3);
     bool convergedOnce = false;
 
     // Main loop over time iterations.
     for (iT = 0; iT <= maxT; ++iT) 
     {
+#ifndef PLB_REGRESSION
         if (iT == (evalTime))
         {
             T tEval = global::timer("simTime").stop();
@@ -326,6 +333,7 @@ int main(int argc, char *argv[])
             pcout << "Remaining " << (plint)remainTime << " hours, and ";
             pcout << (plint)((T)60*(remainTime - (T)((plint)remainTime))+0.5) << " minutes." << endl;
         }
+#endif
         if (iT % statIter == 0)
         {
             int zDirection = 2;
@@ -342,7 +350,7 @@ int main(int argc, char *argv[])
             {
                 convergedOnce = true;
                 converge.resetValues();
-                converge.setEpsilon(1.0e-14);
+                converge.setEpsilon(1.0e-11);
                 applyProcessingFunctional(
                     new PerturbTemperatureRayleighBenardProcessor3D<T,NSDESCRIPTOR,ADESCRIPTOR>(parameters), 
                     adLattice.getBoundingBox(),adLattice);
@@ -354,6 +362,7 @@ int main(int argc, char *argv[])
                 break;
             }
         }
+#ifndef PLB_REGRESSION
         if (iT % saveIter == 0)
         {
             pcout << iT * parameters.getDeltaT() << " : Writing VTK." << endl;
@@ -362,12 +371,14 @@ int main(int argc, char *argv[])
             pcout << iT << " : Writing gif." << endl;
             writeGif(nsLattice,adLattice,iT);
         }
+#endif        
         
         // Lattice Boltzmann iteration step.
         adLattice.collideAndStream();
         nsLattice.collideAndStream();
     }
     
+#ifndef PLB_REGRESSION
     writeGif(nsLattice,adLattice,iT);
     
     T tEnd = global::timer("simTime").stop();
@@ -382,5 +393,9 @@ int main(int argc, char *argv[])
     pcout << "total time: " << tEnd << endl;
     pcout << "total iterations: " << iT << endl;
     pcout << "Msus: " << nx100*ny100*nz100*(T)iT/totalTime << endl;
+#endif
+
+    delete nsBoundaryCondition;
+    delete adBoundaryCondition;
 }
 

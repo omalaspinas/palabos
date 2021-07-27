@@ -243,10 +243,15 @@ int main(int argc, char* argv[]) {
             6.,        // lx
             1.         // ly 
     );
+
     const T logT     = (T)0.02;
+#ifndef PLB_REGRESSION
     const T imSave   = (T)0.06;
     const T vtkSave  = (T)1.;
     const T maxT     = (T)20.1;
+#else
+    const T maxT     = (T)1.01;
+#endif
 
     writeLogFile(parameters, "Poiseuille flow");
 
@@ -259,8 +264,11 @@ int main(int argc, char* argv[]) {
 
     cylinderSetup(lattice, parameters, *boundaryCondition);
     std::map<int,std::string> nameOfDynamics;
+    auto dynChain = extractDynamicsChain(lattice, nameOfDynamics);
+#ifndef PLB_REGRESSION
     ImageWriter<int>("earth").writeScaledGif("dynamics",
-                                             *extractDynamicsChain(lattice,nameOfDynamics), 600,600 );
+                                             *dynChain, 600,600 );
+#endif
     //ImageWriter<int>("air").writeScaledGif("dynamics",
     //                                       *extractTopMostDynamics(lattice), 600,600 );
     for (std::map<int,std::string>::const_iterator it = nameOfDynamics.begin();
@@ -280,6 +288,7 @@ int main(int argc, char* argv[]) {
         //   discrete time iT. However, the stored averages (getStoredAverageEnergy
         //   and getStoredAverageDensity) correspond to the previous time iT-1.
 
+#ifndef PLB_REGRESSION
        if (iT%parameters.nStep(imSave)==0) {
             pcout << "Saving Gif ..." << endl;
             writeGif(lattice, iT);
@@ -289,6 +298,7 @@ int main(int argc, char* argv[]) {
             pcout << "Saving VTK file ..." << endl;
             writeVTK(lattice, parameters, iT);
         }
+#endif
 
         if (iT%parameters.nStep(logT)==0) {
             pcout << "step " << iT
@@ -309,4 +319,10 @@ int main(int argc, char* argv[]) {
     }
     
     delete boundaryCondition;
+    for (auto dyn : old_dynamics) {
+        delete dyn;
+    }
+    for (auto dyn : new_dynamics) {
+        delete dyn;
+    }
 }

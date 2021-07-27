@@ -87,7 +87,11 @@ int main(int argc, char* argv[]) {
             1.,        // ly
             1.         // lz
     );
+#ifndef PLB_REGRESSION
     const T maxT     = (T)10.1;
+#else
+    const T maxT     = (T)0.041;
+#endif
 
     writeLogFile(parameters, "3D diagonal cavity");
 
@@ -117,10 +121,12 @@ int main(int argc, char* argv[]) {
     integrateProcessingFunctional( new ExternalRhoJcollideAndStream3D<T,DESCRIPTOR>,
                                    lattice2.getBoundingBox(), lattice2RhoBarJparam, -1 );
 
+#ifndef PLB_REGRESSION
     const plint nx = parameters.getNx();
     const plint ny = parameters.getNy();
     const plint nz = parameters.getNz();
     Box3D slice(0.5*nx-1, 0.5*nx+1, 0, ny-1, 0, nz-1);
+#endif
 
     // Loop over main time iteration.
     global::timer("iterations").start();
@@ -133,8 +139,10 @@ int main(int argc, char* argv[]) {
         computeRhoBarJ(lattice2, rhoBar, j, lattice2.getBoundingBox());
 
         if (iT%100==0) {
+            pcout << "iT : " << iT << std::endl;
             pcout << "Energy 1: " << computeAverageEnergy(lattice) << std::endl;
             pcout << "Energy 2: " << computeAverageEnergy(lattice2) << std::endl;
+#ifndef PLB_REGRESSION
             pcout << global::timer("iterations").getTime()/(iT+1) << std::endl;
 
             T dx = parameters.getDeltaX();
@@ -143,6 +151,7 @@ int main(int argc, char* argv[]) {
             vtkOut.writeData<float>(
                     *subtract(*computeVelocityNorm(lattice, slice),*computeVelocityNorm(lattice2, slice)), 
                     "velocityNormDiff", dx/dt);
+#endif
         }
 
     }

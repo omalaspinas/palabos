@@ -109,10 +109,11 @@ LogFileCollection::~LogFileCollection() {
     }
 }
 
-LogFileCollection::LogFileCollection(LogFileCollection const& rhs)
+// QUESTION: Why do copy const and equal do nothing?
+LogFileCollection::LogFileCollection([[maybe_unused]] LogFileCollection const& rhs)
 { }
 
-LogFileCollection& LogFileCollection::operator=(LogFileCollection const& rhs) {
+LogFileCollection& LogFileCollection::operator=([[maybe_unused]] LogFileCollection const& rhs) {
     return *this;
 }
 

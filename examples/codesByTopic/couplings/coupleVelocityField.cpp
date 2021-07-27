@@ -156,22 +156,27 @@ int main(int argc, char* argv[]) {
     // time steps. Note the use of plb_ofstream instead of the standard C++
     // ofstream, which is required to guarantee a consistent behavior in MPI-
     // parallel programs.
+#ifndef PLB_REGRESSION
     plb_ofstream successiveProfiles("velocityProfiles.dat");
+#endif
 
     // Main loop over time steps.
     for (plint iT=0; iT<10000; ++iT) {
         if (iT%1000==0) {
 
+#ifndef PLB_REGRESSION
             ImageWriter<T> imageWriter("leeloo");
             imageWriter.writeScaledGif(createFileName("uSqr", iT, 6),
                                        *computeKineticEnergy(lattice),
                                        600, 600 );
+#endif
             pcout << "At iteration step " << iT
                   << ", the density along the channel is " << endl;
             pcout << setprecision(7)
                   << *computeDensity(lattice, Box2D(0, nx-1, ny/2, ny/2))
                   << endl << endl;
 
+#ifndef PLB_REGRESSION
             Box2D profileSection(nx/2, nx/2, 0, ny-1);
             successiveProfiles
                 << setprecision(4)
@@ -181,6 +186,7 @@ int main(int argc, char* argv[]) {
                   // (1) Compute velocity norm along the chosen section.
                        *computeVelocityNorm (lattice, profileSection) )
                 << endl;
+#endif
 
         }
 

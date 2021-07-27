@@ -1,0 +1,14 @@
+Total cost of computations = 86140
+We are using 1 processors...
+Ideal cost per processor = 86140
+---- Costs Per Processor ----
+0 : 86140
+*******************************
+Sum of all costs = 86140
+*******************************
+step 0; t=0; Entstrophy= 781.495
+step 129; t=0.099975; Entstrophy= 603.227
+step 258; t=0.19995; Entstrophy= 493.967
+step 387; t=0.299925; Entstrophy= 434.631
+step 516; t=0.3999; Entstrophy= 746.907
+maximum enstrophy = 767.682, at time = 0.390675

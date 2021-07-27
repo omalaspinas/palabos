@@ -1,0 +1,65 @@
+Old dynamics:
+Structure is: BGK
+Omega=3.14159
+Structure is: Boundary_DensityDirichlet_1_-1 >> BGK
+Omega=1.4
+
+New dynamics:
+Structure is: BGK
+Omega=3.14159
+Structure is: Boundary_DensityDirichlet_1_-1 >> BGK
+Omega=1.4
+Before unserialization, BGK clone has omega 1
+After unserialization, BGK clone has omega 3.14159
+
+step 0; t=0; av energy =2.562304917e-05; av rho =0.9999999207
+step 60; t=0.02; av energy =2.506558197e-05; av rho =1.000000177
+step 120; t=0.04; av energy =2.652377247e-05; av rho =0.9999971332
+step 180; t=0.06; av energy =2.673678152e-05; av rho =0.9999764631
+step 240; t=0.08; av energy =2.720831962e-05; av rho =1.000193032
+step 300; t=0.1; av energy =2.745282983e-05; av rho =1.000225742
+step 360; t=0.12; av energy =2.789668193e-05; av rho =1.000135138
+step 420; t=0.14; av energy =2.810802826e-05; av rho =0.9996674213
+step 480; t=0.16; av energy =2.846401846e-05; av rho =0.9995641646
+step 540; t=0.18; av energy =2.869053988e-05; av rho =0.9994130529
+step 600; t=0.2; av energy =2.985747215e-05; av rho =0.9992918148
+step 660; t=0.22; av energy =2.968855865e-05; av rho =0.9990923428
+step 720; t=0.24; av energy =2.903999573e-05; av rho =0.9988657684
+step 780; t=0.26; av energy =2.874916306e-05; av rho =0.9987141865
+step 840; t=0.28; av energy =2.875948774e-05; av rho =0.998514234
+step 900; t=0.3; av energy =2.845669353e-05; av rho =0.9980465636
+step 960; t=0.32; av energy =2.842965286e-05; av rho =0.9979574643
+step 1020; t=0.34; av energy =2.808271035e-05; av rho =0.9978443546
+step 1080; t=0.36; av energy =2.845919478e-05; av rho =0.9978923937
+step 1140; t=0.38; av energy =2.849340689e-05; av rho =0.9976567004
+step 1200; t=0.4; av energy =2.787517351e-05; av rho =0.9975251563
+step 1260; t=0.42; av energy =2.794999878e-05; av rho =0.9973054096
+step 1320; t=0.44; av energy =2.818786237e-05; av rho =0.9971718536
+step 1380; t=0.46; av energy =2.927695678e-05; av rho =0.9969459586
+step 1440; t=0.48; av energy =2.907456854e-05; av rho =0.9968022903
+step 1500; t=0.5; av energy =2.917212439e-05; av rho =0.9966846917
+step 1560; t=0.52; av energy =2.892858089e-05; av rho =0.9966291324
+step 1620; t=0.54; av energy =2.910045038e-05; av rho =0.9963686218
+step 1680; t=0.56; av energy =2.917320322e-05; av rho =0.9959893381
+step 1740; t=0.58; av energy =2.899738976e-05; av rho =0.9958604388
+step 1800; t=0.6; av energy =2.905407612e-05; av rho =0.9956972663
+step 1860; t=0.62; av energy =2.964886343e-05; av rho =0.995587941
+step 1920; t=0.64; av energy =2.929858129e-05; av rho =0.9954209589
+step 1980; t=0.66; av energy =2.8991646e-05; av rho =0.9951485794
+step 2040; t=0.68; av energy =2.860055309e-05; av rho =0.9950559883
+step 2100; t=0.7; av energy =2.895978021e-05; av rho =0.9948322978
+step 2160; t=0.72; av energy =2.895574221e-05; av rho =0.9945480616
+step 2220; t=0.74; av energy =2.909074931e-05; av rho =0.994464832
+step 2280; t=0.76; av energy =2.881303244e-05; av rho =0.994346012
+step 2340; t=0.78; av energy =2.942163056e-05; av rho =0.9942942411
+step 2400; t=0.8; av energy =2.928961335e-05; av rho =0.9940280866
+step 2460; t=0.82; av energy =2.921376532e-05; av rho =0.9938496425
+step 2520; t=0.84; av energy =2.890856002e-05; av rho =0.993596809
+step 2580; t=0.86; av energy =2.924948366e-05; av rho =0.9934824833
+step 2640; t=0.88; av energy =2.970677616e-05; av rho =0.9932443806
+step 2700; t=0.9; av energy =2.943655585e-05; av rho =0.9931084026
+step 2760; t=0.92; av energy =2.942405727e-05; av rho =0.9929473778
+step 2820; t=0.94; av energy =2.922560176e-05; av rho =0.9928700819
+step 2880; t=0.96; av energy =2.935923151e-05; av rho =0.9925844896
+step 2940; t=0.98; av energy =2.945963251e-05; av rho =0.9923589606
+step 3000; t=1; av energy =2.920559035e-05; av rho =0.9921871881
