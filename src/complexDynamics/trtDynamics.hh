@@ -62,8 +62,8 @@ template<typename T, template<typename U> class Descriptor>
 template<typename T, template<typename U> class Descriptor>
 BaseTRTdynamics<T,Descriptor>::BaseTRTdynamics(HierarchicUnserializer& unserializer)
     : IsoThermalBulkDynamics<T,Descriptor>(T()),// dummy init, true variables values will be set by the unserializer
-        keep_magic_constant_when_setting_omega(bool()),
-        omegaMinus(T())
+        omegaMinus(T()),
+        keep_magic_constant_when_setting_omega(bool())
 {
     this->unserialize(unserializer);
 }
