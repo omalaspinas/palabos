@@ -61,8 +61,10 @@ namespace plb {
         int field = 0;
 
     public:
-        ParallelXdmfDataWriter3D(std::string fname):xdmf_fname(fname + ".xdmf"), h5_fname(fname + ".h5") {
-
+        ParallelXdmfDataWriter3D(std::string fname) : 
+            xdmf_fname(FileName(fname + ".xdmf").defaultPath(global::directories().getOutputDir())),
+            h5_fname(FileName(fname + ".h5").defaultPath(global::directories().getOutputDir())) 
+        {
             if (global::mpi().isMainProcessor()) {
                 fhandle = new std::ofstream(xdmf_fname.c_str());
                 if (!(*fhandle)) {

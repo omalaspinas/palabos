@@ -377,7 +377,9 @@ std::unique_ptr<MultiBlockLattice3D<T,DESCRIPTOR> > run (
     //   refinement level and stop the simulation.
     plint convergenceIter=20;
     util::ValueTracer<T> velocityTracer(0.05*convergenceIter, resolution, epsilon);
+#ifndef PLB_REGRESSION
     global::timer("iteration").restart();
+#endif
     plint i = util::roundToInt(currentTime/dt);
     lattice->resetTime(i);
     bool checkForErrors = true;
@@ -385,7 +387,11 @@ std::unique_ptr<MultiBlockLattice3D<T,DESCRIPTOR> > run (
     // Collision and streaming iterations.
     while(!velocityTracer.hasConverged() && currentTime<simTime)
     {
+#ifndef PLB_REGRESSION
         if (i%200==0 && performOutput) {
+#else
+        if (i%10==0 && performOutput) {
+#endif
             pcout << "T= " << currentTime << "; "
                   << "Average energy: "
                   << boundaryCondition.computeAverageEnergy()*util::sqr(dx/dt) << std::endl;
@@ -426,7 +432,8 @@ std::unique_ptr<MultiBlockLattice3D<T,DESCRIPTOR> > run (
         writeSurfaceVTK (
                 boundary,
                 *computeSurfaceForce( boundary, voxelizedDomain, *lattice, model->velIsJ(), dynamicMesh ),
-                scalarNames, vectorNames, "surface_"+util::val2str(level)+".vtk", dynamicMesh, 0,
+                scalarNames, vectorNames, 
+                FileName("surface_" + util::val2str(level) + ".vtk").defaultPath(global::directories().getOutputDir()), dynamicMesh, 0,
                 scalarFactor, vectorFactor );
     }
 
@@ -443,8 +450,10 @@ std::unique_ptr<MultiBlockLattice3D<T,DESCRIPTOR> > run (
         pcout << "Average velocity through inlet section: " << inletAverageVel << std::endl;
         pcout << "Number of iterations: " << i << std::endl;
     }
+#ifndef PLB_REGRESSION
     pcout << "Elapsed time: " << global::timer("iteration").stop() << std::endl;
     pcout << "Total elapsed time: " << global::timer("global").getTime() << std::endl;
+#endif
 
     if (performOutput) {
         pcout << "Description: "
@@ -531,7 +540,7 @@ void readParameters(XMLreader const& document)
 int main(int argc, char* argv[])
 {
     plbInit(&argc, &argv);
-    global::directories().setOutputDir("./");
+    global::directories().setOutputDir("./tmp/");
     global::IOpolicy().activateParallelIO(false);
 
     string paramXmlFileName;
@@ -555,7 +564,9 @@ int main(int argc, char* argv[])
         return -1;
     }
 
+#ifndef PLB_REGRESSION
     global::timer("global").start();
+#endif
     plint iniLevel=0;
     std::unique_ptr<MultiBlockLattice3D<T,DESCRIPTOR> > iniConditionLattice(nullptr);
     // This code incorporates the concept of smooth grid refinement until convergence is
@@ -587,5 +598,7 @@ int main(int argc, char* argv[])
         pcout << exception.what() << std::endl;
         return -1;
     }
+
+    delete triangleSet;
 }
 

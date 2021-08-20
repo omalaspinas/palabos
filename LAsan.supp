@@ -1,3 +1,8 @@
 # The syntax must be leak:<pattern>
 leak:strdup
+leak:malloc
+leak:calloc
+leak:realloc
 leak:__interceptor_malloc
+leak:__interceptor_calloc
+leak:__interceptor_realloc

@@ -163,6 +163,13 @@ public:
         }
         return result;
     }
+    static Array<T,size> ones() {
+        Array<T,size> result;
+        for (pluint i=0; i<size; ++i) {
+            result[i] = (T)1;
+        }
+        return result;
+    }
 private:
     T data[size];
 };
@@ -378,6 +385,9 @@ public:
     static Array<T,0> zero() {
         return Array<T,0>();
     }
+    static Array<T,0> ones() {
+        return Array<T,0>();
+    }
 private:
     T data[1];
 };
@@ -567,6 +577,9 @@ public:
     static Array<T,2> zero() {
         return Array<T,2>(T(), T());
     }
+    static Array<T,2> ones() {
+        return Array<T,2>((T)1, (T)1);
+    }
 private:
     T data[2];
 };
@@ -751,6 +764,9 @@ public:
     }
     static Array<T,3> zero() {
         return Array<T,3>(T(), T(), T());
+    }
+    static Array<T,3> ones() {
+        return Array<T,3>((T)1, (T)1, (T)1);
     }
 private:
     T data[3];
@@ -955,6 +971,9 @@ public:
     }
     static Array<T,4> zero() {
         return Array<T,4>(T(), T(), T(), T());
+    }
+    static Array<T,4> ones() {
+        return Array<T,4>((T)1, (T)1, (T)1, (T)1);
     }
 private:
     T data[4];
@@ -1195,6 +1214,9 @@ public:
     }
     static Array<T,6> zero() {
         return Array<T,6>(T(), T(), T(), T(), T(), T());
+    }
+    static Array<T,6> ones() {
+        return Array<T,6>((T)1, (T)1, (T)1, (T)1, (T)1, (T)1);
     }
 private:
     T data[6];

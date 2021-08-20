@@ -1,0 +1,34 @@
+Reynolds number, based on provided inlet diameter: 64.8001
+
+Running new simulation at level 0
+uLB=0.0373738
+nuLB=0.0062
+tau=0.5186
+dx=0.0011163
+dt=0.00208602
+Inner radius of inlet 0 : 5.23417 lattice nodes
+Size of the multi-block:     50-by-65-by-107
+Number of atomic-blocks:     26
+Smallest atomic-block:       25-by-21-by-21
+Largest atomic-block:        25-by-22-by-22
+Number of allocated cells:   0.30155 million
+Fraction of allocated domain: 86.7146 percent
+
+Number of fluid cells: 34636
+T= 0; Average energy: 0
+T= 0.0208602; Average energy: 4.60063e-06
+T= 0.0417204; Average energy: 6.96702e-06
+Average energy: 8.3294e-06
+Total energy: 4.01896e-10
+RMS vorticity * volume * 0.5: 4.41047e-05
+Pressure drop: 7.38995
+Average velocity through inlet section: 0.0205567
+Number of iterations: 24
+Description: Tot. energy, pressure-drop, tot. enstrophy,  vel1, vort1, pres1,  vel2, vort2, pres2,  vel3, vort3, pres3,  vel4, vort4, pres4,  vel5, vort5, pres5,  vel6, vort6, pres6
+All data: 4.01896e-10, 7.38995, 4.41047e-05, Pos (0.022046,0.015072,0.044152); Velocity (3.08544e-16,-3.86905e-17,-1.80778e-16); Vorticity (-1.26148e-13,-1.06627e-13,-2.07278e-13); Pressure -1.14456e-14
+Pos (0.027132,0.049947,0.095012); Velocity (0,0,0); Vorticity (0,0,0); Pressure -1.14456e-14
+Pos (0.034398,0.056487,0.057957); Velocity (0,0,0); Vorticity (0,0,0); Pressure -1.14456e-14
+Pos (0.031492,0.025971,0.084113); Velocity (0,0,0); Vorticity (0,0,0); Pressure 0
+Pos (0.025679,0.025971,0.091379); Velocity (0,0,0); Vorticity (0,0,0); Pressure 0
+Pos (0.018413,0.011439,0.076848); Velocity (0,0,0); Vorticity (0,0,0); Pressure 0
+3.5969e-16, 2.65041e-13, -1.14456e-14, 0, 0, -1.14456e-14, 0, 0, -1.14456e-14, 0, 0, 0, 0, 0, 0, 0, 0, 0

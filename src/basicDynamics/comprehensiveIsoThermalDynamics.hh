@@ -59,7 +59,8 @@ namespace plb {
 /* *************** Class RMdynamics *********************************************** */
 
 template<typename T, template<typename U> class Descriptor>
-Array<T, Descriptor<T>::numRelaxationTimes> RMdynamics<T,Descriptor>::allOmega;
+Array<T, Descriptor<T>::numRelaxationTimes> RMdynamics<T,Descriptor>::allOmega
+        = Array<T, Descriptor<T>::numRelaxationTimes>::ones();
 
 template<typename T, template<typename U> class Descriptor>
 int RMdynamics<T,Descriptor>::id =
@@ -258,7 +259,8 @@ void RMdynamics<T,Descriptor>::recomposeOrder1 (
 /* *************** Class HMdynamics *********************************************** */
 
 template<typename T, template<typename U> class Descriptor>
-Array<T, Descriptor<T>::numRelaxationTimes> HMdynamics<T,Descriptor>::allOmega;
+Array<T, Descriptor<T>::numRelaxationTimes> HMdynamics<T,Descriptor>::allOmega
+        = Array<T, Descriptor<T>::numRelaxationTimes>::ones();
 
 template<typename T, template<typename U> class Descriptor>
 int HMdynamics<T,Descriptor>::id =
@@ -470,7 +472,8 @@ void HMdynamics<T,Descriptor>::recomposeOrder1 (
 /* *************** Class CMdynamics *********************************************** */
 
 template<typename T, template<typename U> class Descriptor>
-Array<T, Descriptor<T>::numRelaxationTimes> CMdynamics<T,Descriptor>::allOmega;
+Array<T, Descriptor<T>::numRelaxationTimes> CMdynamics<T,Descriptor>::allOmega
+        = Array<T, Descriptor<T>::numRelaxationTimes>::ones();
 
 template<typename T, template<typename U> class Descriptor>
 int CMdynamics<T,Descriptor>::id =
@@ -676,7 +679,8 @@ void CMdynamics<T,Descriptor>::recomposeOrder1 (
 /* *************** Class CHMdynamics *********************************************** */
 
 template<typename T, template<typename U> class Descriptor>
-Array<T, Descriptor<T>::numRelaxationTimes> CHMdynamics<T,Descriptor>::allOmega;
+Array<T, Descriptor<T>::numRelaxationTimes> CHMdynamics<T,Descriptor>::allOmega
+        = Array<T, Descriptor<T>::numRelaxationTimes>::ones();
 
 template<typename T, template<typename U> class Descriptor>
 int CHMdynamics<T,Descriptor>::id =
@@ -882,7 +886,8 @@ void CHMdynamics<T,Descriptor>::recomposeOrder1 (
 /* *************** Class Kdynamics *********************************************** */
 
 template<typename T, template<typename U> class Descriptor>
-Array<T, Descriptor<T>::numRelaxationTimes> Kdynamics<T,Descriptor>::allOmega;
+Array<T, Descriptor<T>::numRelaxationTimes> Kdynamics<T,Descriptor>::allOmega
+        = Array<T, Descriptor<T>::numRelaxationTimes>::ones();
 
 template<typename T, template<typename U> class Descriptor>
 int Kdynamics<T,Descriptor>::id =
@@ -1088,7 +1093,8 @@ void Kdynamics<T,Descriptor>::recomposeOrder1 (
 /* *************** Class GHdynamics *********************************************** */
 
 template<typename T, template<typename U> class Descriptor>
-Array<T, Descriptor<T>::numRelaxationTimes> GHdynamics<T,Descriptor>::allOmega;
+Array<T, Descriptor<T>::numRelaxationTimes> GHdynamics<T,Descriptor>::allOmega
+        = Array<T, Descriptor<T>::numRelaxationTimes>::ones();
 
 template<typename T, template<typename U> class Descriptor>
 int GHdynamics<T,Descriptor>::id =
@@ -1304,7 +1310,8 @@ void GHdynamics<T,Descriptor>::recomposeOrder1 (
 /* *************** Class RRdynamics *********************************************** */
 
 template<typename T, template<typename U> class Descriptor>
-Array<T, Descriptor<T>::numRelaxationTimes> RRdynamics<T,Descriptor>::allOmega;
+Array<T, Descriptor<T>::numRelaxationTimes> RRdynamics<T,Descriptor>::allOmega
+        = Array<T, Descriptor<T>::numRelaxationTimes>::ones();
 
 template<typename T, template<typename U> class Descriptor>
 int RRdynamics<T,Descriptor>::id =
