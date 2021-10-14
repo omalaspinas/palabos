@@ -42,6 +42,14 @@ When you think your contributions are ready to be added to Palabos, you should c
 a `merge request` (see [here](https://docs.gitlab.com/ee/gitlab-basics/add-merge-request.html) for how to 
 create one). In your `merge request` briefly summarize what your additions are and highlight the particularly important ones.
 
+## Continuous integration
+
+To facilitate merge request we have been setting non-regression tests for most of the examples in Palabos. These Continuous 
+Integration (CI) tests are run with
+a gitlab runner. If possible set your own runner (it's not possible for us to provide you with one runner unfortunately) for the 
+Palabos project. See the [appropriate documentation](https://docs.gitlab.com/runner/install/) to do so. This would make the 
+maintainers life much simpler by haveing the CI perform the tests on your branch directly.
+
 ## Feature requests
 
 Feature requests can be created as issues. Keep in mind that we are an open source community
