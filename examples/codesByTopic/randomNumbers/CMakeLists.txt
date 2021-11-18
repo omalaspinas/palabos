@@ -1,59 +1,32 @@
 if(CI)
 ###############################################################################
 
-enable_language(CXX)
-
-option(BUILD_HDF5 "compile with hdf5" ON)
-
-if(BUILD_HDF5)
-	set(HDF5_PREFER_PARALLEL ON)
-	find_package(HDF5 REQUIRED )
-	if(HDF5_FOUND)
-		if(HDF5_IS_PARALLEL AND ENABLE_MPI)
-			message("HDF5 PARALLEL FOUND")
-			add_definitions(-DHDF5)
-		else()
-			message("You need the parallel version of HDF5 to run this example, the code will compile and run, but without the HFD5 output!")
-			option(BUILD_HDF5 "compile with hdf5" OFF)
-		endif()
-	else()
-		message("You don’t have HDF5 library or cmake couldn’t find it, the code will compile and run, but without the HFD5 output!")
-		option(BUILD_HDF5 "compile with hdf5" OFF)
-	endif()
-endif()
-
-set(EXECUTABLE_NAME "aneurysm")
+set(EXECUTABLE_NAME "randomNumbers")
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
 
-include_directories(${HDF5_INCLUDE_DIRS})
-
 ###############################################################################
-set(PROJECT_NAME "aneurysm_hdf5")
+
+get_filename_component(PROJECT_NAME ${CMAKE_CURRENT_SOURCE_DIR} NAME)
 add_executable(${PROJECT_NAME} "./${EXECUTABLE_NAME}.cpp")
 
-if(BUILD_HDF5)
-	target_link_libraries(${PROJECT_NAME} palabos ${HDF5_LIBRARIES} )
-else()
-	target_link_libraries(${PROJECT_NAME} palabos )
-endif()
-
+# Link with the following libraries
+target_link_libraries(${PROJECT_NAME} palabos)
 if(ENABLE_MPI)
-	target_link_libraries(${PROJECT_NAME} ${MPI_CXX_LIBRARIES})
+    target_link_libraries(${PROJECT_NAME} ${MPI_CXX_LIBRARIES})
 endif()
 
 if(BUILD_TESTING)
     add_custom_target(${PROJECT_NAME}_test
         ALL
         DEPENDS ${PROJECT_NAME}
-        COMMAND tar xzf aneurysm.stl.tgz
-        # COMMAND "LSAN_OPTIONS=suppressions=${CMAKE_CURRENT_SOURCE_DIR}/test/LAsan.supp" ./${PROJECT_NAME} test/param_aneurysm_regression.xml > test/output.dat || (cat test/output.dat\; exit 1)
-        COMMAND "LSAN_OPTIONS=suppressions=${LSAN_SUPPRESSION_FILE}" ./${PROJECT_NAME} test/param_regression.xml > test/output.dat || (cat test/output.dat\; exit 1)
+        COMMAND "LSAN_OPTIONS=suppressions=${LSAN_SUPPRESSION_FILE}" ./${PROJECT_NAME} > test/output.dat || (cat test/output.dat\; exit 1)
         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
         COMMENT "run generated test in ${CMAKE_CURRENT_SOURCE_DIR}"
         SOURCES ./${EXECUTABLE_NAME}.cpp
     )
 endif()
+
 
 if (BUILD_TESTING)
     enable_testing()
@@ -70,33 +43,18 @@ return()
 ###############################################################################
 endif()
 
+cmake_minimum_required(VERSION 2.8.12)
 
-cmake_minimum_required(VERSION 3.0)
-
-project(aneurysm)
+project(palabosCodesByTopic)
 enable_language(CXX)
 
-option(BUILD_HDF5 "compile with hdf5" ON)
-
-if(BUILD_HDF5)
-	set(HDF5_PREFER_PARALLEL ON)
-	find_package(HDF5 REQUIRED )
-	if(HDF5_FOUND)
-		if(HDF5_IS_PARALLEL)
-			message("HDF5 PARALLEL FOUND")
-			add_definitions(-DHDF5)
-		else()
-			message("You need the parallel version of HDF5 to run this example, the code will compile and run, but without the HFD5 output!")
-			option(BUILD_HDF5 "compile with hdf5" OFF)
-		endif()
-	else()
-		message("You don’t have HDF5 library or cmake couldn’t find it, the code will compile and run, but without the HFD5 output!")
-		option(BUILD_HDF5 "compile with hdf5" OFF)
-	endif()
-endif()
-
-set(EXECUTABLE_NAME "aneurysm")
-set (CMAKE_RUNTIME_OUTPUT_DIRECTORY "./")
+set(EXECUTABLE_NAME "randomNumbers")
+set (CMAKE_RUNTIME_OUTPUT_DIRECTORY "../")
+find_program(CCACHE_PROGRAM ccache)
+if(CCACHE_PROGRAM)
+    set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE "${CCACHE_PROGRAM}")
+    message("ccache used.")
+endif() 
 
 if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE "Release")
@@ -109,18 +67,23 @@ message(${CMAKE_BUILD_TYPE})
 # Append flags: set(CMAKE_XXX_FLAGS "${CMAKE_XXX_FLAGS} ...")
 if(${CMAKE_CXX_COMPILER_ID} STREQUAL GNU)
     message("GCC.")
-    set(CMAKE_CXX_FLAGS "-std=c++11  -Wall  -Wextra -Wnon-virtual-dtor -Wno-unused-result")
+    set(CMAKE_CXX_FLAGS "-std=c++11 -Wall  -Wextra -Wnon-virtual-dtor")
     set(CMAKE_CXX_FLAGS_RELEASE "-O3 -DNDEBUG")
     set(CMAKE_CXX_FLAGS_DEBUG "-g -DPLB_DEBUG -O0")
+    set(CMAKE_CXX_FLAGS_TEST "-g -DPLB_DEBUG -DPLB_REGRESSION -O0 -fno-omit-frame-pointer -fsanitize=address")
+    set(CMAKE_CXX_LINKER_FLAGS_TEST "${CMAKE_CXX_LINKER_FLAGS_TEST} -fno-omit-frame-pointer -fsanitize=address")
 elseif(${CMAKE_CXX_COMPILER_ID} STREQUAL Clang)
     message("Clang.")
     set(CMAKE_CXX_FLAGS "-std=c++11 -Wall  -Wextra -Wnon-virtual-dtor")
     set(CMAKE_CXX_FLAGS_RELEASE "-O3 -DNDEBUG")
     set(CMAKE_CXX_FLAGS_DEBUG "-g -DPLB_DEBUG -O0")
+    set(CMAKE_CXX_FLAGS_TEST "-g -DPLB_DEBUG -DPLB_REGRESSION -O0 -fno-omit-frame-pointer -fsanitize=address")
+    set(CMAKE_CXX_LINKER_FLAGS_TEST "${CMAKE_CXX_LINKER_FLAGS_TEST} -fno-omit-frame-pointer -fsanitize=address")
 elseif(${CMAKE_CXX_COMPILER_ID} STREQUAL MSVC)
     message("MSVC.")
     set(CMAKE_CXX_FLAGS_RELEASE "/Ox /Ot /GS- /GL /DNDEBUG")
     set(CMAKE_CXX_FLAGS_DEBUG "/DPLB_DEBUG")
+    set(CMAKE_CXX_FLAGS_TEST "/Ox /Ot /GS- /GL /DPLB_DEBUG /DPLB_REGRESSION")
     set(CMAKE_EXE_LINKER_FLAGS_RELEASE "/LTCG /INCREMENTAL:NO /OPT:REF")
 else()
     message( FATAL_ERROR "CXX compiler not recognized. CMake will quit." )
@@ -160,7 +123,7 @@ endif()
 ###############################################################################
 # Palabos Library
 ###############################################################################
-include_directories(${HDF5_INCLUDE_DIRS})
+
 include_directories("../../../src")
 include_directories("../../../externalLibraries")
 include_directories("../../../externalLibraries/Eigen3")
@@ -175,12 +138,7 @@ add_library(palabos STATIC ${PALABOS_SRC} ${EXT_SRC})
 add_executable(${EXECUTABLE_NAME} "./${EXECUTABLE_NAME}.cpp")
 
 # Link with the following libraries
-if(BUILD_HDF5)
-	target_link_libraries(${EXECUTABLE_NAME} palabos ${HDF5_LIBRARIES} )
-else()
-	target_link_libraries(${EXECUTABLE_NAME} palabos )
-endif()
-#
+target_link_libraries(${EXECUTABLE_NAME} palabos)
 if(ENABLE_MPI)
     target_link_libraries(${EXECUTABLE_NAME} ${MPI_CXX_LIBRARIES})
 endif()

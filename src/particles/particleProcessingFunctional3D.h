@@ -151,6 +151,37 @@ private:
     T probabilityPerCell;
 };
 
+/// Same as the InjectRandomParticlesFunctional3D but using a parallel pseudo random
+///   number generator (PPRNG) for correctness and reproducibility.
+/// The rationale for the seed having a pointer type is the following. The only way to
+///   control the random number generator is through the seed value. Imagine that this
+///   data processor needs to be integrated and executed at every iteration with a
+///   different seed each time, the value of which is controlled by the caller. A nice
+///   way to achieve this is by passing the address of a variable (which is "external" to
+///   the data processor) so the caller can change its value as they wish. This is why the
+///   "seed" member of this class has a pointer type.
+template <typename T, template <typename U> class Descriptor>
+class InjectRandomParticlesFunctionalPPRNG3D : public BoxProcessingFunctional3D {
+public:
+    InjectRandomParticlesFunctionalPPRNG3D(Particle3D<T, Descriptor>* particleTemplate_, T probabilityPerCell_,
+        Box3D const& boundingBox_, uint32_t const* seed_);
+    InjectRandomParticlesFunctionalPPRNG3D(InjectRandomParticlesFunctionalPPRNG3D<T, Descriptor> const& rhs);
+    InjectRandomParticlesFunctionalPPRNG3D<T, Descriptor>& operator=(
+        InjectRandomParticlesFunctionalPPRNG3D<T, Descriptor> const& rhs);
+    void swap(InjectRandomParticlesFunctionalPPRNG3D<T, Descriptor>& rhs);
+    ~InjectRandomParticlesFunctionalPPRNG3D();
+    /// Argument: Particle-field.
+    virtual void processGenericBlocks(Box3D domain, std::vector<AtomicBlock3D*> fields);
+    virtual InjectRandomParticlesFunctionalPPRNG3D<T, Descriptor>* clone() const;
+    virtual void getTypeOfModification(std::vector<modif::ModifT>& modified) const;
+
+private:
+    Particle3D<T, Descriptor>* particleTemplate;
+    T probabilityPerCell;
+    plint nY, nZ;
+    uint32_t const* seed;
+};
+
 /// Generate a random number of particles inside the domain. Each cell generates
 ///   at most one particle, with a given probability and at a random position inside
 ///   the cell. All particles are identical clones (except for their position).
@@ -176,6 +207,39 @@ private:
     int flag;
 };
 
+/// Same as the MaskedInjectRandomParticlesFunctional3D but using a parallel pseudo random
+///   number generator (PPRNG) for correctness and reproducibility.
+/// The rationale for the seed having a pointer type is the following. The only way to
+///   control the random number generator is through the seed value. Imagine that this
+///   data processor needs to be integrated and executed at every iteration with a
+///   different seed each time, the value of which is controlled by the caller. A nice
+///   way to achieve this is by passing the address of a variable (which is "external" to
+///   the data processor) so the caller can change its value as they wish. This is why the
+///   "seed" member of this class has a pointer type.
+template <typename T, template <typename U> class Descriptor>
+class MaskedInjectRandomParticlesFunctionalPPRNG3D : public BoxProcessingFunctional3D {
+public:
+    MaskedInjectRandomParticlesFunctionalPPRNG3D(Particle3D<T, Descriptor>* particleTemplate_, T probabilityPerCell_,
+        int flag_, Box3D const& boundingBox_, uint32_t const* seed_);
+    MaskedInjectRandomParticlesFunctionalPPRNG3D(
+        MaskedInjectRandomParticlesFunctionalPPRNG3D<T, Descriptor> const& rhs);
+    MaskedInjectRandomParticlesFunctionalPPRNG3D<T, Descriptor>& operator=(
+        MaskedInjectRandomParticlesFunctionalPPRNG3D<T, Descriptor> const& rhs);
+    void swap(MaskedInjectRandomParticlesFunctionalPPRNG3D<T, Descriptor>& rhs);
+    ~MaskedInjectRandomParticlesFunctionalPPRNG3D();
+    /// Arguments: [0] Particle-field; [1] Mask (int scalar-field).
+    virtual void processGenericBlocks(Box3D domain, std::vector<AtomicBlock3D*> fields);
+    virtual MaskedInjectRandomParticlesFunctionalPPRNG3D<T, Descriptor>* clone() const;
+    virtual void getTypeOfModification(std::vector<modif::ModifT>& modified) const;
+
+private:
+    Particle3D<T, Descriptor>* particleTemplate;
+    T probabilityPerCell;
+    int flag;
+    plint nY, nZ;
+    uint32_t const* seed;
+};
+
 template<typename T, template<typename U> class Descriptor>
 class N_MaskedInjectRandomParticlesFunctional3D : public BoxProcessingFunctional3D
 {
@@ -194,6 +258,39 @@ private:
     Particle3D<T,Descriptor>* particleTemplate;
     T probabilityPerCell;
     int flag;
+};
+
+/// Same as the N_MaskedInjectRandomParticlesFunctional3D but using a parallel pseudo random
+///   number generator (PPRNG) for correctness and reproducibility.
+/// The rationale for the seed having a pointer type is the following. The only way to
+///   control the random number generator is through the seed value. Imagine that this
+///   data processor needs to be integrated and executed at every iteration with a
+///   different seed each time, the value of which is controlled by the caller. A nice
+///   way to achieve this is by passing the address of a variable (which is "external" to
+///   the data processor) so the caller can change its value as they wish. This is why the
+///   "seed" member of this class has a pointer type.
+template <typename T, template <typename U> class Descriptor>
+class N_MaskedInjectRandomParticlesFunctionalPPRNG3D : public BoxProcessingFunctional3D {
+public:
+    N_MaskedInjectRandomParticlesFunctionalPPRNG3D(Particle3D<T, Descriptor>* particleTemplate_, T probabilityPerCell_,
+        int flag_, Box3D const& boundingBox_, uint32_t const* seed_);
+    N_MaskedInjectRandomParticlesFunctionalPPRNG3D(
+        N_MaskedInjectRandomParticlesFunctionalPPRNG3D<T, Descriptor> const& rhs);
+    N_MaskedInjectRandomParticlesFunctionalPPRNG3D<T, Descriptor>& operator=(
+        N_MaskedInjectRandomParticlesFunctionalPPRNG3D<T, Descriptor> const& rhs);
+    void swap(N_MaskedInjectRandomParticlesFunctionalPPRNG3D<T, Descriptor>& rhs);
+    ~N_MaskedInjectRandomParticlesFunctionalPPRNG3D();
+    /// Arguments: [0] Particle-field; [1] Mask (1D int n-tensor-field).
+    virtual void processGenericBlocks(Box3D domain, std::vector<AtomicBlock3D*> fields);
+    virtual N_MaskedInjectRandomParticlesFunctionalPPRNG3D<T, Descriptor>* clone() const;
+    virtual void getTypeOfModification(std::vector<modif::ModifT>& modified) const;
+
+private:
+    Particle3D<T, Descriptor>* particleTemplate;
+    T probabilityPerCell;
+    int flag;
+    plint nY, nZ;
+    uint32_t const* seed;
 };
 
 /// Generate a random number of point-particles inside the domain. Each cell generates
@@ -217,6 +314,39 @@ private:
     Particle3D<T,Descriptor>* particleTemplate;
     T probabilityPerCell;
     DomainFunctional functional;
+};
+
+/// Same as the AnalyticalInjectRandomParticlesFunctional3D but using a parallel pseudo random
+///   number generator (PPRNG) for correctness and reproducibility.
+/// The rationale for the seed having a pointer type is the following. The only way to
+///   control the random number generator is through the seed value. Imagine that this
+///   data processor needs to be integrated and executed at every iteration with a
+///   different seed each time, the value of which is controlled by the caller. A nice
+///   way to achieve this is by passing the address of a variable (which is "external" to
+///   the data processor) so the caller can change its value as they wish. This is why the
+///   "seed" member of this class has a pointer type.
+template <typename T, template <typename U> class Descriptor, class DomainFunctional>
+class AnalyticalInjectRandomParticlesFunctionalPPRNG3D : public BoxProcessingFunctional3D {
+public:
+    AnalyticalInjectRandomParticlesFunctionalPPRNG3D(Particle3D<T, Descriptor>* particleTemplate_,
+        T probabilityPerCell_, DomainFunctional functional_, Box3D const& boundingBox_, uint32_t const* seed_);
+    AnalyticalInjectRandomParticlesFunctionalPPRNG3D(
+        AnalyticalInjectRandomParticlesFunctionalPPRNG3D<T, Descriptor, DomainFunctional> const& rhs);
+    AnalyticalInjectRandomParticlesFunctionalPPRNG3D<T, Descriptor, DomainFunctional>& operator=(
+        AnalyticalInjectRandomParticlesFunctionalPPRNG3D<T, Descriptor, DomainFunctional> const& rhs);
+    void swap(AnalyticalInjectRandomParticlesFunctionalPPRNG3D<T, Descriptor, DomainFunctional>& rhs);
+    ~AnalyticalInjectRandomParticlesFunctionalPPRNG3D();
+    /// Argument: Particle-field.
+    virtual void processGenericBlocks(Box3D domain, std::vector<AtomicBlock3D*> fields);
+    virtual AnalyticalInjectRandomParticlesFunctionalPPRNG3D<T, Descriptor, DomainFunctional>* clone() const;
+    virtual void getTypeOfModification(std::vector<modif::ModifT>& modified) const;
+
+private:
+    Particle3D<T, Descriptor>* particleTemplate;
+    T probabilityPerCell;
+    DomainFunctional functional;
+    plint nY, nZ;
+    uint32_t const* seed;
 };
 
 /// Generate a random number of point-particles inside the domain. Each cell generates
@@ -244,6 +374,41 @@ private:
     T probabilityPerCell;
     DomainFunctional functional;
     int flag;
+};
+
+/// Same as the MaskedAnalyticalInjectRandomParticlesFunctional3D but using a parallel pseudo random
+///   number generator (PPRNG) for correctness and reproducibility.
+/// The rationale for the seed having a pointer type is the following. The only way to
+///   control the random number generator is through the seed value. Imagine that this
+///   data processor needs to be integrated and executed at every iteration with a
+///   different seed each time, the value of which is controlled by the caller. A nice
+///   way to achieve this is by passing the address of a variable (which is "external" to
+///   the data processor) so the caller can change its value as they wish. This is why the
+///   "seed" member of this class has a pointer type.
+template <typename T, template <typename U> class Descriptor, class DomainFunctional>
+class MaskedAnalyticalInjectRandomParticlesFunctionalPPRNG3D : public BoxProcessingFunctional3D {
+public:
+    MaskedAnalyticalInjectRandomParticlesFunctionalPPRNG3D(Particle3D<T, Descriptor>* particleTemplate_,
+        T probabilityPerCell_, DomainFunctional functional_, int flag_, Box3D const& boundingBox_,
+        uint32_t const* seed_);
+    MaskedAnalyticalInjectRandomParticlesFunctionalPPRNG3D(
+        MaskedAnalyticalInjectRandomParticlesFunctionalPPRNG3D<T, Descriptor, DomainFunctional> const& rhs);
+    MaskedAnalyticalInjectRandomParticlesFunctionalPPRNG3D<T, Descriptor, DomainFunctional>& operator=(
+        MaskedAnalyticalInjectRandomParticlesFunctionalPPRNG3D<T, Descriptor, DomainFunctional> const& rhs);
+    void swap(MaskedAnalyticalInjectRandomParticlesFunctionalPPRNG3D<T, Descriptor, DomainFunctional>& rhs);
+    ~MaskedAnalyticalInjectRandomParticlesFunctionalPPRNG3D();
+    /// Arguments: Particle-field, Mask.
+    virtual void processGenericBlocks(Box3D domain, std::vector<AtomicBlock3D*> fields);
+    virtual MaskedAnalyticalInjectRandomParticlesFunctionalPPRNG3D<T, Descriptor, DomainFunctional>* clone() const;
+    virtual void getTypeOfModification(std::vector<modif::ModifT>& modified) const;
+
+private:
+    Particle3D<T, Descriptor>* particleTemplate;
+    T probabilityPerCell;
+    DomainFunctional functional;
+    int flag;
+    plint nY, nZ;
+    uint32_t const* seed;
 };
 
 /// Generate equally spaced particles inside each cell. Every cell generates

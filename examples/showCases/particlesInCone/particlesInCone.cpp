@@ -399,7 +399,8 @@ int main(int argc, char* argv[])
 {
     plbInit(&argc, &argv);
     global::directories().setOutputDir("./");
-    srand(global::mpi().getRank()+10);
+
+    uint32_t seed = 1;
 
     // Set up the problem.
     buildConeGeometry();
@@ -430,8 +431,9 @@ int main(int argc, char* argv[])
                 particle->setTag(i-startParticleIter);
             }
             applyProcessingFunctional (
-                    new AnalyticalInjectRandomParticlesFunctional3D<T,DESCRIPTOR,CircularInjection> (
-                        particle, probability, CircularInjection(radius/2.0, inletCenter) ),
+                    new AnalyticalInjectRandomParticlesFunctionalPPRNG3D<T,DESCRIPTOR,CircularInjection> (
+                        particle, probability, CircularInjection(radius/2.0, inletCenter), particles->getBoundingBox(),
+                        &seed ),
                     injectionDomain, particleArg );
         }
         // For efficiency reasons, stop iterating the fluid once it is assumed to have reached a stationary state.

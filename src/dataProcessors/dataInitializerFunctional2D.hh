@@ -43,6 +43,7 @@
 #include "latticeBoltzmann/externalFieldAccess.h"
 #include "atomicBlock/blockLattice2D.h"
 #include "multiGrid/multiGridUtil.h"
+#include "sitmo/prng_engine.hpp"
 #include <limits>
 
 namespace plb {
@@ -243,92 +244,86 @@ void GenericIndexedLatticeFunctional2D<T,Descriptor>::setscale(int dxScale, int 
     f->setscale(dxScale, dtScale);
 }
 
+/* *************** Class GenericIndexedWithRandLatticeFunctional2D ************* */
 
+template <typename T, template <class U> class Descriptor>
+GenericIndexedWithRandLatticeFunctional2D<T, Descriptor>::GenericIndexedWithRandLatticeFunctional2D(
+    OneCellIndexedWithRandFunctional2D<T, Descriptor>* f_, Box2D boundingBox_, uint32_t const* seed_)
+    : f(f_), nY(boundingBox_.getNy()), seed(seed_)
+{
+}
 
-template<typename T, template<class U> class Descriptor>
-GenericIndexedWithRandLatticeFunctional2D<T,Descriptor>::GenericIndexedWithRandLatticeFunctional2D (
-        OneCellIndexedWithRandFunctional2D<T,Descriptor>* f_, Box2D boundingBox, sitmo::prng_engine eng_ )
-    : f(f_),
-      nY(boundingBox.getNy()),
-      eng(eng_)
-{ }
+template <typename T, template <class U> class Descriptor>
+GenericIndexedWithRandLatticeFunctional2D<T, Descriptor>::GenericIndexedWithRandLatticeFunctional2D(
+    GenericIndexedWithRandLatticeFunctional2D<T, Descriptor> const& rhs)
+    : f(rhs.f->clone()), nY(rhs.nY), seed(rhs.seed)
+{
+}
 
-template<typename T, template<class U> class Descriptor>
-GenericIndexedWithRandLatticeFunctional2D<T,Descriptor>::GenericIndexedWithRandLatticeFunctional2D (
-        GenericIndexedWithRandLatticeFunctional2D<T,Descriptor> const& rhs )
-    : f(rhs.f->clone()),
-      nY(rhs.nY),
-      eng(rhs.eng)
-{ }
-
-template<typename T, template<class U> class Descriptor>
-GenericIndexedWithRandLatticeFunctional2D<T,Descriptor>::~GenericIndexedWithRandLatticeFunctional2D() {
+template <typename T, template <class U> class Descriptor>
+GenericIndexedWithRandLatticeFunctional2D<T, Descriptor>::~GenericIndexedWithRandLatticeFunctional2D()
+{
     delete f;
 }
 
-template<typename T, template<class U> class Descriptor>
-GenericIndexedWithRandLatticeFunctional2D<T,Descriptor>&
-    GenericIndexedWithRandLatticeFunctional2D<T,Descriptor>::operator= (
-        GenericIndexedWithRandLatticeFunctional2D<T,Descriptor> const& rhs )
+template <typename T, template <class U> class Descriptor>
+GenericIndexedWithRandLatticeFunctional2D<T, Descriptor>&
+GenericIndexedWithRandLatticeFunctional2D<T, Descriptor>::operator=(
+    GenericIndexedWithRandLatticeFunctional2D<T, Descriptor> const& rhs)
 {
     delete f;
     f = rhs.f->clone();
     return *this;
 }
 
-template<typename T, template<class U> class Descriptor>
-void GenericIndexedWithRandLatticeFunctional2D<T,Descriptor>::process (
-        Box2D domain, BlockLattice2D<T,Descriptor>& lattice )
+template <typename T, template <class U> class Descriptor>
+void GenericIndexedWithRandLatticeFunctional2D<T, Descriptor>::process(
+    Box2D domain, BlockLattice2D<T, Descriptor>& lattice)
 {
     Dot2D relativeOffset = lattice.getLocation();
+    sitmo::prng_engine eng(*seed);
     plint rng_index = 0;
-    for (plint iX=domain.x0; iX<=domain.x1; ++iX) {
-        plint globalX = nY*(iX + relativeOffset.x);
-        for (plint iY=domain.y0; iY<=domain.y1; ++iY) {
+    for (plint iX = domain.x0; iX <= domain.x1; ++iX) {
+        plint globalX = nY * (iX + relativeOffset.x);
+        for (plint iY = domain.y0; iY <= domain.y1; ++iY) {
             plint globalY = iY + relativeOffset.y + globalX;
-            PLB_ASSERT( globalY >= rng_index );
+            PLB_ASSERT(globalY >= rng_index);
             if (globalY > rng_index) {
-                eng.discard(globalY-rng_index);
+                eng.discard(globalY - rng_index);
                 rng_index = globalY;
             }
-            T rand_val = (T)eng() / ((T)std::numeric_limits<uint32_t>::max()+1.0);
+            T rand_val = (T) eng() / ((T) sitmo::prng_engine::max() + 1.0);
             ++rng_index;
-            f->execute ( iX+relativeOffset.x,
-                         iY+relativeOffset.y,
-                         rand_val,
-                         lattice.get(iX,iY) );
+            f->execute(iX + relativeOffset.x, iY + relativeOffset.y, rand_val, lattice.get(iX, iY));
         }
     }
 }
 
-template<typename T, template<class U> class Descriptor>
-GenericIndexedWithRandLatticeFunctional2D<T,Descriptor>*
-    GenericIndexedWithRandLatticeFunctional2D<T,Descriptor>::clone() const
+template <typename T, template <class U> class Descriptor>
+GenericIndexedWithRandLatticeFunctional2D<T, Descriptor>*
+GenericIndexedWithRandLatticeFunctional2D<T, Descriptor>::clone() const
 {
-    return new GenericIndexedWithRandLatticeFunctional2D<T,Descriptor>(*this);
+    return new GenericIndexedWithRandLatticeFunctional2D<T, Descriptor>(*this);
 }
 
-template<typename T, template<class U> class Descriptor>
-void GenericIndexedWithRandLatticeFunctional2D<T,Descriptor>::getTypeOfModification (
-        std::vector<modif::ModifT>& modified ) const
+template <typename T, template <class U> class Descriptor>
+void GenericIndexedWithRandLatticeFunctional2D<T, Descriptor>::getTypeOfModification(
+    std::vector<modif::ModifT>& modified) const
 {
     f->getTypeOfModification(modified);
 }
 
-template<typename T, template<class U> class Descriptor>
-BlockDomain::DomainT GenericIndexedWithRandLatticeFunctional2D<T,Descriptor>::appliesTo() const
+template <typename T, template <class U> class Descriptor>
+BlockDomain::DomainT GenericIndexedWithRandLatticeFunctional2D<T, Descriptor>::appliesTo() const
 {
     return f->appliesTo();
 }
 
-template<typename T, template<class U> class Descriptor>
-void GenericIndexedWithRandLatticeFunctional2D<T,Descriptor>::setscale(int dxScale, int dtScale)
+template <typename T, template <class U> class Descriptor>
+void GenericIndexedWithRandLatticeFunctional2D<T, Descriptor>::setscale(int dxScale, int dtScale)
 {
     f->setscale(dxScale, dtScale);
 }
-
-
-
 
 /* *************** Class InstantiateDynamicsFunctional2D ************* */
 
@@ -1687,48 +1682,46 @@ void SetToCoordinatesFunctional2D<T>::getTypeOfModification (
     modified[0] = modif::staticVariables;
 }
 
-
 /* ************** Class SetToRandomFunctional2D ***************** */
 
-template<typename T>
-SetToRandomFunctional2D<T>::SetToRandomFunctional2D(Box2D boundingBox, sitmo::prng_engine eng_)
-    : nY(boundingBox.getNy()),
-      eng(eng_)
-{ }
+template <typename T>
+SetToRandomFunctional2D<T>::SetToRandomFunctional2D(Box2D const& boundingBox_, uint32_t const* seed_)
+    : nY(boundingBox_.getNy()), seed(seed_)
+{
+}
 
-template<typename T>
-void SetToRandomFunctional2D<T>::process(Box2D domain, ScalarField2D<T>& field) {
+template <typename T>
+void SetToRandomFunctional2D<T>::process(Box2D domain, ScalarField2D<T>& field)
+{
     Dot2D relativeOffset = field.getLocation();
+    sitmo::prng_engine eng(*seed);
     plint rng_index = 0;
-    for (plint iX=domain.x0; iX<=domain.x1; ++iX) {
-        plint globalX = nY*(iX + relativeOffset.x);
-        for (plint iY=domain.y0; iY<=domain.y1; ++iY) {
+    for (plint iX = domain.x0; iX <= domain.x1; ++iX) {
+        plint globalX = nY * (iX + relativeOffset.x);
+        for (plint iY = domain.y0; iY <= domain.y1; ++iY) {
             plint globalY = iY + relativeOffset.y + globalX;
-            PLB_ASSERT( globalY >= rng_index );
+            PLB_ASSERT(globalY >= rng_index);
             if (globalY > rng_index) {
-                eng.discard(globalY-rng_index);
+                eng.discard(globalY - rng_index);
                 rng_index = globalY;
             }
-            field.get(iX,iY) = (T)eng() / ((T)std::numeric_limits<uint32_t>::max()+1.0);
+            field.get(iX, iY) = (T) eng() / ((T) sitmo::prng_engine::max() + 1.0);
             ++rng_index;
         }
     }
 }
 
-template<typename T>
-SetToRandomFunctional2D<T>* SetToRandomFunctional2D<T>::clone() const {
+template <typename T>
+SetToRandomFunctional2D<T>* SetToRandomFunctional2D<T>::clone() const
+{
     return new SetToRandomFunctional2D<T>(*this);
 }
 
-template<typename T>
-void SetToRandomFunctional2D<T>::getTypeOfModification (
-        std::vector<modif::ModifT>& modified ) const
+template <typename T>
+void SetToRandomFunctional2D<T>::getTypeOfModification(std::vector<modif::ModifT>& modified) const
 {
     modified[0] = modif::staticVariables;
 }
-
-
-
 
 /* ************** Class SetTensorComponentFunctional2D ***************** */
 

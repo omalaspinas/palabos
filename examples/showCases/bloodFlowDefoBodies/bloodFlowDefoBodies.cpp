@@ -39,10 +39,10 @@
 */
 ///////////////////////////////////////////////////////////////////////////////
 #include <cmath>
-#include <time.h>
+#include <ctime>
 #include <fstream>
 #include <iostream>
-#include <stdio.h>
+#include <cstdio>
 #include <string>
 #include <vector>
 #include <sys/stat.h>

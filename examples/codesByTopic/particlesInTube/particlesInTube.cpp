@@ -123,6 +123,8 @@ int main(int argc, char* argv[])
     plbInit(&argc, &argv);
     global::directories().setOutputDir("./");
 
+    uint32_t seed = 1;
+
     // Create the cylinder surface as a set of triangles.
     TriangleSet<T> triangleSet;
     triangleSet = constructCylinder<T>(originalCenter, radius, radius, length, nAxial, nCirc);
@@ -224,10 +226,11 @@ int main(int argc, char* argv[])
     // center of the tube.
     T injectionRadius = radius/4.;
     // Functional which injects particles with predefined probability from the specified injection domain.
-    integrateProcessingFunctional (
-            new AnalyticalInjectRandomParticlesFunctional3D<T,DESCRIPTOR,CircularInjection> (
-                particleTemplate, particleProbabilityPerCell, CircularInjection(injectionRadius, inletCenter) ),
-            injectionDomain, particleArg, 0 );
+    integrateProcessingFunctional(
+        new AnalyticalInjectRandomParticlesFunctionalPPRNG3D<T, DESCRIPTOR, CircularInjection>(particleTemplate,
+            particleProbabilityPerCell, CircularInjection(injectionRadius, inletCenter), particles->getBoundingBox(),
+            &seed),
+        injectionDomain, particleArg, 0);
 
     // Definition of an absorbtion domain for the particles. The specific domain is very close to the
     //   exit of the tube.
@@ -271,6 +274,8 @@ int main(int argc, char* argv[])
         if (i%particleTimeFactor==0) {
             particles->executeInternalProcessors();
         }
+
+        seed++;
 
         if (checkForErrors) {
             abortIfErrorsOccurred();

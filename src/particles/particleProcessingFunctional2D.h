@@ -130,6 +130,33 @@ private:
     T probabilityPerCell;
 };
 
+/// Same as the InjectRandomPointParticlesFunctional2D but using a parallel pseudo random
+///   number generator (PPRNG) for correctness and reproducibility.
+/// The rationale for the seed having a pointer type is the following. The only way to
+///   control the random number generator is through the seed value. Imagine that this
+///   data processor needs to be integrated and executed at every iteration with a
+///   different seed each time, the value of which is controlled by the caller. A nice
+///   way to achieve this is by passing the address of a variable (which is "external" to
+///   the data processor) so the caller can change its value as they wish. This is why the
+///   "seed" member of this class has a pointer type.
+template <typename T, template <typename U> class Descriptor>
+class InjectRandomPointParticlesFunctionalPPRNG2D : public BoxProcessingFunctional2D {
+public:
+    InjectRandomPointParticlesFunctionalPPRNG2D(
+        plint tag_, T probabilityPerCell_, Box2D const& boundingBox_, uint32_t const* seed_);
+    /// Argument: Particle-field.
+    virtual void processGenericBlocks(Box2D domain, std::vector<AtomicBlock2D*> fields);
+    virtual InjectRandomPointParticlesFunctionalPPRNG2D<T, Descriptor>* clone() const;
+    virtual BlockDomain::DomainT appliesTo() const;
+    virtual void getTypeOfModification(std::vector<modif::ModifT>& modified) const;
+
+private:
+    plint tag;
+    T probabilityPerCell;
+    plint nY;
+    uint32_t const* seed;
+};
+
 /// Generate a random number of point-particles inside the domain. Each cell generates
 ///   at most one particle, with a given probability and at a random position inside
 ///   the cell.
@@ -151,6 +178,39 @@ private:
     Particle2D<T,Descriptor>* particleTemplate;
     T probabilityPerCell;
     DomainFunctional functional;
+};
+
+/// Same as the AnalyticalInjectRandomParticlesFunctional2D but using a parallel pseudo random
+///   number generator (PPRNG) for correctness and reproducibility.
+/// The rationale for the seed having a pointer type is the following. The only way to
+///   control the random number generator is through the seed value. Imagine that this
+///   data processor needs to be integrated and executed at every iteration with a
+///   different seed each time, the value of which is controlled by the caller. A nice
+///   way to achieve this is by passing the address of a variable (which is "external" to
+///   the data processor) so the caller can change its value as they wish. This is why the
+///   "seed" member of this class has a pointer type.
+template <typename T, template <typename U> class Descriptor, class DomainFunctional>
+class AnalyticalInjectRandomParticlesFunctionalPPRNG2D : public BoxProcessingFunctional2D {
+public:
+    AnalyticalInjectRandomParticlesFunctionalPPRNG2D(Particle2D<T, Descriptor>* particleTemplate_,
+        T probabilityPerCell_, DomainFunctional functional_, Box2D const& boundingBox_, uint32_t const* seed_);
+    AnalyticalInjectRandomParticlesFunctionalPPRNG2D(
+        AnalyticalInjectRandomParticlesFunctionalPPRNG2D<T, Descriptor, DomainFunctional> const& rhs);
+    AnalyticalInjectRandomParticlesFunctionalPPRNG2D<T, Descriptor, DomainFunctional>& operator=(
+        AnalyticalInjectRandomParticlesFunctionalPPRNG2D<T, Descriptor, DomainFunctional> const& rhs);
+    void swap(AnalyticalInjectRandomParticlesFunctionalPPRNG2D<T, Descriptor, DomainFunctional>& rhs);
+    ~AnalyticalInjectRandomParticlesFunctionalPPRNG2D();
+    /// Argument: Particle-field.
+    virtual void processGenericBlocks(Box2D domain, std::vector<AtomicBlock2D*> fields);
+    virtual AnalyticalInjectRandomParticlesFunctionalPPRNG2D<T, Descriptor, DomainFunctional>* clone() const;
+    virtual void getTypeOfModification(std::vector<modif::ModifT>& modified) const;
+
+private:
+    Particle2D<T, Descriptor>* particleTemplate;
+    T probabilityPerCell;
+    DomainFunctional functional;
+    plint nY;
+    uint32_t const* seed;
 };
 
 /// Remove all particles from a given domain.

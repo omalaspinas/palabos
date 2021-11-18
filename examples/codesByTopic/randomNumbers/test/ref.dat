@@ -1,0 +1,19 @@
+Scalar Field
+Size of the multi-block:     100-by-100-by-100
+Number of atomic-blocks:     1
+Smallest atomic-block:       100-by-100-by-100
+Largest atomic-block:        100-by-100-by-100
+Number of allocated cells:   1 million
+Fraction of allocated domain: 100 percent
+
+Sum = 4.9985761890002037e+05
+
+Scalar Field 2
+Size of the multi-block:     100-by-100-by-100
+Number of atomic-blocks:     1000
+Smallest atomic-block:       10-by-10-by-10
+Largest atomic-block:        10-by-10-by-10
+Number of allocated cells:   1 million
+Fraction of allocated domain: 100 percent
+
+Sum = 4.9985761890002037e+05

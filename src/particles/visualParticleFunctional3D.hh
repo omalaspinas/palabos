@@ -45,7 +45,7 @@
 #include "finiteDifference/interpolations2D.h"
 #include "offLattice/immersedWalls3D.h"
 #include "offLattice/voxelizer.h"
-#include "core/plbRandom.h"
+#include "sitmo/prng_engine.hpp"
 #include <algorithm>
 
 namespace plb {
@@ -716,8 +716,10 @@ void VisualScalarFieldParticles3D<T,Descriptor>::processGenericBlocks (
     PLB_ASSERT( scalarPtr );
     ScalarField3D<T>& scalarField = *scalarPtr;
 
-    global::PlbRandom<T>& random = global::plbRandom<T>();
     Dot3D const& location = particleField.getLocation();
+
+    sitmo::prng_engine eng;
+    plint rng_index = 0;
 
     T invDelta = mostLikely-mostUnlikely;
     for (plint iX=domain.x0; iX<=domain.x1; ++iX) {
@@ -726,10 +728,23 @@ void VisualScalarFieldParticles3D<T,Descriptor>::processGenericBlocks (
             plint yOffset = nz*(xOffset + iY+location.y);
             for (plint iZ=domain.z0; iZ<=domain.z1; ++iZ) {
                 plint zOffset = yOffset + iZ+location.z;
+
+                PLB_ASSERT(zOffset >= rng_index);
+                if (zOffset > rng_index) {
+                    eng.discard(zOffset - rng_index);
+                    rng_index = zOffset;
+                }
+                T randomValue = (T) eng() / ((T) sitmo::prng_engine::max() + 1.0);
+                ++rng_index;
+
+                sitmo::prng_engine eng2(zOffset);
                 for (plint iTimes=0; iTimes<numShotsPerCell; ++iTimes) {
-                    T posX = (T)iX + random.get(zOffset)-(T)0.5 + location.x;
-                    T posY = (T)iY + random.get(zOffset)-(T)0.5 + location.y;
-                    T posZ = (T)iZ + random.get(zOffset)-(T)0.5 + location.z;
+                    T posX = (T) iX + (T) 0.5 * (randomValue + (T) eng2() / ((T) sitmo::prng_engine::max() + 1.0))
+                        - (T) 0.5 + location.x;
+                    T posY = (T) iY + (T) 0.5 * (randomValue + (T) eng2() / ((T) sitmo::prng_engine::max() + 1.0))
+                        - (T) 0.5 + location.y;
+                    T posZ = (T) iZ + (T) 0.5 * (randomValue + (T) eng2() / ((T) sitmo::prng_engine::max() + 1.0))
+                        - (T) 0.5 + location.z;
                     Array<T,3> pos(posX,posY,posZ);
 
                     T scalarValue = linearInterpolateScalarField(scalarField, pos);
@@ -738,7 +753,7 @@ void VisualScalarFieldParticles3D<T,Descriptor>::processGenericBlocks (
                     if (scaledScalarValue>(T)1.) scaledScalarValue = (T)1.;
 
                     T overallProbability = probability*scaledScalarValue;
-                    if (random.get(zOffset) > overallProbability) {
+                    if ((T) 0.5 * (randomValue + (T) eng2() / ((T) sitmo::prng_engine::max() + 1.0)) > overallProbability) {
                         Particle3D<T,Descriptor>* newParticle = particleTemplate->clone();
                         newParticle->getPosition() = pos;
                         std::vector<T> scalarVector;

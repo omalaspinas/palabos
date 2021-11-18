@@ -55,7 +55,7 @@
 #ifdef HDF5
 #include "io/hdfWrapper.h"
 #endif
-#include <time.h>
+#include <ctime>
 
 namespace plb {
 

@@ -43,51 +43,61 @@ typedef double T;
 
 #define DESCRIPTOR descriptors::ShanChenD2Q9Descriptor
 
-template<typename T, template<typename U> class Descriptor>
-class RandomInitializer : public BoxProcessingFunctional2D_L<T,Descriptor> 
-{
-public :
-    RandomInitializer(T rho0_, T maxRho_) : rho0(rho0_), maxRho(maxRho_)
-    { };
-    virtual void process(Box2D domain,BlockLattice2D<T,Descriptor>& lattice)
+template <typename T, template <typename U> class Descriptor>
+class RandomInitializer : public BoxProcessingFunctional2D_L<T, Descriptor> {
+public:
+    RandomInitializer(T rho0_, T maxRho_, Box2D const& boundingBox_, uint32_t const* seed_)
+        : rho0(rho0_), maxRho(maxRho_), nY(boundingBox_.getNy()), seed(seed_) {};
+    virtual void process(Box2D domain, BlockLattice2D<T, Descriptor>& lattice)
     {
+        Dot2D location = lattice.getLocation();
+        sitmo::prng_engine eng(*seed);
+        plint rng_index = 0;
         for (plint iX = domain.x0; iX <= domain.x1; ++iX) {
-            for (plint iY = domain.y0; iY <= domain.y1; ++iY)
-            {
-                T rho = rho0 + ((T)rand()/(T)RAND_MAX)*maxRho;
-                Array<T,2> zeroVelocity (0.,0.);
-                
-                iniCellAtEquilibrium(lattice.get(iX,iY), rho, zeroVelocity);
-                
-                lattice.get(iX,iY).setExternalField (
-                        Descriptor<T>::ExternalField::densityBeginsAt,
-                        Descriptor<T>::ExternalField::sizeOfDensity, &rho );
-                lattice.get(iX,iY).setExternalField (
-                        Descriptor<T>::ExternalField::momentumBeginsAt,
-                        Descriptor<T>::ExternalField::sizeOfMomentum, &zeroVelocity[0] );
+            plint globalX = nY * (iX + location.x);
+            for (plint iY = domain.y0; iY <= domain.y1; ++iY) {
+                plint globalY = iY + location.y + globalX;
+                PLB_ASSERT(globalY >= rng_index);
+                if (globalY > rng_index) {
+                    eng.discard(globalY - rng_index);
+                    rng_index = globalY;
+                }
+                T randNumber = (T) eng() / (T) sitmo::prng_engine::max();
+                ++rng_index;
+
+                T rho = rho0 + randNumber * maxRho;
+                Array<T, 2> zeroVelocity(0., 0.);
+
+                iniCellAtEquilibrium(lattice.get(iX, iY), rho, zeroVelocity);
+
+                lattice.get(iX, iY).setExternalField(
+                    Descriptor<T>::ExternalField::densityBeginsAt, Descriptor<T>::ExternalField::sizeOfDensity, &rho);
+                lattice.get(iX, iY).setExternalField(Descriptor<T>::ExternalField::momentumBeginsAt,
+                    Descriptor<T>::ExternalField::sizeOfMomentum, &zeroVelocity[0]);
             }
         }
     };
-    virtual RandomInitializer<T,Descriptor>* clone() const
+    virtual RandomInitializer<T, Descriptor>* clone() const
     {
-        return new RandomInitializer<T,Descriptor>(*this);
+        return new RandomInitializer<T, Descriptor>(*this);
     };
     virtual void getTypeOfModification(std::vector<modif::ModifT>& modified) const
     {
         modified[0] = modif::staticVariables;
     };
-    
-private :
-    T rho0, maxRho;
-};
 
+private:
+    T rho0, maxRho;
+    plint nY;
+    uint32_t const* seed;
+};
 
 int main(int argc, char *argv[])
 {
     plbInit(&argc, &argv);
     global::directories().setOutputDir("./tmp/");
 
-    srand(global::mpi().getRank() + 3);
+    uint32_t seed = 1;
 
     // For the choice of the parameters G, rho0, and psi0, we refer to the book
     //   Michael C. Sukop and Daniel T. Thorne (2006), 
@@ -116,8 +126,8 @@ int main(int argc, char *argv[])
     lattice.periodicity().toggleAll(true);
 
     // Use a random initial condition, to activate the phase separation.
-    applyProcessingFunctional(new RandomInitializer<T,DESCRIPTOR>(rho0,deltaRho), 
-                              lattice.getBoundingBox(),lattice);
+    applyProcessingFunctional(new RandomInitializer<T, DESCRIPTOR>(rho0, deltaRho, lattice.getBoundingBox(), &seed),
+        lattice.getBoundingBox(), lattice);
 
     // Add the data processor which implements the Shan/Chen interaction potential.
     plint processorLevel = 1;

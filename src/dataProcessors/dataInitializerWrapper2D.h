@@ -42,7 +42,6 @@
 #include "multiBlock/multiDataProcessorWrapper2D.h"
 #include "core/dynamics.h"
 #include "dataProcessors/dataInitializerFunctional2D.h"
-#include "sitmo/prng_engine.hpp"
 
 namespace plb {
 
@@ -185,10 +184,6 @@ void apply(MultiBlockLattice2D<T,Descriptor>& lattice, Box2D domain, OneCellFunc
 template<typename T, template<class U> class Descriptor>
 void applyIndexed(MultiBlockLattice2D<T,Descriptor>& lattice, Box2D domain,
                   OneCellIndexedFunctional2D<T,Descriptor>* f);
-
-template<typename T, template<class U> class Descriptor>
-void applyIndexed(MultiBlockLattice2D<T,Descriptor>& lattice, Box2D domain,
-                  OneCellIndexedWithRandFunctional2D<T,Descriptor>* f, sitmo::prng_engine eng);
 
 template<typename T, template<class U> class Descriptor>
 void applyIndexed( MultiBlockLattice2D<T,Descriptor>& lattice, Box2D domain,
@@ -437,11 +432,8 @@ void setToCoordinate(MultiScalarField2D<T>& field, Box2D domain, plint index);
 template<typename T>
 void setToCoordinates(MultiTensorField2D<T,2>& field,  Box2D domain);
 
-template<typename T>
-void setToRandom(MultiScalarField2D<T>& field, Box2D domain, sitmo::prng_engine eng);
-
-template<typename T>
-void setToRandom(MultiScalarField2D<T>& field, Box2D domain, uint32_t seed=0);
+template <typename T>
+void setToRandom(MultiScalarField2D<T>& field, Box2D domain, uint32_t seed = 0);
 
 /// Assign scalar-field to one component of a tensor-field.
 template<typename T, int nDim>

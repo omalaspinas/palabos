@@ -40,7 +40,6 @@
 #include "core/globalDefs.h"
 #include "atomicBlock/dataProcessingFunctional2D.h"
 #include "core/dynamics.h"
-#include "sitmo/prng_engine.hpp"
 
 namespace plb {
 
@@ -118,27 +117,26 @@ private:
     OneCellIndexedFunctional2D<T,Descriptor>* f;
 };
 
-template<typename T, template<class U> class Descriptor>
-class GenericIndexedWithRandLatticeFunctional2D : public BoxProcessingFunctional2D_L<T,Descriptor>
-{
+template <typename T, template <class U> class Descriptor>
+class GenericIndexedWithRandLatticeFunctional2D : public BoxProcessingFunctional2D_L<T, Descriptor> {
 public:
-    GenericIndexedWithRandLatticeFunctional2D( OneCellIndexedWithRandFunctional2D<T,Descriptor>* f_,
-                                               Box2D boundingBox, sitmo::prng_engine eng_ );
-    GenericIndexedWithRandLatticeFunctional2D(GenericIndexedWithRandLatticeFunctional2D<T,Descriptor> const& rhs);
+    GenericIndexedWithRandLatticeFunctional2D(
+        OneCellIndexedWithRandFunctional2D<T, Descriptor>* f_, Box2D boundingBox_, uint32_t const* seed_);
+    GenericIndexedWithRandLatticeFunctional2D(GenericIndexedWithRandLatticeFunctional2D<T, Descriptor> const& rhs);
     virtual ~GenericIndexedWithRandLatticeFunctional2D();
-    GenericIndexedWithRandLatticeFunctional2D<T,Descriptor>& operator=(GenericIndexedWithRandLatticeFunctional2D<T,Descriptor> const& rhs);
-    virtual void process(Box2D domain, BlockLattice2D<T,Descriptor>& lattice);
-    virtual GenericIndexedWithRandLatticeFunctional2D<T,Descriptor>* clone() const;
+    GenericIndexedWithRandLatticeFunctional2D<T, Descriptor>& operator=(
+        GenericIndexedWithRandLatticeFunctional2D<T, Descriptor> const& rhs);
+    virtual void process(Box2D domain, BlockLattice2D<T, Descriptor>& lattice);
+    virtual GenericIndexedWithRandLatticeFunctional2D<T, Descriptor>* clone() const;
     virtual void getTypeOfModification(std::vector<modif::ModifT>& modified) const;
     virtual BlockDomain::DomainT appliesTo() const;
     virtual void setscale(int dxScale, int dtScale);
+
 private:
-    OneCellIndexedWithRandFunctional2D<T,Descriptor>* f;
+    OneCellIndexedWithRandFunctional2D<T, Descriptor>* f;
     plint nY;
-    sitmo::prng_engine eng;
+    uint32_t const* seed;
 };
-
-
 
 /* *************** Class InstantiateDynamicsFunctional2D ************* */
 
@@ -688,17 +686,17 @@ private:
     plint index;
 };
 
-template<typename T>
-class SetToRandomFunctional2D : public BoxProcessingFunctional2D_S<T>
-{
+template <typename T>
+class SetToRandomFunctional2D : public BoxProcessingFunctional2D_S<T> {
 public:
-    SetToRandomFunctional2D(Box2D boundingBox, sitmo::prng_engine eng_);
+    SetToRandomFunctional2D(Box2D const& boundingBox_, uint32_t const* seed_);
     virtual void process(Box2D domain, ScalarField2D<T>& field);
     virtual SetToRandomFunctional2D<T>* clone() const;
     virtual void getTypeOfModification(std::vector<modif::ModifT>& modified) const;
+
 private:
     plint nY;
-    sitmo::prng_engine eng;
+    uint32_t const* seed;
 };
 
 template<typename T>

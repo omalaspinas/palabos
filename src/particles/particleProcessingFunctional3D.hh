@@ -43,6 +43,7 @@
 #include "core/util.h"
 #include "atomicBlock/atomicBlock3D.h"
 #include "atomicBlock/blockLattice3D.h"
+#include "sitmo/prng_engine.hpp"
 #include <algorithm>
 
 namespace plb {
@@ -370,6 +371,101 @@ void InjectRandomParticlesFunctional3D<T,Descriptor>::getTypeOfModification (
     modified[0] = modif::dynamicVariables;  // Particle field.
 }
 
+/* ******** InjectRandomParticlesFunctionalPPRNG3D *********************************** */
+
+template <typename T, template <typename U> class Descriptor>
+InjectRandomParticlesFunctionalPPRNG3D<T, Descriptor>::InjectRandomParticlesFunctionalPPRNG3D(
+    Particle3D<T, Descriptor>* particleTemplate_, T probabilityPerCell_, Box3D const& boundingBox_,
+    uint32_t const* seed_)
+    : particleTemplate(particleTemplate_), probabilityPerCell(probabilityPerCell_), nY(boundingBox_.getNy()),
+      nZ(boundingBox_.getNz()), seed(seed_)
+{
+}
+
+template <typename T, template <typename U> class Descriptor>
+InjectRandomParticlesFunctionalPPRNG3D<T, Descriptor>::InjectRandomParticlesFunctionalPPRNG3D(
+    InjectRandomParticlesFunctionalPPRNG3D<T, Descriptor> const& rhs)
+    : particleTemplate(rhs.particleTemplate->clone()), probabilityPerCell(rhs.probabilityPerCell), nY(rhs.nY),
+      nZ(rhs.nZ), seed(rhs.seed)
+{
+}
+
+template <typename T, template <typename U> class Descriptor>
+InjectRandomParticlesFunctionalPPRNG3D<T, Descriptor>& InjectRandomParticlesFunctionalPPRNG3D<T, Descriptor>::operator=(
+    InjectRandomParticlesFunctionalPPRNG3D<T, Descriptor> const& rhs)
+{
+    InjectRandomParticlesFunctionalPPRNG3D<T, Descriptor>(rhs).swap(*this);
+    return *this;
+}
+
+template <typename T, template <typename U> class Descriptor>
+void InjectRandomParticlesFunctionalPPRNG3D<T, Descriptor>::swap(
+    InjectRandomParticlesFunctionalPPRNG3D<T, Descriptor>& rhs)
+{
+    std::swap(particleTemplate, rhs.particleTemplate);
+    std::swap(probabilityPerCell, rhs.probabilityPerCell);
+    std::swap(nY, rhs.nY);
+    std::swap(nZ, rhs.nZ);
+    std::swap(seed, rhs.seed);
+}
+
+template <typename T, template <typename U> class Descriptor>
+InjectRandomParticlesFunctionalPPRNG3D<T, Descriptor>::~InjectRandomParticlesFunctionalPPRNG3D()
+{
+    delete particleTemplate;
+}
+
+template <typename T, template <typename U> class Descriptor>
+void InjectRandomParticlesFunctionalPPRNG3D<T, Descriptor>::processGenericBlocks(
+    Box3D domain, std::vector<AtomicBlock3D*> blocks)
+{
+    PLB_PRECONDITION(blocks.size() == 1);
+    ParticleField3D<T, Descriptor>& particleField = *dynamic_cast<ParticleField3D<T, Descriptor>*>(blocks[0]);
+    Dot3D location = particleField.getLocation();
+    sitmo::prng_engine eng(*seed);
+    plint rng_index = 0;
+    for (plint iX = domain.x0; iX <= domain.x1; ++iX) {
+        plint globalX = nY * (iX + location.x);
+        for (plint iY = domain.y0; iY <= domain.y1; ++iY) {
+            plint globalY = nZ * (iY + location.y + globalX);
+            for (plint iZ = domain.z0; iZ <= domain.z1; ++iZ) {
+                plint globalZ = iZ + location.z + globalY;
+                PLB_ASSERT(globalZ >= rng_index);
+                if (globalZ > rng_index) {
+                    eng.discard(globalZ - rng_index);
+                    rng_index = globalZ;
+                }
+                T randNumber = (T) eng() / (T) sitmo::prng_engine::max();
+                ++rng_index;
+                if (randNumber < probabilityPerCell) {
+                    sitmo::prng_engine eng2(*seed + (uint32_t) globalZ);
+                    T randX = (T) eng2() / (T) sitmo::prng_engine::max() - (T) 0.5;
+                    T randY = (T) eng2() / (T) sitmo::prng_engine::max() - (T) 0.5;
+                    T randZ = (T) eng2() / (T) sitmo::prng_engine::max() - (T) 0.5;
+                    Particle3D<T, Descriptor>* newparticle = particleTemplate->clone();
+                    newparticle->getPosition()
+                        = Array<T, 3>(location.x + iX + randX, location.y + iY + randY, location.z + iZ + randZ);
+
+                    particleField.addParticle(domain, newparticle);
+                }
+            }
+        }
+    }
+}
+
+template <typename T, template <typename U> class Descriptor>
+InjectRandomParticlesFunctionalPPRNG3D<T, Descriptor>*
+InjectRandomParticlesFunctionalPPRNG3D<T, Descriptor>::clone() const
+{
+    return new InjectRandomParticlesFunctionalPPRNG3D<T, Descriptor>(*this);
+}
+
+template <typename T, template <typename U> class Descriptor>
+void InjectRandomParticlesFunctionalPPRNG3D<T, Descriptor>::getTypeOfModification(
+    std::vector<modif::ModifT>& modified) const
+{
+    modified[0] = modif::dynamicVariables; // Particle field.
+}
 
 /* ******** MaskedInjectRandomParticlesFunctional3D *********************************** */
 
@@ -462,6 +558,114 @@ void MaskedInjectRandomParticlesFunctional3D<T,Descriptor>::getTypeOfModificatio
     modified[1] = modif::nothing;           // Mask.
 }
 
+/* ******** MaskedInjectRandomParticlesFunctionalPPRNG3D *********************************** */
+
+template <typename T, template <typename U> class Descriptor>
+MaskedInjectRandomParticlesFunctionalPPRNG3D<T, Descriptor>::MaskedInjectRandomParticlesFunctionalPPRNG3D(
+    Particle3D<T, Descriptor>* particleTemplate_, T probabilityPerCell_, int flag_, Box3D const& boundingBox_,
+    uint32_t const* seed_)
+    : particleTemplate(particleTemplate_), probabilityPerCell(probabilityPerCell_), flag(flag_),
+      nY(boundingBox_.getNy()), nZ(boundingBox_.getNz()), seed(seed_)
+{
+}
+
+template <typename T, template <typename U> class Descriptor>
+MaskedInjectRandomParticlesFunctionalPPRNG3D<T, Descriptor>::MaskedInjectRandomParticlesFunctionalPPRNG3D(
+    MaskedInjectRandomParticlesFunctionalPPRNG3D<T, Descriptor> const& rhs)
+    : particleTemplate(rhs.particleTemplate->clone()), probabilityPerCell(rhs.probabilityPerCell), flag(rhs.flag),
+      nY(rhs.nY), nZ(rhs.nZ), seed(rhs.seed)
+{
+}
+
+template <typename T, template <typename U> class Descriptor>
+MaskedInjectRandomParticlesFunctionalPPRNG3D<T, Descriptor>&
+MaskedInjectRandomParticlesFunctionalPPRNG3D<T, Descriptor>::operator=(
+    MaskedInjectRandomParticlesFunctionalPPRNG3D<T, Descriptor> const& rhs)
+{
+    MaskedInjectRandomParticlesFunctionalPPRNG3D<T, Descriptor>(rhs).swap(*this);
+    return *this;
+}
+
+template <typename T, template <typename U> class Descriptor>
+void MaskedInjectRandomParticlesFunctionalPPRNG3D<T, Descriptor>::swap(
+    MaskedInjectRandomParticlesFunctionalPPRNG3D<T, Descriptor>& rhs)
+{
+    std::swap(particleTemplate, rhs.particleTemplate);
+    std::swap(probabilityPerCell, rhs.probabilityPerCell);
+    std::swap(flag, rhs.flag);
+    std::swap(nY, rhs.nY);
+    std::swap(nZ, rhs.nZ);
+    std::swap(seed, rhs.seed);
+}
+
+template <typename T, template <typename U> class Descriptor>
+MaskedInjectRandomParticlesFunctionalPPRNG3D<T, Descriptor>::~MaskedInjectRandomParticlesFunctionalPPRNG3D()
+{
+    delete particleTemplate;
+}
+
+template <typename T, template <typename U> class Descriptor>
+void MaskedInjectRandomParticlesFunctionalPPRNG3D<T, Descriptor>::processGenericBlocks(
+    Box3D domain, std::vector<AtomicBlock3D*> blocks)
+{
+    PLB_ASSERT(blocks.size() == 2);
+
+    ParticleField3D<T, Descriptor>* particleField = dynamic_cast<ParticleField3D<T, Descriptor>*>(blocks[0]);
+    PLB_ASSERT(particleField);
+    ScalarField3D<int>* flagMatrix = dynamic_cast<ScalarField3D<int>*>(blocks[1]);
+    PLB_ASSERT(flagMatrix);
+
+    Dot3D offset = computeRelativeDisplacement(*particleField, *flagMatrix);
+
+    Dot3D location = particleField->getLocation();
+
+    sitmo::prng_engine eng(*seed);
+    plint rng_index = 0;
+
+    for (plint iX = domain.x0; iX <= domain.x1; ++iX) {
+        plint globalX = nY * (iX + location.x);
+        for (plint iY = domain.y0; iY <= domain.y1; ++iY) {
+            plint globalY = nZ * (iY + location.y + globalX);
+            for (plint iZ = domain.z0; iZ <= domain.z1; ++iZ) {
+                plint globalZ = iZ + location.z + globalY;
+                PLB_ASSERT(globalZ >= rng_index);
+                if (globalZ > rng_index) {
+                    eng.discard(globalZ - rng_index);
+                    rng_index = globalZ;
+                }
+                T randNumber = (T) eng() / (T) sitmo::prng_engine::max();
+                ++rng_index;
+                if (flagMatrix->get(iX + offset.x, iY + offset.y, iZ + offset.z) == flag) {
+                    if (randNumber < probabilityPerCell) {
+                        sitmo::prng_engine eng2(*seed + (uint32_t) globalZ);
+                        T randX = (T) eng2() / (T) sitmo::prng_engine::max() - (T) 0.5;
+                        T randY = (T) eng2() / (T) sitmo::prng_engine::max() - (T) 0.5;
+                        T randZ = (T) eng2() / (T) sitmo::prng_engine::max() - (T) 0.5;
+                        Particle3D<T, Descriptor>* newparticle = particleTemplate->clone();
+                        newparticle->getPosition()
+                            = Array<T, 3>(location.x + iX + randX, location.y + iY + randY, location.z + iZ + randZ);
+                        particleField->addParticle(domain, newparticle);
+                    }
+                }
+            }
+        }
+    }
+}
+
+template <typename T, template <typename U> class Descriptor>
+MaskedInjectRandomParticlesFunctionalPPRNG3D<T, Descriptor>*
+MaskedInjectRandomParticlesFunctionalPPRNG3D<T, Descriptor>::clone() const
+{
+    return new MaskedInjectRandomParticlesFunctionalPPRNG3D<T, Descriptor>(*this);
+}
+
+template <typename T, template <typename U> class Descriptor>
+void MaskedInjectRandomParticlesFunctionalPPRNG3D<T, Descriptor>::getTypeOfModification(
+    std::vector<modif::ModifT>& modified) const
+{
+    modified[0] = modif::dynamicVariables; // Particle field.
+    modified[1] = modif::nothing;          // Mask.
+}
 
 /* ******** N_MaskedInjectRandomParticlesFunctional3D *********************************** */
 
@@ -555,6 +759,115 @@ void N_MaskedInjectRandomParticlesFunctional3D<T,Descriptor>::getTypeOfModificat
     modified[1] = modif::nothing;           // Mask.
 }
 
+/* ******** N_MaskedInjectRandomParticlesFunctionalPPRNG3D *********************************** */
+
+template <typename T, template <typename U> class Descriptor>
+N_MaskedInjectRandomParticlesFunctionalPPRNG3D<T, Descriptor>::N_MaskedInjectRandomParticlesFunctionalPPRNG3D(
+    Particle3D<T, Descriptor>* particleTemplate_, T probabilityPerCell_, int flag_, Box3D const& boundingBox_,
+    uint32_t const* seed_)
+    : particleTemplate(particleTemplate_), probabilityPerCell(probabilityPerCell_), flag(flag_),
+      nY(boundingBox_.getNy()), nZ(boundingBox_.getNz()), seed(seed_)
+{
+}
+
+template <typename T, template <typename U> class Descriptor>
+N_MaskedInjectRandomParticlesFunctionalPPRNG3D<T, Descriptor>::N_MaskedInjectRandomParticlesFunctionalPPRNG3D(
+    N_MaskedInjectRandomParticlesFunctionalPPRNG3D<T, Descriptor> const& rhs)
+    : particleTemplate(rhs.particleTemplate->clone()), probabilityPerCell(rhs.probabilityPerCell), flag(rhs.flag),
+      nY(rhs.nY), nZ(rhs.nZ), seed(rhs.seed)
+{
+}
+
+template <typename T, template <typename U> class Descriptor>
+N_MaskedInjectRandomParticlesFunctionalPPRNG3D<T, Descriptor>&
+N_MaskedInjectRandomParticlesFunctionalPPRNG3D<T, Descriptor>::operator=(
+    N_MaskedInjectRandomParticlesFunctionalPPRNG3D<T, Descriptor> const& rhs)
+{
+    N_MaskedInjectRandomParticlesFunctionalPPRNG3D<T, Descriptor>(rhs).swap(*this);
+    return *this;
+}
+
+template <typename T, template <typename U> class Descriptor>
+void N_MaskedInjectRandomParticlesFunctionalPPRNG3D<T, Descriptor>::swap(
+    N_MaskedInjectRandomParticlesFunctionalPPRNG3D<T, Descriptor>& rhs)
+{
+    std::swap(particleTemplate, rhs.particleTemplate);
+    std::swap(probabilityPerCell, rhs.probabilityPerCell);
+    std::swap(flag, rhs.flag);
+    std::swap(nY, rhs.nY);
+    std::swap(nZ, rhs.nZ);
+    std::swap(seed, rhs.seed);
+}
+
+template <typename T, template <typename U> class Descriptor>
+N_MaskedInjectRandomParticlesFunctionalPPRNG3D<T, Descriptor>::~N_MaskedInjectRandomParticlesFunctionalPPRNG3D()
+{
+    delete particleTemplate;
+}
+
+template <typename T, template <typename U> class Descriptor>
+void N_MaskedInjectRandomParticlesFunctionalPPRNG3D<T, Descriptor>::processGenericBlocks(
+    Box3D domain, std::vector<AtomicBlock3D*> blocks)
+{
+    PLB_ASSERT(blocks.size() == 2);
+
+    ParticleField3D<T, Descriptor>* particleField = dynamic_cast<ParticleField3D<T, Descriptor>*>(blocks[0]);
+    PLB_ASSERT(particleField);
+    NTensorField3D<int>* flagMatrix = dynamic_cast<NTensorField3D<int>*>(blocks[1]);
+    PLB_ASSERT(flagMatrix);
+    PLB_ASSERT(flagMatrix->getNdim() == 1);
+
+    Dot3D offset = computeRelativeDisplacement(*particleField, *flagMatrix);
+
+    Dot3D location = particleField->getLocation();
+
+    sitmo::prng_engine eng(*seed);
+    plint rng_index = 0;
+
+    for (plint iX = domain.x0; iX <= domain.x1; ++iX) {
+        plint globalX = nY * (iX + location.x);
+        for (plint iY = domain.y0; iY <= domain.y1; ++iY) {
+            plint globalY = nZ * (iY + location.y + globalX);
+            for (plint iZ = domain.z0; iZ <= domain.z1; ++iZ) {
+                plint globalZ = iZ + location.z + globalY;
+                PLB_ASSERT(globalZ >= rng_index);
+                if (globalZ > rng_index) {
+                    eng.discard(globalZ - rng_index);
+                    rng_index = globalZ;
+                }
+                T randNumber = (T) eng() / (T) sitmo::prng_engine::max();
+                ++rng_index;
+                if (*flagMatrix->get(iX + offset.x, iY + offset.y, iZ + offset.z) == flag) {
+                    if (randNumber < probabilityPerCell) {
+                        sitmo::prng_engine eng2(*seed + (uint32_t) globalZ);
+                        T randX = (T) eng2() / (T) sitmo::prng_engine::max() - (T) 0.5;
+                        T randY = (T) eng2() / (T) sitmo::prng_engine::max() - (T) 0.5;
+                        T randZ = (T) eng2() / (T) sitmo::prng_engine::max() - (T) 0.5;
+                        Particle3D<T, Descriptor>* newparticle = particleTemplate->clone();
+                        newparticle->getPosition()
+                            = Array<T, 3>(location.x + iX + randX, location.y + iY + randY, location.z + iZ + randZ);
+                        particleField->addParticle(domain, newparticle);
+                    }
+                }
+            }
+        }
+    }
+}
+
+template <typename T, template <typename U> class Descriptor>
+N_MaskedInjectRandomParticlesFunctionalPPRNG3D<T, Descriptor>*
+N_MaskedInjectRandomParticlesFunctionalPPRNG3D<T, Descriptor>::clone() const
+{
+    return new N_MaskedInjectRandomParticlesFunctionalPPRNG3D<T, Descriptor>(*this);
+}
+
+template <typename T, template <typename U> class Descriptor>
+void N_MaskedInjectRandomParticlesFunctionalPPRNG3D<T, Descriptor>::getTypeOfModification(
+    std::vector<modif::ModifT>& modified) const
+{
+    modified[0] = modif::dynamicVariables; // Particle field.
+    modified[1] = modif::nothing;          // Mask.
+}
 
 /* ******** AnalyticalInjectRandomParticlesFunctional3D *********************************** */
 
@@ -641,6 +954,106 @@ void AnalyticalInjectRandomParticlesFunctional3D<T,Descriptor,DomainFunctional>:
     modified[0] = modif::dynamicVariables;  // Particle field.
 }
 
+/* ******** AnalyticalInjectRandomParticlesFunctionalPPRNG3D *********************************** */
+
+template <typename T, template <typename U> class Descriptor, class DomainFunctional>
+AnalyticalInjectRandomParticlesFunctionalPPRNG3D<T, Descriptor,
+    DomainFunctional>::AnalyticalInjectRandomParticlesFunctionalPPRNG3D(Particle3D<T, Descriptor>* particleTemplate_,
+    T probabilityPerCell_, DomainFunctional functional_, Box3D const& boundingBox_, uint32_t const* seed_)
+    : particleTemplate(particleTemplate_), probabilityPerCell(probabilityPerCell_), functional(functional_),
+      nY(boundingBox_.getNy()), nZ(boundingBox_.getNz()), seed(seed_)
+{
+}
+
+template <typename T, template <typename U> class Descriptor, class DomainFunctional>
+AnalyticalInjectRandomParticlesFunctionalPPRNG3D<T, Descriptor, DomainFunctional>::
+    AnalyticalInjectRandomParticlesFunctionalPPRNG3D(
+        AnalyticalInjectRandomParticlesFunctionalPPRNG3D<T, Descriptor, DomainFunctional> const& rhs)
+    : particleTemplate(rhs.particleTemplate->clone()), probabilityPerCell(rhs.probabilityPerCell),
+      functional(rhs.functional), nY(rhs.nY), nZ(rhs.nZ), seed(rhs.seed)
+{
+}
+
+template <typename T, template <typename U> class Descriptor, class DomainFunctional>
+AnalyticalInjectRandomParticlesFunctionalPPRNG3D<T, Descriptor, DomainFunctional>&
+AnalyticalInjectRandomParticlesFunctionalPPRNG3D<T, Descriptor, DomainFunctional>::operator=(
+    AnalyticalInjectRandomParticlesFunctionalPPRNG3D<T, Descriptor, DomainFunctional> const& rhs)
+{
+    AnalyticalInjectRandomParticlesFunctionalPPRNG3D<T, Descriptor, DomainFunctional>(rhs).swap(*this);
+    return *this;
+}
+
+template <typename T, template <typename U> class Descriptor, class DomainFunctional>
+void AnalyticalInjectRandomParticlesFunctionalPPRNG3D<T, Descriptor, DomainFunctional>::swap(
+    AnalyticalInjectRandomParticlesFunctionalPPRNG3D<T, Descriptor, DomainFunctional>& rhs)
+{
+    std::swap(particleTemplate, rhs.particleTemplate);
+    std::swap(probabilityPerCell, rhs.probabilityPerCell);
+    std::swap(functional, rhs.functional);
+    std::swap(nY, rhs.nY);
+    std::swap(nZ, rhs.nZ);
+    std::swap(seed, rhs.seed);
+}
+
+template <typename T, template <typename U> class Descriptor, class DomainFunctional>
+AnalyticalInjectRandomParticlesFunctionalPPRNG3D<T, Descriptor,
+    DomainFunctional>::~AnalyticalInjectRandomParticlesFunctionalPPRNG3D()
+{
+    delete particleTemplate;
+}
+
+template <typename T, template <typename U> class Descriptor, class DomainFunctional>
+void AnalyticalInjectRandomParticlesFunctionalPPRNG3D<T, Descriptor, DomainFunctional>::processGenericBlocks(
+    Box3D domain, std::vector<AtomicBlock3D*> blocks)
+{
+    PLB_PRECONDITION(blocks.size() == 1);
+    ParticleField3D<T, Descriptor>& particleField = *dynamic_cast<ParticleField3D<T, Descriptor>*>(blocks[0]);
+    Dot3D location = particleField.getLocation();
+    sitmo::prng_engine eng(*seed);
+    plint rng_index = 0;
+    for (plint iX = domain.x0; iX <= domain.x1; ++iX) {
+        plint globalX = nY * (iX + location.x);
+        for (plint iY = domain.y0; iY <= domain.y1; ++iY) {
+            plint globalY = nZ * (iY + location.y + globalX);
+            for (plint iZ = domain.z0; iZ <= domain.z1; ++iZ) {
+                plint globalZ = iZ + location.z + globalY;
+                PLB_ASSERT(globalZ >= rng_index);
+                if (globalZ > rng_index) {
+                    eng.discard(globalZ - rng_index);
+                    rng_index = globalZ;
+                }
+                T randNumber = (T) eng() / (T) sitmo::prng_engine::max();
+                ++rng_index;
+                if (randNumber < probabilityPerCell) {
+                    sitmo::prng_engine eng2(*seed + (uint32_t) globalZ);
+                    T randX = (T) eng2() / (T) sitmo::prng_engine::max() - (T) 0.5;
+                    T randY = (T) eng2() / (T) sitmo::prng_engine::max() - (T) 0.5;
+                    T randZ = (T) eng2() / (T) sitmo::prng_engine::max() - (T) 0.5;
+                    Array<T, 3> position(location.x + iX + randX, location.y + iY + randY, location.z + iZ + randZ);
+                    if (functional(position)) {
+                        Particle3D<T, Descriptor>* newparticle = particleTemplate->clone();
+                        newparticle->getPosition() = position;
+                        particleField.addParticle(domain, newparticle);
+                    }
+                }
+            }
+        }
+    }
+}
+
+template <typename T, template <typename U> class Descriptor, class DomainFunctional>
+AnalyticalInjectRandomParticlesFunctionalPPRNG3D<T, Descriptor, DomainFunctional>*
+AnalyticalInjectRandomParticlesFunctionalPPRNG3D<T, Descriptor, DomainFunctional>::clone() const
+{
+    return new AnalyticalInjectRandomParticlesFunctionalPPRNG3D<T, Descriptor, DomainFunctional>(*this);
+}
+
+template <typename T, template <typename U> class Descriptor, class DomainFunctional>
+void AnalyticalInjectRandomParticlesFunctionalPPRNG3D<T, Descriptor, DomainFunctional>::getTypeOfModification(
+    std::vector<modif::ModifT>& modified) const
+{
+    modified[0] = modif::dynamicVariables; // Particle field.
+}
 
 /* ******** MaskedAnalyticalInjectRandomParticlesFunctional3D *********************************** */
 
@@ -734,6 +1147,112 @@ void MaskedAnalyticalInjectRandomParticlesFunctional3D<T,Descriptor,DomainFuncti
     modified[1] = modif::nothing;  // Mask.
 }
 
+/* ******** MaskedAnalyticalInjectRandomParticlesFunctionalPPRNG3D *********************************** */
+
+template <typename T, template <typename U> class Descriptor, class DomainFunctional>
+MaskedAnalyticalInjectRandomParticlesFunctionalPPRNG3D<T, Descriptor,
+    DomainFunctional>::MaskedAnalyticalInjectRandomParticlesFunctionalPPRNG3D(Particle3D<T, Descriptor>*
+                                                                                  particleTemplate_,
+    T probabilityPerCell_, DomainFunctional functional_, int flag_, Box3D const& boundingBox_,
+    uint32_t const* seed_)
+    : particleTemplate(particleTemplate_), probabilityPerCell(probabilityPerCell_), functional(functional_),
+      flag(flag_), nY(boundingBox_.getNy()), nZ(boundingBox_.getNz()), seed(seed_)
+{
+}
+
+template <typename T, template <typename U> class Descriptor, class DomainFunctional>
+MaskedAnalyticalInjectRandomParticlesFunctionalPPRNG3D<T, Descriptor, DomainFunctional>::
+    MaskedAnalyticalInjectRandomParticlesFunctionalPPRNG3D(
+        MaskedAnalyticalInjectRandomParticlesFunctionalPPRNG3D<T, Descriptor, DomainFunctional> const& rhs)
+    : particleTemplate(rhs.particleTemplate->clone()), probabilityPerCell(rhs.probabilityPerCell),
+      functional(rhs.functional), flag(rhs.flag), nY(rhs.nY), nZ(rhs.nZ), seed(rhs.seed)
+{
+}
+
+template <typename T, template <typename U> class Descriptor, class DomainFunctional>
+MaskedAnalyticalInjectRandomParticlesFunctionalPPRNG3D<T, Descriptor, DomainFunctional>&
+MaskedAnalyticalInjectRandomParticlesFunctionalPPRNG3D<T, Descriptor, DomainFunctional>::operator=(
+    MaskedAnalyticalInjectRandomParticlesFunctionalPPRNG3D<T, Descriptor, DomainFunctional> const& rhs)
+{
+    MaskedAnalyticalInjectRandomParticlesFunctionalPPRNG3D<T, Descriptor, DomainFunctional>(rhs).swap(*this);
+    return *this;
+}
+
+template <typename T, template <typename U> class Descriptor, class DomainFunctional>
+void MaskedAnalyticalInjectRandomParticlesFunctionalPPRNG3D<T, Descriptor, DomainFunctional>::swap(
+    MaskedAnalyticalInjectRandomParticlesFunctionalPPRNG3D<T, Descriptor, DomainFunctional>& rhs)
+{
+    std::swap(particleTemplate, rhs.particleTemplate);
+    std::swap(probabilityPerCell, rhs.probabilityPerCell);
+    std::swap(functional, rhs.functional);
+    std::swap(flag, rhs.flag);
+    std::swap(nY, rhs.nY);
+    std::swap(nZ, rhs.nZ);
+    std::swap(seed, rhs.seed);
+}
+
+template <typename T, template <typename U> class Descriptor, class DomainFunctional>
+MaskedAnalyticalInjectRandomParticlesFunctionalPPRNG3D<T, Descriptor,
+    DomainFunctional>::~MaskedAnalyticalInjectRandomParticlesFunctionalPPRNG3D()
+{
+    delete particleTemplate;
+}
+
+template <typename T, template <typename U> class Descriptor, class DomainFunctional>
+void MaskedAnalyticalInjectRandomParticlesFunctionalPPRNG3D<T, Descriptor, DomainFunctional>::processGenericBlocks(
+    Box3D domain, std::vector<AtomicBlock3D*> blocks)
+{
+    PLB_PRECONDITION(blocks.size() == 2);
+    ParticleField3D<T, Descriptor>& particleField = *dynamic_cast<ParticleField3D<T, Descriptor>*>(blocks[0]);
+    ScalarField3D<int>& flagMatrix = *dynamic_cast<ScalarField3D<int>*>(blocks[1]);
+    Dot3D offset = computeRelativeDisplacement(particleField, flagMatrix);
+    Dot3D location = particleField.getLocation();
+    sitmo::prng_engine eng(*seed);
+    plint rng_index = 0;
+    for (plint iX = domain.x0; iX <= domain.x1; ++iX) {
+        plint globalX = nY * (iX + location.x);
+        for (plint iY = domain.y0; iY <= domain.y1; ++iY) {
+            plint globalY = nZ * (iY + location.y + globalX);
+            for (plint iZ = domain.z0; iZ <= domain.z1; ++iZ) {
+                plint globalZ = iZ + location.z + globalY;
+                PLB_ASSERT(globalZ >= rng_index);
+                if (globalZ > rng_index) {
+                    eng.discard(globalZ - rng_index);
+                    rng_index = globalZ;
+                }
+                T randNumber = (T) eng() / (T) sitmo::prng_engine::max();
+                ++rng_index;
+                if (randNumber < probabilityPerCell) {
+                    sitmo::prng_engine eng2(*seed + (uint32_t) globalZ);
+                    T randX = (T) eng2() / (T) sitmo::prng_engine::max() - (T) 0.5;
+                    T randY = (T) eng2() / (T) sitmo::prng_engine::max() - (T) 0.5;
+                    T randZ = (T) eng2() / (T) sitmo::prng_engine::max() - (T) 0.5;
+                    Array<T, 3> position(location.x + iX + randX, location.y + iY + randY, location.z + iZ + randZ);
+                    if (functional(position) && flagMatrix.get(iX + offset.x, iY + offset.y, iZ + offset.z) == flag) {
+                        Particle3D<T, Descriptor>* newparticle = particleTemplate->clone();
+                        newparticle->getPosition() = position;
+                        particleField.addParticle(domain, newparticle);
+                    }
+                }
+            }
+        }
+    }
+}
+
+template <typename T, template <typename U> class Descriptor, class DomainFunctional>
+MaskedAnalyticalInjectRandomParticlesFunctionalPPRNG3D<T, Descriptor, DomainFunctional>*
+MaskedAnalyticalInjectRandomParticlesFunctionalPPRNG3D<T, Descriptor, DomainFunctional>::clone() const
+{
+    return new MaskedAnalyticalInjectRandomParticlesFunctionalPPRNG3D<T, Descriptor, DomainFunctional>(*this);
+}
+
+template <typename T, template <typename U> class Descriptor, class DomainFunctional>
+void MaskedAnalyticalInjectRandomParticlesFunctionalPPRNG3D<T, Descriptor, DomainFunctional>::getTypeOfModification(
+    std::vector<modif::ModifT>& modified) const
+{
+    modified[0] = modif::dynamicVariables; // Particle field.
+    modified[1] = modif::nothing;          // Mask.
+}
 
 /* ******** InjectEquallySpacedParticlesFunctional3D *********************************** */
 

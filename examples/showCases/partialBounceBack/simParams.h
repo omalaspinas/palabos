@@ -6,8 +6,8 @@
 #include <fstream>
 #include <sstream>
 #include <cstdio>
-#include <stdlib.h>     /* srand, rand */
-#include <time.h>       /* time */
+#include <cstdlib>      /* srand, rand */
+#include <ctime>        /* time */
 
 #define DESCRIPTOR descriptors::RhoBarJD3Q19Descriptor
 

@@ -37,11 +37,11 @@
 #include "core/globalDefs.h"
 #include "particles/particleVtk3D.h"
 #include "particles/particleNonLocalTransfer3D.h"
+#include "sitmo/prng_engine.hpp"
 
 #include <cstdio>
 #include <cstdlib>
-
-#define frand() ((double) rand() / (RAND_MAX + 1.0))
+#include <set>
 
 namespace plb {
 
@@ -384,15 +384,31 @@ void particleVtkSerialImplementation (
         SmartBulk3D oneBlockBulk(multiSerialParticles.getMultiBlockManagement(), 0);
         atomicSerialParticles.findParticles(oneBlockBulk.toLocal(multiSerialParticles.getBoundingBox()), found);
         pluint numParticles = found.size();
+        if (numParticles == 0) {
+            return;
+        }
         pluint numParticlesToWrite = maxNumParticlesToWrite == 0 ? numParticles :
             (maxNumParticlesToWrite > numParticles ? numParticles : maxNumParticlesToWrite);
 
-        std::vector<pluint> iParticles;
-        iParticles.resize(0);
+        std::set<pluint> iParticles;
         if (numParticlesToWrite != numParticles) {
-            for (pluint i = 0; i < numParticlesToWrite; i++)
-                iParticles.push_back((pluint) (frand() * (double) (numParticles - 1)));
-            std::sort(iParticles.begin(), iParticles.end());
+            sitmo::prng_engine eng;
+            pluint count = 0;
+            pluint maxIter = 1000000000;
+            pluint iter = 0;
+            while (count < numParticlesToWrite && iter < maxIter) {
+                T randomValue = (T) eng() / ((T) sitmo::prng_engine::max() + 1.0);
+                auto ret = iParticles.insert((pluint)(randomValue * (numParticles - 1)));
+                if (ret.second) {
+                    count++;
+                }
+                iter++;
+            }
+            if (count < numParticlesToWrite) {
+                std::cout << "particleVtkSerialImplementation(): failed to randomly select " << numParticlesToWrite
+                          << " particles after " << maxIter << " iterations. Writing " << count << " particles instead."
+                          << std::endl;
+            }
         }
 
         FILE *fp = fopen(fName.c_str(), "w");
@@ -411,8 +427,8 @@ void particleVtkSerialImplementation (
                 fprintf(fp, "% .10e % .10e % .10e\n", doublePos[0], doublePos[1], doublePos[2]);
             }
         } else {
-            for (pluint i = 0; i < numParticlesToWrite; i++) {
-                Array<T,3> pos(found[iParticles[i]]->getPosition());
+            for (pluint iParticle : iParticles) {
+                Array<T,3> pos(found[iParticle]->getPosition());
                 pos = deltaX * pos + offset;
                 Array<double,3> doublePos(pos);
                 fprintf(fp, "% .10e % .10e % .10e\n", doublePos[0], doublePos[1], doublePos[2]);
@@ -434,9 +450,9 @@ void particleVtkSerialImplementation (
                     fprintf(fp, "% .10e % .10e % .10e\n", doubleVectorValue[0], doubleVectorValue[1], doubleVectorValue[2]);
                 }
             } else {
-                for (pluint i = 0; i < numParticlesToWrite; i++) {
+                for (pluint iParticle : iParticles) {
                     Array<T,3> vectorValue;
-                    found[iParticles[i]]->getVector(vectorID, vectorValue);
+                    found[iParticle]->getVector(vectorID, vectorValue);
                     Array<double,3> doubleVectorValue(vectorValue);
                     fprintf(fp, "% .10e % .10e % .10e\n", doubleVectorValue[0], doubleVectorValue[1], doubleVectorValue[2]);
                 }
@@ -450,8 +466,8 @@ void particleVtkSerialImplementation (
                 fprintf(fp, "% .10e\n", tag);
             }
         } else {
-            for (pluint i = 0; i < numParticlesToWrite; i++) {
-                double tag = (double) found[iParticles[i]]->getTag();
+            for (pluint iParticle : iParticles) {
+                double tag = (double) found[iParticle]->getTag();
                 fprintf(fp, "% .10e\n", tag);
             }
         }
@@ -471,9 +487,9 @@ void particleVtkSerialImplementation (
                     fprintf(fp, "% .10e\n", doubleScalarValue);
                 }
             } else {
-                for (pluint i = 0; i < numParticlesToWrite; i++) {
+                for (pluint iParticle : iParticles) {
                     T scalarValue;
-                    found[iParticles[i]]->getScalar(scalarID, scalarValue);
+                    found[iParticle]->getScalar(scalarID, scalarValue);
                     double doubleScalarValue = (double) scalarValue;
                     fprintf(fp, "% .10e\n", doubleScalarValue);
                 }
@@ -561,7 +577,5 @@ void writeSelectedParticleVtk (
 }
 
 }  // namespace plb
-
-#undef frand
 
 #endif  // PARTICLE_VTK_3D_HH

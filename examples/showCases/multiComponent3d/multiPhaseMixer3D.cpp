@@ -267,8 +267,7 @@ int main(int argc, char *argv[])
 {
     plbInit(&argc, &argv);
     global::directories().setOutputDir(outDir);
-    srand(global::mpi().getRank());
-    
+
     const T omega1 = 1.0;
     const T omega2 = 1.0;
     const plint nx   = 75;

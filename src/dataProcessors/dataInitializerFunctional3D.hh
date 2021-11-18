@@ -43,6 +43,7 @@
 #include "latticeBoltzmann/externalFieldAccess.h"
 #include "atomicBlock/blockLattice3D.h"
 #include "multiGrid/multiGridUtil.h"
+#include "sitmo/prng_engine.hpp"
 #include <limits>
 #include <algorithm>
 
@@ -250,98 +251,90 @@ void GenericIndexedLatticeFunctional3D<T,Descriptor>::setscale(int dxScale, int 
     f->setscale(dxScale, dtScale);
 }
 
+/* *************** Class GenericIndexedWithRandLatticeFunctional3D ************* */
 
+template <typename T, template <class U> class Descriptor>
+GenericIndexedWithRandLatticeFunctional3D<T, Descriptor>::GenericIndexedWithRandLatticeFunctional3D(
+    OneCellIndexedWithRandFunctional3D<T, Descriptor>* f_, Box3D boundingBox_, uint32_t const* seed_)
+    : f(f_), nY(boundingBox_.getNy()), nZ(boundingBox_.getNz()), seed(seed_)
+{
+}
 
+template <typename T, template <class U> class Descriptor>
+GenericIndexedWithRandLatticeFunctional3D<T, Descriptor>::GenericIndexedWithRandLatticeFunctional3D(
+    GenericIndexedWithRandLatticeFunctional3D<T, Descriptor> const& rhs)
+    : f(rhs.f->clone()), nY(rhs.nY), nZ(rhs.nZ), seed(rhs.seed)
+{
+}
 
-
-template<typename T, template<class U> class Descriptor>
-GenericIndexedWithRandLatticeFunctional3D<T,Descriptor>::GenericIndexedWithRandLatticeFunctional3D (
-        OneCellIndexedWithRandFunctional3D<T,Descriptor>* f_, Box3D boundingBox, sitmo::prng_engine eng_ )
-    : f(f_),
-      nY(boundingBox.getNy()),
-      nZ(boundingBox.getNz()),
-      eng(eng_)
-{ }
-
-template<typename T, template<class U> class Descriptor>
-GenericIndexedWithRandLatticeFunctional3D<T,Descriptor>::GenericIndexedWithRandLatticeFunctional3D (
-        GenericIndexedWithRandLatticeFunctional3D<T,Descriptor> const& rhs )
-    : f(rhs.f->clone()),
-      nY(rhs.nY),
-      nZ(rhs.nZ),
-      eng(rhs.eng)
-{ }
-
-template<typename T, template<class U> class Descriptor>
-GenericIndexedWithRandLatticeFunctional3D<T,Descriptor>::~GenericIndexedWithRandLatticeFunctional3D() {
+template <typename T, template <class U> class Descriptor>
+GenericIndexedWithRandLatticeFunctional3D<T, Descriptor>::~GenericIndexedWithRandLatticeFunctional3D()
+{
     delete f;
 }
 
-template<typename T, template<class U> class Descriptor>
-GenericIndexedWithRandLatticeFunctional3D<T,Descriptor>&
-    GenericIndexedWithRandLatticeFunctional3D<T,Descriptor>::operator= (
-        GenericIndexedWithRandLatticeFunctional3D<T,Descriptor> const& rhs )
+template <typename T, template <class U> class Descriptor>
+GenericIndexedWithRandLatticeFunctional3D<T, Descriptor>&
+GenericIndexedWithRandLatticeFunctional3D<T, Descriptor>::operator=(
+    GenericIndexedWithRandLatticeFunctional3D<T, Descriptor> const& rhs)
 {
     delete f;
     f = rhs.f->clone();
     return *this;
 }
 
-template<typename T, template<class U> class Descriptor>
-void GenericIndexedWithRandLatticeFunctional3D<T,Descriptor>::process (
-        Box3D domain, BlockLattice3D<T,Descriptor>& lattice )
+template <typename T, template <class U> class Descriptor>
+void GenericIndexedWithRandLatticeFunctional3D<T, Descriptor>::process(
+    Box3D domain, BlockLattice3D<T, Descriptor>& lattice)
 {
     Dot3D relativeOffset = lattice.getLocation();
+    sitmo::prng_engine eng(*seed);
     plint rng_index = 0;
-    for (plint iX=domain.x0; iX<=domain.x1; ++iX) {
-        plint globalX = nY*(iX + relativeOffset.x);
-        for (plint iY=domain.y0; iY<=domain.y1; ++iY) {
-            plint globalY = nZ*(iY + relativeOffset.y + globalX);
-            for (plint iZ=domain.z0; iZ<=domain.z1; ++iZ) {
+    for (plint iX = domain.x0; iX <= domain.x1; ++iX) {
+        plint globalX = nY * (iX + relativeOffset.x);
+        for (plint iY = domain.y0; iY <= domain.y1; ++iY) {
+            plint globalY = nZ * (iY + relativeOffset.y + globalX);
+            for (plint iZ = domain.z0; iZ <= domain.z1; ++iZ) {
                 plint globalZ = iZ + relativeOffset.z + globalY;
-                PLB_ASSERT( globalZ >= rng_index );
+                PLB_ASSERT(globalZ >= rng_index);
                 if (globalZ > rng_index) {
-                    eng.discard(globalZ-rng_index);
+                    eng.discard(globalZ - rng_index);
                     rng_index = globalZ;
                 }
-                T rand_val = (T)eng() / ((T)std::numeric_limits<uint32_t>::max()+1.0);
+                T rand_val = (T) eng() / ((T) sitmo::prng_engine::max() + 1.0);
                 ++rng_index;
-                f->execute ( iX+relativeOffset.x,
-                             iY+relativeOffset.y,
-                             iZ+relativeOffset.z,
-                             rand_val,
-                             lattice.get(iX,iY,iZ) );
+                f->execute(iX + relativeOffset.x, iY + relativeOffset.y, iZ + relativeOffset.z, rand_val,
+                    lattice.get(iX, iY, iZ));
             }
         }
     }
 }
 
-template<typename T, template<class U> class Descriptor>
-GenericIndexedWithRandLatticeFunctional3D<T,Descriptor>*
-    GenericIndexedWithRandLatticeFunctional3D<T,Descriptor>::clone() const
+template <typename T, template <class U> class Descriptor>
+GenericIndexedWithRandLatticeFunctional3D<T, Descriptor>*
+GenericIndexedWithRandLatticeFunctional3D<T, Descriptor>::clone() const
 {
-    return new GenericIndexedWithRandLatticeFunctional3D<T,Descriptor>(*this);
+    return new GenericIndexedWithRandLatticeFunctional3D<T, Descriptor>(*this);
 }
 
-template<typename T, template<class U> class Descriptor>
-void GenericIndexedWithRandLatticeFunctional3D<T,Descriptor>::getTypeOfModification (
-        std::vector<modif::ModifT>& modified ) const
+template <typename T, template <class U> class Descriptor>
+void GenericIndexedWithRandLatticeFunctional3D<T, Descriptor>::getTypeOfModification(
+    std::vector<modif::ModifT>& modified) const
 {
     f->getTypeOfModification(modified);
 }
 
-template<typename T, template<class U> class Descriptor>
-BlockDomain::DomainT GenericIndexedWithRandLatticeFunctional3D<T,Descriptor>::appliesTo() const
+template <typename T, template <class U> class Descriptor>
+BlockDomain::DomainT GenericIndexedWithRandLatticeFunctional3D<T, Descriptor>::appliesTo() const
 {
     return f->appliesTo();
 }
 
-template<typename T, template<class U> class Descriptor>
-void GenericIndexedWithRandLatticeFunctional3D<T,Descriptor>::setscale(int dxScale, int dtScale)
+template <typename T, template <class U> class Descriptor>
+void GenericIndexedWithRandLatticeFunctional3D<T, Descriptor>::setscale(int dxScale, int dtScale)
 {
     f->setscale(dxScale, dtScale);
 }
-
 
 /* *************** Class InstantiateDynamicsFunctional3D ************* */
 
@@ -3027,47 +3020,47 @@ void SetToCoordinatesFunctional3D<T>::getTypeOfModification (
 
 /* ************** Class SetToRandomFunctional3D ***************** */
 
-template<typename T>
-SetToRandomFunctional3D<T>::SetToRandomFunctional3D(Box3D boundingBox, sitmo::prng_engine eng_)
-    : nY(boundingBox.getNy()),
-      nZ(boundingBox.getNz()),
-      eng(eng_)
-{ }
+template <typename T>
+SetToRandomFunctional3D<T>::SetToRandomFunctional3D(Box3D boundingBox, uint32_t const* seed_)
+    : nY(boundingBox.getNy()), nZ(boundingBox.getNz()), seed(seed_)
+{
+}
 
-template<typename T>
-void SetToRandomFunctional3D<T>::process(Box3D domain, ScalarField3D<T>& field) {
+template <typename T>
+void SetToRandomFunctional3D<T>::process(Box3D domain, ScalarField3D<T>& field)
+{
     Dot3D relativeOffset = field.getLocation();
+    sitmo::prng_engine eng(*seed);
     plint rng_index = 0;
-    for (plint iX=domain.x0; iX<=domain.x1; ++iX) {
-        plint globalX = nY*(iX + relativeOffset.x);
-        for (plint iY=domain.y0; iY<=domain.y1; ++iY) {
-            plint globalY = nZ*(iY + relativeOffset.y + globalX);
-            for (plint iZ=domain.z0; iZ<=domain.z1; ++iZ) {
+    for (plint iX = domain.x0; iX <= domain.x1; ++iX) {
+        plint globalX = nY * (iX + relativeOffset.x);
+        for (plint iY = domain.y0; iY <= domain.y1; ++iY) {
+            plint globalY = nZ * (iY + relativeOffset.y + globalX);
+            for (plint iZ = domain.z0; iZ <= domain.z1; ++iZ) {
                 plint globalZ = iZ + relativeOffset.z + globalY;
-                PLB_ASSERT( globalZ >= rng_index );
+                PLB_ASSERT(globalZ >= rng_index);
                 if (globalZ > rng_index) {
-                    eng.discard(globalZ-rng_index);
+                    eng.discard(globalZ - rng_index);
                     rng_index = globalZ;
                 }
-                field.get(iX,iY,iZ) = (T)eng() / ((T)std::numeric_limits<uint32_t>::max()+1.0);
+                field.get(iX, iY, iZ) = (T) eng() / ((T) sitmo::prng_engine::max() + 1.0);
                 ++rng_index;
             }
         }
     }
 }
 
-template<typename T>
-SetToRandomFunctional3D<T>* SetToRandomFunctional3D<T>::clone() const {
+template <typename T>
+SetToRandomFunctional3D<T>* SetToRandomFunctional3D<T>::clone() const
+{
     return new SetToRandomFunctional3D<T>(*this);
 }
 
-template<typename T>
-void SetToRandomFunctional3D<T>::getTypeOfModification (
-        std::vector<modif::ModifT>& modified ) const
+template <typename T>
+void SetToRandomFunctional3D<T>::getTypeOfModification(std::vector<modif::ModifT>& modified) const
 {
     modified[0] = modif::staticVariables;
 }
-
 
 /* ************** Class SetTensorComponentFunctional3D ***************** */
 
