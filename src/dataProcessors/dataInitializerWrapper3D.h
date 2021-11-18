@@ -42,7 +42,6 @@
 #include "multiBlock/multiDataProcessorWrapper3D.h"
 #include "core/dynamics.h"
 #include "dataProcessors/dataInitializerFunctional3D.h"
-#include "sitmo/prng_engine.hpp"
 
 namespace plb {
 
@@ -188,10 +187,6 @@ void apply(MultiBlockLattice3D<T,Descriptor>& lattice, Box3D domain, OneCellFunc
 template<typename T, template<class U> class Descriptor>
 void applyIndexed(MultiBlockLattice3D<T,Descriptor>& lattice, Box3D domain,
                   OneCellIndexedFunctional3D<T,Descriptor>* f);
-
-template<typename T, template<class U> class Descriptor>
-void applyIndexed(MultiBlockLattice3D<T,Descriptor>& lattice, Box3D domain,
-                  OneCellIndexedWithRandFunctional3D<T,Descriptor>* f, sitmo::prng_engine eng);
 
 template<typename T, template<class U> class Descriptor>
 void applyIndexed( MultiBlockLattice3D<T,Descriptor>& lattice, Box3D domain,
@@ -576,12 +571,8 @@ void setToCoordinate(MultiScalarField3D<T>& field, Box3D domain, plint index);
 template<typename T>
 void setToCoordinates(MultiTensorField3D<T,3>& field,  Box3D domain);
 
-template<typename T>
-void setToRandom(MultiScalarField3D<T>& field, Box3D domain, sitmo::prng_engine eng);
-
-template<typename T>
-void setToRandom(MultiScalarField3D<T>& field, Box3D domain, uint32_t seed=0);
-
+template <typename T>
+void setToRandom(MultiScalarField3D<T>& field, Box3D domain, uint32_t seed = 0);
 
 /// Assign scalar-field to one component of a tensor-field.
 template<typename T, int nDim>

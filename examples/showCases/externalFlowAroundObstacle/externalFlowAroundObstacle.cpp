@@ -309,6 +309,8 @@ void writePPM(OffLatticeBoundaryCondition3D<T,DESCRIPTOR,Velocity>& bc, plint iT
 
 void runProgram()
 {
+    uint32_t seed = 1;
+
     /*
      * Read the obstacle geometry.
      */
@@ -536,9 +538,9 @@ void runProgram()
         std::vector<MultiBlock3D*> particleInjectionArg;
         particleInjectionArg.push_back(particles);
 
-        integrateProcessingFunctional (
-                new InjectRandomParticlesFunctional3D<T,DESCRIPTOR>(particleTemplate, param.particleProbabilityPerCell),
-                injectionDomain, particleInjectionArg, 0 );
+        integrateProcessingFunctional(new InjectRandomParticlesFunctionalPPRNG3D<T, DESCRIPTOR>(particleTemplate,
+                                          param.particleProbabilityPerCell, particles->getBoundingBox(), &seed),
+            injectionDomain, particleInjectionArg, 0);
 
         // Definition of an absorbtion domain for the particles.
         Box3D absorbtionDomain(param.outlet);
@@ -599,6 +601,8 @@ void runProgram()
         if (param.useParticles && i % param.particleTimeFactor == 0) {
             particles->executeInternalProcessors();
         }
+        seed++;
+
         if (checkForErrors) {
             abortIfErrorsOccurred();
             checkForErrors = false;

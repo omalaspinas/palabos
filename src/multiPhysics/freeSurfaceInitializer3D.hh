@@ -40,6 +40,7 @@
 #include "atomicBlock/blockLattice3D.h"
 #include "atomicBlock/atomicContainerBlock3D.h"
 #include "multiPhysics/freeSurfaceInitializer3D.h"
+#include "sitmo/prng_engine.hpp"
 
 #include <cstdlib>
 
@@ -585,16 +586,16 @@ void AnalyticalPunchSphere3D<T,Descriptor>::subDomainVolumeFraction (
     plint numInside = 0;
     plint numOutside = 0;
 
-    srand(1.0);
+    sitmo::prng_engine eng;
     T xi = (T)globalX - 0.5;
     T yi = (T)globalY - 0.5;
     T zi = (T)globalZ - 0.5;
     for (plint xSub=0; xSub<subDivision; ++xSub) {
-        T xPos = xi + (T) rand() / (T) RAND_MAX;
+        T xPos = xi + (T) eng() / (T) sitmo::prng_engine::max();
         for (plint ySub=0; ySub<subDivision; ++ySub) {
-            T yPos = yi + (T) rand() / (T) RAND_MAX;
+            T yPos = yi + (T) eng() / (T) sitmo::prng_engine::max();
             for (plint zSub=0; zSub<subDivision; ++zSub) {
-                T zPos = zi + (T) rand() / (T) RAND_MAX;
+                T zPos = zi + (T) eng() / (T) sitmo::prng_engine::max();
                 if (isInsideSphere(xPos,yPos,zPos)) {
                     ++numInside;
                 }
@@ -682,16 +683,16 @@ void AnalyticalIniVolumeFraction3D<T,InsideFunction>::subDomainVolumeFraction (
     plint numInside = 0;
     plint numOutside = 0;
 
-    srand(1.0);
+    sitmo::prng_engine eng;
     T xi = (T)iX - 0.5;
     T yi = (T)iY - 0.5;
     T zi = (T)iZ - 0.5;
     for (plint xSub=0; xSub<subDivision; ++xSub) {
-        T xPos = xi + (T) rand() / (T) RAND_MAX;
+        T xPos = xi + (T) eng() / (T) sitmo::prng_engine::max();
         for (plint ySub=0; ySub<subDivision; ++ySub) {
-            T yPos = yi + (T) rand() / (T) RAND_MAX;
+            T yPos = yi + (T) eng() / (T) sitmo::prng_engine::max();
             for (plint zSub=0; zSub<subDivision; ++zSub) {
-                T zPos = zi + (T) rand() / (T) RAND_MAX;
+                T zPos = zi + (T) eng() / (T) sitmo::prng_engine::max();
                 if (insideFunction(xPos,yPos,zPos)) {
                     ++numInside;
                 }

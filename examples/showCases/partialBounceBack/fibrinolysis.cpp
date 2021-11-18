@@ -6,8 +6,8 @@
 
 #include <fstream>
 #include <cstdio>
-#include <stdlib.h>     /* srand, rand */
-#include <time.h>       /* time */
+#include <cstdlib>     /* srand, rand */
+#include <ctime>       /* time */
 #include "palabos3D.h"
 #include "palabos3D.hh"
 #include "simParams.h"

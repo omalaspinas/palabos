@@ -265,20 +265,13 @@ void applyIndexed(MultiBlockLattice3D<T,Descriptor>& lattice, Box3D domain, OneC
     applyProcessingFunctional(new GenericIndexedLatticeFunctional3D<T,Descriptor>(f), domain, lattice);
 }
 
-template<typename T, template<class U> class Descriptor>
-void applyIndexed( MultiBlockLattice3D<T,Descriptor>& lattice, Box3D domain,
-                   OneCellIndexedWithRandFunctional3D<T,Descriptor>* f, sitmo::prng_engine eng)
+template <typename T, template <class U> class Descriptor>
+void applyIndexed(MultiBlockLattice3D<T, Descriptor>& lattice, Box3D domain,
+    OneCellIndexedWithRandFunctional3D<T, Descriptor>* f, uint32_t seed)
 {
-    applyProcessingFunctional(new GenericIndexedWithRandLatticeFunctional3D<T,Descriptor>(f, domain, eng), domain, lattice);
-}
-
-template<typename T, template<class U> class Descriptor>
-void applyIndexed( MultiBlockLattice3D<T,Descriptor>& lattice, Box3D domain,
-                   OneCellIndexedWithRandFunctional3D<T,Descriptor>* f, uint32_t seed )
-{
-    sitmo::prng_engine eng;
-    eng.seed(seed);
-    applyProcessingFunctional(new GenericIndexedWithRandLatticeFunctional3D<T,Descriptor>(f, domain, eng), domain, lattice);
+    applyProcessingFunctional(
+        new GenericIndexedWithRandLatticeFunctional3D<T, Descriptor>(f, lattice.getBoundingBox(), &seed), domain,
+        lattice);
 }
 
 template<typename T, template<class U> class Descriptor>
@@ -784,16 +777,10 @@ void setToCoordinates(MultiTensorField3D<T,3>& field, Box3D domain) {
     applyProcessingFunctional(new SetToCoordinatesFunctional3D<T>, domain, field);
 }
 
-template<typename T>
-void setToRandom(MultiScalarField3D<T>& field, Box3D domain, sitmo::prng_engine eng) {
-    applyProcessingFunctional(new SetToRandomFunctional3D<T>(domain, eng), domain, field);
-}
-
-template<typename T>
-void setToRandom(MultiScalarField3D<T>& field, Box3D domain, uint32_t seed) {
-    sitmo::prng_engine eng;
-    eng.seed(seed);
-    setToRandom(field, domain, eng);
+template <typename T>
+void setToRandom(MultiScalarField3D<T>& field, Box3D domain, uint32_t seed)
+{
+    applyProcessingFunctional(new SetToRandomFunctional3D<T>(field.getBoundingBox(), &seed), domain, field);
 }
 
 template<typename T, int nDim>

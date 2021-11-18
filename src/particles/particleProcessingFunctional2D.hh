@@ -41,6 +41,7 @@
 #include "core/blockStatistics.h"
 #include "atomicBlock/atomicBlock2D.h"
 #include "atomicBlock/blockLattice2D.h"
+#include "sitmo/prng_engine.hpp"
 
 namespace plb {
 
@@ -287,6 +288,67 @@ void InjectRandomPointParticlesFunctional2D<T,Descriptor>::getTypeOfModification
     modified[0] = modif::dynamicVariables;  // Particle field.
 }
 
+/* ******** InjectRandomPointParticlesFunctionalPPRNG2D *********************************** */
+
+template <typename T, template <typename U> class Descriptor>
+InjectRandomPointParticlesFunctionalPPRNG2D<T, Descriptor>::InjectRandomPointParticlesFunctionalPPRNG2D(
+    plint tag_, T probabilityPerCell_, Box2D const& boundingBox_, uint32_t const* seed_)
+    : tag(tag_), probabilityPerCell(probabilityPerCell_), nY(boundingBox_.getNy()), seed(seed_)
+{
+}
+
+template <typename T, template <typename U> class Descriptor>
+void InjectRandomPointParticlesFunctionalPPRNG2D<T, Descriptor>::processGenericBlocks(
+    Box2D domain, std::vector<AtomicBlock2D*> blocks)
+{
+    PLB_PRECONDITION(blocks.size() == 1);
+    ParticleField2D<T, Descriptor>& particleField = *dynamic_cast<ParticleField2D<T, Descriptor>*>(blocks[0]);
+    Dot2D location = particleField.getLocation();
+    sitmo::prng_engine eng(*seed);
+    plint rng_index = 0;
+    for (plint iX = domain.x0; iX <= domain.x1; ++iX) {
+        plint globalX = nY * (iX + location.x);
+        for (plint iY = domain.y0; iY <= domain.y1; ++iY) {
+            plint globalY = iY + location.y + globalX;
+            PLB_ASSERT(globalY >= rng_index);
+            if (globalY > rng_index) {
+                eng.discard(globalY - rng_index);
+                rng_index = globalY;
+            }
+            T randNumber = (T) eng() / (T) sitmo::prng_engine::max();
+            ++rng_index;
+            if (randNumber < probabilityPerCell) {
+                sitmo::prng_engine eng2(*seed + (uint32_t) globalY);
+                T randX = (T) eng2() / (T) sitmo::prng_engine::max() - (T) 0.5;
+                T randY = (T) eng2() / (T) sitmo::prng_engine::max() - (T) 0.5;
+                Array<T, 2> position(location.x + iX + randX, location.y + iY + randY);
+                Array<T, 2> velocity;
+                velocity.resetToZero();
+                particleField.addParticle(domain, new PointParticle2D<T, Descriptor>(tag, position, velocity));
+            }
+        }
+    }
+}
+
+template <typename T, template <typename U> class Descriptor>
+InjectRandomPointParticlesFunctionalPPRNG2D<T, Descriptor>*
+InjectRandomPointParticlesFunctionalPPRNG2D<T, Descriptor>::clone() const
+{
+    return new InjectRandomPointParticlesFunctionalPPRNG2D<T, Descriptor>(*this);
+}
+
+template <typename T, template <typename U> class Descriptor>
+BlockDomain::DomainT InjectRandomPointParticlesFunctionalPPRNG2D<T, Descriptor>::appliesTo() const
+{
+    return BlockDomain::bulk;
+}
+
+template <typename T, template <typename U> class Descriptor>
+void InjectRandomPointParticlesFunctionalPPRNG2D<T, Descriptor>::getTypeOfModification(
+    std::vector<modif::ModifT>& modified) const
+{
+    modified[0] = modif::dynamicVariables; // Particle field.
+}
 
 /* ******** AnalyticalInjectRandomParticlesFunctional2D *********************************** */
 
@@ -369,9 +431,101 @@ void AnalyticalInjectRandomParticlesFunctional2D<T,Descriptor,DomainFunctional>:
     modified[0] = modif::dynamicVariables;  // Particle field.
 }
 
+/* ******** AnalyticalInjectRandomParticlesFunctionalPPRNG2D *********************************** */
 
+template <typename T, template <typename U> class Descriptor, class DomainFunctional>
+AnalyticalInjectRandomParticlesFunctionalPPRNG2D<T, Descriptor,
+    DomainFunctional>::AnalyticalInjectRandomParticlesFunctionalPPRNG2D(Particle2D<T, Descriptor>* particleTemplate_,
+    T probabilityPerCell_, DomainFunctional functional_, Box2D const& boundingBox_, uint32_t const* seed_)
+    : particleTemplate(particleTemplate_), probabilityPerCell(probabilityPerCell_), functional(functional_),
+      nY(boundingBox_.getNy()), seed(seed_)
+{
+}
 
+template <typename T, template <typename U> class Descriptor, class DomainFunctional>
+AnalyticalInjectRandomParticlesFunctionalPPRNG2D<T, Descriptor, DomainFunctional>::
+    AnalyticalInjectRandomParticlesFunctionalPPRNG2D(
+        AnalyticalInjectRandomParticlesFunctionalPPRNG2D<T, Descriptor, DomainFunctional> const& rhs)
+    : particleTemplate(rhs.particleTemplate->clone()), probabilityPerCell(rhs.probabilityPerCell),
+      functional(rhs.functional), nY(rhs.nY), seed(rhs.seed)
+{
+}
 
+template <typename T, template <typename U> class Descriptor, class DomainFunctional>
+AnalyticalInjectRandomParticlesFunctionalPPRNG2D<T, Descriptor, DomainFunctional>&
+AnalyticalInjectRandomParticlesFunctionalPPRNG2D<T, Descriptor, DomainFunctional>::operator=(
+    AnalyticalInjectRandomParticlesFunctionalPPRNG2D<T, Descriptor, DomainFunctional> const& rhs)
+{
+    AnalyticalInjectRandomParticlesFunctionalPPRNG2D<T, Descriptor, DomainFunctional>(rhs).swap(*this);
+    return *this;
+}
+
+template <typename T, template <typename U> class Descriptor, class DomainFunctional>
+void AnalyticalInjectRandomParticlesFunctionalPPRNG2D<T, Descriptor, DomainFunctional>::swap(
+    AnalyticalInjectRandomParticlesFunctionalPPRNG2D<T, Descriptor, DomainFunctional>& rhs)
+{
+    std::swap(particleTemplate, rhs.particleTemplate);
+    std::swap(probabilityPerCell, rhs.probabilityPerCell);
+    std::swap(functional, rhs.functional);
+    std::swap(nY, rhs.nY);
+    std::swap(seed, rhs.seed);
+}
+
+template <typename T, template <typename U> class Descriptor, class DomainFunctional>
+AnalyticalInjectRandomParticlesFunctionalPPRNG2D<T, Descriptor,
+    DomainFunctional>::~AnalyticalInjectRandomParticlesFunctionalPPRNG2D()
+{
+    delete particleTemplate;
+}
+
+template <typename T, template <typename U> class Descriptor, class DomainFunctional>
+void AnalyticalInjectRandomParticlesFunctionalPPRNG2D<T, Descriptor, DomainFunctional>::processGenericBlocks(
+    Box2D domain, std::vector<AtomicBlock2D*> blocks)
+{
+    PLB_PRECONDITION(blocks.size() == 1);
+    ParticleField2D<T, Descriptor>& particleField = *dynamic_cast<ParticleField2D<T, Descriptor>*>(blocks[0]);
+    Dot2D location = particleField.getLocation();
+    sitmo::prng_engine eng(*seed);
+    plint rng_index = 0;
+    for (plint iX = domain.x0; iX <= domain.x1; ++iX) {
+        plint globalX = nY * (iX + location.x);
+        for (plint iY = domain.y0; iY <= domain.y1; ++iY) {
+            plint globalY = iY + location.y + globalX;
+            PLB_ASSERT(globalY >= rng_index);
+            if (globalY > rng_index) {
+                eng.discard(globalY - rng_index);
+                rng_index = globalY;
+            }
+            T randNumber = (T) eng() / (T) sitmo::prng_engine::max();
+            ++rng_index;
+            if (randNumber < probabilityPerCell) {
+                sitmo::prng_engine eng2(*seed + (uint32_t) globalY);
+                T randX = (T) eng2() / (T) sitmo::prng_engine::max() - (T) 0.5;
+                T randY = (T) eng2() / (T) sitmo::prng_engine::max() - (T) 0.5;
+                Array<T, 2> position(location.x + iX + randX, location.y + iY + randY);
+                if (functional(position)) {
+                    Particle2D<T, Descriptor>* newparticle = particleTemplate->clone();
+                    newparticle->getPosition() = position;
+                    particleField.addParticle(domain, newparticle);
+                }
+            }
+        }
+    }
+}
+
+template <typename T, template <typename U> class Descriptor, class DomainFunctional>
+AnalyticalInjectRandomParticlesFunctionalPPRNG2D<T, Descriptor, DomainFunctional>*
+AnalyticalInjectRandomParticlesFunctionalPPRNG2D<T, Descriptor, DomainFunctional>::clone() const
+{
+    return new AnalyticalInjectRandomParticlesFunctionalPPRNG2D<T, Descriptor, DomainFunctional>(*this);
+}
+
+template <typename T, template <typename U> class Descriptor, class DomainFunctional>
+void AnalyticalInjectRandomParticlesFunctionalPPRNG2D<T, Descriptor, DomainFunctional>::getTypeOfModification(
+    std::vector<modif::ModifT>& modified) const
+{
+    modified[0] = modif::dynamicVariables; // Particle field.
+}
 
 /* ******** AbsorbParticlesFunctional2D *********************************** */
 

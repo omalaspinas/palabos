@@ -18,6 +18,6 @@ Initializing lattice.
 
 Starting simulation.
 Iteration= 0; Average energy: 0
-Number of particles in the tube: 3
+Number of particles in the tube: 4
 Iteration= 100; Average energy: 1.59756e-05
-Number of particles in the tube: 177
+Number of particles in the tube: 224

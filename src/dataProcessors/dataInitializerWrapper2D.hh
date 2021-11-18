@@ -224,22 +224,14 @@ void applyIndexed(MultiBlockLattice2D<T,Descriptor>& lattice, Box2D domain, OneC
     applyProcessingFunctional(new GenericIndexedLatticeFunctional2D<T,Descriptor>(f), domain, lattice);
 }
 
-template<typename T, template<class U> class Descriptor>
-void applyIndexed( MultiBlockLattice2D<T,Descriptor>& lattice, Box2D domain,
-                   OneCellIndexedWithRandFunctional2D<T,Descriptor>* f, sitmo::prng_engine eng)
+template <typename T, template <class U> class Descriptor>
+void applyIndexed(MultiBlockLattice2D<T, Descriptor>& lattice, Box2D domain,
+    OneCellIndexedWithRandFunctional2D<T, Descriptor>* f, uint32_t seed)
 {
-    applyProcessingFunctional(new GenericIndexedWithRandLatticeFunctional2D<T,Descriptor>(f, domain, eng), domain, lattice);
+    applyProcessingFunctional(
+        new GenericIndexedWithRandLatticeFunctional2D<T, Descriptor>(f, lattice.getBoundingBox(), &seed), domain,
+        lattice);
 }
-
-template<typename T, template<class U> class Descriptor>
-void applyIndexed( MultiBlockLattice2D<T,Descriptor>& lattice, Box2D domain,
-                   OneCellIndexedWithRandFunctional2D<T,Descriptor>* f, uint32_t seed)
-{
-    sitmo::prng_engine eng;
-    eng.seed(seed);
-    applyProcessingFunctional(new GenericIndexedWithRandLatticeFunctional2D<T,Descriptor>(f, domain, eng), domain, lattice);
-}
-
 
 template<typename T, template<class U> class Descriptor>
 void defineDynamics(MultiBlockLattice2D<T,Descriptor>& lattice, Box2D domain, Dynamics<T,Descriptor>* dynamics) {
@@ -523,16 +515,10 @@ void setToCoordinates(MultiTensorField2D<T,2>& field, Box2D domain) {
     applyProcessingFunctional(new SetToCoordinatesFunctional2D<T>, domain, field);
 }
 
-template<typename T>
-void setToRandom(MultiScalarField2D<T>& field, Box2D domain, sitmo::prng_engine eng) {
-    applyProcessingFunctional(new SetToRandomFunctional2D<T>(domain, eng), domain, field);
-}
-
-template<typename T>
-void setToRandom(MultiScalarField2D<T>& field, Box2D domain, uint32_t seed) {
-    sitmo::prng_engine eng;
-    eng.seed(seed);
-    setToRandom(field, domain, eng);
+template <typename T>
+void setToRandom(MultiScalarField2D<T>& field, Box2D domain, uint32_t seed)
+{
+    applyProcessingFunctional(new SetToRandomFunctional2D<T>(field.getBoundingBox(), &seed), domain, field);
 }
 
 template<typename T, int nDim>

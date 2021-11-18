@@ -40,7 +40,6 @@
 #include "core/globalDefs.h"
 #include "atomicBlock/dataProcessingFunctional3D.h"
 #include "core/dynamics.h"
-#include "sitmo/prng_engine.hpp"
 
 namespace plb {
 
@@ -118,26 +117,26 @@ private:
     OneCellIndexedFunctional3D<T,Descriptor>* f;
 };
 
-template<typename T, template<class U> class Descriptor>
-class GenericIndexedWithRandLatticeFunctional3D : public BoxProcessingFunctional3D_L<T,Descriptor>
-{
+template <typename T, template <class U> class Descriptor>
+class GenericIndexedWithRandLatticeFunctional3D : public BoxProcessingFunctional3D_L<T, Descriptor> {
 public:
-    GenericIndexedWithRandLatticeFunctional3D( OneCellIndexedWithRandFunctional3D<T,Descriptor>* f_,
-                                               Box3D boundingBox, sitmo::prng_engine eng_ );
-    GenericIndexedWithRandLatticeFunctional3D(GenericIndexedWithRandLatticeFunctional3D<T,Descriptor> const& rhs);
+    GenericIndexedWithRandLatticeFunctional3D(
+        OneCellIndexedWithRandFunctional3D<T, Descriptor>* f_, Box3D boundingBox_, uint32_t const* seed_);
+    GenericIndexedWithRandLatticeFunctional3D(GenericIndexedWithRandLatticeFunctional3D<T, Descriptor> const& rhs);
     virtual ~GenericIndexedWithRandLatticeFunctional3D();
-    GenericIndexedWithRandLatticeFunctional3D<T,Descriptor>& operator=(GenericIndexedWithRandLatticeFunctional3D<T,Descriptor> const& rhs);
-    virtual void process(Box3D domain, BlockLattice3D<T,Descriptor>& lattice);
-    virtual GenericIndexedWithRandLatticeFunctional3D<T,Descriptor>* clone() const;
+    GenericIndexedWithRandLatticeFunctional3D<T, Descriptor>& operator=(
+        GenericIndexedWithRandLatticeFunctional3D<T, Descriptor> const& rhs);
+    virtual void process(Box3D domain, BlockLattice3D<T, Descriptor>& lattice);
+    virtual GenericIndexedWithRandLatticeFunctional3D<T, Descriptor>* clone() const;
     virtual void getTypeOfModification(std::vector<modif::ModifT>& modified) const;
     virtual BlockDomain::DomainT appliesTo() const;
     virtual void setscale(int dxScale, int dtScale);
-private:
-    OneCellIndexedWithRandFunctional3D<T,Descriptor>* f;
-    plint nY, nZ;
-    sitmo::prng_engine eng;
-};
 
+private:
+    OneCellIndexedWithRandFunctional3D<T, Descriptor>* f;
+    plint nY, nZ;
+    uint32_t const* seed;
+};
 
 /* *************** Class InstantiateDynamicsFunctional3D ************* */
 
@@ -1091,17 +1090,17 @@ public:
     virtual void getTypeOfModification(std::vector<modif::ModifT>& modified) const;
 };
 
-template<typename T>
-class SetToRandomFunctional3D : public BoxProcessingFunctional3D_S<T>
-{
+template <typename T>
+class SetToRandomFunctional3D : public BoxProcessingFunctional3D_S<T> {
 public:
-    SetToRandomFunctional3D(Box3D boundingBox, sitmo::prng_engine eng_);
+    SetToRandomFunctional3D(Box3D boundingBox, uint32_t const* seed_);
     virtual void process(Box3D domain, ScalarField3D<T>& field);
     virtual SetToRandomFunctional3D<T>* clone() const;
     virtual void getTypeOfModification(std::vector<modif::ModifT>& modified) const;
+
 private:
     plint nY, nZ;
-    sitmo::prng_engine eng;
+    uint32_t const* seed;
 };
 
 template<typename T, int nDim>

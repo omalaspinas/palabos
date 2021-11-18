@@ -6,8 +6,8 @@
 #include "simParams.h"
 #include <fstream>
 #include <cstdio>
-#include <stdlib.h>     /* srand, rand */
-#include <time.h>       /* time */
+#include <cstdlib>      /* srand, rand */
+#include <ctime>        /* time */
 #include <algorithm>    // std::min
 
 #define DESCRIPTOR descriptors::RhoBarJD3Q19Descriptor

@@ -38,8 +38,8 @@
 
 #include "hdf5.h"
 #include "core/globalDefs.h"
-#include "stdlib.h"
-#include "string.h"
+#include <cstdlib>
+#include <cstring>
 #include <vector>
 
 

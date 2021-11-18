@@ -5,8 +5,8 @@
 #include "palabos3D.hh"
 #include "simParams.h"
 #include <vector>
-#include <stdlib.h>     /* srand, rand */
-#include <time.h>       /* time */
+#include <cstdlib>      /* srand, rand */
+#include <ctime>        /* time */
 #include <random>
 
 #define DESCRIPTOR descriptors::RhoBarJD3Q19Descriptor
