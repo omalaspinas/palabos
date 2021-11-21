@@ -331,7 +331,7 @@ void integrateProcessingFunctional (
         MultiGridTensorField2D<T2,nDim>& field, 
         plint referenceLevel, plint level )
 {
-    addInternalProcessor( BoxProcessorGenerator3D(functional, domain),
+    addInternalProcessor( BoxProcessorGenerator2D(functional, domain),
                           lattice, field, referenceLevel, level );
 }
 

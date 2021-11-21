@@ -207,12 +207,13 @@ void CopyFineToCoarseWithFiltering3D<T,Descriptor1,Descriptor2>::process (
 
                     rescaleEngine->scaleFineCoarse(fineCell, decomposedCoarseValues);
 
-                    for (plint iPop = 1; iPop < (plint)indices.size(); ++iPop) {
+                    for (plint iPop = 0; iPop < (plint)indices.size(); ++iPop) {
+                        PLB_ASSERT(indices[iPop]!=0);
                         std::vector<T> tmpDec;
                         Cell<T,Descriptor2> const& nextCell =
-                                fineLattice.get(fineX+Descriptor2<T>::c[iPop][0],
-                                                fineY+Descriptor2<T>::c[iPop][1],
-                                                fineZ+Descriptor2<T>::c[iPop][2]);
+                                fineLattice.get(fineX+Descriptor2<T>::c[indices[iPop]][0],
+                                                fineY+Descriptor2<T>::c[indices[iPop]][1],
+                                                fineZ+Descriptor2<T>::c[indices[iPop]][2]);
                         rescaleEngine->scaleFineCoarse(nextCell, tmpDec);
                         for (pluint iA = start; iA < tmpDec.size(); ++iA) {
                             decomposedCoarseValues[iA] += tmpDec[iA];

@@ -197,6 +197,22 @@ void VtkImageOutput2D<T>::writeHeader(plint nx_, plint ny_) {
 }
 
 template<typename T>
+void VtkImageOutput2D<T>::writeHeader(Box2D boundingBox_) {
+    Box3D boundingBox3D(boundingBox_.x0, boundingBox_.x1,
+                        boundingBox_.y0,boundingBox_.y1,0,0);
+    if (headerWritten) {
+        PLB_PRECONDITION(boundingBox == boundingBox3D);
+    }
+    else {
+        boundingBox = boundingBox3D;
+        vtkOut.writeHeader(boundingBox3D,
+                           Array<T,3>(offset[0],offset[1],T()), deltaX);
+        vtkOut.startPiece(boundingBox3D);
+        headerWritten = true;
+    }
+}
+
+template<typename T>
 void VtkImageOutput2D<T>::writeFooter() {
     if (headerWritten) {
         vtkOut.endPiece();
@@ -212,6 +228,16 @@ void VtkImageOutput2D<T>::writeData( plint nx, plint ny, plint nDim,
                                      std::string const& name )
 {
     writeHeader(nx, ny);
+    vtkOut.writeDataField<TConv> (serializer, name, nDim);
+}
+
+template<typename T>
+template<typename TConv>
+void VtkImageOutput2D<T>::writeData( Box2D boundingBox, plint nDim,
+                                     DataSerializer const* serializer,
+                                     std::string const& name )
+{
+    writeHeader(boundingBox);
     vtkOut.writeDataField<TConv> (serializer, name, nDim);
 }
 
@@ -248,7 +274,7 @@ void VtkImageOutput2D<T>::writeData( MultiScalarField2D<T>& scalarField,
         addInPlace(*transformedField, additiveOffset);
     }
     writeData<TConv> (
-            scalarField.getNx(), scalarField.getNy(), 1,
+            scalarField.getBoundingBox(), 1,
             transformedField->getBlockSerializer(transformedField->getBoundingBox(), IndexOrdering::backward),
             scalarFieldName );
 }
@@ -278,7 +304,7 @@ void VtkImageOutput2D<T>::writeData( MultiTensorField2D<T,n>& tensorField,
         multiplyInPlace(*transformedField, scalingFactor);
     }
     writeData<TConv> (
-            tensorField.getNx(), tensorField.getNy(), n,
+            tensorField.getBoundingBox(), n,
             transformedField->getBlockSerializer(transformedField->getBoundingBox(), IndexOrdering::backward),
             tensorFieldName );
 }

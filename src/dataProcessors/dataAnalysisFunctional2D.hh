@@ -2410,6 +2410,49 @@ BlockDomain::DomainT A_dividedBy_B_inplace_functional2D<T>::appliesTo() const {
 /* *************** Analysis of the tensor-field ********************** */
 /* ******************************************************************* */
 
+template<typename T, int nDim>
+BoxTensorSumFunctional2D<T,nDim>::BoxTensorSumFunctional2D()
+{
+    for (plint i = 0; i < nDim; i++) {
+        sumTensorId[i] = this->getStatistics().subscribeSum();
+    }
+}
+
+template<typename T, int nDim>
+void BoxTensorSumFunctional2D<T,nDim>::process (
+        Box2D domain, TensorField2D<T,nDim>& tensorField )
+{
+    BlockStatistics& statistics = this->getStatistics();
+    for (plint iX=domain.x0; iX<=domain.x1; ++iX) {
+        for (plint iY=domain.y0; iY<=domain.y1; ++iY) {
+            for (plint i = 0; i < nDim; i++) {
+                statistics.gatherSum(sumTensorId[i], (double) tensorField.get(iX,iY)[i]);
+            }
+        }
+    }
+}
+
+template<typename T, int nDim>
+BoxTensorSumFunctional2D<T,nDim>* BoxTensorSumFunctional2D<T,nDim>::clone() const
+{
+    return new BoxTensorSumFunctional2D<T,nDim>(*this);
+}
+
+template<typename T, int nDim>
+Array<T,nDim> BoxTensorSumFunctional2D<T,nDim>::getSumTensor() const
+{
+    Array<T,nDim> sum;
+    for (plint i = 0; i < nDim; i++) {
+        double doubleSum = this->getStatistics().getSum(sumTensorId[i]);
+        // The sum is internally computed on floating-point values. If T is
+        //   integer, the value must be rounded at the end.
+        if (std::numeric_limits<T>::is_integer) {
+            doubleSum = util::roundToInt(doubleSum);
+        }
+        sum[i] = doubleSum;
+    }
+    return sum;
+}
 
 template<typename T1, typename T2, int nDim>
 void CopyConvertTensorFunctional2D<T1,T2,nDim>::process (

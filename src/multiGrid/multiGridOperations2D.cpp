@@ -63,7 +63,7 @@ void executeDataProcessor( DataProcessorGenerator2D const& generator,
         plint dtScale = dxScale;  // TODO: here, we assume convective scaling; general case should be considered.
         
         int boxRescaleFactor = util::roundToInt(util::twoToThePower(std::abs(referenceLevel-iLevel)));
-        if (dxScale < 0) // if we go to a coarser grid
+        if (dxScale > 0) // if we go to a coarser grid
             localGenerator->divide(boxRescaleFactor);  
         else  // otherwise we go to a finer grid
             localGenerator->multiply(boxRescaleFactor);

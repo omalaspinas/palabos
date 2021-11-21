@@ -504,7 +504,12 @@ bool VoxelizeMeshFunctional3D<T>::voxelizeFromNeighbor (
     bool isBehind1, isBehind2;
     plint whichTriangle1, whichTriangle2;
     if (checkIfFacetsCrossed(hashContainer, point1, point2, distance1, whichTriangle1)) {
-        newVoxelType = voxelFlag::invert(typeOfNeighbor);
+
+        //make sure that there aren't two triangles between the considered points!
+        checkIfFacetsCrossed(hashContainer, point2, point1, distance2, whichTriangle2);
+
+        if(whichTriangle1==whichTriangle2) newVoxelType = voxelFlag::invert(typeOfNeighbor);
+
         // Additional consistency checks only at the ultimate level of verification.
         if (verificationLevel==2) {
             PLB_ASSERT( distance1 < std::sqrt((T)3)+(T)0.0001 );

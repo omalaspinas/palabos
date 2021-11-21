@@ -2838,6 +2838,18 @@ plint count(MultiTensorField2D<T,nDim>& field, BoolMask boolMask)
     return count(field, field.getBoundingBox(), boolMask);
 }
 
+template<typename T, int nDim>
+Array<T,nDim> computeAverage(MultiTensorField2D<T,nDim>& field, Box2D domain) {
+    BoxTensorSumFunctional2D<T,nDim> functional;
+    applyProcessingFunctional(functional, domain, field);
+    return functional.getSumTensor() / (T) domain.nCells();
+}
+
+template<typename T, int nDim>
+Array<T,nDim> computeAverage(MultiTensorField2D<T,nDim>& field) {
+    return computeAverage(field, field.getBoundingBox());
+}
+
 /* *************** Extract Sub-TensorField *************************** */
 
 template<typename T, int nDim>

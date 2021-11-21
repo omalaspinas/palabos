@@ -995,6 +995,25 @@ private:
     BoolMask boolMask;
 };
 
+/** Attention: No matter what the type of T is (even if it is an integer type),
+ *    the sum is computed in double-precision floating point numbers, and
+ *    converted to T at the end (and rounded, if T is an integer).
+ **/
+template<typename T,int nDim>
+class BoxTensorSumFunctional2D : public ReductiveBoxProcessingFunctional2D_T<T,nDim> {
+public:
+    BoxTensorSumFunctional2D();
+    virtual void process(Box2D domain, TensorField2D<T,nDim>& tensorField);
+    virtual BoxTensorSumFunctional2D<T,nDim>* clone() const;
+    virtual void getTypeOfModification(std::vector<modif::ModifT>& modified) const
+    {
+        modified[0] = modif::nothing;
+    }
+    Array<T,nDim> getSumTensor() const;
+private:
+    Array<plint,nDim> sumTensorId;
+};
+
 template<typename T1, typename T2, int nDim>
 class CopyConvertTensorFunctional2D : public BoxProcessingFunctional2D_TT<T1,nDim,T2,nDim>
 {

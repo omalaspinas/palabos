@@ -146,7 +146,8 @@ struct Dynamics {
     /// Compute the local particle density in lattice units
     virtual T computeDensity(Cell<T,Descriptor> const& cell) const =0;
     /// Compute the local pressure in lattice units
-    virtual T computePressure(Cell<T,Descriptor> const& cell) const =0; /// Compute the local fluid velocity in lattice units
+    virtual T computePressure(Cell<T,Descriptor> const& cell) const =0;
+    /// Compute the local fluid velocity in lattice units
     virtual void computeVelocity( Cell<T,Descriptor> const& cell,
                                   Array<T,Descriptor<T>::d>& u ) const =0;
     /// Compute the temperature in lattice units

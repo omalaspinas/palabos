@@ -69,7 +69,7 @@ public:
     Box3D const& getOriginalCoordinates() const { return originalRegion; }
     /// Region (in absolute coordinates) on the overlapping block.
     /** This is usually identical with the region on the original block. An
-     *  exception are periodic overlaps, in whick regions on opposite ends 
+     *  exception are periodic overlaps, in which regions on opposite ends
      *  of the block are brought into relation.
      **/
     Box3D const& getOverlapCoordinates() const  { return overlapRegion; }
