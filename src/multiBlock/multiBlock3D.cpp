@@ -160,7 +160,7 @@ Box3D PeriodicitySwitch3D::getPeriodicEnvelope(Box3D const& bulk, plint envelope
         envelope.y0 -= envelopeWidth;
         envelope.y1 += envelopeWidth;
     }
-    if (get(2)) { // If periodic in y, extend bulk in y-direction
+    if (get(2)) { // If periodic in z, extend bulk in z-direction
         envelope.z0 -= envelopeWidth;
         envelope.z1 += envelopeWidth;
     }

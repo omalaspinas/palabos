@@ -125,6 +125,9 @@ public:
     void writeData( plint nx, plint ny, plint nDim,
                     DataSerializer const* serializer, std::string const& name );
     template<typename TConv>
+    void writeData( Box2D boundingBox_, plint nDim,
+                    DataSerializer const* serializer, std::string const& name );
+    template<typename TConv>
     void writeData(ScalarField2D<T>& scalarField,
                    std::string scalarFieldName, TConv scalingFactor=(TConv)1, TConv additiveOffset=(TConv)0);
     template<typename TConv>
@@ -140,6 +143,7 @@ public:
     void writeData(MultiNTensorField2D<T>& nTensorField, std::string nTensorFieldName);
 private:
     void writeHeader(plint nx_, plint ny_);
+    void writeHeader(Box2D boundingBox_);
     void writeFooter();
 private:
     std::string fullName;
@@ -148,6 +152,7 @@ private:
     Array<T,2> offset;
     bool headerWritten;
     plint nx, ny;
+    Box3D boundingBox;
 };
 
 

@@ -1552,7 +1552,7 @@ void MultiGridManagement3D::trimDomain (plint whichLevel, Box3D& domain,
 }
 
 /**
- * Use one of the Parallelizer2D objects to recompute the parallelization of the
+ * Use one of the Parallelizer3D objects to recompute the parallelization of the
  *   domain.
  */
 void MultiGridManagement3D::parallelize(Parallelizer3D* parallelizer){

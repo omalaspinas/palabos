@@ -660,49 +660,49 @@ std::unique_ptr<MultiGridScalarField3D<T> > computeSymmetricTensorTrace(MultiGri
 /* *************** Vorticity from Velocity field *********************** */
 
 template<typename T>
-void computeVorticity(MultiGridTensorField3D<T,2>& velocity, MultiGridScalarField3D<T>& vorticity, Box3D domain);
+void computeVorticity(MultiGridTensorField3D<T,3>& velocity, MultiGridTensorField3D<T,3>& vorticity, Box3D domain);
 
 template<typename T>
-std::unique_ptr<MultiGridScalarField3D<T> > computeVorticity(MultiGridTensorField3D<T,2>& velocity, Box3D domain);
+std::unique_ptr<MultiGridTensorField3D<T,3> > computeVorticity(MultiGridTensorField3D<T,3>& velocity, Box3D domain);
 
 template<typename T>
-std::unique_ptr<MultiGridScalarField3D<T> > computeVorticity(MultiGridTensorField3D<T,2>& velocity);
+std::unique_ptr<MultiGridTensorField3D<T,3> > computeVorticity(MultiGridTensorField3D<T,3>& velocity);
 
 
 /* *************** Vorticity, witout boundary treatment, from Velocity field  */
 
 template<typename T>
-void computeBulkVorticity(MultiGridTensorField3D<T,2>& velocity, MultiGridScalarField3D<T>& vorticity, Box3D domain);
+void computeBulkVorticity(MultiGridTensorField3D<T,3>& velocity, MultiGridTensorField3D<T,3>& vorticity, Box3D domain);
 
 template<typename T>
-std::unique_ptr<MultiGridScalarField3D<T> > computeBulkVorticity(MultiGridTensorField3D<T,2>& velocity, Box3D domain);
+std::unique_ptr<MultiGridTensorField3D<T,3> > computeBulkVorticity(MultiGridTensorField3D<T,3>& velocity, Box3D domain);
 
 template<typename T>
-std::unique_ptr<MultiGridScalarField3D<T> > computeBulkVorticity(MultiGridTensorField3D<T,2>& velocity);
+std::unique_ptr<MultiGridTensorField3D<T,3> > computeBulkVorticity(MultiGridTensorField3D<T,3>& velocity);
 
 
 /* *************** Strain rate from Velocity field ********************* */
 
 template<typename T>
-void computeStrainRate(MultiGridTensorField3D<T,2>& velocity, MultiGridTensorField3D<T,3>& S, Box3D domain);
+void computeStrainRate(MultiGridTensorField3D<T,3>& velocity, MultiGridTensorField3D<T,6>& S, Box3D domain);
 
 template<typename T>
-std::unique_ptr<MultiGridTensorField3D<T,3> > computeStrainRate(MultiGridTensorField3D<T,2>& velocity, Box3D domain);
+std::unique_ptr<MultiGridTensorField3D<T,6> > computeStrainRate(MultiGridTensorField3D<T,3>& velocity, Box3D domain);
 
 template<typename T>
-std::unique_ptr<MultiGridTensorField3D<T,3> > computeStrainRate(MultiGridTensorField3D<T,2>& velocity);
+std::unique_ptr<MultiGridTensorField3D<T,6> > computeStrainRate(MultiGridTensorField3D<T,3>& velocity);
 
 
 /* *************** Str. rate, witout boundary treatment, from Velocity field  */
 
 template<typename T>
-void computeBulkStrainRate(MultiGridTensorField3D<T,2>& velocity, MultiGridTensorField3D<T,3>& S, Box3D domain);
+void computeBulkStrainRate(MultiGridTensorField3D<T,3>& velocity, MultiGridTensorField3D<T,6>& S, Box3D domain);
 
 template<typename T>
-std::unique_ptr<MultiGridTensorField3D<T,3> > computeBulkStrainRate(MultiGridTensorField3D<T,2>& velocity, Box3D domain);
+std::unique_ptr<MultiGridTensorField3D<T,6> > computeBulkStrainRate(MultiGridTensorField3D<T,3>& velocity, Box3D domain);
 
 template<typename T>
-std::unique_ptr<MultiGridTensorField3D<T,3> > computeBulkStrainRate(MultiGridTensorField3D<T,2>& velocity);
+std::unique_ptr<MultiGridTensorField3D<T,6> > computeBulkStrainRate(MultiGridTensorField3D<T,3>& velocity);
 
 
 /* *************** MultiTensorField - MultiTensorField operations *************** */

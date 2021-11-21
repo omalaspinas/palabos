@@ -462,7 +462,7 @@ inline bool intersect(Box3D const& box, DotList3D const& dotlist, DotList3D& int
 }
 
 /// Except the domain of box "toExcept" form the domain of box "originalBox"
-/** The result consists of three boxes, which are added to the vector "result"
+/** The result consists of up to six boxes, which are added to the vector "result"
  */
 inline void except(Box3D const& originalBox, Box3D const& toExcept, std::vector<Box3D>& result)
 {

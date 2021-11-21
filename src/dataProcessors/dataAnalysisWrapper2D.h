@@ -1341,6 +1341,14 @@ template<typename T, int nDim, class BoolMask>
 plint count(MultiTensorField2D<T,nDim>& field, BoolMask boolMask);
 
 
+
+template<typename T, int nDim>
+Array<T,nDim> computeAverage(MultiTensorField2D<T,nDim>& field, Box2D domain);
+
+template<typename T, int nDim>
+Array<T,nDim> computeAverage(MultiTensorField2D<T,nDim>& field);
+
+
 /* *************** Copy-convert a tensor-field *************** */
 
 template<typename T1, typename T2, int nDim>

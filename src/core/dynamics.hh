@@ -1717,7 +1717,7 @@ Dynamics<T,Descriptor>* removeBoundaryComponents(Dynamics<T,Descriptor> const& d
             return noBoundaryBase;
         }
         else {
-            return  dynamics.cloneWithNewBase(noBoundaryBase);
+            return  compositeDynamics.cloneWithNewBase(noBoundaryBase);
         }
     }
     else {
