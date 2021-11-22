@@ -8,9 +8,17 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
 ### Added
 
+* Using sitmo for PRNG generation to have parallel PRNG concistency.
+* Data processors for 2D mutlri grid and multi block lattices.
+
 ### Removed
 
+* Removed the use of `rand()` and `plbRandom()`.
+
 ### Changed
+
+* Changed regression testing to account for sitmo PRNG:
+* Changed 2D VTK to accept Box2D.
 
 ### Fixed
 
