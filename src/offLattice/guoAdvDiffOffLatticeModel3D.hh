@@ -72,7 +72,11 @@ GuoAdvDiffOffLatticeModel3D<T,Descriptor>* GuoAdvDiffOffLatticeModel3D<T,Descrip
 
 template<typename T, template<typename U> class Descriptor>
 plint GuoAdvDiffOffLatticeModel3D<T,Descriptor>::getNumNeighbors() const {
-    return 2;
+    if (usesSecondOrder()) {
+        return 2;
+    } else {
+        return 1;
+    }
 }
 
 template<typename T, template<typename U> class Descriptor>
@@ -262,24 +266,26 @@ void GuoAdvDiffOffLatticeModel3D<T,Descriptor>::computeRhoBarJNeq (
           Array<T,2> wallData, OffBoundary::Type bdType, [[maybe_unused]] Array<T,3> const& wallNormal,
           T& rhoBar, Array<T,Descriptor<T>::d>& jNeq ) const
 {
-    if (!usesSecondOrder()) {
-        depth=1;
-    }
     T wall_scalar = wallData[0];
-    T rhoBar1, rhoBar2;
+    T rhoBar1 = T(), rhoBar2 = T();
     Array<T,Descriptor<T>::d> jNeq1, jNeq2, jEqDummy;
     Cell<T,Descriptor> const& cell1 =
         lattice.get( guoNode.x+fluidDirection.x,
                      guoNode.y+fluidDirection.y,
                      guoNode.z+fluidDirection.z );
-    Cell<T,Descriptor> const& cell2 =
-        lattice.get( guoNode.x+2*fluidDirection.x,
-                     guoNode.y+2*fluidDirection.y,
-                     guoNode.z+2*fluidDirection.z );
+    
     advectionDiffusionMomentTemplates<T,Descriptor>::get_rhoBar_jEq_jNeq (
             cell1, rhoBar1, jEqDummy, jNeq1 );
-    advectionDiffusionMomentTemplates<T,Descriptor>::get_rhoBar_jEq_jNeq (
-            cell2, rhoBar2, jEqDummy, jNeq2 );
+    if (!usesSecondOrder()) {
+        depth = 1;
+    } else {
+        Cell<T,Descriptor> const& cell2 =
+            lattice.get( guoNode.x+2*fluidDirection.x,
+                         guoNode.y+2*fluidDirection.y,
+                         guoNode.z+2*fluidDirection.z );
+        advectionDiffusionMomentTemplates<T,Descriptor>::get_rhoBar_jEq_jNeq (
+                cell2, rhoBar2, jEqDummy, jNeq2 );
+    }
     T wall_rhoBar = Descriptor<T>::rhoBar(wall_scalar);
 
     if (depth < 2) {
