@@ -194,6 +194,8 @@ void ConnectedTriangleSet<T>::writeOFF(std::string fname, std::vector<Array<T,3>
             long t2 = (long) triangles[iTriangle][2];
             fprintf(fp, "%ld %ld %ld %ld\n", three, t0, t1, t2);
         }
+
+        fclose(fp);
     }
 }
 

@@ -959,6 +959,8 @@ void saveMovingSurfaces(SimulationParameters& param, std::string baseName, plint
             remove(fname.c_str());
             std::cout << "Error in saving surface data." << std::endl;
             exit(1);
+        } else {
+            fclose(fp);
         }
     }
 
@@ -979,7 +981,10 @@ void readMovingSurfaces(SimulationParameters& param, std::string baseName, plint
     plint numVertices = param.vertices.size();
     if ((plint) fread(&param.vertices[0], sizeof(Array<T,3>), numVertices, fp) != numVertices) {
         std::cout << "Error in loading surface data." << std::endl;
+        fclose(fp);
         exit(1);
+    } else {
+        fclose(fp);
     }
 
     // If all the processes do not exit in the case that one or more do, then the code
