@@ -143,6 +143,24 @@ void MpiManager::send<long long>(long long *buf, int count, int dest, int tag) {
 }
 
 template <>
+void MpiManager::send<unsigned char>(unsigned char *buf, int count, int dest, int tag) {
+    if (!ok) return;
+    MPI_Send(static_cast<void*>(buf), count, MPI_UNSIGNED_CHAR, dest, tag, getGlobalCommunicator());
+}
+
+template <>
+void MpiManager::send<unsigned short>(unsigned short *buf, int count, int dest, int tag) {
+    if (!ok) return;
+    MPI_Send(static_cast<void*>(buf), count, MPI_UNSIGNED_SHORT, dest, tag, getGlobalCommunicator());
+}
+
+template <>
+void MpiManager::send<unsigned int>(unsigned int *buf, int count, int dest, int tag) {
+    if (!ok) return;
+    MPI_Send(static_cast<void*>(buf), count, MPI_UNSIGNED, dest, tag, getGlobalCommunicator());
+}
+
+template <>
 void MpiManager::send<unsigned long>(unsigned long *buf, int count, int dest, int tag) {
     if (!ok) return;
     MPI_Send(static_cast<void*>(buf), count, MPI_UNSIGNED_LONG, dest, tag, getGlobalCommunicator());
@@ -245,6 +263,33 @@ void MpiManager::iSend<long long>
 {
     if (ok) {
         MPI_Isend(static_cast<void*>(buf), count, MPI_LONG_LONG, dest, tag, getGlobalCommunicator(), request);
+    }
+}
+
+template <>
+void MpiManager::iSend<unsigned char>
+    (unsigned char *buf, int count, int dest, MPI_Request* request, int tag)
+{
+    if (ok) {
+        MPI_Isend(static_cast<void*>(buf), count, MPI_UNSIGNED_CHAR, dest, tag, getGlobalCommunicator(), request);
+    }
+}
+
+template <>
+void MpiManager::iSend<unsigned short>
+    (unsigned short *buf, int count, int dest, MPI_Request* request, int tag)
+{
+    if (ok) {
+        MPI_Isend(static_cast<void*>(buf), count, MPI_UNSIGNED_SHORT, dest, tag, getGlobalCommunicator(), request);
+    }
+}
+
+template <>
+void MpiManager::iSend<unsigned int>
+    (unsigned int *buf, int count, int dest, MPI_Request* request, int tag)
+{
+    if (ok) {
+        MPI_Isend(static_cast<void*>(buf), count, MPI_UNSIGNED, dest, tag, getGlobalCommunicator(), request);
     }
 }
 
@@ -376,6 +421,24 @@ void MpiManager::rSend<long long>(long long *buf, int count, int dest, int tag) 
 }
 
 template <>
+void MpiManager::rSend<unsigned char>(unsigned char *buf, int count, int dest, int tag) {
+    if (!ok) return;
+    MPI_Rsend(static_cast<void*>(buf), count, MPI_UNSIGNED_CHAR, dest, tag, getGlobalCommunicator());
+}
+
+template <>
+void MpiManager::rSend<unsigned short>(unsigned short *buf, int count, int dest, int tag) {
+    if (!ok) return;
+    MPI_Rsend(static_cast<void*>(buf), count, MPI_UNSIGNED_SHORT, dest, tag, getGlobalCommunicator());
+}
+
+template <>
+void MpiManager::rSend<unsigned int>(unsigned int *buf, int count, int dest, int tag) {
+    if (!ok) return;
+    MPI_Rsend(static_cast<void*>(buf), count, MPI_UNSIGNED, dest, tag, getGlobalCommunicator());
+}
+
+template <>
 void MpiManager::rSend<unsigned long>(unsigned long *buf, int count, int dest, int tag) {
     if (!ok) return;
     MPI_Rsend(static_cast<void*>(buf), count, MPI_UNSIGNED_LONG, dest, tag, getGlobalCommunicator());
@@ -485,6 +548,39 @@ void MpiManager::iSendRequestFree<long long>
     MPI_Request request;
     if (ok) {
         MPI_Isend(static_cast<void*>(buf), count, MPI_LONG_LONG, dest, tag, getGlobalCommunicator(), &request);
+    }
+    MPI_Request_free(&request);
+}
+
+template <>
+void MpiManager::iSendRequestFree<unsigned char>
+    (unsigned char *buf, int count, int dest, int tag)
+{
+    MPI_Request request;
+    if (ok) {
+        MPI_Isend(static_cast<void*>(buf), count, MPI_UNSIGNED_CHAR, dest, tag, getGlobalCommunicator(), &request);
+    }
+    MPI_Request_free(&request);
+}
+
+template <>
+void MpiManager::iSendRequestFree<unsigned short>
+    (unsigned short *buf, int count, int dest, int tag)
+{
+    MPI_Request request;
+    if (ok) {
+        MPI_Isend(static_cast<void*>(buf), count, MPI_UNSIGNED_SHORT, dest, tag, getGlobalCommunicator(), &request);
+    }
+    MPI_Request_free(&request);
+}
+
+template <>
+void MpiManager::iSendRequestFree<unsigned int>
+    (unsigned int *buf, int count, int dest, int tag)
+{
+    MPI_Request request;
+    if (ok) {
+        MPI_Isend(static_cast<void*>(buf), count, MPI_UNSIGNED, dest, tag, getGlobalCommunicator(), &request);
     }
     MPI_Request_free(&request);
 }
@@ -647,6 +743,30 @@ void MpiManager::receive<long long>(long long *buf, int count, int source, int t
 }
 
 template <>
+void MpiManager::receive<unsigned char>(unsigned char *buf, int count, int source, int tag)
+{
+    if (!ok) return;
+    MPI_Status status;
+    MPI_Recv(static_cast<void*>(buf), count, MPI_UNSIGNED_CHAR, source, tag, getGlobalCommunicator(), &status);
+}
+
+template <>
+void MpiManager::receive<unsigned short>(unsigned short *buf, int count, int source, int tag)
+{
+    if (!ok) return;
+    MPI_Status status;
+    MPI_Recv(static_cast<void*>(buf), count, MPI_UNSIGNED_SHORT, source, tag, getGlobalCommunicator(), &status);
+}
+
+template <>
+void MpiManager::receive<unsigned int>(unsigned int *buf, int count, int source, int tag)
+{
+    if (!ok) return;
+    MPI_Status status;
+    MPI_Recv(static_cast<void*>(buf), count, MPI_UNSIGNED, source, tag, getGlobalCommunicator(), &status);
+}
+
+template <>
 void MpiManager::receive<unsigned long>(unsigned long *buf, int count, int source, int tag)
 {
     if (!ok) return;
@@ -776,6 +896,42 @@ void MpiManager::sendToMaster<bool>(bool* sendBuf, int sendCount, bool iAmRoot)
 
 template <>
 void MpiManager::sendToMaster<long long>(long long* sendBuf, int sendCount, bool iAmRoot)
+{
+    if (!ok) return;
+    if (iAmRoot && !isMainProcessor()) {
+        send(sendBuf, sendCount, 0);
+    }
+    if (isMainProcessor() && !iAmRoot) {
+        receive(sendBuf, sendCount, MPI_ANY_SOURCE);
+    }
+}
+
+template <>
+void MpiManager::sendToMaster<unsigned char>(unsigned char* sendBuf, int sendCount, bool iAmRoot)
+{
+    if (!ok) return;
+    if (iAmRoot && !isMainProcessor()) {
+        send(sendBuf, sendCount, 0);
+    }
+    if (isMainProcessor() && !iAmRoot) {
+        receive(sendBuf, sendCount, MPI_ANY_SOURCE);
+    }
+}
+
+template <>
+void MpiManager::sendToMaster<unsigned short>(unsigned short* sendBuf, int sendCount, bool iAmRoot)
+{
+    if (!ok) return;
+    if (iAmRoot && !isMainProcessor()) {
+        send(sendBuf, sendCount, 0);
+    }
+    if (isMainProcessor() && !iAmRoot) {
+        receive(sendBuf, sendCount, MPI_ANY_SOURCE);
+    }
+}
+
+template <>
+void MpiManager::sendToMaster<unsigned int>(unsigned int* sendBuf, int sendCount, bool iAmRoot)
 {
     if (!ok) return;
     if (iAmRoot && !isMainProcessor()) {
@@ -978,6 +1134,30 @@ void MpiManager::iRecv<long long>(long long *buf, int count, int source, MPI_Req
 }
 
 template <>
+void MpiManager::iRecv<unsigned char>(unsigned char *buf, int count, int source, MPI_Request* request, int tag)
+{
+    if (ok) {
+      MPI_Irecv(static_cast<void*>(buf), count, MPI_UNSIGNED_CHAR, source, tag, getGlobalCommunicator(), request);
+    }
+}
+
+template <>
+void MpiManager::iRecv<unsigned short>(unsigned short *buf, int count, int source, MPI_Request* request, int tag)
+{
+    if (ok) {
+      MPI_Irecv(static_cast<void*>(buf), count, MPI_UNSIGNED_SHORT, source, tag, getGlobalCommunicator(), request);
+    }
+}
+
+template <>
+void MpiManager::iRecv<unsigned int>(unsigned int *buf, int count, int source, MPI_Request* request, int tag)
+{
+    if (ok) {
+      MPI_Irecv(static_cast<void*>(buf), count, MPI_UNSIGNED, source, tag, getGlobalCommunicator(), request);
+    }
+}
+
+template <>
 void MpiManager::iRecv<unsigned long>(unsigned long *buf, int count, int source, MPI_Request* request, int tag)
 {
     if (ok) {
@@ -1123,6 +1303,48 @@ void MpiManager::sendRecv<long long>
                  static_cast<void*>(recvBuf),
                  count,
                  MPI_LONG_LONG, source, tag, getGlobalCommunicator(), &status);
+}
+
+template <>
+void MpiManager::sendRecv<unsigned char>
+    (unsigned char *sendBuf, unsigned char *recvBuf, int count, int dest, int source, int tag)
+{
+    if (!ok) return;
+    MPI_Status status;
+    MPI_Sendrecv(static_cast<void*>(sendBuf),
+                 count,
+                 MPI_UNSIGNED_CHAR, dest, tag,
+                 static_cast<void*>(recvBuf),
+                 count,
+                 MPI_UNSIGNED_CHAR, source, tag, getGlobalCommunicator(), &status);
+}
+
+template <>
+void MpiManager::sendRecv<unsigned short>
+    (unsigned short *sendBuf, unsigned short *recvBuf, int count, int dest, int source, int tag)
+{
+    if (!ok) return;
+    MPI_Status status;
+    MPI_Sendrecv(static_cast<void*>(sendBuf),
+                 count,
+                 MPI_UNSIGNED_SHORT, dest, tag,
+                 static_cast<void*>(recvBuf),
+                 count,
+                 MPI_UNSIGNED_SHORT, source, tag, getGlobalCommunicator(), &status);
+}
+
+template <>
+void MpiManager::sendRecv<unsigned int>
+    (unsigned int *sendBuf, unsigned int *recvBuf, int count, int dest, int source, int tag)
+{
+    if (!ok) return;
+    MPI_Status status;
+    MPI_Sendrecv(static_cast<void*>(sendBuf),
+                 count,
+                 MPI_UNSIGNED, dest, tag,
+                 static_cast<void*>(recvBuf),
+                 count,
+                 MPI_UNSIGNED, source, tag, getGlobalCommunicator(), &status);
 }
 
 template <>
@@ -1563,6 +1785,30 @@ void MpiManager::bCast<long long>(long long* sendBuf, int sendCount, int root)
 }
 
 template <>
+void MpiManager::bCast<unsigned char>(unsigned char* sendBuf, int sendCount, int root)
+{
+    if (!ok) return;
+    MPI_Bcast(static_cast<void*>(sendBuf),
+              sendCount, MPI_UNSIGNED_CHAR, root, getGlobalCommunicator());
+}
+
+template <>
+void MpiManager::bCast<unsigned short>(unsigned short* sendBuf, int sendCount, int root)
+{
+    if (!ok) return;
+    MPI_Bcast(static_cast<void*>(sendBuf),
+              sendCount, MPI_UNSIGNED_SHORT, root, getGlobalCommunicator());
+}
+
+template <>
+void MpiManager::bCast<unsigned int>(unsigned int* sendBuf, int sendCount, int root)
+{
+    if (!ok) return;
+    MPI_Bcast(static_cast<void*>(sendBuf),
+              sendCount, MPI_UNSIGNED, root, getGlobalCommunicator());
+}
+
+template <>
 void MpiManager::bCast<unsigned long>(unsigned long* sendBuf, int sendCount, int root)
 {
     if (!ok) return;
@@ -1695,6 +1941,45 @@ void MpiManager::bCastThroughMaster<bool>(bool* sendBuf, int sendCount, bool iAm
 
 template <>
 void MpiManager::bCastThroughMaster<long long>(long long* sendBuf, int sendCount, bool iAmRoot)
+{
+    if (!ok) return;
+    if (iAmRoot && !isMainProcessor()) {
+        send(sendBuf, sendCount, 0);
+    }
+    if (isMainProcessor() && !iAmRoot) {
+        receive(sendBuf, sendCount, MPI_ANY_SOURCE);
+    }
+    bCast(sendBuf, sendCount, 0);
+}
+
+template <>
+void MpiManager::bCastThroughMaster<unsigned char>(unsigned char* sendBuf, int sendCount, bool iAmRoot)
+{
+    if (!ok) return;
+    if (iAmRoot && !isMainProcessor()) {
+        send(sendBuf, sendCount, 0);
+    }
+    if (isMainProcessor() && !iAmRoot) {
+        receive(sendBuf, sendCount, MPI_ANY_SOURCE);
+    }
+    bCast(sendBuf, sendCount, 0);
+}
+
+template <>
+void MpiManager::bCastThroughMaster<unsigned short>(unsigned short* sendBuf, int sendCount, bool iAmRoot)
+{
+    if (!ok) return;
+    if (iAmRoot && !isMainProcessor()) {
+        send(sendBuf, sendCount, 0);
+    }
+    if (isMainProcessor() && !iAmRoot) {
+        receive(sendBuf, sendCount, MPI_ANY_SOURCE);
+    }
+    bCast(sendBuf, sendCount, 0);
+}
+
+template <>
+void MpiManager::bCastThroughMaster<unsigned int>(unsigned int* sendBuf, int sendCount, bool iAmRoot)
 {
     if (!ok) return;
     if (iAmRoot && !isMainProcessor()) {
@@ -1886,6 +2171,30 @@ void MpiManager::reduce<long long>(long long sendVal, long long& recvVal,  MPI_O
     if (!ok) return;
     MPI_Reduce(static_cast<void*>(&sendVal),
                static_cast<void*>(&recvVal), 1, MPI_LONG_LONG, op, root, getGlobalCommunicator());
+}
+
+template <>
+void MpiManager::reduce<unsigned char>(unsigned char sendVal, unsigned char& recvVal,  MPI_Op op, int root)
+{
+    if (!ok) return;
+    MPI_Reduce(static_cast<void*>(&sendVal),
+               static_cast<void*>(&recvVal), 1, MPI_UNSIGNED_CHAR, op, root, getGlobalCommunicator());
+}
+
+template <>
+void MpiManager::reduce<unsigned short>(unsigned short sendVal, unsigned short& recvVal,  MPI_Op op, int root)
+{
+    if (!ok) return;
+    MPI_Reduce(static_cast<void*>(&sendVal),
+               static_cast<void*>(&recvVal), 1, MPI_UNSIGNED_SHORT, op, root, getGlobalCommunicator());
+}
+
+template <>
+void MpiManager::reduce<unsigned int>(unsigned int sendVal, unsigned int& recvVal,  MPI_Op op, int root)
+{
+    if (!ok) return;
+    MPI_Reduce(static_cast<void*>(&sendVal),
+               static_cast<void*>(&recvVal), 1, MPI_UNSIGNED, op, root, getGlobalCommunicator());
 }
 
 template <>
@@ -2286,6 +2595,42 @@ void MpiManager::allReduceVect<long long>(std::vector<long long>& sendRecvVal, M
 }
 
 template <>
+void MpiManager::allReduceVect<unsigned char>(std::vector<unsigned char>& sendRecvVal, MPI_Op op)
+{
+    if (!ok) return;
+    if (sendRecvVal.empty()) return;
+    std::vector<unsigned char> recvVal(sendRecvVal.size());
+    MPI_Allreduce( static_cast<void*>(&(sendRecvVal[0])),
+                   static_cast<void*>(&(recvVal[0])),
+                   sendRecvVal.size(), MPI_UNSIGNED_CHAR, op, getGlobalCommunicator() );
+    sendRecvVal.swap(recvVal);
+}
+
+template <>
+void MpiManager::allReduceVect<unsigned short>(std::vector<unsigned short>& sendRecvVal, MPI_Op op)
+{
+    if (!ok) return;
+    if (sendRecvVal.empty()) return;
+    std::vector<unsigned short> recvVal(sendRecvVal.size());
+    MPI_Allreduce( static_cast<void*>(&(sendRecvVal[0])),
+                   static_cast<void*>(&(recvVal[0])),
+                   sendRecvVal.size(), MPI_UNSIGNED_SHORT, op, getGlobalCommunicator() );
+    sendRecvVal.swap(recvVal);
+}
+
+template <>
+void MpiManager::allReduceVect<unsigned int>(std::vector<unsigned int>& sendRecvVal, MPI_Op op)
+{
+    if (!ok) return;
+    if (sendRecvVal.empty()) return;
+    std::vector<unsigned int> recvVal(sendRecvVal.size());
+    MPI_Allreduce( static_cast<void*>(&(sendRecvVal[0])),
+                   static_cast<void*>(&(recvVal[0])),
+                   sendRecvVal.size(), MPI_UNSIGNED, op, getGlobalCommunicator() );
+    sendRecvVal.swap(recvVal);
+}
+
+template <>
 void MpiManager::allReduceVect<unsigned long>(std::vector<unsigned long>& sendRecvVal, MPI_Op op)
 {
     if (!ok) return;
@@ -2469,6 +2814,39 @@ void MpiManager::reduceAndBcast<long long>(long long& reductVal, MPI_Op op, int 
 }
 
 template <>
+void MpiManager::reduceAndBcast<unsigned char>(unsigned char& reductVal, MPI_Op op, int root)
+{
+    if (!ok) return;
+    unsigned char recvVal;
+    MPI_Reduce(static_cast<void*>(&reductVal), static_cast<void*>(&recvVal), 1, MPI_UNSIGNED_CHAR, op, root, getGlobalCommunicator());
+    reductVal = recvVal;
+    MPI_Bcast(static_cast<void*>(&reductVal), 1, MPI_UNSIGNED_CHAR, root, getGlobalCommunicator());
+
+}
+
+template <>
+void MpiManager::reduceAndBcast<unsigned short>(unsigned short& reductVal, MPI_Op op, int root)
+{
+    if (!ok) return;
+    unsigned short recvVal;
+    MPI_Reduce(static_cast<void*>(&reductVal), static_cast<void*>(&recvVal), 1, MPI_UNSIGNED_SHORT, op, root, getGlobalCommunicator());
+    reductVal = recvVal;
+    MPI_Bcast(static_cast<void*>(&reductVal), 1, MPI_UNSIGNED_SHORT, root, getGlobalCommunicator());
+
+}
+
+template <>
+void MpiManager::reduceAndBcast<unsigned int>(unsigned int& reductVal, MPI_Op op, int root)
+{
+    if (!ok) return;
+    unsigned int recvVal;
+    MPI_Reduce(static_cast<void*>(&reductVal), static_cast<void*>(&recvVal), 1, MPI_UNSIGNED, op, root, getGlobalCommunicator());
+    reductVal = recvVal;
+    MPI_Bcast(static_cast<void*>(&reductVal), 1, MPI_UNSIGNED, root, getGlobalCommunicator());
+
+}
+
+template <>
 void MpiManager::reduceAndBcast<unsigned long>(unsigned long& reductVal, MPI_Op op, int root)
 {
     if (!ok) return;
@@ -2619,6 +2997,30 @@ void MpiManager::scan<long long>(long long sendVal, long long& recvVal,  MPI_Op 
     if (!ok) return;
     MPI_Scan(static_cast<void*>(&sendVal),
              static_cast<void*>(&recvVal), 1, MPI_LONG_LONG, op, getGlobalCommunicator());
+}
+
+template <>
+void MpiManager::scan<unsigned char>(unsigned char sendVal, unsigned char& recvVal,  MPI_Op op)
+{
+    if (!ok) return;
+    MPI_Scan(static_cast<void*>(&sendVal),
+             static_cast<void*>(&recvVal), 1, MPI_UNSIGNED_CHAR, op, getGlobalCommunicator());
+}
+
+template <>
+void MpiManager::scan<unsigned short>(unsigned short sendVal, unsigned short& recvVal,  MPI_Op op)
+{
+    if (!ok) return;
+    MPI_Scan(static_cast<void*>(&sendVal),
+             static_cast<void*>(&recvVal), 1, MPI_UNSIGNED_SHORT, op, getGlobalCommunicator());
+}
+
+template <>
+void MpiManager::scan<unsigned int>(unsigned int sendVal, unsigned int& recvVal,  MPI_Op op)
+{
+    if (!ok) return;
+    MPI_Scan(static_cast<void*>(&sendVal),
+             static_cast<void*>(&recvVal), 1, MPI_UNSIGNED, op, getGlobalCommunicator());
 }
 
 template <>

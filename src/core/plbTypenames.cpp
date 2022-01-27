@@ -47,8 +47,20 @@ char const* NativeType<char>::getName() {
 }
 
 template<>
+char const* NativeType<unsigned char>::getName() {
+    static const char name[] = "unsigned-char";
+    return name;
+}
+
+template<>
 char const* NativeType<bool>::getName() {
     static const char name[] = "bool";
+    return name;
+}
+
+template<>
+char const* NativeType<unsigned short>::getName() {
+    static const char name[] = "unsigned-short";
     return name;
 }
 
@@ -59,14 +71,32 @@ char const* NativeType<int>::getName() {
 }
 
 template<>
+char const* NativeType<unsigned int>::getName() {
+    static const char name[] = "unsigned-int";
+    return name;
+}
+
+template<>
 char const* NativeType<long>::getName() {
     static const char name[] = "long";
     return name;
 }
 
 template<>
+char const* NativeType<unsigned long>::getName() {
+    static const char name[] = "unsigned-long";
+    return name;
+}
+
+template<>
 char const* NativeType<long long>::getName() {
     static const char name[] = "long-long";
+    return name;
+}
+
+template<>
+char const* NativeType<unsigned long long>::getName() {
+    static const char name[] = "unsigned-long-long";
     return name;
 }
 
@@ -128,17 +158,32 @@ NativeTypeConstructor::NativeTypeConstructor(std::string typeName)
     if (tn=="char") {
         nativeType = new NativeType<char>;
     }
+    else if (tn=="unsigned-char") {
+        nativeType = new NativeType<unsigned char>;
+    }
     else if (tn=="bool") {
         nativeType = new NativeType<bool>;
+    }
+    else if (tn=="unsigned-short") {
+        nativeType = new NativeType<unsigned short>;
     }
     else if (tn=="int") {
         nativeType = new NativeType<int>;
     }
+    else if (tn=="unsigned-int") {
+        nativeType = new NativeType<unsigned int>;
+    }
     else if (tn=="long") {
         nativeType = new NativeType<long>;
     }
+    else if (tn=="unsigned-long") {
+        nativeType = new NativeType<unsigned long>;
+    }
     else if (tn=="long-long") {
         nativeType = new NativeType<long long>;
+    }
+    else if (tn=="unsigned-long-long") {
+        nativeType = new NativeType<unsigned long long>;
     }
     else if (tn=="float") {
         nativeType = new NativeType<float>;

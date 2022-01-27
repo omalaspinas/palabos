@@ -264,7 +264,7 @@ void evaluate(Function f, ScalarField3D<T>& field, ScalarField3D<T>& result) {
 
 template<typename T, class Function>
 std::unique_ptr<ScalarField3D<T> > evaluate(Function f, ScalarField3D<T>& field) {
-    ScalarField3D<T>* result = new ScalarField3D<T>(field.getNx(), field.getNy());
+    ScalarField3D<T>* result = new ScalarField3D<T>(field.getNx(), field.getNy(), field.getNz());
     evaluate(f, field, result);
     return std::unique_ptr<ScalarField3D<T> >(result);
 }
