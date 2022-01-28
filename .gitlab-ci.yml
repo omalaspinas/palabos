@@ -2,20 +2,32 @@ variables:
   GIT_SUBMODULE_STRATEGY: recursive
   DOCKER_TLS_CERTDIR: "/certs"
   DOCKER_BASE_IMG: $CI_REGISTRY_IMAGE/plb-base-img:latest
+  CCACHE_BASE: ccache
+  CCACHE_TEST: ${CI_PROJECT_NAMESPACE}/${CI_COMMIT_REF_NAME}_test/
+  CCACHE_REL_CLANG_SER: ${CI_PROJECT_NAMESPACE}/${CI_COMMIT_REF_NAME}_rel_clang_ser/
+  CCACHE_REL_CLANG_PAR: ${CI_PROJECT_NAMESPACE}/${CI_COMMIT_REF_NAME}_rel_clang_par/
+  CCACHE_REL_GCC_SER: ${CI_PROJECT_NAMESPACE}/${CI_COMMIT_REF_NAME}_rel_gcc_ser/
+  CCACHE_REL_GCC_PAR: ${CI_PROJECT_NAMESPACE}/${CI_COMMIT_REF_NAME}_rel_gcc_par/
+  CCACHE_DEB_CLANG_SER: ${CI_PROJECT_NAMESPACE}/${CI_COMMIT_REF_NAME}_deb_clang_ser/
+  CCACHE_DEB_CLANG_PAR: ${CI_PROJECT_NAMESPACE}/${CI_COMMIT_REF_NAME}_deb_clang_par/
+  CCACHE_DEB_GCC_SER: ${CI_PROJECT_NAMESPACE}/${CI_COMMIT_REF_NAME}_deb_gcc_ser/
+  CCACHE_DEB_GCC_PAR: ${CI_PROJECT_NAMESPACE}/${CI_COMMIT_REF_NAME}_deb_gcc_par/
+
 
 cache:
     untracked: true
     key: "$CI_PROJECT_ID"
     paths:
-        - ${PWD}/ccache_test/
-        - ${PWD}/ccache_release_clang_serial/
-        - ${PWD}/ccache_release_clang_parallel/
-        - ${PWD}/ccache_release_gcc_serial/
-        - ${PWD}/ccache_release_gcc_parallel/
-        - ${PWD}/ccache_debug_clang_serial/
-        - ${PWD}/ccache_debug_clang_parallel/
-        - ${PWD}/ccache_debug_gcc_serial/
-        - ${PWD}/ccache_debug_gcc_parallel/
+        - ${PWD}/${CCACHE_BASE}
+        - ${PWD}/${CCACHE_BASE}/${CCACHE_TEST}
+        - ${PWD}/${CCACHE_BASE}/${CCACHE_REL_CLANG_SER}
+        - ${PWD}/${CCACHE_BASE}/${CCACHE_REL_CLANG_PAR}
+        - ${PWD}/${CCACHE_BASE}/${CCACHE_REL_GCC_SER}
+        - ${PWD}/${CCACHE_BASE}/${CCACHE_REL_GCC_PAR}
+        - ${PWD}/${CCACHE_BASE}/${CCACHE_DEB_CLANG_SER}
+        - ${PWD}/${CCACHE_BASE}/${CCACHE_DEB_CLANG_PAR}
+        - ${PWD}/${CCACHE_BASE}/${CCACHE_DEB_GCC_SER}
+        - ${PWD}/${CCACHE_BASE}/${CCACHE_DEB_GCC_PAR}
 
 stages:
     - prepare_docker
@@ -42,9 +54,9 @@ test:
     stage: regression_tests
     image: $DOCKER_BASE_IMG
     before_script:
-        - mkdir -p ccache_test
-        - export CCACHE_BASEDIR=${PWD}
-        - export CCACHE_DIR=${PWD}/ccache_test
+        - mkdir -p ${CCACHE_TEST}
+        - export CCACHE_BASEDIR=${PWD}/${CCACHE_BASE}
+        - export CCACHE_DIR=${PWD}/${CCACHE_BASE}/${CCACHE_TEST}
         - ccache --set-config=compression=true
         - ccache --set-config=max_size=1000M
 
@@ -60,9 +72,9 @@ release_clang_serial:
     stage: build_cmake
     image: $DOCKER_BASE_IMG
     before_script:
-        - mkdir -p ccache_release_clang_serial
-        - export CCACHE_BASEDIR=${PWD}
-        - export CCACHE_DIR=${PWD}/ccache_release_clang_serial
+        - mkdir -p ${CCACHE_REL_CLANG_SER}
+        - export CCACHE_BASEDIR=${PWD}/${CCACHE_BASE}
+        - export CCACHE_DIR=${PWD}/${CCACHE_BASE}/${CCACHE_REL_CLANG_SER}
         - ccache --set-config=compression=true
         - ccache --set-config=max_size=1000M
     
@@ -76,9 +88,9 @@ release_clang_parallel:
     stage: build_cmake
     image: $DOCKER_BASE_IMG
     before_script:
-        - mkdir -p ccache_release_clang_parallel
-        - export CCACHE_BASEDIR=${PWD}
-        - export CCACHE_DIR=${PWD}/ccache_release_clang_parallel
+        - mkdir -p ${CCACHE_REL_CLANG_PAR}
+        - export CCACHE_BASEDIR=${PWD}/${CCACHE_BASE}
+        - export CCACHE_DIR=${PWD}/${CCACHE_BASE}/${CCACHE_REL_CLANG_PAR}
         - ccache --set-config=compression=true
         - ccache --set-config=max_size=1000M
     
@@ -92,9 +104,9 @@ release_gcc_serial:
     stage: build_cmake
     image: $DOCKER_BASE_IMG
     before_script:
-        - mkdir -p ccache_release_gcc_serial
-        - export CCACHE_BASEDIR=${PWD}
-        - export CCACHE_DIR=${PWD}/ccache_release_gcc_serial
+        - mkdir -p ${CCACHE_REL_GCC_SER}
+        - export CCACHE_BASEDIR=${PWD}/${CCACHE_BASE}
+        - export CCACHE_DIR=${PWD}/${CCACHE_BASE}/${CCACHE_REL_GCC_SER}
         - ccache --set-config=compression=true
         - ccache --set-config=max_size=1000M
     
@@ -108,9 +120,9 @@ release_gcc_parallel:
     stage: build_cmake
     image: $DOCKER_BASE_IMG
     before_script:
-        - mkdir -p ccache_release_gcc_parallel
-        - export CCACHE_BASEDIR=${PWD}
-        - export CCACHE_DIR=${PWD}/ccache_release_gcc_parallel
+        - mkdir -p ${CCACHE_REL_GCC_PAR}
+        - export CCACHE_BASEDIR=${PWD}/${CCACHE_BASE}
+        - export CCACHE_DIR=${PWD}/${CCACHE_BASE}/${CCACHE_REL_GCC_PAR}
         - ccache --set-config=compression=true
         - ccache --set-config=max_size=1000M
 
@@ -125,9 +137,9 @@ debug_clang_serial:
     stage: build_cmake
     image: $DOCKER_BASE_IMG
     before_script:
-        - mkdir -p ccache_debug_clang_serial
-        - export CCACHE_BASEDIR=${PWD}
-        - export CCACHE_DIR=${PWD}/ccache_debug_clang_serial
+        - mkdir -p ${CCACHE_DEB_CLANG_SER}
+        - export CCACHE_BASEDIR=${PWD}/${CCACHE_BASE}
+        - export CCACHE_DIR=${PWD}/${CCACHE_BASE}/${CCACHE_DEB_CLANG_SER}
         - ccache --set-config=compression=true
         - ccache --set-config=max_size=1000M
     
@@ -141,9 +153,9 @@ debug_clang_parallel:
     stage: build_cmake
     image: $DOCKER_BASE_IMG
     before_script:
-        - mkdir -p ccache_debug_clang_parallel
-        - export CCACHE_BASEDIR=${PWD}
-        - export CCACHE_DIR=${PWD}/ccache_debug_clang_parallel
+        - mkdir -p ${CCACHE_DEB_CLANG_PAR}
+        - export CCACHE_BASEDIR=${PWD}/${CCACHE_BASE}
+        - export CCACHE_DIR=${PWD}/${CCACHE_BASE}/${CCACHE_DEB_CLANG_PAR}
         - ccache --set-config=compression=true
         - ccache --set-config=max_size=1000M
 
@@ -157,9 +169,9 @@ debug_gcc_serial:
     stage: build_cmake
     image: $DOCKER_BASE_IMG
     before_script:
-        - mkdir -p ccache_debug_gcc_serial
-        - export CCACHE_BASEDIR=${PWD}
-        - export CCACHE_DIR=${PWD}/ccache_debug_gcc_serial
+        - mkdir -p ${CCACHE_DEB_GCC_SER}
+        - export CCACHE_BASEDIR=${PWD}/${CCACHE_BASE}
+        - export CCACHE_DIR=${PWD}/${CCACHE_BASE}/${CCACHE_DEB_GCC_SER}
         - ccache --set-config=compression=true
         - ccache --set-config=max_size=1000M
 
@@ -173,9 +185,9 @@ debug_gcc_parallel:
     stage: build_cmake
     image: $DOCKER_BASE_IMG
     before_script:
-        - mkdir -p ccache_debug_gcc_parallel
-        - export CCACHE_BASEDIR=${PWD}
-        - export CCACHE_DIR=${PWD}/ccache_debug_gcc_parallel
+        - mkdir -p ${CCACHE_DEB_GCC_PAR}
+        - export CCACHE_BASEDIR=${PWD}/${CCACHE_BASE}
+        - export CCACHE_DIR=${PWD}/${CCACHE_BASE}/${CCACHE_DEB_GCC_PAR}
         - ccache --set-config=compression=true
         - ccache --set-config=max_size=1000M
 
