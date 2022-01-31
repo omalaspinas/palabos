@@ -5,7 +5,7 @@
  * own the IP rights for most of the code base. Since October 2019, the
  * Palabos project is maintained by the University of Geneva and accepts
  * source code contributions from the community.
- * 
+ *
  * Contact:
  * Jonas Latt
  * Computer Science Department
@@ -14,7 +14,7 @@
  * 1227 Carouge, Switzerland
  * jonas.latt@unige.ch
  *
- * The most recent release of Palabos can be downloaded at 
+ * The most recent release of Palabos can be downloaded at
  * <https://palabos.unige.ch/>
  *
  * The library Palabos is free software: you can redistribute it and/or
@@ -29,21 +29,25 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 /** \file
  * 3D Blocks -- generic implementation.
  */
 #include "core/block3D.h"
-#include "core/plbDebug.h"
+
 #include <algorithm>
+
+#include "core/plbDebug.h"
 
 namespace plb {
 
-void copySerializedBlock(Block3D const& from, Block3D& to, IndexOrdering::OrderingT ordering) {
-    PLB_PRECONDITION( from.getBoundingBox().nCells() == to.getBoundingBox().nCells() );
-    serializerToUnSerializer( from.getBlockSerializer(from.getBoundingBox(), ordering),
-                              to.getBlockUnSerializer(to.getBoundingBox(), ordering) );
+void copySerializedBlock(Block3D const &from, Block3D &to, IndexOrdering::OrderingT ordering)
+{
+    PLB_PRECONDITION(from.getBoundingBox().nCells() == to.getBoundingBox().nCells());
+    serializerToUnSerializer(
+        from.getBlockSerializer(from.getBoundingBox(), ordering),
+        to.getBlockUnSerializer(to.getBoundingBox(), ordering));
 }
 
 }  // namespace plb

@@ -5,7 +5,7 @@
  * own the IP rights for most of the code base. Since October 2019, the
  * Palabos project is maintained by the University of Geneva and accepts
  * source code contributions from the community.
- * 
+ *
  * Contact:
  * Jonas Latt
  * Computer Science Department
@@ -14,7 +14,7 @@
  * 1227 Carouge, Switzerland
  * jonas.latt@unige.ch
  *
- * The most recent release of Palabos can be downloaded at 
+ * The most recent release of Palabos can be downloaded at
  * <https://palabos.unige.ch/>
  *
  * The library Palabos is free software: you can redistribute it and/or
@@ -29,12 +29,13 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-
+ */
 
 #include "core/processorIdentifiers2D.h"
-#include "core/runTimeDiagnostics.h"
+
 #include <sstream>
+
+#include "core/runTimeDiagnostics.h"
 
 namespace plb {
 
@@ -42,20 +43,18 @@ namespace meta {
 
 ProcessorRegistration2D::~ProcessorRegistration2D()
 {
-    for (pluint iEntry=0; iEntry<processorByNumber.size(); ++iEntry) {
+    for (pluint iEntry = 0; iEntry < processorByNumber.size(); ++iEntry) {
         delete processorByNumber[iEntry].factory;
     }
 }
 
-int ProcessorRegistration2D::announce (
-        std::string nameOfProcessor,
-        ProcessorFactory2D* factory_ )
+int ProcessorRegistration2D::announce(std::string nameOfProcessor, ProcessorFactory2D *factory_)
 {
     Entry entry(nameOfProcessor, factory_);
     EntryMap::iterator it = processorByName.find(entry);
     if (it != processorByName.end()) {
-        plbLogicError( std::string("The processor ") + nameOfProcessor +
-                       std::string(" was registered twice") );
+        plbLogicError(
+            std::string("The processor ") + nameOfProcessor + std::string(" was registered twice"));
     }
     processorByNumber.push_back(entry);
     int nextId = processorByNumber.size();
@@ -69,8 +68,7 @@ int ProcessorRegistration2D::getId(std::string name) const
     EntryMap::const_iterator it = processorByName.find(entry);
     if (it == processorByName.end()) {
         return 0;
-    }
-    else {
+    } else {
         return it->second;
     }
 }
@@ -82,7 +80,7 @@ int ProcessorRegistration2D::getNumId() const
 
 std::string ProcessorRegistration2D::getName(int id) const
 {
-    if (id==0) {
+    if (id == 0) {
         return std::string("Undefined");
     }
     if (id < 0 || id > (int)processorByNumber.size()) {
@@ -90,32 +88,30 @@ std::string ProcessorRegistration2D::getName(int id) const
         message << "A processor with ID " << id << " doesn't exist.";
         plbLogicError(message.str());
     }
-    return processorByNumber[id-1].name;
+    return processorByNumber[id - 1].name;
 }
 
-BoxProcessingFunctional2D* ProcessorRegistration2D::create(std::string procName, std::string data)
+BoxProcessingFunctional2D *ProcessorRegistration2D::create(std::string procName, std::string data)
 {
     int id = getId(procName);
-    if (id==0) {
-        plbLogicError(std::string("A processor with name ")+procName+" does not exits.");
+    if (id == 0) {
+        plbLogicError(std::string("A processor with name ") + procName + " does not exits.");
     }
-    return processorByNumber[id-1].factory->create(data);
+    return processorByNumber[id - 1].factory->create(data);
 }
 
-ProcessorRegistration2D::EntryMap::const_iterator
-    ProcessorRegistration2D::begin() const
+ProcessorRegistration2D::EntryMap::const_iterator ProcessorRegistration2D::begin() const
 {
     return processorByName.begin();
 }
 
-ProcessorRegistration2D::EntryMap::const_iterator
-    ProcessorRegistration2D::end() const
+ProcessorRegistration2D::EntryMap::const_iterator ProcessorRegistration2D::end() const
 {
     return processorByName.end();
 }
 
-
-ProcessorRegistration2D& processorRegistration2D() {
+ProcessorRegistration2D &processorRegistration2D()
+{
     static ProcessorRegistration2D instance;
     return instance;
 }

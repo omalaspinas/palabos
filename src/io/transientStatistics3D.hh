@@ -5,7 +5,7 @@
  * own the IP rights for most of the code base. Since October 2019, the
  * Palabos project is maintained by the University of Geneva and accepts
  * source code contributions from the community.
- * 
+ *
  * Contact:
  * Jonas Latt
  * Computer Science Department
@@ -14,7 +14,7 @@
  * 1227 Carouge, Switzerland
  * jonas.latt@unige.ch
  *
- * The most recent release of Palabos can be downloaded at 
+ * The most recent release of Palabos can be downloaded at
  * <https://palabos.unige.ch/>
  *
  * The library Palabos is free software: you can redistribute it and/or
@@ -29,38 +29,39 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 #ifndef TRANSIENT_STATISTICS_3D_HH
 #define TRANSIENT_STATISTICS_3D_HH
-
-#include "core/array.h"
-#include "core/globalDefs.h"
-#include "core/geometry3D.h"
-#include "atomicBlock/dataProcessingFunctional3D.h"
-#include "dataProcessors/dataAnalysisFunctional3D.h"
-#include "dataProcessors/dataAnalysisWrapper3D.h"
-#include "multiBlock/multiBlock3D.h"
-#include "multiBlock/multiBlockLattice3D.h"
-#include "multiBlock/multiDataField3D.h"
-#include "multiBlock/multiDataProcessorWrapper3D.h"
-#include "io/imageWriter.h"
-#include "io/plbFiles.h"
-#include "io/vtkDataOutput.h"
-#include "io/transientStatistics3D.h"
 
 #include <algorithm>
 #include <cstring>
 #include <string>
 #include <vector>
 
+#include "atomicBlock/dataProcessingFunctional3D.h"
+#include "core/array.h"
+#include "core/geometry3D.h"
+#include "core/globalDefs.h"
+#include "dataProcessors/dataAnalysisFunctional3D.h"
+#include "dataProcessors/dataAnalysisWrapper3D.h"
+#include "io/imageWriter.h"
+#include "io/plbFiles.h"
+#include "io/transientStatistics3D.h"
+#include "io/vtkDataOutput.h"
+#include "multiBlock/multiBlock3D.h"
+#include "multiBlock/multiBlockLattice3D.h"
+#include "multiBlock/multiDataField3D.h"
+#include "multiBlock/multiDataProcessorWrapper3D.h"
+
 namespace plb {
 
 /* ***************** Transient Statistics Manager ************************* */
 
-template<typename T, template<typename U> class Descriptor>
-TransientStatistics3D<T,Descriptor>::TransientStatistics3D(MultiBlockLattice3D<T,Descriptor>& lattice_, Box3D const& domain_)
-    : lattice(lattice_)
+template <typename T, template <typename U> class Descriptor>
+TransientStatistics3D<T, Descriptor>::TransientStatistics3D(
+    MultiBlockLattice3D<T, Descriptor> &lattice_, Box3D const &domain_) :
+    lattice(lattice_)
 {
 #ifdef PLB_DEBUG
     bool intersectsWithSimulationDomain =
@@ -70,18 +71,19 @@ TransientStatistics3D<T,Descriptor>::TransientStatistics3D(MultiBlockLattice3D<T
     enlargedDomain = domain;
     n = 0;
     isInitialized = 0;
-    (void) memset(fieldIsRegistered, 0, sizeof fieldIsRegistered);
-    (void) memset(fieldOperationIsRegistered, 0, sizeof fieldOperationIsRegistered);
-    (void) memset(blocks, 0, sizeof blocks);
+    (void)memset(fieldIsRegistered, 0, sizeof fieldIsRegistered);
+    (void)memset(fieldOperationIsRegistered, 0, sizeof fieldOperationIsRegistered);
+    (void)memset(blocks, 0, sizeof blocks);
 }
 
-template<typename T, template<typename U> class Descriptor>
-TransientStatistics3D<T,Descriptor>::TransientStatistics3D(TransientStatistics3D<T,Descriptor> const& rhs)
-    : lattice(rhs.lattice),
-      domain(rhs.domain),
-      enlargedDomain(rhs.enlargedDomain),
-      n(rhs.n),
-      isInitialized(rhs.isInitialized)
+template <typename T, template <typename U> class Descriptor>
+TransientStatistics3D<T, Descriptor>::TransientStatistics3D(
+    TransientStatistics3D<T, Descriptor> const &rhs) :
+    lattice(rhs.lattice),
+    domain(rhs.domain),
+    enlargedDomain(rhs.enlargedDomain),
+    n(rhs.n),
+    isInitialized(rhs.isInitialized)
 {
     for (int iField = 0; iField < numFields; iField++) {
         fieldIsRegistered[iField] = rhs.fieldIsRegistered[iField];
@@ -89,7 +91,8 @@ TransientStatistics3D<T,Descriptor>::TransientStatistics3D(TransientStatistics3D
 
     for (int iField = 0; iField < numFields; iField++) {
         for (int iOperation = 0; iOperation < numOperations; iOperation++) {
-            fieldOperationIsRegistered[iField][iOperation] = rhs.fieldOperationIsRegistered[iField][iOperation];
+            fieldOperationIsRegistered[iField][iOperation] =
+                rhs.fieldOperationIsRegistered[iField][iOperation];
         }
     }
 
@@ -103,8 +106,8 @@ TransientStatistics3D<T,Descriptor>::TransientStatistics3D(TransientStatistics3D
     }
 }
 
-template<typename T, template<typename U> class Descriptor>
-void TransientStatistics3D<T,Descriptor>::swap(TransientStatistics3D<T,Descriptor>& rhs)
+template <typename T, template <typename U> class Descriptor>
+void TransientStatistics3D<T, Descriptor>::swap(TransientStatistics3D<T, Descriptor> &rhs)
 {
     std::swap(lattice, rhs.lattice);
     std::swap(domain, rhs.domain);
@@ -118,7 +121,9 @@ void TransientStatistics3D<T,Descriptor>::swap(TransientStatistics3D<T,Descripto
 
     for (int iField = 0; iField < numFields; iField++) {
         for (int iOperation = 0; iOperation < numOperations; iOperation++) {
-            std::swap(fieldOperationIsRegistered[iField][iOperation], rhs.fieldOperationIsRegistered[iField][iOperation]);
+            std::swap(
+                fieldOperationIsRegistered[iField][iOperation],
+                rhs.fieldOperationIsRegistered[iField][iOperation]);
         }
     }
 
@@ -129,22 +134,22 @@ void TransientStatistics3D<T,Descriptor>::swap(TransientStatistics3D<T,Descripto
     }
 }
 
-template<typename T, template<typename U> class Descriptor>
-TransientStatistics3D<T,Descriptor>& TransientStatistics3D<T,Descriptor>::operator=(
-        TransientStatistics3D<T,Descriptor> const& rhs)
+template <typename T, template <typename U> class Descriptor>
+TransientStatistics3D<T, Descriptor> &TransientStatistics3D<T, Descriptor>::operator=(
+    TransientStatistics3D<T, Descriptor> const &rhs)
 {
-    TransientStatistics3D<T,Descriptor>(rhs).swap(*this);
+    TransientStatistics3D<T, Descriptor>(rhs).swap(*this);
     return *this;
 }
 
-template<typename T, template<typename U> class Descriptor>
-TransientStatistics3D<T,Descriptor>* TransientStatistics3D<T,Descriptor>::clone() const
+template <typename T, template <typename U> class Descriptor>
+TransientStatistics3D<T, Descriptor> *TransientStatistics3D<T, Descriptor>::clone() const
 {
-    return new TransientStatistics3D<T,Descriptor>(*this);
+    return new TransientStatistics3D<T, Descriptor>(*this);
 }
 
-template<typename T, template<typename U> class Descriptor>
-TransientStatistics3D<T,Descriptor>::~TransientStatistics3D()
+template <typename T, template <typename U> class Descriptor>
+TransientStatistics3D<T, Descriptor>::~TransientStatistics3D()
 {
     for (int iField = 0; iField < numFields; iField++) {
         for (int iOperation = 0; iOperation < numOperations; iOperation++) {
@@ -153,10 +158,11 @@ TransientStatistics3D<T,Descriptor>::~TransientStatistics3D()
     }
 }
 
-template<typename T, template<typename U> class Descriptor>
-bool TransientStatistics3D<T,Descriptor>::registerFieldOperation(std::string field, std::string operation)
+template <typename T, template <typename U> class Descriptor>
+bool TransientStatistics3D<T, Descriptor>::registerFieldOperation(
+    std::string field, std::string operation)
 {
-    if (isInitialized) {    // No registering is allowed after initialization.
+    if (isInitialized) {  // No registering is allowed after initialization.
         return false;
     }
 
@@ -168,22 +174,24 @@ bool TransientStatistics3D<T,Descriptor>::registerFieldOperation(std::string fie
     fieldIsRegistered[iField] = 1;
     fieldOperationIsRegistered[iField][iOperation] = 1;
     if (iOperation == dev) {
-        fieldOperationIsRegistered[iField][ave] = 1;  // When the standard deviation is registered, averaging is registered also.
+        fieldOperationIsRegistered[iField][ave] =
+            1;  // When the standard deviation is registered, averaging is registered also.
     }
 
     return true;
 }
 
-template<typename T, template<typename U> class Descriptor>
-void TransientStatistics3D<T,Descriptor>::initialize()
+template <typename T, template <typename U> class Descriptor>
+void TransientStatistics3D<T, Descriptor>::initialize()
 {
     if (isInitialized) {
         return;
     }
 
     // We use an enlarged domain to compute the vorticity, whenever it is registered.
-    if (fieldIsRegistered[vorticityX] || fieldIsRegistered[vorticityY] || fieldIsRegistered[vorticityZ] ||
-            fieldIsRegistered[vorticityNorm]) {
+    if (fieldIsRegistered[vorticityX] || fieldIsRegistered[vorticityY]
+        || fieldIsRegistered[vorticityZ] || fieldIsRegistered[vorticityNorm])
+    {
 #ifdef PLB_DEBUG
         bool intersectsWithSimulationDomain =
 #endif
@@ -192,16 +200,16 @@ void TransientStatistics3D<T,Descriptor>::initialize()
     }
 
     for (int iField = 0; iField < numFields; iField++) {
-        if (fieldIsRegistered[iField]) {    // There is at least one operation for this field.
-            MultiScalarField3D<T>* field = computeField(iField);
+        if (fieldIsRegistered[iField]) {  // There is at least one operation for this field.
+            MultiScalarField3D<T> *field = computeField(iField);
             for (int iOperation = 0; iOperation < numOperations; iOperation++) {
                 if (fieldOperationIsRegistered[iField][iOperation]) {
-                    MultiScalarField3D<T>* fieldToRegister = 0;
+                    MultiScalarField3D<T> *fieldToRegister = 0;
                     if (iOperation == rms) {
                         fieldToRegister = computeAbsoluteValue(*field).release();
                     } else if (iOperation == dev) {
                         fieldToRegister = field->clone();
-                        setToConstant(*fieldToRegister, fieldToRegister->getBoundingBox(), (T) 0);
+                        setToConstant(*fieldToRegister, fieldToRegister->getBoundingBox(), (T)0);
                     } else {
                         fieldToRegister = field->clone();
                     }
@@ -217,8 +225,8 @@ void TransientStatistics3D<T,Descriptor>::initialize()
     isInitialized = 1;
 }
 
-template<typename T, template<typename U> class Descriptor>
-void TransientStatistics3D<T,Descriptor>::update()
+template <typename T, template <typename U> class Descriptor>
+void TransientStatistics3D<T, Descriptor>::update()
 {
     if (!isInitialized) {
         initialize();
@@ -228,18 +236,19 @@ void TransientStatistics3D<T,Descriptor>::update()
     n++;
 
     for (int iField = 0; iField < numFields; iField++) {
-        if (fieldIsRegistered[iField]) {    // There is at least one operation for this field.
-            MultiScalarField3D<T>* field = computeField(iField);
+        if (fieldIsRegistered[iField]) {  // There is at least one operation for this field.
+            MultiScalarField3D<T> *field = computeField(iField);
             for (int iOperation = 0; iOperation < numOperations; iOperation++) {
                 if (fieldOperationIsRegistered[iField][iOperation]) {
-                    std::vector<MultiBlock3D*> args;
+                    std::vector<MultiBlock3D *> args;
                     args.push_back(field);
                     if (iOperation == dev) {
-                        args.push_back(blocks[iField][ave]); // ave must be less than dev, so that the average is already updated.
+                        args.push_back(blocks[iField][ave]);  // ave must be less than dev, so that
+                                                              // the average is already updated.
                     }
                     args.push_back(blocks[iField][iOperation]);
 
-                    BoxProcessingFunctional3D* functional = 0;
+                    BoxProcessingFunctional3D *functional = 0;
                     switch (iOperation) {
                     case min:
                         functional = new UpdateMinScalarTransientStatistics3D<T>();
@@ -269,8 +278,9 @@ void TransientStatistics3D<T,Descriptor>::update()
     }
 }
 
-template<typename T, template<typename U> class Descriptor>
-MultiScalarField3D<T>& TransientStatistics3D<T,Descriptor>::get(std::string field, std::string operation) const
+template <typename T, template <typename U> class Descriptor>
+MultiScalarField3D<T> &TransientStatistics3D<T, Descriptor>::get(
+    std::string field, std::string operation) const
 {
     int iField = fieldToId(field);
     PLB_ASSERT(iField >= 0);
@@ -280,9 +290,10 @@ MultiScalarField3D<T>& TransientStatistics3D<T,Descriptor>::get(std::string fiel
     return *blocks[iField][iOperation];
 }
 
-template<typename T, template<typename U> class Descriptor>
-void TransientStatistics3D<T,Descriptor>::output(std::string path, std::string domainName, plint iteration,
-        plint namePadding, T dx, T dt, Array<T,3> const& physicalLocation, T rho, T pressureOffset, T rhoLB)
+template <typename T, template <typename U> class Descriptor>
+void TransientStatistics3D<T, Descriptor>::output(
+    std::string path, std::string domainName, plint iteration, plint namePadding, T dx, T dt,
+    Array<T, 3> const &physicalLocation, T rho, T pressureOffset, T rhoLB)
 {
     if (!isInitialized) {
         initialize();
@@ -291,7 +302,8 @@ void TransientStatistics3D<T,Descriptor>::output(std::string path, std::string d
     for (int iField = 0; iField < numFields; iField++) {
         for (int iOperation = 0; iOperation < numOperations; iOperation++) {
             if (fieldOperationIsRegistered[iField][iOperation]) {
-                std::string fileName = getFileName(path, iField, iOperation, domainName, iteration, namePadding);
+                std::string fileName =
+                    getFileName(path, iField, iOperation, domainName, iteration, namePadding);
                 VtkImageOutput3D<T> vtkOut(fileName, dx, physicalLocation);
                 std::string field = idToField(iField);
                 T scalingFactor = getScalingFactor(iField, dx, dt, rho);
@@ -302,9 +314,9 @@ void TransientStatistics3D<T,Descriptor>::output(std::string path, std::string d
     }
 }
 
-template<typename T, template<typename U> class Descriptor>
-void TransientStatistics3D<T,Descriptor>::saveState(
-        plint iteration, FileName xmlFileName, FileName baseFileName, plint fileNamePadding)
+template <typename T, template <typename U> class Descriptor>
+void TransientStatistics3D<T, Descriptor>::saveState(
+    plint iteration, FileName xmlFileName, FileName baseFileName, plint fileNamePadding)
 {
     if (!isInitialized) {
         initialize();
@@ -327,15 +339,15 @@ void TransientStatistics3D<T,Descriptor>::saveState(
     }
 
     XMLwriter restart;
-    XMLwriter& entry = restart["continue"]["transientStatistics"];
+    XMLwriter &entry = restart["continue"]["transientStatistics"];
     entry["name"].setString(FileName(fname_base).defaultPath(global::directories().getOutputDir()));
     entry["iteration"].set(iteration);
     entry["n"].set(n);
     restart.print(xmlFileName);
 }
 
-template<typename T, template<typename U> class Descriptor>
-void TransientStatistics3D<T,Descriptor>::loadState(plint& iteration, FileName xmlFileName)
+template <typename T, template <typename U> class Descriptor>
+void TransientStatistics3D<T, Descriptor>::loadState(plint &iteration, FileName xmlFileName)
 {
     XMLreader restart(xmlFileName.get());
     std::string fname_base;
@@ -358,8 +370,8 @@ void TransientStatistics3D<T,Descriptor>::loadState(plint& iteration, FileName x
     }
 }
 
-template<typename T, template<typename U> class Descriptor>
-int TransientStatistics3D<T,Descriptor>::fieldToId(std::string field) const
+template <typename T, template <typename U> class Descriptor>
+int TransientStatistics3D<T, Descriptor>::fieldToId(std::string field) const
 {
     if (field == "velocityX") {
         return velocityX;
@@ -386,8 +398,8 @@ int TransientStatistics3D<T,Descriptor>::fieldToId(std::string field) const
     }
 }
 
-template<typename T, template<typename U> class Descriptor>
-int TransientStatistics3D<T,Descriptor>::operationToId(std::string operation) const
+template <typename T, template <typename U> class Descriptor>
+int TransientStatistics3D<T, Descriptor>::operationToId(std::string operation) const
 {
     if (operation == "min") {
         return min;
@@ -404,8 +416,8 @@ int TransientStatistics3D<T,Descriptor>::operationToId(std::string operation) co
     }
 }
 
-template<typename T, template<typename U> class Descriptor>
-std::string TransientStatistics3D<T,Descriptor>::idToField(int iField) const
+template <typename T, template <typename U> class Descriptor>
+std::string TransientStatistics3D<T, Descriptor>::idToField(int iField) const
 {
     PLB_ASSERT(iField >= 0);
 
@@ -435,8 +447,8 @@ std::string TransientStatistics3D<T,Descriptor>::idToField(int iField) const
     }
 }
 
-template<typename T, template<typename U> class Descriptor>
-std::string TransientStatistics3D<T,Descriptor>::idToOperation(int iOperation) const
+template <typename T, template <typename U> class Descriptor>
+std::string TransientStatistics3D<T, Descriptor>::idToOperation(int iOperation) const
 {
     PLB_ASSERT(iOperation >= 0);
 
@@ -456,15 +468,18 @@ std::string TransientStatistics3D<T,Descriptor>::idToOperation(int iOperation) c
     }
 }
 
-template<typename T, template<typename U> class Descriptor>
-T TransientStatistics3D<T,Descriptor>::getScalingFactor(int iField, T dx, T dt, T rho) const
+template <typename T, template <typename U> class Descriptor>
+T TransientStatistics3D<T, Descriptor>::getScalingFactor(int iField, T dx, T dt, T rho) const
 {
     PLB_ASSERT(iField >= 0);
 
     T scalingFactor = 0.0;
 
     switch (iField) {
-    case velocityX: case velocityY: case velocityZ: case velocityNorm:
+    case velocityX:
+    case velocityY:
+    case velocityZ:
+    case velocityNorm:
         scalingFactor = dx / dt;
         break;
     case density:
@@ -473,7 +488,10 @@ T TransientStatistics3D<T,Descriptor>::getScalingFactor(int iField, T dx, T dt, 
     case pressure:
         scalingFactor = rho * dx * dx / (dt * dt) * Descriptor<T>::cs2;
         break;
-    case vorticityX: case vorticityY: case vorticityZ: case vorticityNorm:
+    case vorticityX:
+    case vorticityY:
+    case vorticityZ:
+    case vorticityNorm:
         scalingFactor = 1.0 / dt;
         break;
     default:
@@ -484,8 +502,9 @@ T TransientStatistics3D<T,Descriptor>::getScalingFactor(int iField, T dx, T dt, 
     return scalingFactor;
 }
 
-template<typename T, template<typename U> class Descriptor>
-T TransientStatistics3D<T,Descriptor>::getOffset(int iField, T dx, T dt, T rho, T pressureOffset, T rhoLB) const
+template <typename T, template <typename U> class Descriptor>
+T TransientStatistics3D<T, Descriptor>::getOffset(
+    int iField, T dx, T dt, T rho, T pressureOffset, T rhoLB) const
 {
     PLB_ASSERT(iField >= 0);
 
@@ -503,12 +522,12 @@ T TransientStatistics3D<T,Descriptor>::getOffset(int iField, T dx, T dt, T rho, 
     return offset;
 }
 
-template<typename T, template<typename U> class Descriptor>
-MultiScalarField3D<T>* TransientStatistics3D<T,Descriptor>::computeField(int iField) const
+template <typename T, template <typename U> class Descriptor>
+MultiScalarField3D<T> *TransientStatistics3D<T, Descriptor>::computeField(int iField) const
 {
     PLB_ASSERT(iField >= 0);
 
-    MultiScalarField3D<T>* field = 0;
+    MultiScalarField3D<T> *field = 0;
 
     switch (iField) {
     case velocityX:
@@ -528,16 +547,23 @@ MultiScalarField3D<T>* TransientStatistics3D<T,Descriptor>::computeField(int iFi
         field = computeDensity(lattice, domain).release();
         break;
     case vorticityX:
-        field = extractComponent(*computeVorticity(*computeVelocity(lattice, enlargedDomain)), domain, 0).release();
+        field = extractComponent(
+                    *computeVorticity(*computeVelocity(lattice, enlargedDomain)), domain, 0)
+                    .release();
         break;
     case vorticityY:
-        field = extractComponent(*computeVorticity(*computeVelocity(lattice, enlargedDomain)), domain, 1).release();
+        field = extractComponent(
+                    *computeVorticity(*computeVelocity(lattice, enlargedDomain)), domain, 1)
+                    .release();
         break;
     case vorticityZ:
-        field = extractComponent(*computeVorticity(*computeVelocity(lattice, enlargedDomain)), domain, 2).release();
+        field = extractComponent(
+                    *computeVorticity(*computeVelocity(lattice, enlargedDomain)), domain, 2)
+                    .release();
         break;
     case vorticityNorm:
-        field = computeNorm(*computeVorticity(*computeVelocity(lattice, enlargedDomain)), domain).release();
+        field = computeNorm(*computeVorticity(*computeVelocity(lattice, enlargedDomain)), domain)
+                    .release();
         break;
     default:
         field = 0;
@@ -547,13 +573,15 @@ MultiScalarField3D<T>* TransientStatistics3D<T,Descriptor>::computeField(int iFi
     return field;
 }
 
-template<typename T, template<typename U> class Descriptor>
-std::string TransientStatistics3D<T,Descriptor>::getFileName(std::string path, int iField, int iOperation,
-        std::string domainName, plint iteration, plint namePadding) const
+template <typename T, template <typename U> class Descriptor>
+std::string TransientStatistics3D<T, Descriptor>::getFileName(
+    std::string path, int iField, int iOperation, std::string domainName, plint iteration,
+    plint namePadding) const
 {
     std::string field = idToField(iField);
     std::string operation = idToOperation(iOperation);
-    std::string name = createFileName(field + "_" + operation + "_" + domainName + "_", iteration, namePadding);
+    std::string name =
+        createFileName(field + "_" + operation + "_" + domainName + "_", iteration, namePadding);
     FileName fileName;
     fileName.setPath(path);
     fileName.setName(name);
@@ -563,4 +591,3 @@ std::string TransientStatistics3D<T,Descriptor>::getFileName(std::string path, i
 }  // namespace plb
 
 #endif  // TRANSIENT_STATISTICS_3D_HH
-

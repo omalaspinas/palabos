@@ -5,7 +5,7 @@
  * own the IP rights for most of the code base. Since October 2019, the
  * Palabos project is maintained by the University of Geneva and accepts
  * source code contributions from the community.
- * 
+ *
  * Contact:
  * Jonas Latt
  * Computer Science Department
@@ -14,7 +14,7 @@
  * 1227 Carouge, Switzerland
  * jonas.latt@unige.ch
  *
- * The most recent release of Palabos can be downloaded at 
+ * The most recent release of Palabos can be downloaded at
  * <https://palabos.unige.ch/>
  *
  * The library Palabos is free software: you can redistribute it and/or
@@ -29,29 +29,28 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 /** \file
  * Groups all the include files for the 2D multiBlock.
  */
 
-#include "multiGrid/multiScale.h"
-#include "multiGrid/multiGridOperations2D.h"
-#include "multiGrid/multiGridDataField2D.h"
-#include "multiGrid/multiGrid2D.h"
-#include "multiGrid/gridRefinementDynamics.h"
-#include "multiGrid/multiGridLattice2D.h"
-#include "multiGrid/defaultMultiGridPolicy2D.h"
-#include "multiGrid/gridRefinement.h"
 #include "multiGrid/coarseGridProcessors2D.h"
-#include "multiGrid/fineGridProcessors2D.h"
-#include "multiGrid/multiGridParameterManager.h"
-#include "multiGrid/multiGridGenerator2D.h"
-#include "multiGrid/multiGridManagement2D.h"
+#include "multiGrid/defaultMultiGridPolicy2D.h"
 #include "multiGrid/dynamicsGenerators.h"
-#include "multiGrid/multiGridDataAnalysisWrapper2D.h"
-#include "multiGrid/multiGridDataProcessorWrapper2D.h"
-#include "multiGrid/svgWriter.h"
+#include "multiGrid/fineGridProcessors2D.h"
 #include "multiGrid/gridConversion2D.h"
+#include "multiGrid/gridRefinement.h"
+#include "multiGrid/gridRefinementDynamics.h"
+#include "multiGrid/multiGrid2D.h"
+#include "multiGrid/multiGridDataAnalysisWrapper2D.h"
+#include "multiGrid/multiGridDataField2D.h"
+#include "multiGrid/multiGridDataProcessorWrapper2D.h"
+#include "multiGrid/multiGridGenerator2D.h"
+#include "multiGrid/multiGridLattice2D.h"
+#include "multiGrid/multiGridManagement2D.h"
+#include "multiGrid/multiGridOperations2D.h"
+#include "multiGrid/multiGridParameterManager.h"
+#include "multiGrid/multiScale.h"
 #include "multiGrid/parallelizer2D.h"
-
+#include "multiGrid/svgWriter.h"

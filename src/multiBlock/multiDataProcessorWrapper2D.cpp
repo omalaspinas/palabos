@@ -5,7 +5,7 @@
  * own the IP rights for most of the code base. Since October 2019, the
  * Palabos project is maintained by the University of Geneva and accepts
  * source code contributions from the community.
- * 
+ *
  * Contact:
  * Jonas Latt
  * Computer Science Department
@@ -14,7 +14,7 @@
  * 1227 Carouge, Switzerland
  * jonas.latt@unige.ch
  *
- * The most recent release of Palabos can be downloaded at 
+ * The most recent release of Palabos can be downloaded at
  * <https://palabos.unige.ch/>
  *
  * The library Palabos is free software: you can redistribute it and/or
@@ -29,79 +29,73 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 #include "multiBlock/multiDataProcessorWrapper2D.h"
-#include "multiBlock/multiBlockLattice2D.h"
-#include "multiBlock/multiDataField2D.h"
-#include "multiBlock/multiBlockOperations2D.h"
+
 #include "atomicBlock/dataProcessor2D.h"
 #include "core/plbDebug.h"
+#include "multiBlock/multiBlockLattice2D.h"
+#include "multiBlock/multiBlockOperations2D.h"
+#include "multiBlock/multiDataField2D.h"
 
 namespace plb {
 
 /* *************** BoxProcessing2D, general case *************************** */
 
-void applyProcessingFunctional(BoxProcessingFunctional2D* functional,
-                               Box2D domain, std::vector<MultiBlock2D*> multiBlocks)
+void applyProcessingFunctional(
+    BoxProcessingFunctional2D *functional, Box2D domain, std::vector<MultiBlock2D *> multiBlocks)
 {
-    executeDataProcessor( BoxProcessorGenerator2D(functional, domain),
-                          multiBlocks );
+    executeDataProcessor(BoxProcessorGenerator2D(functional, domain), multiBlocks);
 }
 
-void integrateProcessingFunctional(BoxProcessingFunctional2D* functional,
-                                   Box2D domain,
-                                   std::vector<MultiBlock2D*> multiBlocks,
-                                   plint level)
+void integrateProcessingFunctional(
+    BoxProcessingFunctional2D *functional, Box2D domain, std::vector<MultiBlock2D *> multiBlocks,
+    plint level)
 {
-    addInternalProcessor( BoxProcessorGenerator2D(functional, domain),
-                          multiBlocks, level );
+    addInternalProcessor(BoxProcessorGenerator2D(functional, domain), multiBlocks, level);
 }
-
 
 /* *************** DotProcessing, general case ***************************** */
 
-void applyProcessingFunctional(DotProcessingFunctional2D* functional,
-                               DotList2D const& dotList,
-                               std::vector<MultiBlock2D*> multiBlocks)
+void applyProcessingFunctional(
+    DotProcessingFunctional2D *functional, DotList2D const &dotList,
+    std::vector<MultiBlock2D *> multiBlocks)
 {
-    executeDataProcessor( DotProcessorGenerator2D(functional, dotList),
-                          multiBlocks );
+    executeDataProcessor(DotProcessorGenerator2D(functional, dotList), multiBlocks);
 }
 
-void integrateProcessingFunctional(DotProcessingFunctional2D* functional,
-                                   DotList2D const& dotList,
-                                   std::vector<MultiBlock2D*> multiBlocks,
-                                   plint level)
+void integrateProcessingFunctional(
+    DotProcessingFunctional2D *functional, DotList2D const &dotList,
+    std::vector<MultiBlock2D *> multiBlocks, plint level)
 {
-    addInternalProcessor( DotProcessorGenerator2D(functional, dotList),
-                          multiBlocks, level );
+    addInternalProcessor(DotProcessorGenerator2D(functional, dotList), multiBlocks, level);
 }
 
 /* *************** BoundedBoxProcessing2D, general case *************************** */
 
-void applyProcessingFunctional(BoundedBoxProcessingFunctional2D* functional,
-                               Box2D domain, std::vector<MultiBlock2D*> multiBlocks,
-                               plint boundaryWidth )
+void applyProcessingFunctional(
+    BoundedBoxProcessingFunctional2D *functional, Box2D domain,
+    std::vector<MultiBlock2D *> multiBlocks, plint boundaryWidth)
 {
-    std::vector<BoxProcessorGenerator2D*> generators;
-    functional -> getGenerators(domain, boundaryWidth, generators);
+    std::vector<BoxProcessorGenerator2D *> generators;
+    functional->getGenerators(domain, boundaryWidth, generators);
     delete functional;
-    for (pluint iGen=0; iGen<generators.size(); ++iGen) {
-        executeDataProcessor( *generators[iGen], multiBlocks );
+    for (pluint iGen = 0; iGen < generators.size(); ++iGen) {
+        executeDataProcessor(*generators[iGen], multiBlocks);
         delete generators[iGen];
     }
 }
 
-void integrateProcessingFunctional(BoundedBoxProcessingFunctional2D* functional,
-                                   Box2D domain, std::vector<MultiBlock2D*> multiBlocks,
-                                   plint boundaryWidth, plint level)
+void integrateProcessingFunctional(
+    BoundedBoxProcessingFunctional2D *functional, Box2D domain,
+    std::vector<MultiBlock2D *> multiBlocks, plint boundaryWidth, plint level)
 {
-    std::vector<BoxProcessorGenerator2D*> generators;
-    functional -> getGenerators(domain, boundaryWidth, generators);
+    std::vector<BoxProcessorGenerator2D *> generators;
+    functional->getGenerators(domain, boundaryWidth, generators);
     delete functional;
-    for (pluint iGen=0; iGen<generators.size(); ++iGen) {
-        addInternalProcessor( *generators[iGen], multiBlocks, level );
+    for (pluint iGen = 0; iGen < generators.size(); ++iGen) {
+        addInternalProcessor(*generators[iGen], multiBlocks, level);
         delete generators[iGen];
     }
 }

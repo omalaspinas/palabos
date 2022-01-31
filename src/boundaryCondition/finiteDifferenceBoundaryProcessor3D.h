@@ -5,7 +5,7 @@
  * own the IP rights for most of the code base. Since October 2019, the
  * Palabos project is maintained by the University of Geneva and accepts
  * source code contributions from the community.
- * 
+ *
  * Contact:
  * Jonas Latt
  * Computer Science Department
@@ -14,7 +14,7 @@
  * 1227 Carouge, Switzerland
  * jonas.latt@unige.ch
  *
- * The most recent release of Palabos can be downloaded at 
+ * The most recent release of Palabos can be downloaded at
  * <https://palabos.unige.ch/>
  *
  * The library Palabos is free software: you can redistribute it and/or
@@ -29,84 +29,100 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 #ifndef FINITE_DIFFERENCE_BOUNDARY_PROCESSOR_3D_H
 #define FINITE_DIFFERENCE_BOUNDARY_PROCESSOR_3D_H
 
-#include "core/globalDefs.h"
-#include "atomicBlock/dataProcessingFunctional3D.h"
 #include "atomicBlock/blockLattice3D.h"
+#include "atomicBlock/dataProcessingFunctional3D.h"
+#include "core/globalDefs.h"
 
 namespace plb {
 
 /**
-* This class computes the Skordos BC
-* on a plane wall in 3D but with a limited number of terms added to the
-* equilibrium distributions (i.e. only the Q_i : Pi term)
-*/
-template<typename T, template<typename U> class Descriptor, int direction, int orientation>
-class PlaneFdBoundaryFunctional3D : public BoxProcessingFunctional3D_L<T,Descriptor>
-{
+ * This class computes the Skordos BC
+ * on a plane wall in 3D but with a limited number of terms added to the
+ * equilibrium distributions (i.e. only the Q_i : Pi term)
+ */
+template <typename T, template <typename U> class Descriptor, int direction, int orientation>
+class PlaneFdBoundaryFunctional3D : public BoxProcessingFunctional3D_L<T, Descriptor> {
 public:
-    virtual void process(Box3D domain, BlockLattice3D<T,Descriptor>& lattice);
-    virtual PlaneFdBoundaryFunctional3D<T,Descriptor,direction,orientation>* clone() const;
-    virtual void getTypeOfModification(std::vector<modif::ModifT>& modified) const {
+    virtual void process(Box3D domain, BlockLattice3D<T, Descriptor> &lattice);
+    virtual PlaneFdBoundaryFunctional3D<T, Descriptor, direction, orientation> *clone() const;
+    virtual void getTypeOfModification(std::vector<modif::ModifT> &modified) const
+    {
         modified[0] = modif::staticVariables;
     }
-    virtual int getStaticId() const { return staticId; }
+    virtual int getStaticId() const
+    {
+        return staticId;
+    }
     static const int staticId;
+
 public:
-    static void processCell(plint iX, plint iY, plint iZ, BlockLattice3D<T,Descriptor>& lattice);
+    static void processCell(plint iX, plint iY, plint iZ, BlockLattice3D<T, Descriptor> &lattice);
+
 private:
-    template<int deriveDirection>
-    static void interpolateGradients (
-            BlockLattice3D<T,Descriptor> const& block,
-            Array<T,Descriptor<T>::d>& velDeriv, plint iX, plint iY, plint iZ );
+    template <int deriveDirection>
+    static void interpolateGradients(
+        BlockLattice3D<T, Descriptor> const &block, Array<T, Descriptor<T>::d> &velDeriv, plint iX,
+        plint iY, plint iZ);
 };
 
 /**
-* This class computes the Skordos BC
-* on a convex edge wall in 3D but with a limited number of terms added to the
-* equilibrium distributions (i.e. only the Q_i : Pi term)
-*/
-template<typename T, template<typename U> class Descriptor,
-         int plane, int normal1, int normal2>
-class OuterVelocityEdgeFunctional3D : public BoxProcessingFunctional3D_L<T,Descriptor> {
+ * This class computes the Skordos BC
+ * on a convex edge wall in 3D but with a limited number of terms added to the
+ * equilibrium distributions (i.e. only the Q_i : Pi term)
+ */
+template <typename T, template <typename U> class Descriptor, int plane, int normal1, int normal2>
+class OuterVelocityEdgeFunctional3D : public BoxProcessingFunctional3D_L<T, Descriptor> {
 public:
-    enum { direction1 = (plane+1)%3, direction2 = (plane+2)%3 };
+    enum { direction1 = (plane + 1) % 3, direction2 = (plane + 2) % 3 };
+
 public:
-    virtual void process(Box3D domain, BlockLattice3D<T,Descriptor>& lattice);
-    virtual OuterVelocityEdgeFunctional3D<T,Descriptor,plane,normal1,normal2>* clone() const;
-    virtual void getTypeOfModification(std::vector<modif::ModifT>& modified) const {
+    virtual void process(Box3D domain, BlockLattice3D<T, Descriptor> &lattice);
+    virtual OuterVelocityEdgeFunctional3D<T, Descriptor, plane, normal1, normal2> *clone() const;
+    virtual void getTypeOfModification(std::vector<modif::ModifT> &modified) const
+    {
         modified[0] = modif::staticVariables;
     }
-    virtual int getStaticId() const { return staticId; }
+    virtual int getStaticId() const
+    {
+        return staticId;
+    }
     static const int staticId;
+
 public:
-    static void processCell(plint iX, plint iY, plint iZ, BlockLattice3D<T,Descriptor>& lattice);
+    static void processCell(plint iX, plint iY, plint iZ, BlockLattice3D<T, Descriptor> &lattice);
+
 private:
-    static T getNeighborRho(plint x, plint y, plint z, plint step1, plint step2,
-                            BlockLattice3D<T,Descriptor> const& lattice);
-    template<int deriveDirection, int orientation>
-    static void interpolateGradients (
-            BlockLattice3D<T,Descriptor> const& lattice,
-            Array<T,Descriptor<T>::d>& velDeriv, plint iX, plint iY, plint iZ );
+    static T getNeighborRho(
+        plint x, plint y, plint z, plint step1, plint step2,
+        BlockLattice3D<T, Descriptor> const &lattice);
+    template <int deriveDirection, int orientation>
+    static void interpolateGradients(
+        BlockLattice3D<T, Descriptor> const &lattice, Array<T, Descriptor<T>::d> &velDeriv,
+        plint iX, plint iY, plint iZ);
 };
 
-template<typename T, template<typename U> class Descriptor,
-         int xNormal, int yNormal, int zNormal>
-class OuterVelocityCornerFunctional3D : public BoxProcessingFunctional3D_L<T,Descriptor>
-{
+template <typename T, template <typename U> class Descriptor, int xNormal, int yNormal, int zNormal>
+class OuterVelocityCornerFunctional3D : public BoxProcessingFunctional3D_L<T, Descriptor> {
 public:
-    virtual void process(Box3D domain, BlockLattice3D<T,Descriptor>& lattice);
-    virtual OuterVelocityCornerFunctional3D<T,Descriptor,xNormal,yNormal,zNormal>* clone() const;
-    virtual void getTypeOfModification(std::vector<modif::ModifT>& modified) const {
+    virtual void process(Box3D domain, BlockLattice3D<T, Descriptor> &lattice);
+    virtual OuterVelocityCornerFunctional3D<T, Descriptor, xNormal, yNormal, zNormal> *clone()
+        const;
+    virtual void getTypeOfModification(std::vector<modif::ModifT> &modified) const
+    {
         modified[0] = modif::staticVariables;
     }
-    virtual int getStaticId() const { return staticId; }
+    virtual int getStaticId() const
+    {
+        return staticId;
+    }
+
 public:
-    static void processCell(plint iX, plint iY, plint iZ, BlockLattice3D<T,Descriptor>& lattice);
+    static void processCell(plint iX, plint iY, plint iZ, BlockLattice3D<T, Descriptor> &lattice);
     static const int staticId;
 };
 

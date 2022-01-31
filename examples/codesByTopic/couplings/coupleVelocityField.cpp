@@ -5,7 +5,7 @@
  * own the IP rights for most of the code base. Since October 2019, the
  * Palabos project is maintained by the University of Geneva and accepts
  * source code contributions from the community.
- * 
+ *
  * Contact:
  * Jonas Latt
  * Computer Science Department
@@ -14,7 +14,7 @@
  * 1227 Carouge, Switzerland
  * jonas.latt@unige.ch
  *
- * The most recent release of Palabos can be downloaded at 
+ * The most recent release of Palabos can be downloaded at
  * <https://palabos.unige.ch/>
  *
  * The library Palabos is free software: you can redistribute it and/or
@@ -29,18 +29,18 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
+
+#include <cmath>
+#include <fstream>
+#include <iomanip>
+#include <iostream>
+#include <vector>
 
 #include "palabos2D.h"
 #include "palabos2D.hh"
 #include "poiseuille.h"
 #include "poiseuille.hh"
-
-#include <vector>
-#include <cmath>
-#include <iostream>
-#include <fstream>
-#include <iomanip>
 
 using namespace plb;
 using namespace std;
@@ -48,86 +48,92 @@ using namespace std;
 typedef double T;
 #define DESCRIPTOR descriptors::D2Q9Descriptor
 
-template<typename T>
-class SetToPoiseuilleVelocityFunctional : public BoxProcessingFunctional2D_T<T,2> {
+template <typename T>
+class SetToPoiseuilleVelocityFunctional : public BoxProcessingFunctional2D_T<T, 2> {
 public:
-    SetToPoiseuilleVelocityFunctional(IncomprFlowParam<T> parameters_)
-        : parameters(parameters_)
-    { }
-    virtual void process(Box2D domain, TensorField2D<T,2>& velocity)
+    SetToPoiseuilleVelocityFunctional(IncomprFlowParam<T> parameters_) : parameters(parameters_) { }
+    virtual void process(Box2D domain, TensorField2D<T, 2> &velocity)
     {
         Dot2D offset = velocity.getLocation();
-        for (plint iX=domain.x0; iX<=domain.x1; ++iX) {
-            for (plint iY=domain.y0; iY<=domain.y1; ++iY) {
+        for (plint iX = domain.x0; iX <= domain.x1; ++iX) {
+            for (plint iY = domain.y0; iY <= domain.y1; ++iY) {
                 plint absoluteY = iY + offset.y;
-                T ux = poiseuilleVelocity(absoluteY,parameters);
-                velocity.get(iX,iY) = Array<T,2>(ux, T());
+                T ux = poiseuilleVelocity(absoluteY, parameters);
+                velocity.get(iX, iY) = Array<T, 2>(ux, T());
             }
         }
     }
-    virtual SetToPoiseuilleVelocityFunctional<T>* clone() const {
+    virtual SetToPoiseuilleVelocityFunctional<T> *clone() const
+    {
         return new SetToPoiseuilleVelocityFunctional(*this);
     }
-    void getTypeOfModification(std::vector<modif::ModifT>& modified) const {
+    void getTypeOfModification(std::vector<modif::ModifT> &modified) const
+    {
         modified[0] = modif::staticVariables;
     }
-    virtual BlockDomain::DomainT appliesTo() const {
+    virtual BlockDomain::DomainT appliesTo() const
+    {
         return BlockDomain::bulkAndEnvelope;
     }
+
 private:
     IncomprFlowParam<T> parameters;
 };
 
-void setToPoiseuilleProfile(MultiTensorField2D<T,2>& velocity,
-                            IncomprFlowParam<T> parameters)
+void setToPoiseuilleProfile(MultiTensorField2D<T, 2> &velocity, IncomprFlowParam<T> parameters)
 {
-    applyProcessingFunctional(new SetToPoiseuilleVelocityFunctional<T>(parameters),
-                              velocity.getBoundingBox(), velocity);
+    applyProcessingFunctional(
+        new SetToPoiseuilleVelocityFunctional<T>(parameters), velocity.getBoundingBox(), velocity);
 }
 
-template<typename T, template<typename U> class Descriptor>
-class BoundaryFromVelocityFunctional2D : public BoxProcessingFunctional2D_LT<T,Descriptor,T,2> {
+template <typename T, template <typename U> class Descriptor>
+class BoundaryFromVelocityFunctional2D : public BoxProcessingFunctional2D_LT<T, Descriptor, T, 2> {
 public:
-    virtual void process(Box2D domain, BlockLattice2D<T,Descriptor>& lattice,
-                         TensorField2D<T,2>& velocity)
+    virtual void process(
+        Box2D domain, BlockLattice2D<T, Descriptor> &lattice, TensorField2D<T, 2> &velocity)
     {
         Dot2D displacement = computeRelativeDisplacement(lattice, velocity);
-        for (plint iX=domain.x0; iX<=domain.x1; ++iX) {
-            for (plint iY=domain.y0; iY<=domain.y1; ++iY) {
-                lattice.get(iX,iY).defineVelocity(velocity.get(iX+displacement.x,iY+displacement.y));
+        for (plint iX = domain.x0; iX <= domain.x1; ++iX) {
+            for (plint iY = domain.y0; iY <= domain.y1; ++iY) {
+                lattice.get(iX, iY).defineVelocity(
+                    velocity.get(iX + displacement.x, iY + displacement.y));
             }
         }
     }
-    virtual BoundaryFromVelocityFunctional2D<T,Descriptor>* clone() const {
+    virtual BoundaryFromVelocityFunctional2D<T, Descriptor> *clone() const
+    {
         return new BoundaryFromVelocityFunctional2D(*this);
     }
-    void getTypeOfModification(std::vector<modif::ModifT>& modified) const {
+    void getTypeOfModification(std::vector<modif::ModifT> &modified) const
+    {
         modified[0] = modif::dataStructure;
         modified[1] = modif::nothing;
     }
-    virtual BlockDomain::DomainT appliesTo() const {
+    virtual BlockDomain::DomainT appliesTo() const
+    {
         return BlockDomain::bulkAndEnvelope;
     }
 };
 
-void createBoundariesFromVelocityField(MultiBlockLattice2D<T,DESCRIPTOR>& lattice,
-                                       MultiTensorField2D<T,2>& velocity)
+void createBoundariesFromVelocityField(
+    MultiBlockLattice2D<T, DESCRIPTOR> &lattice, MultiTensorField2D<T, 2> &velocity)
 {
-    applyProcessingFunctional( new BoundaryFromVelocityFunctional2D<T,DESCRIPTOR>,
-                               lattice.getBoundingBox(),
-                               lattice, velocity );
+    applyProcessingFunctional(
+        new BoundaryFromVelocityFunctional2D<T, DESCRIPTOR>, lattice.getBoundingBox(), lattice,
+        velocity);
 }
 
-int main(int argc, char* argv[]) {
+int main(int argc, char *argv[])
+{
     plbInit(&argc, &argv);
     global::directories().setOutputDir("./tmp/");
 
-    IncomprFlowParam<T> parameters (
-        (T) 1e-2,  // uMax
-        (T) 10.,   // Re
-        30,        // N
-        2.,        // lx
-        1.         // ly 
+    IncomprFlowParam<T> parameters(
+        (T)1e-2,  // uMax
+        (T)10.,   // Re
+        30,       // N
+        2.,       // lx
+        1.        // ly
     );
 
     plint nx = parameters.getNx();
@@ -135,17 +141,16 @@ int main(int argc, char* argv[]) {
 
     writeLogFile(parameters, "Poiseuille flow");
 
-    MultiBlockLattice2D<T, DESCRIPTOR> lattice (
-              nx, ny,
-              new BGKdynamics<T,DESCRIPTOR>(parameters.getOmega()) );
+    MultiBlockLattice2D<T, DESCRIPTOR> lattice(
+        nx, ny, new BGKdynamics<T, DESCRIPTOR>(parameters.getOmega()));
 
-    MultiTensorField2D<T,2> velocity(nx,ny);
+    MultiTensorField2D<T, 2> velocity(nx, ny);
 
     setToPoiseuilleProfile(velocity, parameters);
 
-    OnLatticeBoundaryCondition2D<T,DESCRIPTOR>*
-        boundaryCondition = createLocalBoundaryCondition2D<T,DESCRIPTOR>();
-    boundaryCondition -> setVelocityConditionOnBlockBoundaries(lattice);
+    OnLatticeBoundaryCondition2D<T, DESCRIPTOR> *boundaryCondition =
+        createLocalBoundaryCondition2D<T, DESCRIPTOR>();
+    boundaryCondition->setVelocityConditionOnBlockBoundaries(lattice);
     pcout << "start" << endl;
     createBoundariesFromVelocityField(lattice, velocity);
     pcout << "stop" << endl;
@@ -161,33 +166,28 @@ int main(int argc, char* argv[]) {
 #endif
 
     // Main loop over time steps.
-    for (plint iT=0; iT<10000; ++iT) {
-        if (iT%1000==0) {
-
+    for (plint iT = 0; iT < 10000; ++iT) {
+        if (iT % 1000 == 0) {
 #ifndef PLB_REGRESSION
             ImageWriter<T> imageWriter("leeloo");
-            imageWriter.writeScaledGif(createFileName("uSqr", iT, 6),
-                                       *computeKineticEnergy(lattice),
-                                       600, 600 );
+            imageWriter.writeScaledGif(
+                createFileName("uSqr", iT, 6), *computeKineticEnergy(lattice), 600, 600);
 #endif
-            pcout << "At iteration step " << iT
-                  << ", the density along the channel is " << endl;
-            pcout << setprecision(7)
-                  << *computeDensity(lattice, Box2D(0, nx-1, ny/2, ny/2))
-                  << endl << endl;
+            pcout << "At iteration step " << iT << ", the density along the channel is " << endl;
+            pcout << setprecision(7) << *computeDensity(lattice, Box2D(0, nx - 1, ny / 2, ny / 2))
+                  << endl
+                  << endl;
 
 #ifndef PLB_REGRESSION
-            Box2D profileSection(nx/2, nx/2, 0, ny-1);
-            successiveProfiles
-                << setprecision(4)
-                  // (2) Convert from lattice to physical units.
-                << *multiply (
-                       parameters.getDeltaX() / parameters.getDeltaT(),
-                  // (1) Compute velocity norm along the chosen section.
-                       *computeVelocityNorm (lattice, profileSection) )
-                << endl;
+            Box2D profileSection(nx / 2, nx / 2, 0, ny - 1);
+            successiveProfiles << setprecision(4)
+                               // (2) Convert from lattice to physical units.
+                               << *multiply(
+                                      parameters.getDeltaX() / parameters.getDeltaT(),
+                                      // (1) Compute velocity norm along the chosen section.
+                                      *computeVelocityNorm(lattice, profileSection))
+                               << endl;
 #endif
-
         }
 
         // Lattice Boltzmann iteration step.

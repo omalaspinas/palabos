@@ -5,7 +5,7 @@
  * own the IP rights for most of the code base. Since October 2019, the
  * Palabos project is maintained by the University of Geneva and accepts
  * source code contributions from the community.
- * 
+ *
  * Contact:
  * Jonas Latt
  * Computer Science Department
@@ -14,7 +14,7 @@
  * 1227 Carouge, Switzerland
  * jonas.latt@unige.ch
  *
- * The most recent release of Palabos can be downloaded at 
+ * The most recent release of Palabos can be downloaded at
  * <https://palabos.unige.ch/>
  *
  * The library Palabos is free software: you can redistribute it and/or
@@ -29,18 +29,19 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
+
+#include <cmath>
 
 #include "palabos2D.h"
 #include "palabos2D.hh"
-#include <cmath>
 
 using namespace plb;
 using namespace std;
 typedef double T;
 
-
-int main(int argc, char* argv[]) {
+int main(int argc, char *argv[])
+{
     plbInit(&argc, &argv);
 
     global::directories().setOutputDir("./tmp/");
@@ -48,24 +49,26 @@ int main(int argc, char* argv[]) {
     const int N = 600;
     ImageWriter<T> imageWriter("leeloo");
 
-    MultiScalarField2D<T> field1(N+1,N+1);
-    setToConstant(field1, Box2D(0,N/2, 0,N), (T)1.);
-    setToConstant(field1, Box2D(N/2+1,N, 0,N), (T)2.);
+    MultiScalarField2D<T> field1(N + 1, N + 1);
+    setToConstant(field1, Box2D(0, N / 2, 0, N), (T)1.);
+    setToConstant(field1, Box2D(N / 2 + 1, N, 0, N), (T)2.);
 
-    MultiScalarField2D<T> field2(N+1,N+1);
-    setToConstant(field2, Box2D(0,N, 0,N/2), (T)1.);
-    setToConstant(field2, Box2D(0,N, N/2+1,N), (T)2.);
+    MultiScalarField2D<T> field2(N + 1, N + 1);
+    setToConstant(field2, Box2D(0, N, 0, N / 2), (T)1.);
+    setToConstant(field2, Box2D(0, N, N / 2 + 1, N), (T)2.);
 
-    MultiScalarField2D<T> field3(N+1,N+1);
+    MultiScalarField2D<T> field3(N + 1, N + 1);
     setToCoordinate(field3, field3.getBoundingBox(), 0);
 
     imageWriter.writeScaledGif("field1", field1);
     imageWriter.writeScaledGif("field2", field2);
     imageWriter.writeScaledGif("field3", field3);
     imageWriter.writeScaledGif("field1+field2", *add(field1, field2));
-    imageWriter.writeScaledGif("300*field1+field3", *add(*multiply((T)300.,field1), field3));
+    imageWriter.writeScaledGif("300*field1+field3", *add(*multiply((T)300., field1), field3));
 
-    const T pi = (T)4.*std::atan((T)1.);
-    T(*Tsin)(T) = std::sin;  // Explicit reference to the overloaded "sin" is required for automatic template instantiation.
-    imageWriter.writeScaledGif("sine", *evaluate(Tsin , *multiply((T)2.*pi/(T)N, field3)));
+    const T pi = (T)4. * std::atan((T)1.);
+    T(*Tsin)
+    (T) = std::sin;  // Explicit reference to the overloaded "sin" is required for automatic
+                     // template instantiation.
+    imageWriter.writeScaledGif("sine", *evaluate(Tsin, *multiply((T)2. * pi / (T)N, field3)));
 }

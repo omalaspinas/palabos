@@ -5,7 +5,7 @@
  * own the IP rights for most of the code base. Since October 2019, the
  * Palabos project is maintained by the University of Geneva and accepts
  * source code contributions from the community.
- * 
+ *
  * Contact:
  * Jonas Latt
  * Computer Science Department
@@ -14,7 +14,7 @@
  * 1227 Carouge, Switzerland
  * jonas.latt@unige.ch
  *
- * The most recent release of Palabos can be downloaded at 
+ * The most recent release of Palabos can be downloaded at
  * <https://palabos.unige.ch/>
  *
  * The library Palabos is free software: you can redistribute it and/or
@@ -29,7 +29,7 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 /** \file
  * Templates for finding indexes for a specific subset of the neighborhood
@@ -40,33 +40,31 @@
 
 namespace plb {
 
-IndexCollection::IndexCollection(std::vector<plint> const& indexes_)
-    : indexes(indexes_)
-{ }
+IndexCollection::IndexCollection(std::vector<plint> const &indexes_) : indexes(indexes_) { }
 
-std::vector<plint> const& IndexCollection::get() const {
+std::vector<plint> const &IndexCollection::get() const
+{
     return indexes;
 }
 
-IndexCollection operator&&(IndexCollection const& coll1, IndexCollection const& coll2) {
+IndexCollection operator&&(IndexCollection const &coll1, IndexCollection const &coll2)
+{
     std::vector<plint> result;
-    std::vector<plint> const& ind1 = coll1.get();
-    std::vector<plint> const& ind2 = coll2.get();
+    std::vector<plint> const &ind1 = coll1.get();
+    std::vector<plint> const &ind2 = coll2.get();
 
     std::vector<plint>::const_iterator iter_ind1 = ind1.begin();
     std::vector<plint>::const_iterator iter_ind2 = ind2.begin();
 
-    while(!(iter_ind1==ind1.end() || iter_ind2==ind2.end())) {
+    while (!(iter_ind1 == ind1.end() || iter_ind2 == ind2.end())) {
         if (*iter_ind1 == *iter_ind2) {
             result.push_back(*iter_ind1);
             ++iter_ind1;
             ++iter_ind2;
-        }
-        else {
+        } else {
             if (*iter_ind1 < *iter_ind2) {
                 ++iter_ind1;
-            }
-            else {
+            } else {
                 ++iter_ind2;
             }
         }
@@ -74,36 +72,32 @@ IndexCollection operator&&(IndexCollection const& coll1, IndexCollection const& 
     return IndexCollection(result);
 }
 
-IndexCollection operator||(IndexCollection const& coll1, IndexCollection const& coll2)
+IndexCollection operator||(IndexCollection const &coll1, IndexCollection const &coll2)
 {
     std::vector<plint> result;
-    std::vector<plint> const& ind1 = coll1.get();
-    std::vector<plint> const& ind2 = coll2.get();
+    std::vector<plint> const &ind1 = coll1.get();
+    std::vector<plint> const &ind2 = coll2.get();
 
     std::vector<plint>::const_iterator iter_ind1 = ind1.begin();
     std::vector<plint>::const_iterator iter_ind2 = ind2.begin();
 
-    while(!(iter_ind1==ind1.end() && iter_ind2==ind2.end())) {
-        if (iter_ind1==ind1.end()) {
+    while (!(iter_ind1 == ind1.end() && iter_ind2 == ind2.end())) {
+        if (iter_ind1 == ind1.end()) {
             result.push_back(*iter_ind2);
             ++iter_ind2;
-        }
-        else if (iter_ind2==ind2.end()) {
+        } else if (iter_ind2 == ind2.end()) {
             result.push_back(*iter_ind1);
             ++iter_ind1;
-        }
-        else {
-            if (*iter_ind1==*iter_ind2) {
+        } else {
+            if (*iter_ind1 == *iter_ind2) {
                 result.push_back(*iter_ind1);
                 ++iter_ind1;
                 ++iter_ind2;
-            }
-            else {
-                if (*iter_ind1<*iter_ind2) {
+            } else {
+                if (*iter_ind1 < *iter_ind2) {
                     result.push_back(*iter_ind1);
                     ++iter_ind1;
-                }
-                else {
+                } else {
                     result.push_back(*iter_ind2);
                     ++iter_ind2;
                 }
@@ -113,9 +107,10 @@ IndexCollection operator||(IndexCollection const& coll1, IndexCollection const& 
     return IndexCollection(result);
 }
 
-IndexCollection operator!(IndexCollection const& coll) {
+IndexCollection operator!(IndexCollection const &coll)
+{
     std::vector<plint> result;
-    std::vector<plint> const& ind = coll.get();
+    std::vector<plint> const &ind = coll.get();
 
     std::vector<plint>::const_iterator iter_ind = ind.begin();
 
@@ -128,9 +123,9 @@ IndexCollection operator!(IndexCollection const& coll) {
     }
     return IndexCollection(result);
 }
-std::vector<plint> findIndexes(IndexCollection const& collection) {
+std::vector<plint> findIndexes(IndexCollection const &collection)
+{
     return collection.get();
 }
 
 }  // namespace plb
-

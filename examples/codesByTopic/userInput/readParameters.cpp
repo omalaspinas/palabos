@@ -5,7 +5,7 @@
  * own the IP rights for most of the code base. Since October 2019, the
  * Palabos project is maintained by the University of Geneva and accepts
  * source code contributions from the community.
- * 
+ *
  * Contact:
  * Jonas Latt
  * Computer Science Department
@@ -14,7 +14,7 @@
  * 1227 Carouge, Switzerland
  * jonas.latt@unige.ch
  *
- * The most recent release of Palabos can be downloaded at 
+ * The most recent release of Palabos can be downloaded at
  * <https://palabos.unige.ch/>
  *
  * The library Palabos is free software: you can redistribute it and/or
@@ -29,7 +29,7 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 #include "palabos2D.h"
 #include "palabos2D.hh"
@@ -38,79 +38,78 @@ using namespace plb;
 using namespace std;
 typedef double T;
 
-int main(int argc, char* argv[]) {
+int main(int argc, char *argv[])
+{
     plbInit(&argc, &argv);
     global::directories().setOutputDir("./tmp/");
 
     try {
+        // 1. Read a parameter from the command line.
+        int value = 27;
+        global::argv(1).readNoThrow(value);
+        pcout << value << endl;
 
-    // 1. Read a parameter from the command line.
-    int value = 27;
-    global::argv(1).readNoThrow(value);
-    pcout << value << endl;
+        // 2. Read parameters from an XML file.
+        string fName("demo.xml");
 
-    // 2. Read parameters from an XML file.
-    string fName("demo.xml");
+        XMLreader document(fName);
 
-    XMLreader document(fName);
+        string text;
+        document["MyApp"]["Messages"]["Welcome"].read(text);
+        pcout << "TEXT:" << text << endl;
 
-    string text;
-    document["MyApp"]["Messages"]["Welcome"].read(text);
-    pcout << "TEXT:" << text << endl;
+        int number;
+        bool boolVal;
+        T someFloat;
+        std::vector<int> numbers;
 
-    int number;
-    bool boolVal;
-    T someFloat;
-    std::vector<int> numbers;
+        document["MyApp"]["Value"]["OneNumber"].read(number);
+        pcout << "ONE NUMBER:" << number << endl;
 
-    document["MyApp"]["Value"]["OneNumber"].read(number);
-    pcout << "ONE NUMBER:" << number << endl;
+        document["MyApp"]["OneBool"].read(boolVal);
+        pcout << "ONE BOOL:" << boolVal << endl;
 
-    document["MyApp"]["OneBool"].read(boolVal);
-    pcout << "ONE BOOL:" << boolVal << endl;
+        document["MyApp"]["OneFloat"].read(someFloat);
+        pcout << "ONE FLOAT:" << someFloat << endl;
 
-    document["MyApp"]["OneFloat"].read(someFloat);
-    pcout << "ONE FLOAT:" << someFloat << endl;
+        document["MyApp"]["TwoNumbers"].read(numbers);
+        pcout << "TWO NUMBERS:" << numbers[0] << " " << numbers[1] << endl;
 
-    document["MyApp"]["TwoNumbers"].read(numbers);
-    pcout << "TWO NUMBERS:" << numbers[0] << " " << numbers[1] << endl;
+        double nestedVal;
+        XMLreaderProxy nested = document["MyApp"]["Nested"];
+        for (; nested.isValid(); nested = nested.iterId()) {
+            nested["NestedData"].read(nestedVal);
+            pcout << "Nested value at id " << nested.getId() << ": " << nestedVal << endl;
+        }
 
-    double nestedVal;
-    XMLreaderProxy nested = document["MyApp"]["Nested"];
-    for (; nested.isValid(); nested = nested.iterId()) {
-        nested["NestedData"].read(nestedVal);
-        pcout << "Nested value at id " << nested.getId() << ": " << nestedVal << endl;
-    }
+        // 3. Write data into an XML file.
+        //
+        XMLwriter demo2;
+        XMLwriter &myApp = demo2["MyApp"];
 
+        XMLwriter &messages = myApp["Messages"];
+        messages.setString("Text of message");
+        messages["Welcome"].setString("Welcome to MyApp");
+        messages["FareWell"].setString("Good bye");
+        XMLwriter &messages2 = myApp["Messages"][2];
+        messages2["Welcome"].setString("Welcome again");
 
-    // 3. Write data into an XML file.
-    //
-    XMLwriter demo2;
-    XMLwriter& myApp = demo2["MyApp"];
+        vector<int> twoNumbers;
+        twoNumbers.push_back(12);
+        twoNumbers.push_back(24);
+        myApp["Windows"]["Window"];
+        myApp["OneNumber"][3].set(12);
+        myApp["OneNumber"][2].set(2);
+        myApp["OneNumber"][20].set(20);
+        myApp["TwoNumbers"].set(twoNumbers);
+        myApp["OneFloat"].set(12.34);
 
-    XMLwriter& messages = myApp["Messages"];
-    messages.setString("Text of message");
-    messages["Welcome"].setString("Welcome to MyApp");
-    messages["FareWell"].setString("Good bye");
-    XMLwriter& messages2 = myApp["Messages"][2];
-    messages2["Welcome"].setString("Welcome again");
-
-    vector<int> twoNumbers;
-    twoNumbers.push_back(12);
-    twoNumbers.push_back(24);
-    myApp["Windows"]["Window"];
-    myApp["OneNumber"][3].set(12);
-    myApp["OneNumber"][2].set(2);
-    myApp["OneNumber"][20].set(20);
-    myApp["TwoNumbers"].set(twoNumbers);
-    myApp["OneFloat"].set(12.34);
-
-    demo2.print("demo2.xml");
-    
+        demo2.print("demo2.xml");
 
     }
 
-    catch (PlbIOException& exception) {
+    catch (PlbIOException &exception)
+    {
         pcout << exception.what() << endl;
         return -1;
     }

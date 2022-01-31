@@ -5,7 +5,7 @@
  * own the IP rights for most of the code base. Since October 2019, the
  * Palabos project is maintained by the University of Geneva and accepts
  * source code contributions from the community.
- * 
+ *
  * Contact:
  * Jonas Latt
  * Computer Science Department
@@ -14,7 +14,7 @@
  * 1227 Carouge, Switzerland
  * jonas.latt@unige.ch
  *
- * The most recent release of Palabos can be downloaded at 
+ * The most recent release of Palabos can be downloaded at
  * <https://palabos.unige.ch/>
  *
  * The library Palabos is free software: you can redistribute it and/or
@@ -29,7 +29,7 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 #ifndef OBSOLETE_FORMAT_WRAPPER_HH
 #define OBSOLETE_FORMAT_WRAPPER_HH
@@ -39,77 +39,79 @@
 namespace plb {
 
 template <typename T>
-RawTriangleMesh<T> triangleSetToRawTriangleMesh(TriangleSet<T> const& triangleSet, T eps)
+RawTriangleMesh<T> triangleSetToRawTriangleMesh(TriangleSet<T> const &triangleSet, T eps)
 {
     return RawTriangleMesh<T>(triangleSet.getTriangles(), eps);
 }
 
 template <typename T>
-RawConnectedTriangleMesh<T> triangleSetToConnectedTriangleMesh(TriangleSet<T> const& triangleSet, T eps)
+RawConnectedTriangleMesh<T> triangleSetToConnectedTriangleMesh(
+    TriangleSet<T> const &triangleSet, T eps)
 {
     RawTriangleMesh<T> rawMesh(triangleSet.getTriangles());
     return MeshConnector<T>(rawMesh, eps).generateConnectedMesh();
 }
 
 template <typename T>
-TriangleSet<T> rawTriangleMeshToTriangleSet(RawTriangleMesh<T> const& triangleMesh, Precision precision ) {
+TriangleSet<T> rawTriangleMeshToTriangleSet(
+    RawTriangleMesh<T> const &triangleMesh, Precision precision)
+{
     typedef typename RawTriangleMesh<T>::RawTriangle RawTriangle;
-    std::vector<std::vector<RawTriangle> > const& triangles = triangleMesh.getTriangles();
+    std::vector<std::vector<RawTriangle> > const &triangles = triangleMesh.getTriangles();
     std::vector<RawTriangle> allTriangles;
-    for (pluint i=0; i<triangles.size(); ++i) {
+    for (pluint i = 0; i < triangles.size(); ++i) {
         allTriangles.insert(allTriangles.end(), triangles[i].begin(), triangles[i].end());
     }
     return TriangleSet<T>(allTriangles, precision);
 }
 
 template <typename T>
-TriangleSet<T> rawTriangleMeshToTriangleSet(RawTriangleMesh<T> const& triangleMesh, T eps ) {
+TriangleSet<T> rawTriangleMeshToTriangleSet(RawTriangleMesh<T> const &triangleMesh, T eps)
+{
     typedef typename RawTriangleMesh<T>::RawTriangle RawTriangle;
-    std::vector<std::vector<RawTriangle> > const& triangles = triangleMesh.getTriangles();
+    std::vector<std::vector<RawTriangle> > const &triangles = triangleMesh.getTriangles();
     std::vector<RawTriangle> allTriangles;
-    for (pluint i=0; i<triangles.size(); ++i) {
+    for (pluint i = 0; i < triangles.size(); ++i) {
         allTriangles.insert(allTriangles.end(), triangles[i].begin(), triangles[i].end());
     }
     return TriangleSet<T>(allTriangles, eps);
 }
 
 template <typename T>
-RawConnectedTriangleMesh<T> def_to_ConnectedMesh (
-        TriangleBoundary3D<T>& boundary, std::string partNaming )
+RawConnectedTriangleMesh<T> def_to_ConnectedMesh(
+    TriangleBoundary3D<T> &boundary, std::string partNaming)
 {
-    TriangularSurfaceMesh<T>& mesh = boundary.getMesh();
+    TriangularSurfaceMesh<T> &mesh = boundary.getMesh();
     plint numVertices = mesh.getNumVertices();
     plint numTriangles = mesh.getNumTriangles();
 
-    std::vector<Array<T,3> > vertices(numVertices);
-    std::vector<Array<plint,3> > triangles(numTriangles);
+    std::vector<Array<T, 3> > vertices(numVertices);
+    std::vector<Array<plint, 3> > triangles(numTriangles);
     std::vector<plint> partTagging(numTriangles);
     std::vector<std::string> nameOfParts;
 
     vertices.resize(numVertices);
-    for (pluint i=0; i<vertices.size(); ++i) {
+    for (pluint i = 0; i < vertices.size(); ++i) {
         vertices[i] = mesh.getVertex(i);
     }
 
     plint numParts = 0;
-    for (pluint i=0; i<triangles.size(); ++i) {
-        triangles[i][0] = mesh.getVertexId(i,0);
-        triangles[i][1] = mesh.getVertexId(i,1);
-        triangles[i][2] = mesh.getVertexId(i,2);
+    for (pluint i = 0; i < triangles.size(); ++i) {
+        triangles[i][0] = mesh.getVertexId(i, 0);
+        triangles[i][1] = mesh.getVertexId(i, 1);
+        triangles[i][2] = mesh.getVertexId(i, 2);
         partTagging[i] = boundary.getTag(i);
-        numParts = std::max(numParts,partTagging[i]+1);
+        numParts = std::max(numParts, partTagging[i] + 1);
     }
 
     nameOfParts.push_back("Body");
-    for (plint i=1; i<numParts; ++i) {
-        nameOfParts.push_back(partNaming+util::val2str(i-1));
+    for (plint i = 1; i < numParts; ++i) {
+        nameOfParts.push_back(partNaming + util::val2str(i - 1));
     }
-    
-    return RawConnectedTriangleMesh<T> (
-            vertices, triangles, partTagging, nameOfParts );
+
+    return RawConnectedTriangleMesh<T>(vertices, triangles, partTagging, nameOfParts);
 }
 
 }  // namespace plb
 
 #endif  // OBSOLETE_FORMAT_WRAPPER_HH
-

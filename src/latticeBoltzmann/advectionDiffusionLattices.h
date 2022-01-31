@@ -5,7 +5,7 @@
  * own the IP rights for most of the code base. Since October 2019, the
  * Palabos project is maintained by the University of Geneva and accepts
  * source code contributions from the community.
- * 
+ *
  * Contact:
  * Jonas Latt
  * Computer Science Department
@@ -14,7 +14,7 @@
  * 1227 Carouge, Switzerland
  * jonas.latt@unige.ch
  *
- * The most recent release of Palabos can be downloaded at 
+ * The most recent release of Palabos can be downloaded at
  * <https://palabos.unige.ch/>
  *
  * The library Palabos is free software: you can redistribute it and/or
@@ -29,7 +29,7 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 /** \file
  * Descriptors for advection-diffusion physics. In principle, thanks
@@ -40,11 +40,12 @@
 #ifndef ADVECTION_DIFFUSION_LATTICES_H
 #define ADVECTION_DIFFUSION_LATTICES_H
 
+#include <vector>
+
 #include "core/globalDefs.h"
 #include "latticeBoltzmann/externalFields.h"
-#include "latticeBoltzmann/roundOffPolicy.h"
 #include "latticeBoltzmann/nearestNeighborLattices3D.h"
-#include <vector>
+#include "latticeBoltzmann/roundOffPolicy.h"
 
 namespace plb {
 
@@ -59,107 +60,105 @@ namespace plb {
  * Otherwise some of the code will work erroneously, because the
  * aformentioned relations are taken as given to enable a few
  * optimizations.
-*/
-namespace descriptors 
-{
+ */
+namespace descriptors {
 //===========================================================================//
 //=================== AdvectionDiffusion Lattice Descriptors=================//
 //===========================================================================//
-    
-    /// D2Q5 lattice
-    template <typename T> struct D2Q5Constants
-    {
-        enum { d = 2, q = 5 };      ///< number of dimensions/distr. functions
-        static const T invD;          ///< 1 / (number of dimensions)
-        static const int vicinity;    ///< size of neighborhood
-        static const int c[q][d];     ///< lattice directions
-        static const int cNormSqr[q]; ///< norm-square of the vector c
-        static const T t[q];          ///< lattice weights
-        static const T cs2;           ///< lattice constant cs2 (in BGK, this is the square-speed-of-sound)
-        static const T invCs2;        ///< 1 / cs2
-    };
 
-    template <typename T> struct D2Q5DescriptorBase
-        : public D2Q5Constants<T>, public DefaultRoundOffPolicy<T>
-    {
-        typedef D2Q5DescriptorBase<T> BaseDescriptor;
-        enum { numPop=D2Q5Constants<T>::q };
-    };
-    
-    /// AD D2Q5 lattice
-    template <typename T> struct AdvectionDiffusionD2Q5Descriptor
-        : public D2Q5DescriptorBase<T>, public Velocity2dDescriptorBase
-    {
-        static const char name[];
-    };
-    
-    
-    template <typename T> struct AdvectionDiffusionWithSourceD2Q5Descriptor 
-    : public D2Q5DescriptorBase<T>, public VelocityAndScalar2dBase
-    {
-        static const char name[];
-    };
-    
-    /// D3Q7 lattice
-    template <typename T> struct D3Q7Constants {
-        enum { d = 3, q = 7 };     ///< number of dimensions/distr. functions
-        static const T invD;          ///< 1 / (number of dimensions)
-        static const int vicinity;    ///< size of neighborhood
-        static const int c[q][d];     ///< lattice directions
-        static const int cNormSqr[q]; ///< norm-square of the vector c
-        static const T t[q];          ///< lattice weights
-        static const T cs2;           ///< lattice constant cs2 (in BGK, this is the square-speed-of-sound)
-        static const T invCs2;        ///< 1 / cs2
-    };
+/// D2Q5 lattice
+template <typename T>
+struct D2Q5Constants {
+    enum { d = 2, q = 5 };         ///< number of dimensions/distr. functions
+    static const T invD;           ///< 1 / (number of dimensions)
+    static const int vicinity;     ///< size of neighborhood
+    static const int c[q][d];      ///< lattice directions
+    static const int cNormSqr[q];  ///< norm-square of the vector c
+    static const T t[q];           ///< lattice weights
+    static const T cs2;     ///< lattice constant cs2 (in BGK, this is the square-speed-of-sound)
+    static const T invCs2;  ///< 1 / cs2
+};
 
-    template <typename T> struct D3Q7DescriptorBase
-        : public D3Q7Constants<T>, public DefaultRoundOffPolicy<T>
-    {
-        typedef D3Q7DescriptorBase<T> BaseDescriptor;
-        enum { numPop=D3Q7Constants<T>::q };
-    };
+template <typename T>
+struct D2Q5DescriptorBase : public D2Q5Constants<T>, public DefaultRoundOffPolicy<T> {
+    typedef D2Q5DescriptorBase<T> BaseDescriptor;
+    enum { numPop = D2Q5Constants<T>::q };
+};
 
-    template <typename T> struct AdvectionDiffusionD3Q7Descriptor 
-    : public D3Q7DescriptorBase<T>, public Velocity3dBase
-    {
-        static const char name[];
-    };
+/// AD D2Q5 lattice
+template <typename T>
+struct AdvectionDiffusionD2Q5Descriptor :
+    public D2Q5DescriptorBase<T>,
+    public Velocity2dDescriptorBase {
+    static const char name[];
+};
 
-    template <typename T> struct AdvectionDiffusionWithSourceD3Q7Descriptor 
-    : public D3Q7DescriptorBase<T>, public VelocityAndScalar3dBase
-    {
-        static const char name[];
-    };
+template <typename T>
+struct AdvectionDiffusionWithSourceD2Q5Descriptor :
+    public D2Q5DescriptorBase<T>,
+    public VelocityAndScalar2dBase {
+    static const char name[];
+};
 
-    /// D3Q19 lattice
-    template <typename T> struct AdvectionDiffusionD3Q19Descriptor 
-    : public D3Q19DescriptorBase<T>, public Velocity3dBase
-    {
-        static const char name[];
-    };
+/// D3Q7 lattice
+template <typename T>
+struct D3Q7Constants {
+    enum { d = 3, q = 7 };         ///< number of dimensions/distr. functions
+    static const T invD;           ///< 1 / (number of dimensions)
+    static const int vicinity;     ///< size of neighborhood
+    static const int c[q][d];      ///< lattice directions
+    static const int cNormSqr[q];  ///< norm-square of the vector c
+    static const T t[q];           ///< lattice weights
+    static const T cs2;     ///< lattice constant cs2 (in BGK, this is the square-speed-of-sound)
+    static const T invCs2;  ///< 1 / cs2
+};
 
-    template <typename T> struct AdvectionDiffusionWithSourceD3Q19Descriptor 
-    : public D3Q19DescriptorBase<T>, public VelocityAndScalar3dBase
-    {
-        static const char name[];
-    };
+template <typename T>
+struct D3Q7DescriptorBase : public D3Q7Constants<T>, public DefaultRoundOffPolicy<T> {
+    typedef D3Q7DescriptorBase<T> BaseDescriptor;
+    enum { numPop = D3Q7Constants<T>::q };
+};
 
-    /// D3Q27 lattice
-    template <typename T> struct AdvectionDiffusionD3Q27Descriptor 
-    : public D3Q27DescriptorBase<T>, public Velocity3dBase
-    {
-        static const char name[];
-    };
+template <typename T>
+struct AdvectionDiffusionD3Q7Descriptor : public D3Q7DescriptorBase<T>, public Velocity3dBase {
+    static const char name[];
+};
 
-    template <typename T> struct AdvectionDiffusionWithSourceD3Q27Descriptor 
-    : public D3Q27DescriptorBase<T>, public VelocityAndScalar3dBase
-    {
-        static const char name[];
-    };
+template <typename T>
+struct AdvectionDiffusionWithSourceD3Q7Descriptor :
+    public D3Q7DescriptorBase<T>,
+    public VelocityAndScalar3dBase {
+    static const char name[];
+};
+
+/// D3Q19 lattice
+template <typename T>
+struct AdvectionDiffusionD3Q19Descriptor : public D3Q19DescriptorBase<T>, public Velocity3dBase {
+    static const char name[];
+};
+
+template <typename T>
+struct AdvectionDiffusionWithSourceD3Q19Descriptor :
+    public D3Q19DescriptorBase<T>,
+    public VelocityAndScalar3dBase {
+    static const char name[];
+};
+
+/// D3Q27 lattice
+template <typename T>
+struct AdvectionDiffusionD3Q27Descriptor : public D3Q27DescriptorBase<T>, public Velocity3dBase {
+    static const char name[];
+};
+
+template <typename T>
+struct AdvectionDiffusionWithSourceD3Q27Descriptor :
+    public D3Q27DescriptorBase<T>,
+    public VelocityAndScalar3dBase {
+    static const char name[];
+};
 
 }  // namespace descriptors
 
 }  // namespace plb
 
 #endif  // ADVECTION_DIFFUSION_LATTICES_H
-

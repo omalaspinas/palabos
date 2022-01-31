@@ -6,26 +6,27 @@
  * It is governed by the terms of the Mozilla Public License v. 2.0.
  *
  * This file is subject to the terms of the Mozilla Public License v. 2.0.
- * If a copy of the MPL was not distributed with this file, 
+ * If a copy of the MPL was not distributed with this file,
  * you can obtain one at http://mozilla.org/MPL/2.0/.
- * 
+ *
  * Contact:
  * Christos Kotsalos
  * kotsaloscv@gmail.com
  * Computer Science Department
  * University of Geneva
- * 
- * The most recent release of Palabos can be downloaded at 
+ *
+ * The most recent release of Palabos can be downloaded at
  * <https://palabos.unige.ch/>
-*/
+ */
 ///////////////////////////////////////////////////////////////////////////////
 #ifndef API_CPP
 #define API_CPP
 ///////////////////////////////////////////////////////////////////////////////
 #include "API.h"
-#include "Solver.h"
+
 #include "Constraint.h"
 #include "Force.h"
+#include "Solver.h"
 ///////////////////////////////////////////////////////////////////////////////
 /* C structure that containts the C++ ShapeOp solver. */
 struct ShapeOpSolver {
@@ -33,77 +34,78 @@ struct ShapeOpSolver {
     std::shared_ptr<plb::npfem::Solver> s;
 };
 ///////////////////////////////////////////////////////////////////////////////
-extern ShapeOpSolver* shapeop_create()
+extern ShapeOpSolver *shapeop_create()
 {
-    ShapeOpSolver* solver = new ShapeOpSolver;
+    ShapeOpSolver *solver = new ShapeOpSolver;
     solver->s = std::make_shared<plb::npfem::Solver>();
     return solver;
 }
-extern void shapeop_delete(ShapeOpSolver* op) { delete op; }
-extern int shapeop_init(ShapeOpSolver* op)
+extern void shapeop_delete(ShapeOpSolver *op)
+{
+    delete op;
+}
+extern int shapeop_init(ShapeOpSolver *op)
 {
     return static_cast<int>(!op->s->initialize());
 }
-extern int shapeop_initDynamic(ShapeOpSolver *op, ShapeOpScalar Calpha, ShapeOpScalar Cbeta, ShapeOpScalar timestep
-    , ShapeOpScalar rho, bool doModalAnalysis
-    , bool applyGlobalVolumeConservation, ShapeOpScalar globalVolumeConservationWeight)
+extern int shapeop_initDynamic(
+    ShapeOpSolver *op, ShapeOpScalar Calpha, ShapeOpScalar Cbeta, ShapeOpScalar timestep,
+    ShapeOpScalar rho, bool doModalAnalysis, bool applyGlobalVolumeConservation,
+    ShapeOpScalar globalVolumeConservationWeight)
 {
     // Last arg for Modal Analysis: Set to false for GH env
-    return static_cast<int>(
-        !op->s->initialize(Calpha, Cbeta, timestep, rho, false, applyGlobalVolumeConservation, globalVolumeConservationWeight));
+    return static_cast<int>(!op->s->initialize(
+        Calpha, Cbeta, timestep, rho, false, applyGlobalVolumeConservation,
+        globalVolumeConservationWeight));
 }
-extern int shapeop_solve(ShapeOpSolver* op, int m, unsigned int max_iterations,
-    unsigned int max_line_search_loops,
-    unsigned int max_attempts_to_solve_stagnation, unsigned int convergence_window, 
+extern int shapeop_solve(
+    ShapeOpSolver *op, int m, unsigned int max_iterations, unsigned int max_line_search_loops,
+    unsigned int max_attempts_to_solve_stagnation, unsigned int convergence_window,
     ShapeOpScalar tol, ShapeOpScalar gamma, ShapeOpScalar gamma2,
     ShapeOpScalar collisions_threshold, ShapeOpScalar collisions_weight)
 {
-    return static_cast<int>(!op->s->solve(m, max_iterations,
-        max_line_search_loops, max_attempts_to_solve_stagnation, convergence_window, tol, gamma,
-        gamma2, collisions_threshold, collisions_weight));
+    return static_cast<int>(!op->s->solve(
+        m, max_iterations, max_line_search_loops, max_attempts_to_solve_stagnation,
+        convergence_window, tol, gamma, gamma2, collisions_threshold, collisions_weight));
 }
-extern void shapeop_setPoints(
-    ShapeOpSolver* op, ShapeOpScalar* points, int nb_points)
+extern void shapeop_setPoints(ShapeOpSolver *op, ShapeOpScalar *points, int nb_points)
 {
     Eigen::Map<plb::npfem::Matrix3X> p(points, 3, nb_points);
     op->s->setPoints(p);
 }
-extern void shapeop_getPoints(
-    ShapeOpSolver* op, ShapeOpScalar* points, int nb_points)
+extern void shapeop_getPoints(ShapeOpSolver *op, ShapeOpScalar *points, int nb_points)
 {
     Eigen::Map<plb::npfem::Matrix3X> p(points, 3, nb_points);
     p = op->s->getPoints();
 }
-extern void shapeop_setTimeStep(ShapeOpSolver* op, ShapeOpScalar timestep)
+extern void shapeop_setTimeStep(ShapeOpSolver *op, ShapeOpScalar timestep)
 {
     op->s->setTimeStep(timestep);
 }
 ///////////////////////////////////////////////////////////////////////////////
-extern int shapeop_addConstraint(ShapeOpSolver* op, const char* constraintType,
-    int* ids, int nb_ids, ShapeOpScalar weight)
+extern int shapeop_addConstraint(
+    ShapeOpSolver *op, const char *constraintType, int *ids, int nb_ids, ShapeOpScalar weight)
 {
-
     const std::string ct(constraintType);
     std::vector<int> idv(ids, ids + nb_ids);
-    std::shared_ptr<plb::npfem::Constraint> c
-        = plb::npfem::Constraint::shapeConstraintFactory(
-            ct, idv, weight, op->s->getPoints());
+    std::shared_ptr<plb::npfem::Constraint> c =
+        plb::npfem::Constraint::shapeConstraintFactory(ct, idv, weight, op->s->getPoints());
     if (!c) {
         return -1;
     }
     return op->s->addConstraint(c);
 }
-extern void shapeop_addObstacle(ShapeOpSolver* op, ShapeOpScalar* points,
-    ShapeOpScalar* normals, int nb_points)
+extern void shapeop_addObstacle(
+    ShapeOpSolver *op, ShapeOpScalar *points, ShapeOpScalar *normals, int nb_points)
 {
     Eigen::Map<plb::npfem::Matrix3X> p(points, 3, nb_points);
     Eigen::Map<plb::npfem::Matrix3X> n(normals, 3, nb_points);
-    
+
     op->s->verticesOfCollidingPieces_.push_back(p);
     op->s->normalsOfCollidingPieces_.push_back(n);
 }
-extern shapeop_err shapeop_editConstraint(ShapeOpSolver* op,
-    const char* constraintType, int constraint_id, const ShapeOpScalar* scalars,
+extern shapeop_err shapeop_editConstraint(
+    ShapeOpSolver *op, const char *constraintType, int constraint_id, const ShapeOpScalar *scalars,
     int nb_scl)
 {
     if (strcmp(constraintType, "SurfaceMaterial") == 0) {
@@ -177,9 +179,8 @@ extern shapeop_err shapeop_editConstraint(ShapeOpSolver* op,
         return SO_SUCCESS;
     }
     if (strcmp(constraintType, "EdgeStrainLimiting") == 0) {
-        auto c
-            = std::dynamic_pointer_cast<plb::npfem::EdgeStrainLimitingConstraint>(
-                op->s->getConstraint(constraint_id));
+        auto c = std::dynamic_pointer_cast<plb::npfem::EdgeStrainLimitingConstraint>(
+            op->s->getConstraint(constraint_id));
         if (!c) {
             return SO_UNMATCHING_CONSTRAINT_ID;
         }
@@ -191,9 +192,8 @@ extern shapeop_err shapeop_editConstraint(ShapeOpSolver* op,
         return SO_SUCCESS;
     }
     if (strcmp(constraintType, "TriangleStrainLimiting") == 0) {
-        auto c = std::
-            dynamic_pointer_cast<plb::npfem::TriangleStrainLimitingConstraint>(
-                op->s->getConstraint(constraint_id));
+        auto c = std::dynamic_pointer_cast<plb::npfem::TriangleStrainLimitingConstraint>(
+            op->s->getConstraint(constraint_id));
         if (!c) {
             return SO_UNMATCHING_CONSTRAINT_ID;
         }
@@ -205,9 +205,8 @@ extern shapeop_err shapeop_editConstraint(ShapeOpSolver* op,
         return SO_SUCCESS;
     }
     if (strcmp(constraintType, "TetrahedronStrainLimiting") == 0) {
-        auto c = std::
-            dynamic_pointer_cast<plb::npfem::TetrahedronStrainLimitingConstraint>(
-                op->s->getConstraint(constraint_id));
+        auto c = std::dynamic_pointer_cast<plb::npfem::TetrahedronStrainLimitingConstraint>(
+            op->s->getConstraint(constraint_id));
         if (!c) {
             return SO_UNMATCHING_CONSTRAINT_ID;
         }
@@ -273,28 +272,25 @@ extern shapeop_err shapeop_editConstraint(ShapeOpSolver* op,
     return SO_INVALID_CONSTRAINT_TYPE;
 }
 ///////////////////////////////////////////////////////////////////////////////
-extern int shapeop_addGravityForce(ShapeOpSolver* op, ShapeOpScalar* force)
+extern int shapeop_addGravityForce(ShapeOpSolver *op, ShapeOpScalar *force)
 {
     Eigen::Map<plb::npfem::Vector3> g(force, 3, 1);
     auto f = std::make_shared<plb::npfem::GravityForce>(g);
     return op->s->addForces(f);
 }
-extern int shapeop_addVertexForce(
-    ShapeOpSolver* op, ShapeOpScalar* force, int id)
+extern int shapeop_addVertexForce(ShapeOpSolver *op, ShapeOpScalar *force, int id)
 {
     Eigen::Map<plb::npfem::Vector3> g(force, 3, 1);
     auto f = std::make_shared<plb::npfem::VertexForce>(g, id);
     return op->s->addForces(f);
 }
-extern void shapeop_editVertexForce(
-    ShapeOpSolver* op, int force_id, ShapeOpScalar* force, int id)
+extern void shapeop_editVertexForce(ShapeOpSolver *op, int force_id, ShapeOpScalar *force, int id)
 {
     Eigen::Map<plb::npfem::Vector3> g(force, 3, 1);
-    auto f = std::dynamic_pointer_cast<plb::npfem::VertexForce>(
-        op->s->getForce(force_id));
+    auto f = std::dynamic_pointer_cast<plb::npfem::VertexForce>(op->s->getForce(force_id));
     f->setId(id);
     f->setForce(g);
 }
 ///////////////////////////////////////////////////////////////////////////////
-#endif // API_CPP
+#endif  // API_CPP
 ///////////////////////////////////////////////////////////////////////////////

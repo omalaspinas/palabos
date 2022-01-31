@@ -5,7 +5,7 @@
  * own the IP rights for most of the code base. Since October 2019, the
  * Palabos project is maintained by the University of Geneva and accepts
  * source code contributions from the community.
- * 
+ *
  * Contact:
  * Jonas Latt
  * Computer Science Department
@@ -14,7 +14,7 @@
  * 1227 Carouge, Switzerland
  * jonas.latt@unige.ch
  *
- * The most recent release of Palabos can be downloaded at 
+ * The most recent release of Palabos can be downloaded at
  * <https://palabos.unige.ch/>
  *
  * The library Palabos is free software: you can redistribute it and/or
@@ -29,7 +29,7 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 #include "palabos3D.h"
 #include "palabos3D.hh"
@@ -39,7 +39,7 @@ using namespace std;
 
 typedef double T;
 
-int main(int argc, char* argv[])
+int main(int argc, char *argv[])
 {
     plbInit(&argc, &argv);
     global::directories().setOutputDir("./");
@@ -53,22 +53,23 @@ int main(int argc, char* argv[])
         global::argv(3).read(yScale);
         global::argv(4).read(zScale);
         global::argv(5).read(outFileName);
-    }
-    catch (PlbIOException& exception) {
-        pcout << "Wrong parameters; the syntax is: " 
-              << (std::string)global::argv(0) << " inputSTL.stl xScale yScale zScale outputSTL.stl" << std::endl;
-        pcout << "If for example, you want your STL to be rescaled by a factor 0.01 in x and 0.02 in z, you should write" << std::endl;
-        pcout << (std::string)global::argv(0) << " inputSTL.stl 0.01 1.0 0.02 outputSTL.stl" << std::endl;
+    } catch (PlbIOException &exception) {
+        pcout << "Wrong parameters; the syntax is: " << (std::string)global::argv(0)
+              << " inputSTL.stl xScale yScale zScale outputSTL.stl" << std::endl;
+        pcout << "If for example, you want your STL to be rescaled by a factor 0.01 in x and 0.02 "
+                 "in z, you should write"
+              << std::endl;
+        pcout << (std::string)global::argv(0) << " inputSTL.stl 0.01 1.0 0.02 outputSTL.stl"
+              << std::endl;
         exit(-1);
     }
 
-    TriangleSet<T>* triangleSet = 0;
+    TriangleSet<T> *triangleSet = 0;
     try {
         triangleSet = new TriangleSet<T>(stlFileName, DBL);
-    }
-    catch (PlbIOException& exception) {
-        pcout << "Error, could not read STL file " << stlFileName
-              << ": " << exception.what() << std::endl;
+    } catch (PlbIOException &exception) {
+        pcout << "Error, could not read STL file " << stlFileName << ": " << exception.what()
+              << std::endl;
         return -1;
     }
     triangleSet->scale(xScale, yScale, zScale);
@@ -76,4 +77,3 @@ int main(int argc, char* argv[])
 
     return 0;
 }
-

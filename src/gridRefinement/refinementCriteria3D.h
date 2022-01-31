@@ -5,7 +5,7 @@
  * own the IP rights for most of the code base. Since October 2019, the
  * Palabos project is maintained by the University of Geneva and accepts
  * source code contributions from the community.
- * 
+ *
  * Contact:
  * Jonas Latt
  * Computer Science Department
@@ -14,7 +14,7 @@
  * 1227 Carouge, Switzerland
  * jonas.latt@unige.ch
  *
- * The most recent release of Palabos can be downloaded at 
+ * The most recent release of Palabos can be downloaded at
  * <https://palabos.unige.ch/>
  *
  * The library Palabos is free software: you can redistribute it and/or
@@ -29,30 +29,33 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 #ifndef REFINEMENT_CRITERIA_3D_H
 #define REFINEMENT_CRITERIA_3D_H
 
-#include "core/globalDefs.h"
 #include "atomicBlock/dataProcessingFunctional3D.h"
+#include "core/globalDefs.h"
 
 namespace plb {
 
-template<typename T, template<typename U> class Descriptor>
+template <typename T, template <typename U> class Descriptor>
 class ComputeRefinementRvalueFunctional3D : public BoxProcessingFunctional3D_LS<T, Descriptor, T> {
 public:
     ComputeRefinementRvalueFunctional3D(T knudsen_);
-    virtual void process(Box3D domain, BlockLattice3D<T,Descriptor>& lattice, ScalarField3D<T>& scalarField);
-    virtual ComputeRefinementRvalueFunctional3D* clone() const;
-    virtual void getTypeOfModification(std::vector<modif::ModifT>& modified) const;
+    virtual void process(
+        Box3D domain, BlockLattice3D<T, Descriptor> &lattice, ScalarField3D<T> &scalarField);
+    virtual ComputeRefinementRvalueFunctional3D *clone() const;
+    virtual void getTypeOfModification(std::vector<modif::ModifT> &modified) const;
+
 private:
     T knudsen;
 };
 
-template<typename T, template<typename U> class Descriptor>
-std::unique_ptr<MultiScalarField3D<T> > computeRvalues(MultiBlockLattice3D<T,Descriptor>& lattice, T knudsen, Box3D const& domain);
+template <typename T, template <typename U> class Descriptor>
+std::unique_ptr<MultiScalarField3D<T> > computeRvalues(
+    MultiBlockLattice3D<T, Descriptor> &lattice, T knudsen, Box3D const &domain);
 
-} // namespace plb
+}  // namespace plb
 
 #endif  // REFINEMENT_CRITERIA_3D_H

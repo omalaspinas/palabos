@@ -5,7 +5,7 @@
  * own the IP rights for most of the code base. Since October 2019, the
  * Palabos project is maintained by the University of Geneva and accepts
  * source code contributions from the community.
- * 
+ *
  * Contact:
  * Jonas Latt
  * Computer Science Department
@@ -14,7 +14,7 @@
  * 1227 Carouge, Switzerland
  * jonas.latt@unige.ch
  *
- * The most recent release of Palabos can be downloaded at 
+ * The most recent release of Palabos can be downloaded at
  * <https://palabos.unige.ch/>
  *
  * The library Palabos is free software: you can redistribute it and/or
@@ -29,19 +29,19 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 #ifndef VISUAL_PARTICLE_WRAPPER_3D_H
 #define VISUAL_PARTICLE_WRAPPER_3D_H
 
-#include "core/globalDefs.h"
+#include <memory>
+
 #include "core/array.h"
 #include "core/geometry3D.h"
-#include "particles/visualParticleFunctional3D.h"
-#include "offLattice/offLatticeBoundaryCondition3D.h"
+#include "core/globalDefs.h"
 #include "multiBlock/multiBlockLattice3D.h"
-
-#include <memory>
+#include "offLattice/offLatticeBoundaryCondition3D.h"
+#include "particles/visualParticleFunctional3D.h"
 
 namespace plb {
 
@@ -53,37 +53,31 @@ namespace plb {
  *  computeSurfaceForce() that takes them as an argument, and you will get
  *  parallel efficiency.
  **/
-template<typename T, template<typename U> class Descriptor>
-std::unique_ptr<MultiParticleField3D<DenseParticleField3D<T,Descriptor> > >
-    computeSurfaceForce (
-            TriangleBoundary3D<T>& boundary,
-            VoxelizedDomain3D<T>& voxelizedDomain,
-            MultiBlockLattice3D<T,Descriptor>& lattice, Box3D domain,
-            bool incompressibleModel, bool dynamicMesh=false );
+template <typename T, template <typename U> class Descriptor>
+std::unique_ptr<MultiParticleField3D<DenseParticleField3D<T, Descriptor> > > computeSurfaceForce(
+    TriangleBoundary3D<T> &boundary, VoxelizedDomain3D<T> &voxelizedDomain,
+    MultiBlockLattice3D<T, Descriptor> &lattice, Box3D domain, bool incompressibleModel,
+    bool dynamicMesh = false);
 
 /// Create particles that contain the surface force.
 /** This version acts on the full domain of the lattice.  **/
-template<typename T, template<typename U> class Descriptor>
-std::unique_ptr<MultiParticleField3D<DenseParticleField3D<T,Descriptor> > >
-    computeSurfaceForce (
-            TriangleBoundary3D<T>& boundary,
-            VoxelizedDomain3D<T>& voxelizedDomain,
-            MultiBlockLattice3D<T,Descriptor>& lattice,
-            bool incompressibleModel, bool dynamicMesh=false );
+template <typename T, template <typename U> class Descriptor>
+std::unique_ptr<MultiParticleField3D<DenseParticleField3D<T, Descriptor> > > computeSurfaceForce(
+    TriangleBoundary3D<T> &boundary, VoxelizedDomain3D<T> &voxelizedDomain,
+    MultiBlockLattice3D<T, Descriptor> &lattice, bool incompressibleModel,
+    bool dynamicMesh = false);
 
-template<typename T, template<typename U> class Descriptor>
+template <typename T, template <typename U> class Descriptor>
 /// Create particles that contain the surface force.
 /** This version supposes that you already possess a parallel representation
  *  of the wall in the form of particles. It's faster than the previous
  *  version of computeSurfaceForce().
  **/
-std::unique_ptr<MultiParticleField3D<DenseParticleField3D<T,Descriptor> > >
-    computeSurfaceForce (
-            TriangleBoundary3D<T>& boundary,
-            MultiParticleField3D<DenseParticleField3D<T,Descriptor> >& parallelWall,
-            VoxelizedDomain3D<T>& voxelizedDomain,
-            MultiBlockLattice3D<T,Descriptor>& lattice,
-            bool incompressibleModel, bool dynamicMesh=false );
+std::unique_ptr<MultiParticleField3D<DenseParticleField3D<T, Descriptor> > > computeSurfaceForce(
+    TriangleBoundary3D<T> &boundary,
+    MultiParticleField3D<DenseParticleField3D<T, Descriptor> > &parallelWall,
+    VoxelizedDomain3D<T> &voxelizedDomain, MultiBlockLattice3D<T, Descriptor> &lattice,
+    bool incompressibleModel, bool dynamicMesh = false);
 
 /// Create particles that contain the surface force.
 /** Remember: a mesh is a non-parallel object, whereas particles are parallel
@@ -93,57 +87,54 @@ std::unique_ptr<MultiParticleField3D<DenseParticleField3D<T,Descriptor> > >
  *  computeSurfaceForce() that takes them as an argument, and you will get
  *  parallel efficiency.
  **/
-template<typename T, template<typename U> class Descriptor>
-std::unique_ptr<MultiParticleField3D<DenseParticleField3D<T,Descriptor> > >
-    computeSurfaceScalar (
-            TriangleBoundary3D<T>& boundary,
-            VoxelizedDomain3D<T>& voxelizedDomain,
-            MultiScalarField3D<T>& scalarField, Box3D domain,
-            const std::vector<int> &usableFlowTypes,
-            plint whichScalar = -1, bool dynamicMesh=false );
+template <typename T, template <typename U> class Descriptor>
+std::unique_ptr<MultiParticleField3D<DenseParticleField3D<T, Descriptor> > > computeSurfaceScalar(
+    TriangleBoundary3D<T> &boundary, VoxelizedDomain3D<T> &voxelizedDomain,
+    MultiScalarField3D<T> &scalarField, Box3D domain, const std::vector<int> &usableFlowTypes,
+    plint whichScalar = -1, bool dynamicMesh = false);
 
 /// Create particles that contain the surface force.
 /** This version acts on the full domain of the lattice.  **/
-template<typename T, template<typename U> class Descriptor>
-std::unique_ptr<MultiParticleField3D<DenseParticleField3D<T,Descriptor> > >
-    computeSurfaceScalar (
-            TriangleBoundary3D<T>& boundary,
-            VoxelizedDomain3D<T>& voxelizedDomain,
-            MultiScalarField3D<T>& scalarField,
-            const std::vector<int> &usableFlowTypes,
-            plint whichScalar = -1, bool dynamicMesh=false );
+template <typename T, template <typename U> class Descriptor>
+std::unique_ptr<MultiParticleField3D<DenseParticleField3D<T, Descriptor> > > computeSurfaceScalar(
+    TriangleBoundary3D<T> &boundary, VoxelizedDomain3D<T> &voxelizedDomain,
+    MultiScalarField3D<T> &scalarField, const std::vector<int> &usableFlowTypes,
+    plint whichScalar = -1, bool dynamicMesh = false);
 
 /// Requirement: particles must be of type point-particle.
-template<typename T, template<typename U> class Descriptor>
-std::unique_ptr<MultiParticleField3D<DenseParticleField3D<T,Descriptor> > >
-    getParticlePosAndVelocity (
-            MultiParticleField3D<DenseParticleField3D<T,Descriptor> >& originalParticles );
+template <typename T, template <typename U> class Descriptor>
+std::unique_ptr<MultiParticleField3D<DenseParticleField3D<T, Descriptor> > >
+    getParticlePosAndVelocity(
+        MultiParticleField3D<DenseParticleField3D<T, Descriptor> > &originalParticles);
 
-template<typename T, template<typename U> class Descriptor>
-void injectVisualScalarFieldParticles (
-        MultiScalarField3D<T>& scalarField,
-        MultiParticleField3D<DenseParticleField3D<T,Descriptor> >& particleField,
-        Box3D domain, Particle3D<T,Descriptor>* particleTemplate,
-        T mostUnlikely, T mostLikely, T probability = 1., plint numShotsPerCell = 1 );
+template <typename T, template <typename U> class Descriptor>
+void injectVisualScalarFieldParticles(
+    MultiScalarField3D<T> &scalarField,
+    MultiParticleField3D<DenseParticleField3D<T, Descriptor> > &particleField, Box3D domain,
+    Particle3D<T, Descriptor> *particleTemplate, T mostUnlikely, T mostLikely, T probability = 1.,
+    plint numShotsPerCell = 1);
 
-template<typename T, template<typename U> class Descriptor>
-std::unique_ptr<MultiParticleField3D<DenseParticleField3D<T,Descriptor> > >
-    injectVisualScalarFieldParticles (
-        MultiScalarField3D<T>& scalarField,
-        Box3D domain, Particle3D<T,Descriptor>* particleTemplate,
-        T mostUnlikely, T mostLikely, T probability = 1., plint numShotsPerCell = 1 );
+template <typename T, template <typename U> class Descriptor>
+std::unique_ptr<MultiParticleField3D<DenseParticleField3D<T, Descriptor> > >
+    injectVisualScalarFieldParticles(
+        MultiScalarField3D<T> &scalarField, Box3D domain,
+        Particle3D<T, Descriptor> *particleTemplate, T mostUnlikely, T mostLikely,
+        T probability = 1., plint numShotsPerCell = 1);
 
-template<typename T, template<typename U> class Descriptor, class ParticleFieldT>
-void scalarFieldToParticles(MultiScalarField3D<T>& scalar, MultiParticleField3D<ParticleFieldT>& particleField, Box3D domain);
+template <typename T, template <typename U> class Descriptor, class ParticleFieldT>
+void scalarFieldToParticles(
+    MultiScalarField3D<T> &scalar, MultiParticleField3D<ParticleFieldT> &particleField,
+    Box3D domain);
 
-template<typename T, int nDim, template<typename U> class Descriptor, class ParticleFieldT>
-void tensorFieldToParticles(MultiTensorField3D<T,nDim>& tensor, MultiParticleField3D<ParticleFieldT>& particleField, Box3D domain);
+template <typename T, int nDim, template <typename U> class Descriptor, class ParticleFieldT>
+void tensorFieldToParticles(
+    MultiTensorField3D<T, nDim> &tensor, MultiParticleField3D<ParticleFieldT> &particleField,
+    Box3D domain);
 
-template<typename T, template<typename U> class Descriptor>
-std::unique_ptr<MultiParticleField3D<DenseParticleField3D<T,Descriptor> > >
-    scalarFieldToSurface(TriangularSurfaceMesh<T>& mesh, MultiScalarField3D<T>& scalar, Box3D domain);
+template <typename T, template <typename U> class Descriptor>
+std::unique_ptr<MultiParticleField3D<DenseParticleField3D<T, Descriptor> > > scalarFieldToSurface(
+    TriangularSurfaceMesh<T> &mesh, MultiScalarField3D<T> &scalar, Box3D domain);
 
 }  // namespace plb
 
 #endif  // VISUAL_PARTICLE_WRAPPER_3D_H
-

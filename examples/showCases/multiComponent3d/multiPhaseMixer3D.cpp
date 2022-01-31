@@ -5,7 +5,7 @@
  * own the IP rights for most of the code base. Since October 2019, the
  * Palabos project is maintained by the University of Geneva and accepts
  * source code contributions from the community.
- * 
+ *
  * Contact:
  * Jonas Latt
  * Computer Science Department
@@ -14,7 +14,7 @@
  * 1227 Carouge, Switzerland
  * jonas.latt@unige.ch
  *
- * The most recent release of Palabos can be downloaded at 
+ * The most recent release of Palabos can be downloaded at
  * <https://palabos.unige.ch/>
  *
  * The library Palabos is free software: you can redistribute it and/or
@@ -29,7 +29,7 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 /** \file
  *  This example illustrates a simple multi-phase dynamic mixer.
@@ -39,11 +39,11 @@
  *  model, with the immersed boundary method.
  **/
 
-#include "palabos3D.h"
-#include "palabos3D.hh"
-
 #include <cstdlib>
 #include <iostream>
+
+#include "palabos3D.h"
+#include "palabos3D.hh"
 
 using namespace plb;
 using namespace std;
@@ -56,7 +56,7 @@ typedef double T;
 
 // Global variables that relate to the placement and movement of the
 // immersed surface (the impleller of this simple mixer).
-static Array<T,3> rectangleCenter;
+static Array<T, 3> rectangleCenter;
 static T angVel;
 
 // Directory for output of the results
@@ -67,88 +67,94 @@ static std::string outDir("./tmp/");
  *  to setup the initial condition. For efficiency reasons, this approach should
  *  always be preferred over explicit space loops in end-user codes.
  */
-template<typename T, template<typename U> class Descriptor>
-class TwoLayerInitializer : public OneCellIndexedWithRandFunctional3D<T,Descriptor> {
+template <typename T, template <typename U> class Descriptor>
+class TwoLayerInitializer : public OneCellIndexedWithRandFunctional3D<T, Descriptor> {
 public:
-    TwoLayerInitializer(plint h_, bool topLayer_)
-        : h(h_),
-          topLayer(topLayer_)
-    { }
-    TwoLayerInitializer<T,Descriptor>* clone() const {
-        return new TwoLayerInitializer<T,Descriptor>(*this);
+    TwoLayerInitializer(plint h_, bool topLayer_) : h(h_), topLayer(topLayer_) { }
+    TwoLayerInitializer<T, Descriptor> *clone() const
+    {
+        return new TwoLayerInitializer<T, Descriptor>(*this);
     }
-    virtual void execute(plint iX, plint iY, plint iZ, T rand_val, Cell<T,Descriptor>& cell) const {
-        T densityFluctuations = 0.0; //1.e-2;
-        T almostNoFluid       = 1.e-4;
-        Array<T,3> zeroVelocity ((T) 0., (T) 0., (T) 0.);
+    virtual void execute(plint iX, plint iY, plint iZ, T rand_val, Cell<T, Descriptor> &cell) const
+    {
+        T densityFluctuations = 0.0;  // 1.e-2;
+        T almostNoFluid = 1.e-4;
+        Array<T, 3> zeroVelocity((T)0., (T)0., (T)0.);
 
         T rho = (T)1;
         // Add a random perturbation to the initial condition (not always necessary).
-        if ( (topLayer && iY>h) || (!topLayer && iY <= h) ) {
+        if ((topLayer && iY > h) || (!topLayer && iY <= h)) {
             rho += rand_val * densityFluctuations;
-        }
-        else {
+        } else {
             rho = almostNoFluid;
         }
 
         iniCellAtEquilibrium(cell, rho, zeroVelocity);
     }
+
 private:
     plint h;
     bool topLayer;
 };
 
 // Geometry of the mixer domain (not the impeller).
-template<typename T>
+template <typename T>
 class MixerShapeDomain3D : public DomainFunctional3D {
 public:
-    MixerShapeDomain3D(plint cx_, plint cy_, plint radius)
-        : cx(cx_),
-          cy(cy_),
-          radiusSqr(util::sqr(radius))
+    MixerShapeDomain3D(plint cx_, plint cy_, plint radius) :
+        cx(cx_), cy(cy_), radiusSqr(util::sqr(radius))
     { }
-    virtual bool operator() (plint iX, plint iY, plint iZ) const
+    virtual bool operator()(plint iX, plint iY, plint iZ) const
     {
-        return iX <= cx && util::sqr(iX-cx) + util::sqr(iY-cy) > radiusSqr;
+        return iX <= cx && util::sqr(iX - cx) + util::sqr(iY - cy) > radiusSqr;
     }
-    virtual MixerShapeDomain3D<T>* clone() const {
+    virtual MixerShapeDomain3D<T> *clone() const
+    {
         return new MixerShapeDomain3D<T>(*this);
     }
+
 private:
     plint cx;
     plint cy;
     plint radiusSqr;
 };
 
-void mixerSetup( MultiBlockLattice3D<T, DESCRIPTOR>& fluid1,
-                 MultiBlockLattice3D<T, DESCRIPTOR>& fluid2,
-                 T force )
+void mixerSetup(
+    MultiBlockLattice3D<T, DESCRIPTOR> &fluid1, MultiBlockLattice3D<T, DESCRIPTOR> &fluid2, T force)
 {
     plint nx = fluid1.getNx();
     plint ny = fluid1.getNy();
     plint nz = fluid1.getNz();
-   
+
     // Initialize top layer.
-    applyIndexed(fluid1, Box3D(0, nx-1, 0, ny-1, 0, nz-1),
-                 new TwoLayerInitializer<T,DESCRIPTOR>(3*ny/4, true) );
+    applyIndexed(
+        fluid1, Box3D(0, nx - 1, 0, ny - 1, 0, nz - 1),
+        new TwoLayerInitializer<T, DESCRIPTOR>(3 * ny / 4, true));
     // Initialize bottom layer.
-    applyIndexed(fluid2, Box3D(0, nx-1, 0, ny-1, 0, nz-1),
-                 new TwoLayerInitializer<T,DESCRIPTOR>(3*ny/4, false) );
+    applyIndexed(
+        fluid2, Box3D(0, nx - 1, 0, ny - 1, 0, nz - 1),
+        new TwoLayerInitializer<T, DESCRIPTOR>(3 * ny / 4, false));
 
     // Specify the mixer domain around the impeller.
-    plint cx = util::roundToInt((T) 0.5 * (nx - 1));
-    plint cy = util::roundToInt((T) 0.5 * (ny - 1));
-    plint radius = util::roundToInt((T) 0.5 * (ny - 1));
-    defineDynamics(fluid1, fluid1.getBoundingBox(), new MixerShapeDomain3D<T>(cx,cy,radius), new BounceBack<T, DESCRIPTOR>);
-    defineDynamics(fluid2, fluid2.getBoundingBox(), new MixerShapeDomain3D<T>(cx,cy,radius), new BounceBack<T, DESCRIPTOR>);
+    plint cx = util::roundToInt((T)0.5 * (nx - 1));
+    plint cy = util::roundToInt((T)0.5 * (ny - 1));
+    plint radius = util::roundToInt((T)0.5 * (ny - 1));
+    defineDynamics(
+        fluid1, fluid1.getBoundingBox(), new MixerShapeDomain3D<T>(cx, cy, radius),
+        new BounceBack<T, DESCRIPTOR>);
+    defineDynamics(
+        fluid2, fluid2.getBoundingBox(), new MixerShapeDomain3D<T>(cx, cy, radius),
+        new BounceBack<T, DESCRIPTOR>);
 
     // Let's have gravity acting on fluid1 only. This represents a situation
     //   where the molecular mass of fluid2 is very small, and thus the
     //   action of gravity on this species is negligible.
-    setExternalVector(fluid1, fluid1.getBoundingBox(),
-                      DESCRIPTOR<T>::ExternalField::forceBeginsAt, Array<T,3>((T)0.,-force,(T)0.));
-    setExternalVector(fluid2, fluid2.getBoundingBox(),
-                      DESCRIPTOR<T>::ExternalField::forceBeginsAt, Array<T,3>((T)0.,(T)0.,(T)0.));
+    setExternalVector(
+        fluid1, fluid1.getBoundingBox(), DESCRIPTOR<T>::ExternalField::forceBeginsAt,
+        Array<T, 3>((T)0., -force, (T)0.));
+    setExternalVector(
+        fluid2, fluid2.getBoundingBox(), DESCRIPTOR<T>::ExternalField::forceBeginsAt,
+        Array<T, 3>((T)0., (T)0., (T)0.));
 }
 
 // The angle of rotation of the immersed rectangle is given as a linear function of time.
@@ -164,55 +170,56 @@ T getAngularVelocity(T t)
 }
 
 // This class computes the velocity of the immersed surface at every
-// time step. The immersed surface has a defined position given by 
+// time step. The immersed surface has a defined position given by
 // an angle of the form:
 //   phi = angularVelocity * t
-// So its velocity is given by the cross product between its 
+// So its velocity is given by the cross product between its
 // angular velocity (time derivative of the angle) and its position.
 // The axis of rotation is the z-axis.
 class SurfaceVelocity {
 public:
-    SurfaceVelocity(T t_)
-        : t(t_)
-    { }
-    Array<T,3> operator()(Array<T,3> const& pos)
+    SurfaceVelocity(T t_) : t(t_) { }
+    Array<T, 3> operator()(Array<T, 3> const &pos)
     {
         T xp = pos[0] - rectangleCenter[0];
         T yp = pos[1] - rectangleCenter[1];
         T angularVelocity = getAngularVelocity(t);
-        Array<T,3> velocity;
+        Array<T, 3> velocity;
         velocity[0] = -angularVelocity * yp;
-        velocity[1] =  angularVelocity * xp;
-        velocity[2] =  0.0;
+        velocity[1] = angularVelocity * xp;
+        velocity[2] = 0.0;
         return velocity;
     }
+
 private:
     T t;
 };
 
-void writePPM(MultiBlockLattice3D<T, DESCRIPTOR>& fluid1,
-              MultiBlockLattice3D<T, DESCRIPTOR>& fluid2, plint iT)
+void writePPM(
+    MultiBlockLattice3D<T, DESCRIPTOR> &fluid1, MultiBlockLattice3D<T, DESCRIPTOR> &fluid2,
+    plint iT)
 {
     const plint nx = fluid1.getNx();
     const plint ny = fluid1.getNy();
     const plint nz = fluid1.getNz();
-    Box3D slice(0, nx-1, 0, ny-1, nz/2, nz/2);
+    Box3D slice(0, nx - 1, 0, ny - 1, nz / 2, nz / 2);
 
     ImageWriter<T> imageWriter("leeloo");
     imageWriter.writeScaledPpm(createFileName("rho1_", iT, 6), *computeDensity(fluid1, slice));
     imageWriter.writeScaledPpm(createFileName("rho2_", iT, 6), *computeDensity(fluid2, slice));
 }
 
-void writeVTK(MultiBlockLattice3D<T, DESCRIPTOR>& fluid1,
-              MultiBlockLattice3D<T, DESCRIPTOR>& fluid2, plint iT)
+void writeVTK(
+    MultiBlockLattice3D<T, DESCRIPTOR> &fluid1, MultiBlockLattice3D<T, DESCRIPTOR> &fluid2,
+    plint iT)
 {
     const plint nx = fluid1.getNx();
     const plint ny = fluid1.getNy();
     const plint nz = fluid1.getNz();
 
-    plint cx = nx/2;
-    plint cy = ny/2;
-    plint cz = nz/2;
+    plint cx = nx / 2;
+    plint cy = ny / 2;
+    plint cz = nz / 2;
 
     Box3D box_x(cx - 1, cx + 1, 0, ny - 1, 0, nz - 1);
     Box3D box_y(0, nx - 1, cy - 1, cy + 1, 0, nz - 1);
@@ -253,13 +260,13 @@ void writeVTK(MultiBlockLattice3D<T, DESCRIPTOR>& fluid1,
 // moving immersed surface.
 void writeSTL(TriangleSet<T> triangleSet, plint iT)
 {
-    static Array<T,3> normedAxis((T) 0, (T) 0, (T) 1);
+    static Array<T, 3> normedAxis((T)0, (T)0, (T)1);
 
     T initialAngle = 0.0;
     T angle = getAngle(iT) - initialAngle;
     triangleSet.translate(-rectangleCenter);
     triangleSet.rotateAtOrigin(normedAxis, angle);
-    triangleSet.translate( rectangleCenter);
+    triangleSet.translate(rectangleCenter);
     triangleSet.writeBinarySTL(createFileName(outDir + "surface_", iT, 6) + ".stl");
 }
 
@@ -270,36 +277,46 @@ int main(int argc, char *argv[])
 
     const T omega1 = 1.0;
     const T omega2 = 1.0;
-    const plint nx   = 75;
-    const plint ny   = 75;
-    const plint nz   = 75;
-    const T G      = 2.0;
-    T force        = 0.0; // We neglect gravity.
-    const plint maxIter  = 40000;
+    const plint nx = 75;
+    const plint ny = 75;
+    const plint nz = 75;
+    const T G = 2.0;
+    T force = 0.0;  // We neglect gravity.
+    const plint maxIter = 40000;
     const plint saveIter = 100;
     const plint statIter = 50;
 
-    T pi   = std::acos((T) -1);
+    T pi = std::acos((T)-1);
     angVel = 2.0 * pi / 10000.0;
 
-    plint wallThickness      = 2;
+    plint wallThickness = 2;
     plint largeEnvelopeWidth = 4;
 
     // Use regularized BGK dynamics to improve numerical stability (but note that
     //   BGK dynamics works well too).
-    MultiBlockLattice3D<T, DESCRIPTOR> fluid1(nx,ny,nz, new RegularizedBGKdynamics<T, DESCRIPTOR>(omega1));
+    MultiBlockLattice3D<T, DESCRIPTOR> fluid1(
+        nx, ny, nz, new RegularizedBGKdynamics<T, DESCRIPTOR>(omega1));
     bool incompressibleModel1 = false;
     defineDynamics(fluid1, fluid1.getBoundingBox(), new BounceBack<T, DESCRIPTOR>());
-    defineDynamics(fluid1, fluid1.getBoundingBox().enlarge(-wallThickness), new RegularizedBGKdynamics<T, DESCRIPTOR>(omega1));
-    MultiScalarField3D<T>* rhoBar1 = generateMultiScalarField<T>((MultiBlock3D&) fluid1, largeEnvelopeWidth).release();
-    MultiTensorField3D<T,3>* j1 = generateMultiTensorField<T,3>((MultiBlock3D&) fluid1, largeEnvelopeWidth).release();
+    defineDynamics(
+        fluid1, fluid1.getBoundingBox().enlarge(-wallThickness),
+        new RegularizedBGKdynamics<T, DESCRIPTOR>(omega1));
+    MultiScalarField3D<T> *rhoBar1 =
+        generateMultiScalarField<T>((MultiBlock3D &)fluid1, largeEnvelopeWidth).release();
+    MultiTensorField3D<T, 3> *j1 =
+        generateMultiTensorField<T, 3>((MultiBlock3D &)fluid1, largeEnvelopeWidth).release();
 
-    MultiBlockLattice3D<T, DESCRIPTOR> fluid2(nx,ny,nz, new RegularizedBGKdynamics<T, DESCRIPTOR>(omega2));
+    MultiBlockLattice3D<T, DESCRIPTOR> fluid2(
+        nx, ny, nz, new RegularizedBGKdynamics<T, DESCRIPTOR>(omega2));
     bool incompressibleModel2 = false;
     defineDynamics(fluid2, fluid2.getBoundingBox(), new BounceBack<T, DESCRIPTOR>());
-    defineDynamics(fluid2, fluid2.getBoundingBox().enlarge(-wallThickness), new RegularizedBGKdynamics<T, DESCRIPTOR>(omega2));
-    MultiScalarField3D<T>* rhoBar2 = generateMultiScalarField<T>((MultiBlock3D&) fluid2, largeEnvelopeWidth).release();
-    MultiTensorField3D<T,3>* j2 = generateMultiTensorField<T,3>((MultiBlock3D&) fluid2, largeEnvelopeWidth).release();
+    defineDynamics(
+        fluid2, fluid2.getBoundingBox().enlarge(-wallThickness),
+        new RegularizedBGKdynamics<T, DESCRIPTOR>(omega2));
+    MultiScalarField3D<T> *rhoBar2 =
+        generateMultiScalarField<T>((MultiBlock3D &)fluid2, largeEnvelopeWidth).release();
+    MultiTensorField3D<T, 3> *j2 =
+        generateMultiTensorField<T, 3>((MultiBlock3D &)fluid2, largeEnvelopeWidth).release();
 
     fluid1.periodicity().toggleAll(false);
     rhoBar1->periodicity().toggleAll(false);
@@ -309,30 +326,34 @@ int main(int argc, char *argv[])
     rhoBar2->periodicity().toggleAll(false);
     j2->periodicity().toggleAll(false);
 
-    vector<MultiBlock3D*> blocksFluid1;
+    vector<MultiBlock3D *> blocksFluid1;
     blocksFluid1.push_back(&fluid1);
     blocksFluid1.push_back(rhoBar1);
     blocksFluid1.push_back(j1);
-    integrateProcessingFunctional(new ExternalRhoJcollideAndStream3D<T,DESCRIPTOR>(), fluid1.getBoundingBox(), blocksFluid1, 0);
+    integrateProcessingFunctional(
+        new ExternalRhoJcollideAndStream3D<T, DESCRIPTOR>(), fluid1.getBoundingBox(), blocksFluid1,
+        0);
 
-    vector<MultiBlock3D*> blocksFluid2;
+    vector<MultiBlock3D *> blocksFluid2;
     blocksFluid2.push_back(&fluid2);
     blocksFluid2.push_back(rhoBar2);
     blocksFluid2.push_back(j2);
-    integrateProcessingFunctional(new ExternalRhoJcollideAndStream3D<T,DESCRIPTOR>(), fluid2.getBoundingBox(), blocksFluid2, 0);
-    
+    integrateProcessingFunctional(
+        new ExternalRhoJcollideAndStream3D<T, DESCRIPTOR>(), fluid2.getBoundingBox(), blocksFluid2,
+        0);
+
     // Store a pointer to all blocks (six in the present application) in a vector to
     //   create the Shan/Chen coupling term. fluid1 being at the first place
     //   in the vector, the coupling term is going to be executed at the end of the call
     //   to executeInternalProcessors() for fluid1.
-    vector<MultiBlock3D*> blocks;
+    vector<MultiBlock3D *> blocks;
     blocks.push_back(&fluid1);
     blocks.push_back(rhoBar1);
     blocks.push_back(j1);
     blocks.push_back(&fluid2);
     blocks.push_back(rhoBar2);
     blocks.push_back(j2);
-    
+
     // The argument "constOmegaValues" to the Shan/Chen processor is optional,
     //   and is used for efficiency reasons only. It tells the data processor
     //   that the relaxation times are constant, and that their inverse must be
@@ -341,10 +362,9 @@ int main(int argc, char *argv[])
     constOmegaValues.push_back(omega1);
     constOmegaValues.push_back(omega2);
     plint processorLevel = 1;
-    integrateProcessingFunctional (
-            new ShanChenExternalMultiComponentProcessor3D<T,DESCRIPTOR>(G,constOmegaValues),
-            fluid1.getBoundingBox().enlarge(-wallThickness),
-            blocks, processorLevel );
+    integrateProcessingFunctional(
+        new ShanChenExternalMultiComponentProcessor3D<T, DESCRIPTOR>(G, constOmegaValues),
+        fluid1.getBoundingBox().enlarge(-wallThickness), blocks, processorLevel);
 
     mixerSetup(fluid1, fluid2, force);
 
@@ -355,24 +375,26 @@ int main(int argc, char *argv[])
     // The immersed boundary method needs a set of vertices and a set of areas
     // that correspond to each vertex. These vertices and areas describe the
     // time dependent geometry of the surface at each time step.
-    std::vector<Array<T,3> > vertices;
+    std::vector<Array<T, 3> > vertices;
     std::vector<T> areas;
 
     // The initial geometry of the immersed surface can be created analyticaly or, alternatively,
     // it can be loaded by reading a user provided STL file.
-    T rectangleLx = (T) 2 * (util::roundToInt((T) 0.5 * (T) (ny - 1)) - (T) (wallThickness + 1));
+    T rectangleLx = (T)2 * (util::roundToInt((T)0.5 * (T)(ny - 1)) - (T)(wallThickness + 1));
     T rectangleLy = rectangleLx;
-    plint rectangleNx = util::roundToInt((T) 2 * rectangleLx);
-    plint rectangleNy = util::roundToInt((T) 2 * rectangleLy);
-    rectangleCenter = Array<T,3>((T) 0.5 * (T) (nx - 1), (T) 0.5 * (T) (ny - 1), (T) 0.5 * (T) (nz - 1));
-    Array<T,3> rectangleNormal((T) 0, (T) 1, (T) 0);
-    TriangleSet<T> rectangleTriangleSet = constructGenericRectangle<T>(rectangleLx, rectangleLy,
-            rectangleNx, rectangleNy, rectangleCenter, rectangleNormal);
+    plint rectangleNx = util::roundToInt((T)2 * rectangleLx);
+    plint rectangleNy = util::roundToInt((T)2 * rectangleLy);
+    rectangleCenter = Array<T, 3>((T)0.5 * (T)(nx - 1), (T)0.5 * (T)(ny - 1), (T)0.5 * (T)(nz - 1));
+    Array<T, 3> rectangleNormal((T)0, (T)1, (T)0);
+    TriangleSet<T> rectangleTriangleSet = constructGenericRectangle<T>(
+        rectangleLx, rectangleLy, rectangleNx, rectangleNy, rectangleCenter, rectangleNormal);
 
-    DEFscaledMesh<T> *rectangleDef = new DEFscaledMesh<T>(rectangleTriangleSet, 0, 0, 0, Dot3D(0, 0, 0));
-    pcout << "The rectangle has " << rectangleDef->getMesh().getNumVertices() << " vertices and " <<
-        rectangleDef->getMesh().getNumTriangles() << " triangles." << std::endl;
-    for (pluint iVertex = 0; iVertex < (pluint) rectangleDef->getMesh().getNumVertices(); iVertex++) {
+    DEFscaledMesh<T> *rectangleDef =
+        new DEFscaledMesh<T>(rectangleTriangleSet, 0, 0, 0, Dot3D(0, 0, 0));
+    pcout << "The rectangle has " << rectangleDef->getMesh().getNumVertices() << " vertices and "
+          << rectangleDef->getMesh().getNumTriangles() << " triangles." << std::endl;
+    for (pluint iVertex = 0; iVertex < (pluint)rectangleDef->getMesh().getNumVertices(); iVertex++)
+    {
         vertices.push_back(rectangleDef->getMesh().getVertex(iVertex));
         areas.push_back(rectangleDef->getMesh().computeVertexArea(iVertex));
     }
@@ -383,16 +405,16 @@ int main(int argc, char *argv[])
 
     // Initialization.
 
-    applyProcessingFunctional (
-            new ShanChenExternalMultiComponentProcessor3D<T,DESCRIPTOR>(G,constOmegaValues),
-            fluid1.getBoundingBox().enlarge(-wallThickness), blocks );
+    applyProcessingFunctional(
+        new ShanChenExternalMultiComponentProcessor3D<T, DESCRIPTOR>(G, constOmegaValues),
+        fluid1.getBoundingBox().enlarge(-wallThickness), blocks);
 
     // Start of iterations.
-	
+
     pcout << "Starting simulation" << endl;
     // Main loop over time iterations.
-    for (plint iT=0; iT<maxIter; ++iT) {
-        if (iT%saveIter==0) {
+    for (plint iT = 0; iT < maxIter; ++iT) {
+        if (iT % saveIter == 0) {
             writePPM(fluid1, fluid2, iT);
             writeVTK(fluid1, fluid2, iT);
             writeSTL(rectangleTriangleSet, iT);
@@ -413,11 +435,10 @@ int main(int argc, char *argv[])
         //   before the start of the main time loop.
         fluid1.executeInternalProcessors();
 
-        if (iT%statIter==0) {
-            pcout << "At iteration " << iT << ": Average energy fluid one = "
-                  << computeAverageEnergy<T>(fluid1);
-            pcout << ", average energy fluid two = "
-                  << computeAverageEnergy<T>(fluid2) << endl;
+        if (iT % statIter == 0) {
+            pcout << "At iteration " << iT
+                  << ": Average energy fluid one = " << computeAverageEnergy<T>(fluid1);
+            pcout << ", average energy fluid two = " << computeAverageEnergy<T>(fluid2) << endl;
         }
 
         // Immersed walls algorithm.
@@ -429,7 +450,7 @@ int main(int argc, char *argv[])
         // The angle of rotation is given by a function of the form:
         //   phi = angularVelocity * t
         // The rotation axis is the z-axis.
-        for (plint iVertex = 0; iVertex < (plint) vertices.size(); iVertex++) {
+        for (plint iVertex = 0; iVertex < (plint)vertices.size(); iVertex++) {
             T x = vertices[iVertex][0] - rectangleCenter[0];
             T y = vertices[iVertex][1] - rectangleCenter[1];
             T dphi = getAngle(nextTime) - getAngle(currentTime);
@@ -443,12 +464,14 @@ int main(int argc, char *argv[])
         instantiateImmersedWallData(vertices, areas, container);
         plint ibIter = 6;
         for (plint i = 0; i < ibIter; i++) {
-            inamuroIteration(SurfaceVelocity(nextTime),
-                    *rhoBar1, *j1, container, (T) 1.0 / omega1, incompressibleModel1);
+            inamuroIteration(
+                SurfaceVelocity(nextTime), *rhoBar1, *j1, container, (T)1.0 / omega1,
+                incompressibleModel1);
         }
         for (plint i = 0; i < ibIter; i++) {
-            inamuroIteration(SurfaceVelocity(nextTime),
-                    *rhoBar2, *j2, container, (T) 1.0 / omega2, incompressibleModel2);
+            inamuroIteration(
+                SurfaceVelocity(nextTime), *rhoBar2, *j2, container, (T)1.0 / omega2,
+                incompressibleModel2);
         }
     }
 

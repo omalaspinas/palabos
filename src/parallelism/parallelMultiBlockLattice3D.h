@@ -5,7 +5,7 @@
  * own the IP rights for most of the code base. Since October 2019, the
  * Palabos project is maintained by the University of Geneva and accepts
  * source code contributions from the community.
- * 
+ *
  * Contact:
  * Jonas Latt
  * Computer Science Department
@@ -14,7 +14,7 @@
  * 1227 Carouge, Switzerland
  * jonas.latt@unige.ch
  *
- * The most recent release of Palabos can be downloaded at 
+ * The most recent release of Palabos can be downloaded at
  * <https://palabos.unige.ch/>
  *
  * The library Palabos is free software: you can redistribute it and/or
@@ -29,7 +29,7 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 /** \file
  * Helper classes for parallel 2D multiblock lattice -- header file.
@@ -38,34 +38,34 @@
 #define PARALLEL_MULTI_BLOCK_LATTICE_3D_H
 
 #include "core/globalDefs.h"
-#include "parallelism/parallelBlockCommunicator3D.h"
 #include "multiBlock/multiBlockLattice3D.h"
+#include "parallelism/parallelBlockCommunicator3D.h"
 
 #ifdef PLB_MPI_PARALLEL
 
 namespace plb {
 
-template<typename T, template<typename U> class Descriptor>
-class ParallelCellAccess3D : public MultiCellAccess3D<T,Descriptor> {
+template <typename T, template <typename U> class Descriptor>
+class ParallelCellAccess3D : public MultiCellAccess3D<T, Descriptor> {
 public:
     ParallelCellAccess3D();
     virtual ~ParallelCellAccess3D();
-    virtual Cell<T,Descriptor>& getDistributedCell (
-            plint iX, plint iY, plint iZ,
-            MultiBlockManagement3D const& multiBlockManagement,
-            std::map<plint,BlockLattice3D<T,Descriptor>*>& lattices );
-    virtual Cell<T,Descriptor> const& getDistributedCell (
-            plint iX, plint iY, plint iZ,
-            MultiBlockManagement3D const& multiBlockManagement,
-            std::map<plint,BlockLattice3D<T,Descriptor>*> const& lattices ) const;
-    virtual void broadCastCell(Cell<T,Descriptor>& cell, plint fromBlock,
-                               MultiBlockManagement3D const& multiBlockManagement) const;
-    ParallelCellAccess3D<T,Descriptor>* clone() const;
+    virtual Cell<T, Descriptor> &getDistributedCell(
+        plint iX, plint iY, plint iZ, MultiBlockManagement3D const &multiBlockManagement,
+        std::map<plint, BlockLattice3D<T, Descriptor> *> &lattices);
+    virtual Cell<T, Descriptor> const &getDistributedCell(
+        plint iX, plint iY, plint iZ, MultiBlockManagement3D const &multiBlockManagement,
+        std::map<plint, BlockLattice3D<T, Descriptor> *> const &lattices) const;
+    virtual void broadCastCell(
+        Cell<T, Descriptor> &cell, plint fromBlock,
+        MultiBlockManagement3D const &multiBlockManagement) const;
+    ParallelCellAccess3D<T, Descriptor> *clone() const;
+
 private:
-    mutable Cell<T,Descriptor> distributedCell;
-    mutable std::vector<Cell<T,Descriptor>*> baseCells;
-    mutable std::vector<Cell<T,Descriptor> const*> constBaseCells;
-    mutable Dynamics<T,Descriptor>* parallelDynamics;
+    mutable Cell<T, Descriptor> distributedCell;
+    mutable std::vector<Cell<T, Descriptor> *> baseCells;
+    mutable std::vector<Cell<T, Descriptor> const *> constBaseCells;
+    mutable Dynamics<T, Descriptor> *parallelDynamics;
 };
 
 }  // namespace plb

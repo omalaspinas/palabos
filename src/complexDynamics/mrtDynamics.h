@@ -5,7 +5,7 @@
  * own the IP rights for most of the code base. Since October 2019, the
  * Palabos project is maintained by the University of Geneva and accepts
  * source code contributions from the community.
- * 
+ *
  * Contact:
  * Jonas Latt
  * Computer Science Department
@@ -14,7 +14,7 @@
  * 1227 Carouge, Switzerland
  * jonas.latt@unige.ch
  *
- * The most recent release of Palabos can be downloaded at 
+ * The most recent release of Palabos can be downloaded at
  * <https://palabos.unige.ch/>
  *
  * The library Palabos is free software: you can redistribute it and/or
@@ -29,7 +29,7 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 /* Orestis Malaspinas contributed this code.
  */
@@ -56,7 +56,7 @@
  * In externalForceMRTdynamics.h:
  *
  * - GuoExternalForceMRTdynamics
- * - GuoExternalForceSmagorinskyMRTdynamics 
+ * - GuoExternalForceSmagorinskyMRTdynamics
  * - GuoExternalForceSmagorinskyIncMRTdynamics
  * - GuoExternalForceConsistentSmagorinskyMRTdynamics
  * - GuoExternalForceConsistentSmagorinskyIncMRTdynamics
@@ -65,39 +65,39 @@
 #ifndef MRT_DYNAMICS_H
 #define MRT_DYNAMICS_H
 
-#include "core/globalDefs.h"
 #include "basicDynamics/isoThermalDynamics.h"
-
+#include "core/globalDefs.h"
 
 namespace plb {
 
 /// Implementation of the MRT collision step
-template<typename T, template<typename U> class Descriptor>
-class MRTdynamics : public IsoThermalBulkDynamics<T,Descriptor> {
+template <typename T, template <typename U> class Descriptor>
+class MRTdynamics : public IsoThermalBulkDynamics<T, Descriptor> {
 public:
     /* *************** Construction / Destruction ************************ */
     MRTdynamics(T omega_);
-    MRTdynamics(HierarchicUnserializer& unserializer);
-    
+    MRTdynamics(HierarchicUnserializer &unserializer);
+
     /// Clone the object on its dynamic type.
-    virtual MRTdynamics<T,Descriptor>* clone() const;
-    
+    virtual MRTdynamics<T, Descriptor> *clone() const;
+
     /// Return a unique ID for this class.
     virtual int getId() const;
-    
+
     /* *************** Collision and Equilibrium ************************* */
-    
+
     /// Implementation of the collision step
-    virtual void collide(Cell<T,Descriptor>& cell,
-                         BlockStatistics& statistics_);
-    
+    virtual void collide(Cell<T, Descriptor> &cell, BlockStatistics &statistics_);
+
     /// Implementation of the collision step, with imposed macroscopic variables
-    virtual void collideExternal(Cell<T,Descriptor>& cell, T rhoBar,
-                                 Array<T,Descriptor<T>::d> const& j, T thetaBar, BlockStatistics& stat);
-    
+    virtual void collideExternal(
+        Cell<T, Descriptor> &cell, T rhoBar, Array<T, Descriptor<T>::d> const &j, T thetaBar,
+        BlockStatistics &stat);
+
     /// Compute equilibrium distribution function
-    virtual T computeEquilibrium(plint iPop, T rhoBar, Array<T,Descriptor<T>::d> const& j,
-                                 T jSqr, T thetaBar=T()) const;
+    virtual T computeEquilibrium(
+        plint iPop, T rhoBar, Array<T, Descriptor<T>::d> const &j, T jSqr, T thetaBar = T()) const;
+
 private:
     static int id;
 };
@@ -107,78 +107,79 @@ private:
  *  populations appears only as a pressure term in the equilibrium, while
  *  the other terms are multiplied by the constant rho0.
  **/
-template<typename T, template<typename U> class Descriptor>
-class IncMRTdynamics : public IsoThermalBulkDynamics<T,Descriptor> {
+template <typename T, template <typename U> class Descriptor>
+class IncMRTdynamics : public IsoThermalBulkDynamics<T, Descriptor> {
 public:
-/* *************** Construction / Destruction ************************ */
+    /* *************** Construction / Destruction ************************ */
     IncMRTdynamics(T omega_);
-    IncMRTdynamics(HierarchicUnserializer& unserializer);
-    
+    IncMRTdynamics(HierarchicUnserializer &unserializer);
+
     /// Clone the object on its dynamic type.
-    virtual IncMRTdynamics<T,Descriptor>* clone() const;
+    virtual IncMRTdynamics<T, Descriptor> *clone() const;
 
     /// Return a unique ID for this class.
     virtual int getId() const;
 
-/* *************** Collision and Equilibrium ************************* */
+    /* *************** Collision and Equilibrium ************************* */
 
     /// Implementation of the collision step
-    virtual void collide(Cell<T,Descriptor>& cell,
-                         BlockStatistics& statistics_);
-    
+    virtual void collide(Cell<T, Descriptor> &cell, BlockStatistics &statistics_);
+
     /// Implementation of the collision step, with imposed macroscopic variables
-    virtual void collideExternal(Cell<T,Descriptor>& cell, T rhoBar,
-                                 Array<T,Descriptor<T>::d> const& j, T thetaBar, BlockStatistics& stat);
+    virtual void collideExternal(
+        Cell<T, Descriptor> &cell, T rhoBar, Array<T, Descriptor<T>::d> const &j, T thetaBar,
+        BlockStatistics &stat);
 
     /// Compute equilibrium distribution function
-    virtual T computeEquilibrium(plint iPop, T rhoBar, Array<T,Descriptor<T>::d> const& j,
-                                 T jSqr, T thetaBar=T()) const;
-                                 
+    virtual T computeEquilibrium(
+        plint iPop, T rhoBar, Array<T, Descriptor<T>::d> const &j, T jSqr, T thetaBar = T()) const;
+
     virtual bool velIsJ() const;
 
-/* *************** Macroscopic variables ***************************** */
-    
+    /* *************** Macroscopic variables ***************************** */
+
     /// Velocity is equal to j, not u.
-    virtual void computeVelocity( Cell<T,Descriptor> const& cell,
-                                  Array<T,Descriptor<T>::d>& u ) const;
-        /// For PiNeq, subtract equilibrium term jj instead of invRho*jj.
-    virtual void computeRhoBarJPiNeq( Cell<T,Descriptor> const& cell,
-                                      T& rhoBar, Array<T,Descriptor<T>::d>& j,
-                                      Array<T,SymmetricTensor<T,Descriptor>::n>& PiNeq ) const;
+    virtual void computeVelocity(
+        Cell<T, Descriptor> const &cell, Array<T, Descriptor<T>::d> &u) const;
+    /// For PiNeq, subtract equilibrium term jj instead of invRho*jj.
+    virtual void computeRhoBarJPiNeq(
+        Cell<T, Descriptor> const &cell, T &rhoBar, Array<T, Descriptor<T>::d> &j,
+        Array<T, SymmetricTensor<T, Descriptor>::n> &PiNeq) const;
+
 private:
     static int id;
 };
 
-template<typename T, template<typename U> class Descriptor>
-class D3Q13Dynamics : public IsoThermalBulkDynamics<T,Descriptor> {
+template <typename T, template <typename U> class Descriptor>
+class D3Q13Dynamics : public IsoThermalBulkDynamics<T, Descriptor> {
 public:
-/* *************** Construction / Destruction ************************ */
+    /* *************** Construction / Destruction ************************ */
     D3Q13Dynamics(T omega_);
-    D3Q13Dynamics(HierarchicUnserializer& unserializer);
-    
+    D3Q13Dynamics(HierarchicUnserializer &unserializer);
+
     /// Clone the object on its dynamic type.
-    virtual D3Q13Dynamics<T,Descriptor>* clone() const;
+    virtual D3Q13Dynamics<T, Descriptor> *clone() const;
 
     /// Return a unique ID for this class.
     virtual int getId() const;
 
-/* *************** Collision and Equilibrium ************************* */
+    /* *************** Collision and Equilibrium ************************* */
 
     /// Implementation of the collision step
-    virtual void collide(Cell<T,Descriptor>& cell,
-                         BlockStatistics& statistics_);
-    
+    virtual void collide(Cell<T, Descriptor> &cell, BlockStatistics &statistics_);
+
     /// Implementation of the collision step, with imposed macroscopic variables
-    virtual void collideExternal(Cell<T,Descriptor>& cell, T rhoBar,
-                                 Array<T,Descriptor<T>::d> const& j, T thetaBar, BlockStatistics& stat);
+    virtual void collideExternal(
+        Cell<T, Descriptor> &cell, T rhoBar, Array<T, Descriptor<T>::d> const &j, T thetaBar,
+        BlockStatistics &stat);
 
     /// Compute equilibrium distribution function
-    virtual T computeEquilibrium(plint iPop, T rhoBar, Array<T,Descriptor<T>::d> const& j,
-                                 T jSqr, T thetaBar=T()) const;
-                                 
+    virtual T computeEquilibrium(
+        plint iPop, T rhoBar, Array<T, Descriptor<T>::d> const &j, T jSqr, T thetaBar = T()) const;
+
     virtual bool velIsJ() const;
 
-/* *************** Macroscopic variables ***************************** */
+    /* *************** Macroscopic variables ***************************** */
 private:
     static int id;
 };
@@ -186,4 +187,3 @@ private:
 }  // namespace plb
 
 #endif  // MRT_DYNAMICS_H
-

@@ -5,7 +5,7 @@
  * own the IP rights for most of the code base. Since October 2019, the
  * Palabos project is maintained by the University of Geneva and accepts
  * source code contributions from the community.
- * 
+ *
  * Contact:
  * Jonas Latt
  * Computer Science Department
@@ -14,7 +14,7 @@
  * 1227 Carouge, Switzerland
  * jonas.latt@unige.ch
  *
- * The most recent release of Palabos can be downloaded at 
+ * The most recent release of Palabos can be downloaded at
  * <https://palabos.unige.ch/>
  *
  * The library Palabos is free software: you can redistribute it and/or
@@ -29,28 +29,28 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-
+ */
 
 #ifndef LATTICE_STATISTICS_H
 #define LATTICE_STATISTICS_H
 
-#include "core/globalDefs.h"
 #include "core/blockStatistics.h"
+#include "core/globalDefs.h"
 
 namespace plb {
 
 namespace LatticeStatistics {
-    enum { avRhoBar=0, avUSqr=1, maxUSqr=0 };
+enum { avRhoBar = 0, avUSqr = 1, maxUSqr = 0 };
 }
 
-inline void gatherStatistics(BlockStatistics& statistics, double rhoBar, double uSqr) {
+inline void gatherStatistics(BlockStatistics &statistics, double rhoBar, double uSqr)
+{
     statistics.gatherAverage(LatticeStatistics::avRhoBar, rhoBar);
     statistics.gatherAverage(LatticeStatistics::avUSqr, uSqr);
     statistics.gatherMax(LatticeStatistics::maxUSqr, uSqr);
     statistics.incrementStats();
 }
 
-} // namespace plb
+}  // namespace plb
 
 #endif

@@ -5,7 +5,7 @@
  * own the IP rights for most of the code base. Since October 2019, the
  * Palabos project is maintained by the University of Geneva and accepts
  * source code contributions from the community.
- * 
+ *
  * Contact:
  * Jonas Latt
  * Computer Science Department
@@ -14,7 +14,7 @@
  * 1227 Carouge, Switzerland
  * jonas.latt@unige.ch
  *
- * The most recent release of Palabos can be downloaded at 
+ * The most recent release of Palabos can be downloaded at
  * <https://palabos.unige.ch/>
  *
  * The library Palabos is free software: you can redistribute it and/or
@@ -29,27 +29,28 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 #ifndef CYLINDER_H
 #define CYLINDER_H
 
 #include "palabos2D.h"
 
-template<typename T>
+template <typename T>
 class CylinderShapeDomain2D : public plb::DomainFunctional2D {
 public:
-    CylinderShapeDomain2D(plb::plint cx_, plb::plint cy_, plb::plint radius)
-        : cx(cx_),
-          cy(cy_),
-          radiusSqr(plb::util::sqr(radius))
+    CylinderShapeDomain2D(plb::plint cx_, plb::plint cy_, plb::plint radius) :
+        cx(cx_), cy(cy_), radiusSqr(plb::util::sqr(radius))
     { }
-    virtual bool operator() (plb::plint iX, plb::plint iY) const {
-        return plb::util::sqr(iX-cx) + plb::util::sqr(iY-cy) <= radiusSqr;
+    virtual bool operator()(plb::plint iX, plb::plint iY) const
+    {
+        return plb::util::sqr(iX - cx) + plb::util::sqr(iY - cy) <= radiusSqr;
     }
-    virtual CylinderShapeDomain2D<T>* clone() const {
+    virtual CylinderShapeDomain2D<T> *clone() const
+    {
         return new CylinderShapeDomain2D<T>(*this);
     }
+
 private:
     plb::plint cx;
     plb::plint cy;
@@ -57,8 +58,9 @@ private:
 };
 
 /// Convert pressure to density according to ideal gas law
-template<typename T, template<typename U> class Descriptor>
-void createCylinder( plb::MultiBlockLattice2D<T,Descriptor>& lattice,
-                     plb::plint cx, plb::plint cy, plb::plint radius );
+template <typename T, template <typename U> class Descriptor>
+void createCylinder(
+    plb::MultiBlockLattice2D<T, Descriptor> &lattice, plb::plint cx, plb::plint cy,
+    plb::plint radius);
 
 #endif  // CYLINDER_H

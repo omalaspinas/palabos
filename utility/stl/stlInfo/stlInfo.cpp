@@ -5,7 +5,7 @@
  * own the IP rights for most of the code base. Since October 2019, the
  * Palabos project is maintained by the University of Geneva and accepts
  * source code contributions from the community.
- * 
+ *
  * Contact:
  * Jonas Latt
  * Computer Science Department
@@ -14,7 +14,7 @@
  * 1227 Carouge, Switzerland
  * jonas.latt@unige.ch
  *
- * The most recent release of Palabos can be downloaded at 
+ * The most recent release of Palabos can be downloaded at
  * <https://palabos.unige.ch/>
  *
  * The library Palabos is free software: you can redistribute it and/or
@@ -29,34 +29,33 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-
-#include "palabos3D.h"
-#include "palabos3D.hh"
+ */
 
 #include <algorithm>
 #include <string>
+
+#include "palabos3D.h"
+#include "palabos3D.hh"
 
 using namespace plb;
 
 typedef double T;
 
-int main(int argc, char* argv[])
+int main(int argc, char *argv[])
 {
     plbInit(&argc, &argv);
     global::directories().setOutputDir("./");
     global::IOpolicy().activateParallelIO(false);
 
-    //std::cout.precision(16);
-    //std::scientific(std::cout);
+    // std::cout.precision(16);
+    // std::scientific(std::cout);
 
     std::string precisionStr;
     try {
         global::argv(1).read(precisionStr);
-    }
-    catch (PlbIOException& exception) {
-        pcout << "Wrong parameters; the syntax is: " 
-              << (std::string)global::argv(0) << " [FLT | DBL | LDBL | INF] inputSTL.stl" << std::endl;
+    } catch (PlbIOException &exception) {
+        pcout << "Wrong parameters; the syntax is: " << (std::string)global::argv(0)
+              << " [FLT | DBL | LDBL | INF] inputSTL.stl" << std::endl;
         exit(-1);
     }
 
@@ -79,20 +78,18 @@ int main(int argc, char* argv[])
     std::string stlFileName;
     try {
         global::argv(2).read(stlFileName);
-    }
-    catch (PlbIOException& exception) {
-        pcout << "Wrong parameters; the syntax is: " 
-              << (std::string)global::argv(0) << " [FLT | DBL | LDBL | INF] inputSTL.stl" << std::endl;
+    } catch (PlbIOException &exception) {
+        pcout << "Wrong parameters; the syntax is: " << (std::string)global::argv(0)
+              << " [FLT | DBL | LDBL | INF] inputSTL.stl" << std::endl;
         exit(-1);
     }
 
-    TriangleSet<T>* set = 0;
+    TriangleSet<T> *set = 0;
     try {
         set = new TriangleSet<T>(stlFileName, precision);
-    }
-    catch (PlbIOException& exception) {
-        pcout << "ERROR, could not read STL file " << stlFileName
-              << ": " << exception.what() << std::endl;
+    } catch (PlbIOException &exception) {
+        pcout << "ERROR, could not read STL file " << stlFileName << ": " << exception.what()
+              << std::endl;
         exit(-1);
     }
 
@@ -101,15 +98,18 @@ int main(int argc, char* argv[])
 
     plint numZeroAreaTriangles = set->numZeroAreaTriangles();
     if (numZeroAreaTriangles) {
-        pcout << "The TriangleSet has " << numZeroAreaTriangles << " zero-area triangles!" << std::endl;
+        pcout << "The TriangleSet has " << numZeroAreaTriangles << " zero-area triangles!"
+              << std::endl;
     } else {
         pcout << "The TriangleSet does not have any zero-area triangles." << std::endl;
     }
 
     if (set->hasFloatingPointPrecisionDependence()) {
-        pcout << "The triangle set has a dependence on the floating point precision used." << std::endl;
+        pcout << "The triangle set has a dependence on the floating point precision used."
+              << std::endl;
     } else {
-        pcout << "The triangle set does not have a dependence on the floating point precision used." << std::endl;
+        pcout << "The triangle set does not have a dependence on the floating point precision used."
+              << std::endl;
     }
 
     pcout << "The minimum triangle edge length is: " << set->getMinEdgeLength() << std::endl;
@@ -119,20 +119,21 @@ int main(int argc, char* argv[])
     pcout << "The maximum triangle area is: " << set->getMaxTriangleArea() << std::endl;
 
     Cuboid<T> bCuboid = set->getBoundingCuboid();
-    Array<T,3> llc = bCuboid.lowerLeftCorner;
-    Array<T,3> urc = bCuboid.upperRightCorner;
+    Array<T, 3> llc = bCuboid.lowerLeftCorner;
+    Array<T, 3> urc = bCuboid.upperRightCorner;
     pcout << "The bounding box of the triangle set is: " << std::endl;
     pcout << "  x: [" << llc[0] << ", " << urc[0] << "]" << std::endl;
     pcout << "  y: [" << llc[1] << ", " << urc[1] << "]" << std::endl;
     pcout << "  z: [" << llc[2] << ", " << urc[2] << "]" << std::endl;
-    Array<T,3> c = (T) 0.5 * (llc + urc);
-    pcout << "The center of the bounding box is: [" << c[0] << ", " << c[1] << ", " << c[2] << "]" << std::endl;
+    Array<T, 3> c = (T)0.5 * (llc + urc);
+    pcout << "The center of the bounding box is: [" << c[0] << ", " << c[1] << ", " << c[2] << "]"
+          << std::endl;
 
     c = set->getCentroid();
-    pcout << "The centroid of the triangle set is: [" << c[0] << ", " << c[1] << ", " << c[2] << "]" << std::endl;
+    pcout << "The centroid of the triangle set is: [" << c[0] << ", " << c[1] << ", " << c[2] << "]"
+          << std::endl;
 
     delete set;
 
     return 0;
 }
-

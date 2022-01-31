@@ -5,7 +5,7 @@
  * own the IP rights for most of the code base. Since October 2019, the
  * Palabos project is maintained by the University of Geneva and accepts
  * source code contributions from the community.
- * 
+ *
  * Contact:
  * Jonas Latt
  * Computer Science Department
@@ -14,7 +14,7 @@
  * 1227 Carouge, Switzerland
  * jonas.latt@unige.ch
  *
- * The most recent release of Palabos can be downloaded at 
+ * The most recent release of Palabos can be downloaded at
  * <https://palabos.unige.ch/>
  *
  * The library Palabos is free software: you can redistribute it and/or
@@ -29,7 +29,7 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 /** \file
  * Geometry specifications for 3D multiblocks -- header file.
@@ -38,12 +38,12 @@
 #ifndef LOCAL_MULTI_BLOCK_INFO_3D_H
 #define LOCAL_MULTI_BLOCK_INFO_3D_H
 
-#include "core/globalDefs.h"
-#include "core/geometry3D.h"
-#include "multiBlock/threadAttribution.h"
-#include "multiBlock/sparseBlockStructure3D.h"
 #include <vector>
 
+#include "core/geometry3D.h"
+#include "core/globalDefs.h"
+#include "multiBlock/sparseBlockStructure3D.h"
+#include "multiBlock/threadAttribution.h"
 
 namespace plb {
 
@@ -51,32 +51,56 @@ namespace plb {
 ///  for example, overlaps with adjacent blocks.
 class Overlap3D {
 public:
-    Overlap3D(plint originalId_, plint overlapId_, Box3D const& intersection_)
-        : originalId(originalId_), overlapId(overlapId_),
-          originalRegion(intersection_),
-          overlapRegion(intersection_)
+    Overlap3D(plint originalId_, plint overlapId_, Box3D const &intersection_) :
+        originalId(originalId_),
+        overlapId(overlapId_),
+        originalRegion(intersection_),
+        overlapRegion(intersection_)
     { }
-    Overlap3D(plint originalId_, plint overlapId_,
-              Box3D const& originalRegion_,
-              plint shiftX, plint shiftY, plint shiftZ)
-        : originalId(originalId_), overlapId(overlapId_),
-          originalRegion(originalRegion_),
-          overlapRegion(originalRegion.shift(-shiftX, -shiftY, -shiftZ))
+    Overlap3D(
+        plint originalId_, plint overlapId_, Box3D const &originalRegion_, plint shiftX,
+        plint shiftY, plint shiftZ) :
+        originalId(originalId_),
+        overlapId(overlapId_),
+        originalRegion(originalRegion_),
+        overlapRegion(originalRegion.shift(-shiftX, -shiftY, -shiftZ))
     { }
-    plint getOriginalId() const { return originalId; }
-    plint getOverlapId()  const { return overlapId; }
+    plint getOriginalId() const
+    {
+        return originalId;
+    }
+    plint getOverlapId() const
+    {
+        return overlapId;
+    }
     /// Region (in absolute coordinates) on the original block.
-    Box3D const& getOriginalCoordinates() const { return originalRegion; }
+    Box3D const &getOriginalCoordinates() const
+    {
+        return originalRegion;
+    }
     /// Region (in absolute coordinates) on the overlapping block.
     /** This is usually identical with the region on the original block. An
      *  exception are periodic overlaps, in which regions on opposite ends
      *  of the block are brought into relation.
      **/
-    Box3D const& getOverlapCoordinates() const  { return overlapRegion; }
-    plint getShiftX() const { return originalRegion.x0 - overlapRegion.x0; }
-    plint getShiftY() const { return originalRegion.y0 - overlapRegion.y0; }
-    plint getShiftZ() const { return originalRegion.z0 - overlapRegion.z0; }
-private: 
+    Box3D const &getOverlapCoordinates() const
+    {
+        return overlapRegion;
+    }
+    plint getShiftX() const
+    {
+        return originalRegion.x0 - overlapRegion.x0;
+    }
+    plint getShiftY() const
+    {
+        return originalRegion.y0 - overlapRegion.y0;
+    }
+    plint getShiftZ() const
+    {
+        return originalRegion.z0 - overlapRegion.z0;
+    }
+
+private:
     plint originalId, overlapId;
     Box3D originalRegion, overlapRegion;
 };
@@ -86,14 +110,14 @@ private:
  *  between a pair of processes is executed in the same order, and the
  *  communications don't cross.
  * */
-inline bool operator<(Overlap3D const& overlap1, Overlap3D const& overlap2)
+inline bool operator<(Overlap3D const &overlap1, Overlap3D const &overlap2)
 {
-    return
-        (overlap1.getOriginalId() < overlap2.getOriginalId()) || (
-            (overlap1.getOriginalId() == overlap2.getOriginalId()) && (
-                (overlap1.getOverlapId() < overlap2.getOverlapId()) || (
-                    (overlap1.getOverlapId() == overlap2.getOverlapId()) &&
-                    (overlap1.getOriginalCoordinates() < overlap2.getOriginalCoordinates()) ) ) );
+    return (overlap1.getOriginalId() < overlap2.getOriginalId())
+           || ((overlap1.getOriginalId() == overlap2.getOriginalId())
+               && ((overlap1.getOverlapId() < overlap2.getOverlapId())
+                   || ((overlap1.getOverlapId() == overlap2.getOverlapId())
+                       && (overlap1.getOriginalCoordinates()
+                           < overlap2.getOriginalCoordinates()))));
 }
 
 /// This structure holds both overlap information and orientation of the boundary.
@@ -104,56 +128,56 @@ inline bool operator<(Overlap3D const& overlap1, Overlap3D const& overlap2)
  *  must be able to decide which periodic overlaps to communicate and which not.
  */
 struct PeriodicOverlap3D {
-    PeriodicOverlap3D(Overlap3D const& overlap_, plint normalX_, plint normalY_, plint normalZ_);
+    PeriodicOverlap3D(Overlap3D const &overlap_, plint normalX_, plint normalY_, plint normalZ_);
     Overlap3D overlap;
-    plint      normalX;
-    plint      normalY;
-    plint      normalZ;
+    plint normalX;
+    plint normalY;
+    plint normalZ;
 };
 
-
 /// Define a global ordering for periodic overlaps.
-inline bool operator<( PeriodicOverlap3D const& overlap1,
-                       PeriodicOverlap3D const& overlap2 )
+inline bool operator<(PeriodicOverlap3D const &overlap1, PeriodicOverlap3D const &overlap2)
 {
     return overlap1.overlap < overlap2.overlap;
 }
 
 class LocalMultiBlockInfo3D {
 public:
-    LocalMultiBlockInfo3D( SparseBlockStructure3D const& sparseBlock,
-                           ThreadAttribution const& attribution,
-                           plint envelopeWidth_ );
+    LocalMultiBlockInfo3D(
+        SparseBlockStructure3D const &sparseBlock, ThreadAttribution const &attribution,
+        plint envelopeWidth_);
     /// Index of all blocks local to current processor
-    std::vector<plint> const& getBlocks() const;
+    std::vector<plint> const &getBlocks() const;
     /// Index of all overlaps for which original or overlap data are on current processor
-    std::vector<Overlap3D> const& getNormalOverlaps() const;
+    std::vector<Overlap3D> const &getNormalOverlaps() const;
     /// Index of all periodic overlaps for which original or overlap data are
     ///   on current processor.
-    std::vector<PeriodicOverlap3D> const& getPeriodicOverlaps() const;
+    std::vector<PeriodicOverlap3D> const &getPeriodicOverlaps() const;
     /// Index of all periodic overlaps for which overlap data are on current processor
-    std::vector<PeriodicOverlap3D> const& getPeriodicOverlapWithRemoteData() const;
-    void swap(LocalMultiBlockInfo3D& rhs);
+    std::vector<PeriodicOverlap3D> const &getPeriodicOverlapWithRemoteData() const;
+    void swap(LocalMultiBlockInfo3D &rhs);
+
 private:
     /// Determine all blocks which are associated to the current MPI thread.
-    void computeMyBlocks(SparseBlockStructure3D const& sparseBlock,
-                         ThreadAttribution const& attribution);
+    void computeMyBlocks(
+        SparseBlockStructure3D const &sparseBlock, ThreadAttribution const &attribution);
     /// Compute normal overlaps for all local blocks.
-    void computeAllNormalOverlaps(SparseBlockStructure3D const& sparseBlock);
+    void computeAllNormalOverlaps(SparseBlockStructure3D const &sparseBlock);
     /// Compute normal overlaps for one local block.
-    void computeNormalOverlaps(SparseBlockStructure3D const& sparseBlock, plint blockId);
+    void computeNormalOverlaps(SparseBlockStructure3D const &sparseBlock, plint blockId);
     /// Compute periodic overlaps for all local blocks.
-    void computeAllPeriodicOverlaps(SparseBlockStructure3D const& sparseBlock);
+    void computeAllPeriodicOverlaps(SparseBlockStructure3D const &sparseBlock);
     /// Compute periodic overlaps for one local block.
-    void computePeriodicOverlaps(SparseBlockStructure3D const& sparseBlock, plint blockId);
+    void computePeriodicOverlaps(SparseBlockStructure3D const &sparseBlock, plint blockId);
+
 private:
-    plint                          envelopeWidth;
-    std::vector<plint>             myBlocks;
-    std::vector<Overlap3D>         normalOverlaps;
+    plint envelopeWidth;
+    std::vector<plint> myBlocks;
+    std::vector<Overlap3D> normalOverlaps;
     std::vector<PeriodicOverlap3D> periodicOverlaps;
     std::vector<PeriodicOverlap3D> periodicOverlapWithRemoteData;
 };
 
-} // namespace plb
+}  // namespace plb
 
 #endif  // LOCAL_MULTI_BLOCK_INFO_3D_H

@@ -5,7 +5,7 @@
  * own the IP rights for most of the code base. Since October 2019, the
  * Palabos project is maintained by the University of Geneva and accepts
  * source code contributions from the community.
- * 
+ *
  * Contact:
  * Jonas Latt
  * Computer Science Department
@@ -14,7 +14,7 @@
  * 1227 Carouge, Switzerland
  * jonas.latt@unige.ch
  *
- * The most recent release of Palabos can be downloaded at 
+ * The most recent release of Palabos can be downloaded at
  * <https://palabos.unige.ch/>
  *
  * The library Palabos is free software: you can redistribute it and/or
@@ -29,110 +29,110 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 #ifndef TIME_PERIODIC_SIGNAL_HH
 #define TIME_PERIODIC_SIGNAL_HH
 
-#include "core/runTimeDiagnostics.h"
-#include "core/util.h"
-#include "core/globalDefs.h"
+#include <limits>
+
 #include "algorithm/spline.h"
 #include "algorithm/timePeriodicSignal.h"
-
-#include <limits>
+#include "core/globalDefs.h"
+#include "core/runTimeDiagnostics.h"
+#include "core/util.h"
 
 namespace plb {
 
-template<typename T>
-TimePeriodicSignal<T>::TimePeriodicSignal(std::string fname)
-    : signal(fname)
+template <typename T>
+TimePeriodicSignal<T>::TimePeriodicSignal(std::string fname) : signal(fname)
 {
-    std::vector<T> const& t = signal.getAbscissae();
-    std::vector<T> const& x = signal.getOrdinates();
-    plint n = (plint) t.size();
+    std::vector<T> const &t = signal.getAbscissae();
+    std::vector<T> const &x = signal.getOrdinates();
+    plint n = (plint)t.size();
 
     PLB_ASSERT(util::isZero(t[0]));
-    PLB_ASSERT(util::fpequal(x[0], x[n-1]));
+    PLB_ASSERT(util::fpequal(x[0], x[n - 1]));
 
-    period = t[n-1] - t[0];
+    period = t[n - 1] - t[0];
 
-    PLB_ASSERT(util::greaterThan(period, (T) 0));
+    PLB_ASSERT(util::greaterThan(period, (T)0));
 }
 
-template<typename T>
-TimePeriodicSignal<T>::TimePeriodicSignal(std::vector<T> const& t, std::vector<T> const& x)
-    : signal(t, x)
+template <typename T>
+TimePeriodicSignal<T>::TimePeriodicSignal(std::vector<T> const &t, std::vector<T> const &x) :
+    signal(t, x)
 {
-    plint n = (plint) t.size();
+    plint n = (plint)t.size();
 
     PLB_ASSERT(util::isZero(t[0]));
-    PLB_ASSERT(util::fpequal(x[0], x[n-1]));
+    PLB_ASSERT(util::fpequal(x[0], x[n - 1]));
 
-    period = t[n-1] - t[0];
+    period = t[n - 1] - t[0];
 
-    PLB_ASSERT(util::greaterThan(period, (T) 0));
+    PLB_ASSERT(util::greaterThan(period, (T)0));
 }
 
-template<typename T>
-TimePeriodicSignal<T>* TimePeriodicSignal<T>::clone() const {
+template <typename T>
+TimePeriodicSignal<T> *TimePeriodicSignal<T>::clone() const
+{
     return new TimePeriodicSignal<T>(*this);
 }
 
-template<typename T>
+template <typename T>
 T TimePeriodicSignal<T>::getSignalValue(T t) const
 {
-    PLB_ASSERT(util::greaterEqual(t, (T) 0));
-    T trel = t - (plint) (t/period) * period;
+    PLB_ASSERT(util::greaterEqual(t, (T)0));
+    T trel = t - (plint)(t / period) * period;
     return signal.getFunctionValue(trel);
 }
 
-template<typename T>
+template <typename T>
 T TimePeriodicSignal<T>::getDerivativeValue(T t) const
 {
-    PLB_ASSERT(util::greaterEqual(t, (T) 0));
-    T trel = t - (plint) (t/period) * period;
+    PLB_ASSERT(util::greaterEqual(t, (T)0));
+    T trel = t - (plint)(t / period) * period;
     return signal.getDerivativeValue(trel);
 }
 
-template<typename T>
+template <typename T>
 T TimePeriodicSignal<T>::getSecondDerivativeValue(T t) const
 {
-    PLB_ASSERT(util::greaterEqual(t, (T) 0));
-    T trel = t - (plint) (t/period) * period;
+    PLB_ASSERT(util::greaterEqual(t, (T)0));
+    T trel = t - (plint)(t / period) * period;
     return signal.getSecondDerivativeValue(trel);
 }
 
-template<typename T>
+template <typename T>
 T TimePeriodicSignal<T>::getThirdDerivativeValue(T t) const
 {
-    PLB_ASSERT(util::greaterEqual(t, (T) 0));
-    T trel = t - (plint) (t/period) * period;
+    PLB_ASSERT(util::greaterEqual(t, (T)0));
+    T trel = t - (plint)(t / period) * period;
     return signal.getThirdDerivativeValue(trel);
 }
 
-template<typename T>
+template <typename T>
 T TimePeriodicSignal<T>::getIntegralValue() const
 {
     return signal.getIntegralValue();
 }
 
-template<typename T>
+template <typename T>
 T TimePeriodicSignal<T>::getIntegralValue(T tmin, T tmax) const
 {
-    PLB_ASSERT(util::lessEqual(tmin, tmax) && util::greaterEqual(tmin, (T) 0));
+    PLB_ASSERT(util::lessEqual(tmin, tmax) && util::greaterEqual(tmin, (T)0));
 
     if (util::fpequal(tmin, tmax)) {
-        return ((T) 0);
+        return ((T)0);
     }
 
     T dt = tmax - tmin;
-    plint k = (plint) (dt / period);
+    plint k = (plint)(dt / period);
 
-    T integral = (k == 0) ? (T) 0 : k * signal.getIntegralValue();
+    T integral = (k == 0) ? (T)0 : k * signal.getIntegralValue();
 
-    T tmin_rel = tmin - (plint) (tmin/period) * period;
-    T tmax_rel = tmax - (plint) (tmax/period) * period;
+    T tmin_rel = tmin - (plint)(tmin / period) * period;
+    T tmax_rel = tmax - (plint)(tmax / period) * period;
 
     integral += signal.getIntegralValue(tmin_rel, tmax_rel);
 

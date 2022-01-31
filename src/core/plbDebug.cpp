@@ -5,7 +5,7 @@
  * own the IP rights for most of the code base. Since October 2019, the
  * Palabos project is maintained by the University of Geneva and accepts
  * source code contributions from the community.
- * 
+ *
  * Contact:
  * Jonas Latt
  * Computer Science Department
@@ -14,7 +14,7 @@
  * 1227 Carouge, Switzerland
  * jonas.latt@unige.ch
  *
- * The most recent release of Palabos can be downloaded at 
+ * The most recent release of Palabos can be downloaded at
  * <https://palabos.unige.ch/>
  *
  * The library Palabos is free software: you can redistribute it and/or
@@ -29,18 +29,19 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 #include "core/plbDebug.h"
-#include "parallelism/mpiManager.h"
 
 #include <cerrno>
 #include <cstdio>
 
+#include "parallelism/mpiManager.h"
+
 #ifdef PLB_USE_POSIX
-#include <sys/types.h>
-#include <sys/time.h>
 #include <sys/resource.h>
+#include <sys/time.h>
+#include <sys/types.h>
 #endif
 
 namespace plb {
@@ -55,7 +56,7 @@ void enableCoreDumps()
 
     if (setrlimit(RLIMIT_CORE, &lim)) {
         char buf[128];
-        int myRank = (int) global::mpi().getRank();
+        int myRank = (int)global::mpi().getRank();
         sprintf(buf, "enableCoreDumps(): setrlimit at process %d", myRank);
         perror(buf);
     }

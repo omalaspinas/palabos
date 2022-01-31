@@ -5,7 +5,7 @@
  * own the IP rights for most of the code base. Since October 2019, the
  * Palabos project is maintained by the University of Geneva and accepts
  * source code contributions from the community.
- * 
+ *
  * Contact:
  * Jonas Latt
  * Computer Science Department
@@ -14,7 +14,7 @@
  * 1227 Carouge, Switzerland
  * jonas.latt@unige.ch
  *
- * The most recent release of Palabos can be downloaded at 
+ * The most recent release of Palabos can be downloaded at
  * <https://palabos.unige.ch/>
  *
  * The library Palabos is free software: you can redistribute it and/or
@@ -29,7 +29,7 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 #ifndef MULTI_PARTICLE_FIELD_2D_H
 #define MULTI_PARTICLE_FIELD_2D_H
@@ -40,48 +40,54 @@
 
 namespace plb {
 
-template<class ParticleFieldT>
+template <class ParticleFieldT>
 class MultiParticleField2D : public MultiBlock2D {
 public:
-    typedef std::map<plint,ParticleFieldT*> BlockMap;
+    typedef std::map<plint, ParticleFieldT *> BlockMap;
+
 public:
-    MultiParticleField2D (
-            MultiBlockManagement2D const& multiBlockManagement_,
-            CombinedStatistics* combinedStatistics_ );
+    MultiParticleField2D(
+        MultiBlockManagement2D const &multiBlockManagement_,
+        CombinedStatistics *combinedStatistics_);
     MultiParticleField2D(plint nx_, plint ny_);
-    MultiParticleField2D(MultiBlock2D const& rhs);
-    MultiParticleField2D(MultiBlock2D const& rhs, Box2D subDomain, bool crop);
+    MultiParticleField2D(MultiBlock2D const &rhs);
+    MultiParticleField2D(MultiBlock2D const &rhs, Box2D subDomain, bool crop);
     ~MultiParticleField2D();
-    virtual MultiParticleField2D<ParticleFieldT>* clone() const;
-    virtual MultiParticleField2D<ParticleFieldT>* clone(MultiBlockManagement2D const& newManagement) const;
-    MultiParticleField2D& operator=(MultiParticleField2D<ParticleFieldT> const& rhs);
-    MultiParticleField2D(MultiParticleField2D<ParticleFieldT> const& rhs);
-    void swap(MultiParticleField2D<ParticleFieldT>& rhs);
+    virtual MultiParticleField2D<ParticleFieldT> *clone() const;
+    virtual MultiParticleField2D<ParticleFieldT> *clone(
+        MultiBlockManagement2D const &newManagement) const;
+    MultiParticleField2D &operator=(MultiParticleField2D<ParticleFieldT> const &rhs);
+    MultiParticleField2D(MultiParticleField2D<ParticleFieldT> const &rhs);
+    void swap(MultiParticleField2D<ParticleFieldT> &rhs);
+
 public:
-    virtual ParticleFieldT& getComponent(plint iBlock);
-    virtual ParticleFieldT const& getComponent(plint iBlock) const;
+    virtual ParticleFieldT &getComponent(plint iBlock);
+    virtual ParticleFieldT const &getComponent(plint iBlock) const;
     virtual plint sizeOfCell() const;
     virtual plint getCellDim() const;
     virtual int getStaticId() const;
-    virtual void copyReceive (
-                    MultiBlock2D const& fromBlock, Box2D const& fromDomain,
-                    Box2D const& toDomain, modif::ModifT whichData=modif::dataStructure );
+    virtual void copyReceive(
+        MultiBlock2D const &fromBlock, Box2D const &fromDomain, Box2D const &toDomain,
+        modif::ModifT whichData = modif::dataStructure);
     std::string getBlockName() const;
     std::vector<std::string> getTypeInfo() const;
     static std::string blockName();
     static std::string basicType();
     static std::string descriptorType();
+
 private:
     void allocateBlocks();
     void deAllocateBlocks();
+
 private:
     BlockMap blocks;
+
 public:
     static const int staticId;
 };
 
-template<class ParticleFieldT>
-MultiParticleField2D<ParticleFieldT>& findMultiParticleField2D(id_t id);
+template <class ParticleFieldT>
+MultiParticleField2D<ParticleFieldT> &findMultiParticleField2D(id_t id);
 
 }  // namespace plb
 

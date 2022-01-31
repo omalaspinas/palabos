@@ -44,13 +44,13 @@ using namespace plb;
 
 typedef double T;
 
-void writeVTK(MultiScalarField3D<T>& field, std::string const& name)
+void writeVTK(MultiScalarField3D<T> &field, std::string const &name)
 {
     VtkImageOutput3D<T> vtkOut(name, 1.0);
     vtkOut.writeData<float>(field, name, 1.0);
 }
 
-int main(int argc, char* argv[])
+int main(int argc, char *argv[])
 {
     plbInit(&argc, &argv);
     global::directories().setOutputDir("./tmp/");
@@ -65,7 +65,8 @@ int main(int argc, char* argv[])
     pcout << getMultiBlockInfo(scalarField) << std::endl;
     setToRandom(scalarField, scalarField.getBoundingBox(), seed);
     writeVTK(scalarField, "scalarField");
-    pcout << "Sum = " << std::scientific << std::setprecision(16) << computeSum(scalarField) << std::endl;
+    pcout << "Sum = " << std::scientific << std::setprecision(16) << computeSum(scalarField)
+          << std::endl;
 
     pcout << std::endl;
 
@@ -73,12 +74,13 @@ int main(int argc, char* argv[])
     plint numBlocksX = 10;
     plint numBlocksY = 10;
     plint numBlocksZ = 10;
-    std::unique_ptr<MultiScalarField3D<T>> scalarField2
-        = reparallelize<T>(scalarField, numBlocksX, numBlocksY, numBlocksZ);
+    std::unique_ptr<MultiScalarField3D<T>> scalarField2 =
+        reparallelize<T>(scalarField, numBlocksX, numBlocksY, numBlocksZ);
     pcout << getMultiBlockInfo(*scalarField2) << std::endl;
     setToRandom(*scalarField2, scalarField2->getBoundingBox(), seed);
     writeVTK(*scalarField2, "scalarField2");
-    pcout << "Sum = " << std::scientific << std::setprecision(16) << computeSum(*scalarField2) << std::endl;
+    pcout << "Sum = " << std::scientific << std::setprecision(16) << computeSum(*scalarField2)
+          << std::endl;
 
     return 0;
 }

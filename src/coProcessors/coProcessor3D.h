@@ -5,7 +5,7 @@
  * own the IP rights for most of the code base. Since October 2019, the
  * Palabos project is maintained by the University of Geneva and accepts
  * source code contributions from the community.
- * 
+ *
  * Contact:
  * Jonas Latt
  * Computer Science Department
@@ -14,7 +14,7 @@
  * 1227 Carouge, Switzerland
  * jonas.latt@unige.ch
  *
- * The most recent release of Palabos can be downloaded at 
+ * The most recent release of Palabos can be downloaded at
  * <https://palabos.unige.ch/>
  *
  * The library Palabos is free software: you can redistribute it and/or
@@ -29,7 +29,7 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 /** \file
  * Helper functions for domain initialization -- header file.
@@ -37,11 +37,12 @@
 #ifndef CO_PROCESSOR_3D_H
 #define CO_PROCESSOR_3D_H
 
-#include "core/globalDefs.h"
-#include "core/geometry3D.h"
-#include "atomicBlock/blockLattice3D.h"
-#include "latticeBoltzmann/nearestNeighborLattices3D.h"
 #include <map>
+
+#include "atomicBlock/blockLattice3D.h"
+#include "core/geometry3D.h"
+#include "core/globalDefs.h"
+#include "latticeBoltzmann/nearestNeighborLattices3D.h"
 
 namespace plb {
 
@@ -64,7 +65,7 @@ namespace plb {
  *  lattice. Also, only the collide-and-stream operation is performed by the
  *  device at this point. Both these aspects will be generalized in the future.
  **/
-template<typename T>
+template <typename T>
 class CoProcessor3D {
 public:
     virtual ~CoProcessor3D() { }
@@ -83,14 +84,14 @@ public:
      *
      *  The method returns an error code: 1=success, 0=failure.
      **/
-    virtual int addDomain(plint nx, plint ny, plint nz, T omega, int& domainHandle) =0;
+    virtual int addDomain(plint nx, plint ny, plint nz, T omega, int &domainHandle) = 0;
 
     /// Copy data from Palabos' CPU memory to the co-processors' device memory.
     /** The method returns an error code: 1=success, 0=failure.
      *  Please note that the memory of a std::vector is always contiguous, which means that
      *  you can get a c-array representation of the data through the syntax
      *  T const* carray = &data[0].
-     *  
+     *
      *  The memory layout must respect the following ordering:
      *  - The fastest running index is for the 19 populations, with an ordering specified
      *    in the structure "D3Q19Constants" in the file
@@ -99,7 +100,7 @@ public:
      *    take the space matrix to be declared as matrix[nx][ny][nz], then the z-index is
      *    fastest running.
      **/
-    virtual int send(int domainHandle, Box3D const& subDomain, std::vector<char> const& data) =0;
+    virtual int send(int domainHandle, Box3D const &subDomain, std::vector<char> const &data) = 0;
 
     /// Copy data from the co-processors' device memory to Palabos' CPU memory.
     /** The method returns an error code: 1=success, 0=failure.
@@ -109,8 +110,8 @@ public:
      *  Attention: it is the responsibility of the receive method to resize the data vector
      *  so it is big enough.
      **/
-    virtual int receive(int domainHandle, Box3D const& subDomain, std::vector<char>& data) const =0;
-
+    virtual int receive(
+        int domainHandle, Box3D const &subDomain, std::vector<char> &data) const = 0;
 
     /// Execute a collision step on each cell, and then a streaming on the full domain.
     /** Note that the result of the streaming step is undefined in a one-cell layer at the
@@ -121,41 +122,40 @@ public:
      *  not terminated before the operation is fully completed. In order to overlay
      *  computations, you must use the MPI-based multi-thread mechanism in Palabos.
      **/
-    virtual int collideAndStream(int domainHandle) =0;
+    virtual int collideAndStream(int domainHandle) = 0;
 };
 
 /// This place-holder co-processor does nothing else than implement all functionalities
 ///   of a co-processor on the CPU, using Palabos library calls. It is in principle
 ///   useless, but can be used to debug or illustrate the mechanism for calling
 ///   co-processors in Palabos.
-template<typename T>
-class D3Q19ExampleCoProcessor3D : public CoProcessor3D<T>
-{
+template <typename T>
+class D3Q19ExampleCoProcessor3D : public CoProcessor3D<T> {
 public:
-    virtual int addDomain(plint nx, plint ny, plint nz, T omega, int& domainHandle);
-    virtual int send(int domainHandle, Box3D const& subDomain, std::vector<char> const& data);
-    virtual int receive(int domainHandle, Box3D const& subDomain, std::vector<char>& data) const;
+    virtual int addDomain(plint nx, plint ny, plint nz, T omega, int &domainHandle);
+    virtual int send(int domainHandle, Box3D const &subDomain, std::vector<char> const &data);
+    virtual int receive(int domainHandle, Box3D const &subDomain, std::vector<char> &data) const;
     virtual int collideAndStream(int domainHandle);
+
 private:
-    std::map<int, BlockLattice3D<T,descriptors::D3Q19Descriptor> > domains;
+    std::map<int, BlockLattice3D<T, descriptors::D3Q19Descriptor> > domains;
 };
 
-
-template<typename T>
-class D3Q19CudaCoProcessor3D : public CoProcessor3D<T>
-{
+template <typename T>
+class D3Q19CudaCoProcessor3D : public CoProcessor3D<T> {
 public:
     D3Q19CudaCoProcessor3D();
     virtual ~D3Q19CudaCoProcessor3D();
     /// I'd suggest to allocate the domain in device memory at this point.
-    virtual int addDomain(plint nx, plint ny, plint nz, T omega, int& domainHandle);
-//    virtual int addDomain(Box3D const& domain, T omega);
+    virtual int addDomain(plint nx, plint ny, plint nz, T omega, int &domainHandle);
+    //    virtual int addDomain(Box3D const& domain, T omega);
     /// Copy from CPU to device memory.
-    virtual int send(int domainHandle, Box3D const& subDomain, std::vector<char> const& data);
+    virtual int send(int domainHandle, Box3D const &subDomain, std::vector<char> const &data);
     /// Copy from device memory to CPU.
-    virtual int receive(int domainHandle, Box3D const& subDomain, std::vector<char>& data) const;
+    virtual int receive(int domainHandle, Box3D const &subDomain, std::vector<char> &data) const;
     /// Execute BGK collision and streaming in device memory.
     virtual int collideAndStream(int domainHandle);
+
 private:
     /*
     PyObject *createCUDASimulation(void);
@@ -185,19 +185,19 @@ private:
 
 namespace global {
 
-template<typename T>
-inline CoProcessor3D<T>& defaultCoProcessor3D() {
+template <typename T>
+inline CoProcessor3D<T> &defaultCoProcessor3D()
+{
     /// @Tomasz: At this stage, I'd suggest that you simply replace the
     //  D3Q19ExampleCoProcessor3D singleton by a
     //  D3Q19CudaCoProcessor3D singleton to get your code running.
     static D3Q19ExampleCoProcessor3D<T> singleton;
-    //static D3Q19CudaCoProcessor3D<T> singleton;
+    // static D3Q19CudaCoProcessor3D<T> singleton;
     return singleton;
 }
 
-}
+}  // namespace global
 
 }  // namespace plb
 
 #endif  // CO_PROCESSOR_3D_H
-

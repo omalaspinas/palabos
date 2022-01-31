@@ -5,7 +5,7 @@
  * own the IP rights for most of the code base. Since October 2019, the
  * Palabos project is maintained by the University of Geneva and accepts
  * source code contributions from the community.
- * 
+ *
  * Contact:
  * Jonas Latt
  * Computer Science Department
@@ -14,7 +14,7 @@
  * 1227 Carouge, Switzerland
  * jonas.latt@unige.ch
  *
- * The most recent release of Palabos can be downloaded at 
+ * The most recent release of Palabos can be downloaded at
  * <https://palabos.unige.ch/>
  *
  * The library Palabos is free software: you can redistribute it and/or
@@ -29,7 +29,7 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 /** \file
  * Interpolations over a line in coarse and fine coordinates in 3D -- header file.
@@ -40,64 +40,53 @@
 #include "core/geometry3D.h"
 #include "multiBlock/multiBlockLattice3D.h"
 
-
 namespace plb {
 
 /* ***************** X coordinate **************** */
-template<typename T, template<typename U> class Descriptor>
-void cubicInterpolationOverCoarseLineX(Box3D domain,   
-         BlockLattice3D<T,Descriptor>& coarseLattice,
-         BlockLattice3D<T,Descriptor>& fineLattice,
-         RescaleEngine<T,Descriptor>* rescaleEngine);
+template <typename T, template <typename U> class Descriptor>
+void cubicInterpolationOverCoarseLineX(
+    Box3D domain, BlockLattice3D<T, Descriptor> &coarseLattice,
+    BlockLattice3D<T, Descriptor> &fineLattice, RescaleEngine<T, Descriptor> *rescaleEngine);
 
-template<typename T, template<typename U> class Descriptor>
-void cubicInterpolationOverFineLineX(Box3D domain,
-         BlockLattice3D<T,Descriptor>& coarseLattice,
-         BlockLattice3D<T,Descriptor>& fineLattice,
-         RescaleEngine<T,Descriptor>* rescaleEngine);
-         
-template<typename T, template<typename U> class Descriptor>
-void cubicInterpolationForEdgeX(Box3D domain,
-         BlockLattice3D<T,Descriptor>& coarseLattice,
-         BlockLattice3D<T,Descriptor>& fineLattice,
-         RescaleEngine<T,Descriptor>* rescaleEngine, plint orientation );
-         
+template <typename T, template <typename U> class Descriptor>
+void cubicInterpolationOverFineLineX(
+    Box3D domain, BlockLattice3D<T, Descriptor> &coarseLattice,
+    BlockLattice3D<T, Descriptor> &fineLattice, RescaleEngine<T, Descriptor> *rescaleEngine);
+
+template <typename T, template <typename U> class Descriptor>
+void cubicInterpolationForEdgeX(
+    Box3D domain, BlockLattice3D<T, Descriptor> &coarseLattice,
+    BlockLattice3D<T, Descriptor> &fineLattice, RescaleEngine<T, Descriptor> *rescaleEngine,
+    plint orientation);
 
 /* ***************** Y coordinate **************** */
-template<typename T, template<typename U> class Descriptor>
-void cubicInterpolationOverCoarseLineY(Box3D domain,
-         BlockLattice3D<T,Descriptor>& coarseLattice,
-         BlockLattice3D<T,Descriptor>& fineLattice,
-         RescaleEngine<T,Descriptor>* rescaleEngine);
+template <typename T, template <typename U> class Descriptor>
+void cubicInterpolationOverCoarseLineY(
+    Box3D domain, BlockLattice3D<T, Descriptor> &coarseLattice,
+    BlockLattice3D<T, Descriptor> &fineLattice, RescaleEngine<T, Descriptor> *rescaleEngine);
 
-template<typename T, template<typename U> class Descriptor>
-void cubicInterpolationOverFineLineY(Box3D domain,
-         BlockLattice3D<T,Descriptor>& coarseLattice,
-         BlockLattice3D<T,Descriptor>& fineLattice,
-         RescaleEngine<T,Descriptor>* rescaleEngine);
-         
-template<typename T, template<typename U> class Descriptor>
-void cubicInterpolationForEdgeY(Box3D domain,
-         BlockLattice3D<T,Descriptor>& coarseLattice,
-         BlockLattice3D<T,Descriptor>& fineLattice,
-         RescaleEngine<T,Descriptor>* rescaleEngine, plint orientation );
+template <typename T, template <typename U> class Descriptor>
+void cubicInterpolationOverFineLineY(
+    Box3D domain, BlockLattice3D<T, Descriptor> &coarseLattice,
+    BlockLattice3D<T, Descriptor> &fineLattice, RescaleEngine<T, Descriptor> *rescaleEngine);
 
+template <typename T, template <typename U> class Descriptor>
+void cubicInterpolationForEdgeY(
+    Box3D domain, BlockLattice3D<T, Descriptor> &coarseLattice,
+    BlockLattice3D<T, Descriptor> &fineLattice, RescaleEngine<T, Descriptor> *rescaleEngine,
+    plint orientation);
 
 /* ***************** Z coordinate **************** */
-template<typename T, template<typename U> class Descriptor>
-void cubicInterpolationOverCoarseLineZ(Box3D domain,
-         BlockLattice3D<T,Descriptor>& coarseLattice,
-         BlockLattice3D<T,Descriptor>& fineLattice,
-         RescaleEngine<T,Descriptor>* rescaleEngine);
+template <typename T, template <typename U> class Descriptor>
+void cubicInterpolationOverCoarseLineZ(
+    Box3D domain, BlockLattice3D<T, Descriptor> &coarseLattice,
+    BlockLattice3D<T, Descriptor> &fineLattice, RescaleEngine<T, Descriptor> *rescaleEngine);
 
-template<typename T, template<typename U> class Descriptor>
-void cubicInterpolationOverFineLineZ(Box3D domain,
-         BlockLattice3D<T,Descriptor>& coarseLattice,
-         BlockLattice3D<T,Descriptor>& fineLattice,
-         RescaleEngine<T,Descriptor>* rescaleEngine);
+template <typename T, template <typename U> class Descriptor>
+void cubicInterpolationOverFineLineZ(
+    Box3D domain, BlockLattice3D<T, Descriptor> &coarseLattice,
+    BlockLattice3D<T, Descriptor> &fineLattice, RescaleEngine<T, Descriptor> *rescaleEngine);
 
+}  // namespace plb
 
-} // namespace plb
-
-#endif // LINE_INTERPOLATION_3D_H
-
+#endif  // LINE_INTERPOLATION_3D_H

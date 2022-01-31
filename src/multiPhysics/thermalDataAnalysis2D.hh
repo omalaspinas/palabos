@@ -5,7 +5,7 @@
  * own the IP rights for most of the code base. Since October 2019, the
  * Palabos project is maintained by the University of Geneva and accepts
  * source code contributions from the community.
- * 
+ *
  * Contact:
  * Jonas Latt
  * Computer Science Department
@@ -14,7 +14,7 @@
  * 1227 Carouge, Switzerland
  * jonas.latt@unige.ch
  *
- * The most recent release of Palabos can be downloaded at 
+ * The most recent release of Palabos can be downloaded at
  * <https://palabos.unige.ch/>
  *
  * The library Palabos is free software: you can redistribute it and/or
@@ -29,7 +29,7 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 /** \file
  * Helper functions for domain initialization -- header file.
@@ -37,96 +37,94 @@
 #ifndef THERMAL_DATA_ANALYSIS_2D_HH
 #define THERMAL_DATA_ANALYSIS_2D_HH
 
-#include "core/blockStatistics.h"
-#include "atomicBlock/blockLattice2D.h"
-#include "atomicBlock/reductiveDataProcessorWrapper2D.h"
-#include "latticeBoltzmann/momentTemplates.h"
-#include "latticeBoltzmann/geometricOperationTemplates.h"
-#include "multiPhysics/thermalDataAnalysis2D.h"
 #include <cmath>
 
+#include "atomicBlock/blockLattice2D.h"
+#include "atomicBlock/reductiveDataProcessorWrapper2D.h"
+#include "core/blockStatistics.h"
+#include "latticeBoltzmann/geometricOperationTemplates.h"
+#include "latticeBoltzmann/momentTemplates.h"
+#include "multiPhysics/thermalDataAnalysis2D.h"
+
 namespace plb {
-    
+
 // The multiBlockLattice2D case
 
-template< typename T,
-          template<typename U1> class FluidDescriptor, 
-          template<typename U2> class TemperatureDescriptor
-        >
-T computeNusseltNumber(BlockLattice2D<T,FluidDescriptor>& fluid,
-                       BlockLattice2D<T,TemperatureDescriptor>& temperature,
-                       Box2D domain,
-                       int direction, T deltaX, T kappa, T deltaTemperature)
+template <
+    typename T, template <typename U1> class FluidDescriptor,
+    template <typename U2> class TemperatureDescriptor>
+T computeNusseltNumber(
+    BlockLattice2D<T, FluidDescriptor> &fluid,
+    BlockLattice2D<T, TemperatureDescriptor> &temperature, Box2D domain, int direction, T deltaX,
+    T kappa, T deltaTemperature)
 {
-    BoxSumVelocityTemperatureFunctional2D<T,FluidDescriptor,TemperatureDescriptor> functional(direction);
+    BoxSumVelocityTemperatureFunctional2D<T, FluidDescriptor, TemperatureDescriptor> functional(
+        direction);
     applyProcessingFunctional(functional, domain, fluid, temperature);
-    return (T)1 + functional.getSumVelocityTemperature() / 
-            ((T) domain.nCells() * deltaX * deltaTemperature * kappa);
+    return (T)1
+           + functional.getSumVelocityTemperature()
+                 / ((T)domain.nCells() * deltaX * deltaTemperature * kappa);
 }
 
-template< typename T,
-          template<typename U1> class FluidDescriptor, 
-          template<typename U2> class TemperatureDescriptor
-        >
-T computeNusseltNumber(MultiBlockLattice2D<T,FluidDescriptor>& fluid,
-                       MultiBlockLattice2D<T,TemperatureDescriptor>& temperature,
-                       Box2D domain,
-                       int direction, T deltaX, T kappa, T deltaTemperature)
+template <
+    typename T, template <typename U1> class FluidDescriptor,
+    template <typename U2> class TemperatureDescriptor>
+T computeNusseltNumber(
+    MultiBlockLattice2D<T, FluidDescriptor> &fluid,
+    MultiBlockLattice2D<T, TemperatureDescriptor> &temperature, Box2D domain, int direction,
+    T deltaX, T kappa, T deltaTemperature)
 {
-    BoxSumVelocityTemperatureFunctional2D<T,FluidDescriptor,TemperatureDescriptor> functional(direction);
+    BoxSumVelocityTemperatureFunctional2D<T, FluidDescriptor, TemperatureDescriptor> functional(
+        direction);
     applyProcessingFunctional(functional, domain, fluid, temperature);
-    return (T)1 + functional.getSumVelocityTemperature() / 
-            ((T) domain.nCells() * deltaX * deltaTemperature * kappa);
+    return (T)1
+           + functional.getSumVelocityTemperature()
+                 / ((T)domain.nCells() * deltaX * deltaTemperature * kappa);
 }
 
-template< typename T,
-          template<typename U1> class FluidDescriptor, 
-          template<typename U2> class TemperatureDescriptor
-        >
-BoxSumVelocityTemperatureFunctional2D<T,FluidDescriptor,TemperatureDescriptor>::BoxSumVelocityTemperatureFunctional2D(int direction_)
-    : direction(direction_),
-      sumVelocityTemperatureId(this->getStatistics().subscribeSum())
+template <
+    typename T, template <typename U1> class FluidDescriptor,
+    template <typename U2> class TemperatureDescriptor>
+BoxSumVelocityTemperatureFunctional2D<T, FluidDescriptor, TemperatureDescriptor>::
+    BoxSumVelocityTemperatureFunctional2D(int direction_) :
+    direction(direction_), sumVelocityTemperatureId(this->getStatistics().subscribeSum())
 { }
 
-template< typename T,
-          template<typename U1> class FluidDescriptor, 
-          template<typename U2> class TemperatureDescriptor
-        >
-void BoxSumVelocityTemperatureFunctional2D<T,FluidDescriptor,TemperatureDescriptor>::process (
-        Box2D domain,
-        BlockLattice2D<T,FluidDescriptor>& fluid,
-        BlockLattice2D<T,TemperatureDescriptor>& temperature )
+template <
+    typename T, template <typename U1> class FluidDescriptor,
+    template <typename U2> class TemperatureDescriptor>
+void BoxSumVelocityTemperatureFunctional2D<T, FluidDescriptor, TemperatureDescriptor>::process(
+    Box2D domain, BlockLattice2D<T, FluidDescriptor> &fluid,
+    BlockLattice2D<T, TemperatureDescriptor> &temperature)
 {
-    BlockStatistics& statistics = this->getStatistics();
-    for (plint iX=domain.x0; iX<=domain.x1; ++iX) 
-    {
-        for (plint iY=domain.y0; iY<=domain.y1; ++iY) 
-        {
-            Array<T,FluidDescriptor<T>::d> velocity;
-            fluid.get(iX,iY).computeVelocity(velocity);
-            T localTemperature = temperature.get(iX,iY).computeDensity();
-            
+    BlockStatistics &statistics = this->getStatistics();
+    for (plint iX = domain.x0; iX <= domain.x1; ++iX) {
+        for (plint iY = domain.y0; iY <= domain.y1; ++iY) {
+            Array<T, FluidDescriptor<T>::d> velocity;
+            fluid.get(iX, iY).computeVelocity(velocity);
+            T localTemperature = temperature.get(iX, iY).computeDensity();
+
             T velocityTemperature = localTemperature * velocity[direction];
             statistics.gatherSum(sumVelocityTemperatureId, velocityTemperature);
         }
     }
 }
 
-template< typename T,
-          template<typename U1> class FluidDescriptor, 
-          template<typename U2> class TemperatureDescriptor
-        >
-BoxSumVelocityTemperatureFunctional2D<T,FluidDescriptor,TemperatureDescriptor>*
-        BoxSumVelocityTemperatureFunctional2D<T,FluidDescriptor,TemperatureDescriptor>::clone() const
+template <
+    typename T, template <typename U1> class FluidDescriptor,
+    template <typename U2> class TemperatureDescriptor>
+BoxSumVelocityTemperatureFunctional2D<T, FluidDescriptor, TemperatureDescriptor>
+    *BoxSumVelocityTemperatureFunctional2D<T, FluidDescriptor, TemperatureDescriptor>::clone() const
 {
-    return new BoxSumVelocityTemperatureFunctional2D<T,FluidDescriptor,TemperatureDescriptor>(*this);
+    return new BoxSumVelocityTemperatureFunctional2D<T, FluidDescriptor, TemperatureDescriptor>(
+        *this);
 }
 
-template< typename T,
-          template<typename U1> class FluidDescriptor, 
-          template<typename U2> class TemperatureDescriptor
-        >
-T BoxSumVelocityTemperatureFunctional2D<T,FluidDescriptor,TemperatureDescriptor>::getSumVelocityTemperature() const 
+template <
+    typename T, template <typename U1> class FluidDescriptor,
+    template <typename U2> class TemperatureDescriptor>
+T BoxSumVelocityTemperatureFunctional2D<
+    T, FluidDescriptor, TemperatureDescriptor>::getSumVelocityTemperature() const
 {
     return this->getStatistics().getSum(sumVelocityTemperatureId);
 }
