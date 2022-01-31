@@ -5,7 +5,7 @@
  * own the IP rights for most of the code base. Since October 2019, the
  * Palabos project is maintained by the University of Geneva and accepts
  * source code contributions from the community.
- * 
+ *
  * Contact:
  * Jonas Latt
  * Computer Science Department
@@ -14,7 +14,7 @@
  * 1227 Carouge, Switzerland
  * jonas.latt@unige.ch
  *
- * The most recent release of Palabos can be downloaded at 
+ * The most recent release of Palabos can be downloaded at
  * <https://palabos.unige.ch/>
  *
  * The library Palabos is free software: you can redistribute it and/or
@@ -29,18 +29,18 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
+
+#include <cmath>
+#include <fstream>
+#include <iomanip>
+#include <iostream>
+#include <vector>
 
 #include "palabos2D.h"
 #include "palabos2D.hh"
 #include "poiseuille.h"
 #include "poiseuille.hh"
-
-#include <vector>
-#include <cmath>
-#include <iostream>
-#include <fstream>
-#include <iomanip>
 
 using namespace plb;
 using namespace std;
@@ -48,16 +48,17 @@ using namespace std;
 typedef double T;
 #define DESCRIPTOR descriptors::D2Q9Descriptor
 
-int main(int argc, char* argv[]) {
+int main(int argc, char *argv[])
+{
     plbInit(&argc, &argv);
     global::directories().setOutputDir("./tmp/");
 
-    IncomprFlowParam<T> parameters (
-        (T) 1e-2,  // uMax
-        (T) 10.,   // Re
-        30,        // N
-        2.,        // lx
-        1.         // ly 
+    IncomprFlowParam<T> parameters(
+        (T)1e-2,  // uMax
+        (T)10.,   // Re
+        30,       // N
+        2.,       // lx
+        1.        // ly
     );
 
     plint nx = parameters.getNx();
@@ -65,11 +66,10 @@ int main(int argc, char* argv[]) {
 
     writeLogFile(parameters, "Poiseuille flow");
 
-    MultiBlockLattice2D<T, DESCRIPTOR> lattice (
-              nx, ny,
-              new BGKdynamics<T,DESCRIPTOR>(parameters.getOmega()) );
-    OnLatticeBoundaryCondition2D<T,DESCRIPTOR>*
-        boundaryCondition = createLocalBoundaryCondition2D<T,DESCRIPTOR>();
+    MultiBlockLattice2D<T, DESCRIPTOR> lattice(
+        nx, ny, new BGKdynamics<T, DESCRIPTOR>(parameters.getOmega()));
+    OnLatticeBoundaryCondition2D<T, DESCRIPTOR> *boundaryCondition =
+        createLocalBoundaryCondition2D<T, DESCRIPTOR>();
     createPoiseuilleBoundaries(lattice, parameters, *boundaryCondition);
     lattice.initialize();
 
@@ -81,24 +81,21 @@ int main(int argc, char* argv[]) {
     plb_ofstream successiveProfiles("velocityProfiles.dat");
 
     // Main loop over time steps.
-    for (plint iT=0; iT<10000; ++iT) {
-        if (iT%1000==0) {
-            pcout << "At iteration step " << iT
-                  << ", the density along the channel is " << endl;
-            pcout << setprecision(7)
-                  << *computeDensity(lattice, Box2D(0, nx-1, ny/2, ny/2))
-                  << endl << endl;
+    for (plint iT = 0; iT < 10000; ++iT) {
+        if (iT % 1000 == 0) {
+            pcout << "At iteration step " << iT << ", the density along the channel is " << endl;
+            pcout << setprecision(7) << *computeDensity(lattice, Box2D(0, nx - 1, ny / 2, ny / 2))
+                  << endl
+                  << endl;
 
-            Box2D profileSection(nx/2, nx/2, 0, ny-1);
-            successiveProfiles
-                << setprecision(4)
-                  // (2) Convert from lattice to physical units.
-                << *multiply (
-                       parameters.getDeltaX() / parameters.getDeltaT(),
-                  // (1) Compute velocity norm along the chosen section.
-                       *computeVelocityNorm (lattice, profileSection) )
-                << endl;
-
+            Box2D profileSection(nx / 2, nx / 2, 0, ny - 1);
+            successiveProfiles << setprecision(4)
+                               // (2) Convert from lattice to physical units.
+                               << *multiply(
+                                      parameters.getDeltaX() / parameters.getDeltaT(),
+                                      // (1) Compute velocity norm along the chosen section.
+                                      *computeVelocityNorm(lattice, profileSection))
+                               << endl;
         }
 
         // Lattice Boltzmann iteration step.

@@ -5,7 +5,7 @@
  * own the IP rights for most of the code base. Since October 2019, the
  * Palabos project is maintained by the University of Geneva and accepts
  * source code contributions from the community.
- * 
+ *
  * Contact:
  * Jonas Latt
  * Computer Science Department
@@ -14,7 +14,7 @@
  * 1227 Carouge, Switzerland
  * jonas.latt@unige.ch
  *
- * The most recent release of Palabos can be downloaded at 
+ * The most recent release of Palabos can be downloaded at
  * <https://palabos.unige.ch/>
  *
  * The library Palabos is free software: you can redistribute it and/or
@@ -29,27 +29,26 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 #ifndef QUADRATURE_HH
 #define QUADRATURE_HH
 
-#include "core/globalDefs.h"
-#include "core/plbDebug.h"
-#include "algorithm/quadrature.h"
-
-#include <vector>
 #include <cmath>
 #include <limits>
+#include <vector>
+
+#include "algorithm/quadrature.h"
+#include "core/globalDefs.h"
+#include "core/plbDebug.h"
 
 namespace plb {
 
 /* ***************** class GaussLegendreQuadrature ***************************************** */
 
-template<typename T>
-GaussLegendreQuadrature<T>::GaussLegendreQuadrature(plint n_, plint maxNumOfIterations_)
-    : n(n_),
-      maxNumOfIterations(maxNumOfIterations_)
+template <typename T>
+GaussLegendreQuadrature<T>::GaussLegendreQuadrature(plint n_, plint maxNumOfIterations_) :
+    n(n_), maxNumOfIterations(maxNumOfIterations_)
 {
     PLB_ASSERT(n >= 0);
     PLB_ASSERT(maxNumOfIterations > 0);
@@ -58,14 +57,15 @@ GaussLegendreQuadrature<T>::GaussLegendreQuadrature(plint n_, plint maxNumOfIter
     evaluateNodesAndWeights();
 }
 
-template<typename T>
-GaussLegendreQuadrature<T>* GaussLegendreQuadrature<T>::clone() const
+template <typename T>
+GaussLegendreQuadrature<T> *GaussLegendreQuadrature<T>::clone() const
 {
     return new GaussLegendreQuadrature<T>(*this);
 }
 
-template<typename T>
-T GaussLegendreQuadrature<T>::evaluateIntegral(IntegralKernel integralKernel, void *data, T x0, T x1) const
+template <typename T>
+T GaussLegendreQuadrature<T>::evaluateIntegral(
+    IntegralKernel integralKernel, void *data, T x0, T x1) const
 {
     T a = 0.5 * (x1 - x0);
     T b = 0.5 * (x0 + x1);
@@ -80,8 +80,9 @@ T GaussLegendreQuadrature<T>::evaluateIntegral(IntegralKernel integralKernel, vo
     return integral;
 }
 
-template<typename T>
-void GaussLegendreQuadrature<T>::evaluateLegendrePolynomialAndDerivative(plint k, T x, T& L_k, T& dL_k) const
+template <typename T>
+void GaussLegendreQuadrature<T>::evaluateLegendrePolynomialAndDerivative(
+    plint k, T x, T &L_k, T &dL_k) const
 {
     if (k == 0) {
         L_k = 1.0;
@@ -97,10 +98,10 @@ void GaussLegendreQuadrature<T>::evaluateLegendrePolynomialAndDerivative(plint k
         T L = 0.0;
         T dL = 0.0;
         for (plint m = 1; m < k; m++) {
-            L = (2.0 * (T) m + 1.0) * x * L_m - (T) m * L_m1;
-            L /= (T) m + 1.0;
-            dL = (2.0 * (T) m + 1.0) * (L_m + x * dL_m) - (T) m * dL_m1;
-            dL /= (T) m + 1.0;
+            L = (2.0 * (T)m + 1.0) * x * L_m - (T)m * L_m1;
+            L /= (T)m + 1.0;
+            dL = (2.0 * (T)m + 1.0) * (L_m + x * dL_m) - (T)m * dL_m1;
+            dL /= (T)m + 1.0;
             L_m1 = L_m;
             L_m = L;
             dL_m1 = dL_m;
@@ -111,25 +112,25 @@ void GaussLegendreQuadrature<T>::evaluateLegendrePolynomialAndDerivative(plint k
     }
 }
 
-template<typename T>
+template <typename T>
 void GaussLegendreQuadrature<T>::evaluateNodesAndWeights()
 {
-    static T tol = getEpsilon<T>((T) 4);
-    static T pi = std::acos((T) -1);
+    static T tol = getEpsilon<T>((T)4);
+    static T pi = std::acos((T)-1);
 
     if (n == 0) {
         nodes[0] = 0.0;
         weights[0] = 2.0;
     } else if (n == 1) {
-        nodes[0] = -std::sqrt((T) 1.0 / (T) 3.0);
+        nodes[0] = -std::sqrt((T)1.0 / (T)3.0);
         weights[0] = 1.0;
         nodes[1] = -nodes[0];
         weights[1] = weights[0];
     } else {
         for (plint j = 0; j < n / 2; j++) {
-            T x_j = -std::cos(((2.0 * (T) j + 1.0) / (2.0 * (T) n)) * pi);
+            T x_j = -std::cos(((2.0 * (T)j + 1.0) / (2.0 * (T)n)) * pi);
             if (j > 0) {
-                x_j = 0.5 * (x_j + nodes[j-1]);
+                x_j = 0.5 * (x_j + nodes[j - 1]);
             }
             T L = 0.0;
             T dL = 0.0;
@@ -147,18 +148,18 @@ void GaussLegendreQuadrature<T>::evaluateNodesAndWeights()
             }
             evaluateLegendrePolynomialAndDerivative(n, x_j, L, dL);
             nodes[j] = x_j;
-            nodes[n-1-j] = -x_j;
-            weights[j] = 2.0 / ((1.0 - x_j*x_j) * dL * dL);
-            weights[n-1-j] = weights[j];
+            nodes[n - 1 - j] = -x_j;
+            weights[j] = 2.0 / ((1.0 - x_j * x_j) * dL * dL);
+            weights[n - 1 - j] = weights[j];
         }
     }
-    
+
     if ((n + 1) % 2 == 0) {
         T L = 0.0;
         T dL = 0.0;
         evaluateLegendrePolynomialAndDerivative(n, 0.0, L, dL);
-        nodes[n/2] = 0.0;
-        weights[n/2] = 2.0 / (dL * dL);
+        nodes[n / 2] = 0.0;
+        weights[n / 2] = 2.0 / (dL * dL);
     }
 }
 

@@ -5,7 +5,7 @@
  * own the IP rights for most of the code base. Since October 2019, the
  * Palabos project is maintained by the University of Geneva and accepts
  * source code contributions from the community.
- * 
+ *
  * Contact:
  * Jonas Latt
  * Computer Science Department
@@ -14,7 +14,7 @@
  * 1227 Carouge, Switzerland
  * jonas.latt@unige.ch
  *
- * The most recent release of Palabos can be downloaded at 
+ * The most recent release of Palabos can be downloaded at
  * <https://palabos.unige.ch/>
  *
  * The library Palabos is free software: you can redistribute it and/or
@@ -29,7 +29,7 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 /** \file
  * 3D specialization of latticeTemplates functions.
@@ -43,125 +43,116 @@
 
 namespace plb {
 
-template<typename T>
+template <typename T>
 struct latticeTemplates<T, descriptors::D3Q19Descriptor> {
+    static void swapAndStreamCell(
+        Cell<T, descriptors::D3Q19Descriptor> ***grid, plint iX, plint iY, plint iZ, plint nX,
+        plint nY, plint nZ, plint iPop, T &fTmp)
+    {
+        fTmp = grid[iX][iY][iZ][iPop];
+        grid[iX][iY][iZ][iPop] = grid[iX][iY][iZ][iPop + 9];
+        grid[iX][iY][iZ][iPop + 9] = grid[nX][nY][nZ][iPop];
+        grid[nX][nY][nZ][iPop] = fTmp;
+    }
 
-static void swapAndStreamCell (
-      Cell<T,descriptors::D3Q19Descriptor> ***grid,
-      plint iX, plint iY, plint iZ, plint nX, plint nY, plint nZ, plint iPop, T& fTmp )
-{
-    fTmp                     = grid[iX][iY][iZ][iPop];
-    grid[iX][iY][iZ][iPop]   = grid[iX][iY][iZ][iPop+9];
-    grid[iX][iY][iZ][iPop+9] = grid[nX][nY][nZ][iPop];
-    grid[nX][nY][nZ][iPop]   = fTmp;
-}
-
-static void swapAndStream3D(Cell<T,descriptors::D3Q19Descriptor> ***grid,
-                            plint iX, plint iY, plint iZ)
-{
-    T fTmp;
-    swapAndStreamCell(grid, iX, iY, iZ, iX-1, iY,   iZ,   1, fTmp);
-    swapAndStreamCell(grid, iX, iY, iZ, iX,   iY-1, iZ,   2, fTmp);
-    swapAndStreamCell(grid, iX, iY, iZ, iX,   iY  , iZ-1, 3, fTmp);
-    swapAndStreamCell(grid, iX, iY, iZ, iX-1, iY-1, iZ,   4, fTmp);
-    swapAndStreamCell(grid, iX, iY, iZ, iX-1, iY+1, iZ,   5, fTmp);
-    swapAndStreamCell(grid, iX, iY, iZ, iX-1, iY  , iZ-1, 6, fTmp);
-    swapAndStreamCell(grid, iX, iY, iZ, iX-1, iY  , iZ+1, 7, fTmp);
-    swapAndStreamCell(grid, iX, iY, iZ, iX  , iY-1, iZ-1, 8, fTmp);
-    swapAndStreamCell(grid, iX, iY, iZ, iX  , iY-1, iZ+1, 9, fTmp);
-}
-
+    static void swapAndStream3D(
+        Cell<T, descriptors::D3Q19Descriptor> ***grid, plint iX, plint iY, plint iZ)
+    {
+        T fTmp;
+        swapAndStreamCell(grid, iX, iY, iZ, iX - 1, iY, iZ, 1, fTmp);
+        swapAndStreamCell(grid, iX, iY, iZ, iX, iY - 1, iZ, 2, fTmp);
+        swapAndStreamCell(grid, iX, iY, iZ, iX, iY, iZ - 1, 3, fTmp);
+        swapAndStreamCell(grid, iX, iY, iZ, iX - 1, iY - 1, iZ, 4, fTmp);
+        swapAndStreamCell(grid, iX, iY, iZ, iX - 1, iY + 1, iZ, 5, fTmp);
+        swapAndStreamCell(grid, iX, iY, iZ, iX - 1, iY, iZ - 1, 6, fTmp);
+        swapAndStreamCell(grid, iX, iY, iZ, iX - 1, iY, iZ + 1, 7, fTmp);
+        swapAndStreamCell(grid, iX, iY, iZ, iX, iY - 1, iZ - 1, 8, fTmp);
+        swapAndStreamCell(grid, iX, iY, iZ, iX, iY - 1, iZ + 1, 9, fTmp);
+    }
 };
 
-template<typename T>
+template <typename T>
 struct latticeTemplates<T, descriptors::ForcedD3Q19Descriptor> {
+    static void swapAndStreamCell(
+        Cell<T, descriptors::ForcedD3Q19Descriptor> ***grid, plint iX, plint iY, plint iZ, plint nX,
+        plint nY, plint nZ, plint iPop, T &fTmp)
+    {
+        fTmp = grid[iX][iY][iZ][iPop];
+        grid[iX][iY][iZ][iPop] = grid[iX][iY][iZ][iPop + 9];
+        grid[iX][iY][iZ][iPop + 9] = grid[nX][nY][nZ][iPop];
+        grid[nX][nY][nZ][iPop] = fTmp;
+    }
 
-static void swapAndStreamCell (
-      Cell<T,descriptors::ForcedD3Q19Descriptor> ***grid,
-      plint iX, plint iY, plint iZ, plint nX, plint nY, plint nZ, plint iPop, T& fTmp )
-{
-    fTmp                     = grid[iX][iY][iZ][iPop];
-    grid[iX][iY][iZ][iPop]   = grid[iX][iY][iZ][iPop+9];
-    grid[iX][iY][iZ][iPop+9] = grid[nX][nY][nZ][iPop];
-    grid[nX][nY][nZ][iPop]   = fTmp;
-}
-
-static void swapAndStream3D(Cell<T,descriptors::ForcedD3Q19Descriptor> ***grid,
-                            plint iX, plint iY, plint iZ)
-{
-    T fTmp;
-    swapAndStreamCell(grid, iX, iY, iZ, iX-1, iY,   iZ,   1, fTmp);
-    swapAndStreamCell(grid, iX, iY, iZ, iX,   iY-1, iZ,   2, fTmp);
-    swapAndStreamCell(grid, iX, iY, iZ, iX,   iY  , iZ-1, 3, fTmp);
-    swapAndStreamCell(grid, iX, iY, iZ, iX-1, iY-1, iZ,   4, fTmp);
-    swapAndStreamCell(grid, iX, iY, iZ, iX-1, iY+1, iZ,   5, fTmp);
-    swapAndStreamCell(grid, iX, iY, iZ, iX-1, iY  , iZ-1, 6, fTmp);
-    swapAndStreamCell(grid, iX, iY, iZ, iX-1, iY  , iZ+1, 7, fTmp);
-    swapAndStreamCell(grid, iX, iY, iZ, iX  , iY-1, iZ-1, 8, fTmp);
-    swapAndStreamCell(grid, iX, iY, iZ, iX  , iY-1, iZ+1, 9, fTmp);
-}
-
+    static void swapAndStream3D(
+        Cell<T, descriptors::ForcedD3Q19Descriptor> ***grid, plint iX, plint iY, plint iZ)
+    {
+        T fTmp;
+        swapAndStreamCell(grid, iX, iY, iZ, iX - 1, iY, iZ, 1, fTmp);
+        swapAndStreamCell(grid, iX, iY, iZ, iX, iY - 1, iZ, 2, fTmp);
+        swapAndStreamCell(grid, iX, iY, iZ, iX, iY, iZ - 1, 3, fTmp);
+        swapAndStreamCell(grid, iX, iY, iZ, iX - 1, iY - 1, iZ, 4, fTmp);
+        swapAndStreamCell(grid, iX, iY, iZ, iX - 1, iY + 1, iZ, 5, fTmp);
+        swapAndStreamCell(grid, iX, iY, iZ, iX - 1, iY, iZ - 1, 6, fTmp);
+        swapAndStreamCell(grid, iX, iY, iZ, iX - 1, iY, iZ + 1, 7, fTmp);
+        swapAndStreamCell(grid, iX, iY, iZ, iX, iY - 1, iZ - 1, 8, fTmp);
+        swapAndStreamCell(grid, iX, iY, iZ, iX, iY - 1, iZ + 1, 9, fTmp);
+    }
 };
 
-template<typename T>
+template <typename T>
 struct latticeTemplates<T, descriptors::D3Q15Descriptor> {
+    static void swapAndStreamCell(
+        Cell<T, descriptors::D3Q15Descriptor> ***grid, plint iX, plint iY, plint iZ, plint nX,
+        plint nY, plint nZ, plint iPop, T &fTmp)
+    {
+        fTmp = grid[iX][iY][iZ][iPop];
+        grid[iX][iY][iZ][iPop] = grid[iX][iY][iZ][iPop + 7];
+        grid[iX][iY][iZ][iPop + 7] = grid[nX][nY][nZ][iPop];
+        grid[nX][nY][nZ][iPop] = fTmp;
+    }
 
-static void swapAndStreamCell (
-      Cell<T,descriptors::D3Q15Descriptor> ***grid,
-      plint iX, plint iY, plint iZ, plint nX, plint nY, plint nZ, plint iPop, T& fTmp )
-{
-    fTmp                     = grid[iX][iY][iZ][iPop];
-    grid[iX][iY][iZ][iPop]   = grid[iX][iY][iZ][iPop+7];
-    grid[iX][iY][iZ][iPop+7] = grid[nX][nY][nZ][iPop];
-    grid[nX][nY][nZ][iPop]   = fTmp;
-}
+    static void swapAndStream3D(
+        Cell<T, descriptors::D3Q15Descriptor> ***grid, plint iX, plint iY, plint iZ)
+    {
+        T fTmp;
+        swapAndStreamCell(grid, iX, iY, iZ, iX - 1, iY, iZ, 1, fTmp);
+        swapAndStreamCell(grid, iX, iY, iZ, iX, iY - 1, iZ, 2, fTmp);
+        swapAndStreamCell(grid, iX, iY, iZ, iX, iY, iZ - 1, 3, fTmp);
 
-static void swapAndStream3D(Cell<T,descriptors::D3Q15Descriptor> ***grid,
-                            plint iX, plint iY, plint iZ)
-{
-    T fTmp;
-    swapAndStreamCell(grid, iX, iY, iZ, iX-1, iY,   iZ,   1, fTmp);
-    swapAndStreamCell(grid, iX, iY, iZ, iX,   iY-1, iZ,   2, fTmp);
-    swapAndStreamCell(grid, iX, iY, iZ, iX,   iY  , iZ-1, 3, fTmp);
-
-    swapAndStreamCell(grid, iX, iY, iZ, iX-1, iY-1, iZ-1, 4, fTmp);
-    swapAndStreamCell(grid, iX, iY, iZ, iX-1, iY-1, iZ+1, 5, fTmp);
-    swapAndStreamCell(grid, iX, iY, iZ, iX-1, iY+1, iZ-1, 6, fTmp);
-    swapAndStreamCell(grid, iX, iY, iZ, iX-1, iY+1, iZ+1, 7, fTmp);
-}
-
+        swapAndStreamCell(grid, iX, iY, iZ, iX - 1, iY - 1, iZ - 1, 4, fTmp);
+        swapAndStreamCell(grid, iX, iY, iZ, iX - 1, iY - 1, iZ + 1, 5, fTmp);
+        swapAndStreamCell(grid, iX, iY, iZ, iX - 1, iY + 1, iZ - 1, 6, fTmp);
+        swapAndStreamCell(grid, iX, iY, iZ, iX - 1, iY + 1, iZ + 1, 7, fTmp);
+    }
 };
 
-template<typename T>
+template <typename T>
 struct latticeTemplates<T, descriptors::ForcedD3Q15Descriptor> {
+    static void swapAndStreamCell(
+        Cell<T, descriptors::ForcedD3Q15Descriptor> ***grid, plint iX, plint iY, plint iZ, plint nX,
+        plint nY, plint nZ, plint iPop, T &fTmp)
+    {
+        fTmp = grid[iX][iY][iZ][iPop];
+        grid[iX][iY][iZ][iPop] = grid[iX][iY][iZ][iPop + 7];
+        grid[iX][iY][iZ][iPop + 7] = grid[nX][nY][nZ][iPop];
+        grid[nX][nY][nZ][iPop] = fTmp;
+    }
 
-static void swapAndStreamCell (
-      Cell<T,descriptors::ForcedD3Q15Descriptor> ***grid,
-      plint iX, plint iY, plint iZ, plint nX, plint nY, plint nZ, plint iPop, T& fTmp )
-{
-    fTmp                     = grid[iX][iY][iZ][iPop];
-    grid[iX][iY][iZ][iPop]   = grid[iX][iY][iZ][iPop+7];
-    grid[iX][iY][iZ][iPop+7] = grid[nX][nY][nZ][iPop];
-    grid[nX][nY][nZ][iPop]   = fTmp;
-}
+    static void swapAndStream3D(
+        Cell<T, descriptors::ForcedD3Q15Descriptor> ***grid, plint iX, plint iY, plint iZ)
+    {
+        T fTmp;
+        swapAndStreamCell(grid, iX, iY, iZ, iX - 1, iY, iZ, 1, fTmp);
+        swapAndStreamCell(grid, iX, iY, iZ, iX, iY - 1, iZ, 2, fTmp);
+        swapAndStreamCell(grid, iX, iY, iZ, iX, iY, iZ - 1, 3, fTmp);
 
-static void swapAndStream3D(Cell<T,descriptors::ForcedD3Q15Descriptor> ***grid,
-                            plint iX, plint iY, plint iZ)
-{
-    T fTmp;
-    swapAndStreamCell(grid, iX, iY, iZ, iX-1, iY,   iZ,   1, fTmp);
-    swapAndStreamCell(grid, iX, iY, iZ, iX,   iY-1, iZ,   2, fTmp);
-    swapAndStreamCell(grid, iX, iY, iZ, iX,   iY  , iZ-1, 3, fTmp);
-
-    swapAndStreamCell(grid, iX, iY, iZ, iX-1, iY-1, iZ-1, 4, fTmp);
-    swapAndStreamCell(grid, iX, iY, iZ, iX-1, iY-1, iZ+1, 5, fTmp);
-    swapAndStreamCell(grid, iX, iY, iZ, iX-1, iY+1, iZ-1, 6, fTmp);
-    swapAndStreamCell(grid, iX, iY, iZ, iX-1, iY+1, iZ+1, 7, fTmp);
-}
-
+        swapAndStreamCell(grid, iX, iY, iZ, iX - 1, iY - 1, iZ - 1, 4, fTmp);
+        swapAndStreamCell(grid, iX, iY, iZ, iX - 1, iY - 1, iZ + 1, 5, fTmp);
+        swapAndStreamCell(grid, iX, iY, iZ, iX - 1, iY + 1, iZ - 1, 6, fTmp);
+        swapAndStreamCell(grid, iX, iY, iZ, iX - 1, iY + 1, iZ + 1, 7, fTmp);
+    }
 };
 
 }  // namespace plb
 
 #endif
-

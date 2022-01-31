@@ -5,7 +5,7 @@
  * own the IP rights for most of the code base. Since October 2019, the
  * Palabos project is maintained by the University of Geneva and accepts
  * source code contributions from the community.
- * 
+ *
  * Contact:
  * Jonas Latt
  * Computer Science Department
@@ -14,7 +14,7 @@
  * 1227 Carouge, Switzerland
  * jonas.latt@unige.ch
  *
- * The most recent release of Palabos can be downloaded at 
+ * The most recent release of Palabos can be downloaded at
  * <https://palabos.unige.ch/>
  *
  * The library Palabos is free software: you can redistribute it and/or
@@ -29,36 +29,36 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 #ifndef INTERPOLATION_HELPER_H
 #define INTERPOLATION_HELPER_H
 
-#include "core/globalDefs.h"
-#include "core/geometry3D.h"
-#include "multiGrid/gridRefinement.h"
 #include <vector>
+
+#include "core/geometry3D.h"
+#include "core/globalDefs.h"
+#include "multiGrid/gridRefinement.h"
 
 namespace plb {
 
 /// bicuadratic asymetrical interpolation using 9 coarse points
-template<typename T>
+template <typename T>
 std::vector<T> cornerInterpolation(T f[3][3]);
 
-template<typename T>
+template <typename T>
 std::vector<T> helperCornerInterpolation(T f[3][3]);
 
 /// copy the decomposed populations to the given cell
-template<typename T, template<typename U> class Descriptor>
-void copyPopulations(std::vector<T>& decomposedValues, Cell<T,Descriptor>& cell);
+template <typename T, template <typename U> class Descriptor>
+void copyPopulations(std::vector<T> &decomposedValues, Cell<T, Descriptor> &cell);
 
-template<typename T>
+template <typename T>
 std::vector<T> asymetricCubicInterpolation(T f[4][3]);
 
-template<typename T>
+template <typename T>
 std::vector<T> symetricCubicInterpolation(T f[4][4]);
 
-} // namespace plb
+}  // namespace plb
 
-#endif // INTERPOLATION_HELPER_H
-
+#endif  // INTERPOLATION_HELPER_H

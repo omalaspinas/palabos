@@ -5,7 +5,7 @@
  * own the IP rights for most of the code base. Since October 2019, the
  * Palabos project is maintained by the University of Geneva and accepts
  * source code contributions from the community.
- * 
+ *
  * Contact:
  * Jonas Latt
  * Computer Science Department
@@ -14,7 +14,7 @@
  * 1227 Carouge, Switzerland
  * jonas.latt@unige.ch
  *
- * The most recent release of Palabos can be downloaded at 
+ * The most recent release of Palabos can be downloaded at
  * <https://palabos.unige.ch/>
  *
  * The library Palabos is free software: you can redistribute it and/or
@@ -29,42 +29,44 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 #include "core/runTimeDiagnostics.h"
+
+#include <csignal>
+#include <cstdio>
+
 #include "core/util.h"
 #include "parallelism/mpiManager.h"
 
-#include <cstdio>
-#include <csignal>
-
 namespace plb {
 
-DiagnosticFileSingleton::DiagnosticFileSingleton(std::string fName_)
-    : ofile( 0 ),
-      fName(fName_)
-{ }
+DiagnosticFileSingleton::DiagnosticFileSingleton(std::string fName_) : ofile(0), fName(fName_) { }
 
 DiagnosticFileSingleton::~DiagnosticFileSingleton()
 {
     delete ofile;
 }
 
-void DiagnosticFileSingleton::write(std::string message) {
+void DiagnosticFileSingleton::write(std::string message)
+{
     if (global::mpi().isMainProcessor()) {
         if (!ofile) {
-            ofile = new std::ofstream( std::string(global::directories().getLogOutDir() + fName).c_str() );
+            ofile = new std::ofstream(
+                std::string(global::directories().getLogOutDir() + fName).c_str());
         }
         (*ofile) << message << std::endl;
     }
 }
 
-DiagnosticFileSingleton& warningFile() {
+DiagnosticFileSingleton &warningFile()
+{
     static DiagnosticFileSingleton warningFileSingleton("plbWarning.dat");
     return warningFileSingleton;
 }
 
-void plbWarning(bool issueWarning, std::string message) {
+void plbWarning(bool issueWarning, std::string message)
+{
 #ifdef PLB_MPI_PARALLEL
     int warningCounter = issueWarning ? 1 : 0;
     int warningSum = 0;
@@ -81,9 +83,9 @@ void plbWarning(bool issueWarning, std::string message) {
 #endif
 }
 
-void printSerially(FILE* fp, std::string const& message)
+void printSerially(FILE *fp, std::string const &message)
 {
-    global::mpi().barrier(); // Not strictly needed.
+    global::mpi().barrier();  // Not strictly needed.
     if (global::mpi().getRank() == 0) {
         fprintf(fp, "%s", message.c_str());
         fflush(fp);
@@ -96,23 +98,25 @@ void printSerially(FILE* fp, std::string const& message)
             fprintf(fp, "%s", msg.c_str());
             fflush(fp);
         }
-        global::mpi().barrier(); // Not strictly needed.
+        global::mpi().barrier();  // Not strictly needed.
     }
 }
 
-void plbWarning(std::string message) {
+void plbWarning(std::string message)
+{
     if (global::mpi().isMainProcessor()) {
         warningFile().write(message);
     }
 }
 
-DiagnosticFileSingleton& errorFile() {
+DiagnosticFileSingleton &errorFile()
+{
     static DiagnosticFileSingleton errorFileSingleton("plbError.dat");
     return errorFileSingleton;
 }
 
-
-void plbGenericError(bool issueError, std::string message) {
+void plbGenericError(bool issueError, std::string message)
+{
 #ifdef PLB_MPI_PARALLEL
     int errorCounter = issueError ? 1 : 0;
     global::mpi().reduceAndBcast(errorCounter, MPI_SUM);
@@ -125,11 +129,13 @@ void plbGenericError(bool issueError, std::string message) {
     }
 }
 
-void plbGenericError(std::string message) {
+void plbGenericError(std::string message)
+{
     throw PlbGenericException(message);
 }
 
-void plbMainProcGenericError(bool issueError, std::string message) {
+void plbMainProcGenericError(bool issueError, std::string message)
+{
     int intIssueError = (int)(issueError);
     global::mpi().bCast(&intIssueError, 1);
 
@@ -138,8 +144,8 @@ void plbMainProcGenericError(bool issueError, std::string message) {
     }
 }
 
-
-void plbMemoryError(bool issueError, std::string message) {
+void plbMemoryError(bool issueError, std::string message)
+{
 #ifdef PLB_MPI_PARALLEL
     int errorCounter = issueError ? 1 : 0;
     global::mpi().reduceAndBcast(errorCounter, MPI_SUM);
@@ -152,11 +158,13 @@ void plbMemoryError(bool issueError, std::string message) {
     }
 }
 
-void plbMemoryError(std::string message) {
+void plbMemoryError(std::string message)
+{
     throw PlbMemoryException(message);
 }
 
-void plbMainProcMemoryError(bool issueError, std::string message) {
+void plbMainProcMemoryError(bool issueError, std::string message)
+{
     int intIssueError = (int)(issueError);
     global::mpi().bCast(&intIssueError, 1);
 
@@ -165,8 +173,8 @@ void plbMainProcMemoryError(bool issueError, std::string message) {
     }
 }
 
-
-void plbIOError(bool issueError, std::string message) {
+void plbIOError(bool issueError, std::string message)
+{
 #ifdef PLB_MPI_PARALLEL
     int errorCounter = issueError ? 1 : 0;
     global::mpi().reduceAndBcast(errorCounter, MPI_SUM);
@@ -179,11 +187,13 @@ void plbIOError(bool issueError, std::string message) {
     }
 }
 
-void plbIOError(std::string message) {
+void plbIOError(std::string message)
+{
     throw PlbIOException(message);
 }
 
-void plbMainProcIOError(bool issueError, std::string message) {
+void plbMainProcIOError(bool issueError, std::string message)
+{
     int intIssueError = (int)(issueError);
     global::mpi().bCast(&intIssueError, 1);
 
@@ -192,7 +202,8 @@ void plbMainProcIOError(bool issueError, std::string message) {
     }
 }
 
-void plbNetworkError(bool issueError, std::string message) {
+void plbNetworkError(bool issueError, std::string message)
+{
 #ifdef PLB_MPI_PARALLEL
     int errorCounter = issueError ? 1 : 0;
     global::mpi().reduceAndBcast(errorCounter, MPI_SUM);
@@ -205,11 +216,13 @@ void plbNetworkError(bool issueError, std::string message) {
     }
 }
 
-void plbNetworkError(std::string message) {
+void plbNetworkError(std::string message)
+{
     throw PlbNetworkException(message);
 }
 
-void plbMainProcNetworkError(bool issueError, std::string message) {
+void plbMainProcNetworkError(bool issueError, std::string message)
+{
     int intIssueError = (int)(issueError);
     global::mpi().bCast(&intIssueError, 1);
 
@@ -218,8 +231,8 @@ void plbMainProcNetworkError(bool issueError, std::string message) {
     }
 }
 
-
-void plbLogicError(bool issueError, std::string message) {
+void plbLogicError(bool issueError, std::string message)
+{
 #ifdef PLB_MPI_PARALLEL
     int errorCounter = issueError ? 1 : 0;
     global::mpi().reduceAndBcast(errorCounter, MPI_SUM);
@@ -232,11 +245,13 @@ void plbLogicError(bool issueError, std::string message) {
     }
 }
 
-void plbLogicError(std::string message) {
+void plbLogicError(std::string message)
+{
     throw PlbLogicException(message);
 }
 
-void plbMainProcLogicError(bool issueError, std::string message) {
+void plbMainProcLogicError(bool issueError, std::string message)
+{
     int intIssueError = (int)(issueError);
     global::mpi().bCast(&intIssueError, 1);
 
@@ -245,8 +260,8 @@ void plbMainProcLogicError(bool issueError, std::string message) {
     }
 }
 
-
-void plbOutOfRangeError(bool issueError, std::string message) {
+void plbOutOfRangeError(bool issueError, std::string message)
+{
 #ifdef PLB_MPI_PARALLEL
     int errorCounter = issueError ? 1 : 0;
     global::mpi().reduceAndBcast(errorCounter, MPI_SUM);
@@ -259,11 +274,13 @@ void plbOutOfRangeError(bool issueError, std::string message) {
     }
 }
 
-void plbOutOfRangeError(std::string message) {
+void plbOutOfRangeError(std::string message)
+{
     throw PlbOutOfRangeException(message);
 }
 
-void plbMainProcOutOfRangeError(bool issueError, std::string message) {
+void plbMainProcOutOfRangeError(bool issueError, std::string message)
+{
     int intIssueError = (int)(issueError);
     global::mpi().bCast(&intIssueError, 1);
 
@@ -272,92 +289,92 @@ void plbMainProcOutOfRangeError(bool issueError, std::string message) {
     }
 }
 
-
-PlbGenericException::PlbGenericException(std::string message_) throw()
-    : message(std::string("Palabos generic exception: ") + message_)
+PlbGenericException::PlbGenericException(std::string message_) throw() :
+    message(std::string("Palabos generic exception: ") + message_)
 { }
 
-const char* PlbGenericException::what() const throw() {
-
+const char *PlbGenericException::what() const throw()
+{
     return message.c_str();
 }
 
-
-PlbMemoryException::PlbMemoryException(std::string message_) throw()
-    : message(std::string("Palabos memory exception: ") + message_)
+PlbMemoryException::PlbMemoryException(std::string message_) throw() :
+    message(std::string("Palabos memory exception: ") + message_)
 { }
 
-const char* PlbMemoryException::what() const throw() {
-
+const char *PlbMemoryException::what() const throw()
+{
     return message.c_str();
 }
 
-PlbIOException::PlbIOException(std::string message_) throw()
-    : message(std::string("Palabos IO exception: ") + message_)
+PlbIOException::PlbIOException(std::string message_) throw() :
+    message(std::string("Palabos IO exception: ") + message_)
 { }
 
-const char* PlbIOException::what() const throw() {
-
+const char *PlbIOException::what() const throw()
+{
     return message.c_str();
 }
 
-PlbNetworkException::PlbNetworkException(std::string message_) throw()
-    : message(std::string("Palabos network exception: ") + message_)
+PlbNetworkException::PlbNetworkException(std::string message_) throw() :
+    message(std::string("Palabos network exception: ") + message_)
 { }
 
-const char* PlbNetworkException::what() const throw() {
-
+const char *PlbNetworkException::what() const throw()
+{
     return message.c_str();
 }
 
-PlbLogicException::PlbLogicException(std::string message_) throw()
-    : message(std::string("Palabos logic exception: ") + message_)
+PlbLogicException::PlbLogicException(std::string message_) throw() :
+    message(std::string("Palabos logic exception: ") + message_)
 { }
 
-const char* PlbLogicException::what() const throw() {
+const char *PlbLogicException::what() const throw()
+{
     return message.c_str();
 }
 
-PlbOutOfRangeException::PlbOutOfRangeException(std::string message_) throw()
-    : message(std::string("Palabos out-of-range exception: ") + message_)
+PlbOutOfRangeException::PlbOutOfRangeException(std::string message_) throw() :
+    message(std::string("Palabos out-of-range exception: ") + message_)
 { }
 
-const char* PlbOutOfRangeException::what() const throw() {
+const char *PlbOutOfRangeException::what() const throw()
+{
     return message.c_str();
 }
 
 namespace global {
 
-void PlbErrors::registerError(std::string const& message)
+void PlbErrors::registerError(std::string const &message)
 {
     messages.insert(message);
 }
 
-void PlbErrors::registerMemoryError(std::string const& message)
+void PlbErrors::registerMemoryError(std::string const &message)
 {
     messages.insert(message);
     memoryMessages.insert(message);
 }
 
-void PlbErrors::registerIOError(std::string const& message)
+void PlbErrors::registerIOError(std::string const &message)
 {
     messages.insert(message);
     ioMessages.insert(message);
 }
 
-void PlbErrors::registerNetworkError(std::string const& message)
+void PlbErrors::registerNetworkError(std::string const &message)
 {
     messages.insert(message);
     networkMessages.insert(message);
 }
 
-void PlbErrors::registerLogicError(std::string const& message)
+void PlbErrors::registerLogicError(std::string const &message)
 {
     messages.insert(message);
     logicMessages.insert(message);
 }
 
-void PlbErrors::registerOutOfRangeError(std::string const& message)
+void PlbErrors::registerOutOfRangeError(std::string const &message)
 {
     messages.insert(message);
     outOfRangeMessages.insert(message);
@@ -375,11 +392,14 @@ void PlbErrors::clear()
 
 void PlbErrors::memoryClear()
 {
-    for (std::set<std::string>::const_iterator memoryIt = memoryMessages.begin(); memoryIt != memoryMessages.end(); ++memoryIt) {
+    for (std::set<std::string>::const_iterator memoryIt = memoryMessages.begin();
+         memoryIt != memoryMessages.end(); ++memoryIt)
+    {
         std::set<std::string>::iterator it = messages.find(*memoryIt);
         PLB_ASSERT(it != messages.end());
-        if (!ioMessageExists(*memoryIt) && !networkMessageExists(*memoryIt) && !logicMessageExists(*memoryIt) &&
-                !outOfRangeMessageExists(*memoryIt)) {
+        if (!ioMessageExists(*memoryIt) && !networkMessageExists(*memoryIt)
+            && !logicMessageExists(*memoryIt) && !outOfRangeMessageExists(*memoryIt))
+        {
             messages.erase(it);
         }
     }
@@ -388,11 +408,14 @@ void PlbErrors::memoryClear()
 
 void PlbErrors::ioClear()
 {
-    for (std::set<std::string>::const_iterator ioIt = ioMessages.begin(); ioIt != ioMessages.end(); ++ioIt) {
+    for (std::set<std::string>::const_iterator ioIt = ioMessages.begin(); ioIt != ioMessages.end();
+         ++ioIt)
+    {
         std::set<std::string>::iterator it = messages.find(*ioIt);
         PLB_ASSERT(it != messages.end());
-        if (!memoryMessageExists(*ioIt) && !networkMessageExists(*ioIt) && !logicMessageExists(*ioIt) &&
-                !outOfRangeMessageExists(*ioIt)) {
+        if (!memoryMessageExists(*ioIt) && !networkMessageExists(*ioIt)
+            && !logicMessageExists(*ioIt) && !outOfRangeMessageExists(*ioIt))
+        {
             messages.erase(it);
         }
     }
@@ -401,11 +424,14 @@ void PlbErrors::ioClear()
 
 void PlbErrors::networkClear()
 {
-    for (std::set<std::string>::const_iterator networkIt = networkMessages.begin(); networkIt != networkMessages.end(); ++networkIt) {
+    for (std::set<std::string>::const_iterator networkIt = networkMessages.begin();
+         networkIt != networkMessages.end(); ++networkIt)
+    {
         std::set<std::string>::iterator it = messages.find(*networkIt);
         PLB_ASSERT(it != messages.end());
-        if (!memoryMessageExists(*networkIt) && !ioMessageExists(*networkIt) && !logicMessageExists(*networkIt) &&
-                !outOfRangeMessageExists(*networkIt)) {
+        if (!memoryMessageExists(*networkIt) && !ioMessageExists(*networkIt)
+            && !logicMessageExists(*networkIt) && !outOfRangeMessageExists(*networkIt))
+        {
             messages.erase(it);
         }
     }
@@ -414,11 +440,14 @@ void PlbErrors::networkClear()
 
 void PlbErrors::logicClear()
 {
-    for (std::set<std::string>::const_iterator logicIt = logicMessages.begin(); logicIt != logicMessages.end(); ++logicIt) {
+    for (std::set<std::string>::const_iterator logicIt = logicMessages.begin();
+         logicIt != logicMessages.end(); ++logicIt)
+    {
         std::set<std::string>::iterator it = messages.find(*logicIt);
         PLB_ASSERT(it != messages.end());
-        if (!memoryMessageExists(*logicIt) && !ioMessageExists(*logicIt) && !networkMessageExists(*logicIt) &&
-                !outOfRangeMessageExists(*logicIt)) {
+        if (!memoryMessageExists(*logicIt) && !ioMessageExists(*logicIt)
+            && !networkMessageExists(*logicIt) && !outOfRangeMessageExists(*logicIt))
+        {
             messages.erase(it);
         }
     }
@@ -428,11 +457,13 @@ void PlbErrors::logicClear()
 void PlbErrors::outOfRangeClear()
 {
     for (std::set<std::string>::const_iterator outOfRangeIt = outOfRangeMessages.begin();
-            outOfRangeIt != outOfRangeMessages.end(); ++outOfRangeIt) {
+         outOfRangeIt != outOfRangeMessages.end(); ++outOfRangeIt)
+    {
         std::set<std::string>::iterator it = messages.find(*outOfRangeIt);
         PLB_ASSERT(it != messages.end());
-        if (!memoryMessageExists(*outOfRangeIt) && !ioMessageExists(*outOfRangeIt) && !networkMessageExists(*outOfRangeIt) &&
-                !logicMessageExists(*outOfRangeIt)) {
+        if (!memoryMessageExists(*outOfRangeIt) && !ioMessageExists(*outOfRangeIt)
+            && !networkMessageExists(*outOfRangeIt) && !logicMessageExists(*outOfRangeIt))
+        {
             messages.erase(it);
         }
     }
@@ -469,32 +500,32 @@ bool PlbErrors::outOfRangeEmpty() const
     return outOfRangeMessages.empty();
 }
 
-bool PlbErrors::messageExists(std::string const& message) const
+bool PlbErrors::messageExists(std::string const &message) const
 {
     return (messages.find(message) != messages.end());
 }
 
-bool PlbErrors::memoryMessageExists(std::string const& message) const
+bool PlbErrors::memoryMessageExists(std::string const &message) const
 {
     return (memoryMessages.find(message) != memoryMessages.end());
 }
 
-bool PlbErrors::ioMessageExists(std::string const& message) const
+bool PlbErrors::ioMessageExists(std::string const &message) const
 {
     return (ioMessages.find(message) != ioMessages.end());
 }
 
-bool PlbErrors::networkMessageExists(std::string const& message) const
+bool PlbErrors::networkMessageExists(std::string const &message) const
 {
     return (networkMessages.find(message) != networkMessages.end());
 }
 
-bool PlbErrors::logicMessageExists(std::string const& message) const
+bool PlbErrors::logicMessageExists(std::string const &message) const
 {
     return (logicMessages.find(message) != logicMessages.end());
 }
 
-bool PlbErrors::outOfRangeMessageExists(std::string const& message) const
+bool PlbErrors::outOfRangeMessageExists(std::string const &message) const
 {
     return (outOfRangeMessages.find(message) != outOfRangeMessages.end());
 }
@@ -504,9 +535,10 @@ std::string PlbErrors::allMessages() const
     std::string message("No error occurred in this process\n");
     if (!empty()) {
         message = "\n  List of error messages (not chronological):";
-        std::set<std::string> const& messages = getMessages();
+        std::set<std::string> const &messages = getMessages();
         plint iMessage = 1;
-        for (std::set<std::string>::const_iterator it = messages.begin(); it != messages.end(); ++it) {
+        for (std::set<std::string>::const_iterator it = messages.begin(); it != messages.end();
+             ++it) {
             message += "\n    " + util::val2str(iMessage) + ") " + *it;
             iMessage++;
         }
@@ -520,9 +552,10 @@ std::string PlbErrors::allMemoryMessages() const
     std::string message("No memory error occurred in this process\n");
     if (!memoryEmpty()) {
         message = "\n  List of memory error messages (not chronological):";
-        std::set<std::string> const& messages = getMemoryMessages();
+        std::set<std::string> const &messages = getMemoryMessages();
         plint iMessage = 1;
-        for (std::set<std::string>::const_iterator it = messages.begin(); it != messages.end(); ++it) {
+        for (std::set<std::string>::const_iterator it = messages.begin(); it != messages.end();
+             ++it) {
             message += "\n    " + util::val2str(iMessage) + ") " + *it;
             iMessage++;
         }
@@ -536,9 +569,10 @@ std::string PlbErrors::allIOMessages() const
     std::string message("No IO error occurred in this process\n");
     if (!ioEmpty()) {
         message = "\n  List of IO error messages (not chronological):";
-        std::set<std::string> const& messages = getIOMessages();
+        std::set<std::string> const &messages = getIOMessages();
         plint iMessage = 1;
-        for (std::set<std::string>::const_iterator it = messages.begin(); it != messages.end(); ++it) {
+        for (std::set<std::string>::const_iterator it = messages.begin(); it != messages.end();
+             ++it) {
             message += "\n    " + util::val2str(iMessage) + ") " + *it;
             iMessage++;
         }
@@ -552,9 +586,10 @@ std::string PlbErrors::allNetworkMessages() const
     std::string message("No network error occurred in this process\n");
     if (!networkEmpty()) {
         message = "\n  List of network error messages (not chronological):";
-        std::set<std::string> const& messages = getNetworkMessages();
+        std::set<std::string> const &messages = getNetworkMessages();
         plint iMessage = 1;
-        for (std::set<std::string>::const_iterator it = messages.begin(); it != messages.end(); ++it) {
+        for (std::set<std::string>::const_iterator it = messages.begin(); it != messages.end();
+             ++it) {
             message += "\n    " + util::val2str(iMessage) + ") " + *it;
             iMessage++;
         }
@@ -568,9 +603,10 @@ std::string PlbErrors::allLogicMessages() const
     std::string message("No logic error occurred in this process\n");
     if (!logicEmpty()) {
         message = "\n  List of logic error messages (not chronological):";
-        std::set<std::string> const& messages = getLogicMessages();
+        std::set<std::string> const &messages = getLogicMessages();
         plint iMessage = 1;
-        for (std::set<std::string>::const_iterator it = messages.begin(); it != messages.end(); ++it) {
+        for (std::set<std::string>::const_iterator it = messages.begin(); it != messages.end();
+             ++it) {
             message += "\n    " + util::val2str(iMessage) + ") " + *it;
             iMessage++;
         }
@@ -584,9 +620,10 @@ std::string PlbErrors::allOutOfRangeMessages() const
     std::string message("No out-of-range error occurred in this process\n");
     if (!outOfRangeEmpty()) {
         message = "\n  List of out-of-range error messages (not chronological):";
-        std::set<std::string> const& messages = getOutOfRangeMessages();
+        std::set<std::string> const &messages = getOutOfRangeMessages();
         plint iMessage = 1;
-        for (std::set<std::string>::const_iterator it = messages.begin(); it != messages.end(); ++it) {
+        for (std::set<std::string>::const_iterator it = messages.begin(); it != messages.end();
+             ++it) {
             message += "\n    " + util::val2str(iMessage) + ") " + *it;
             iMessage++;
         }
@@ -598,88 +635,96 @@ std::string PlbErrors::allOutOfRangeMessages() const
 void PlbErrors::printMessages() const
 {
     if (!empty()) {
-        int myRank = (int) global::mpi().getRank();
-        fprintf(stderr, "Errors at process %d: %s", myRank, allMessages().c_str()); 
-        fflush(stderr); // This is not really needed since stderr is either line buffered or unbuffered.
+        int myRank = (int)global::mpi().getRank();
+        fprintf(stderr, "Errors at process %d: %s", myRank, allMessages().c_str());
+        fflush(stderr);  // This is not really needed since stderr is either line buffered or
+                         // unbuffered.
     }
 }
 
 void PlbErrors::printMemoryMessages() const
 {
     if (!memoryEmpty()) {
-        int myRank = (int) global::mpi().getRank();
-        fprintf(stderr, "Memory errors at process %d: %s", myRank, allMemoryMessages().c_str()); 
-        fflush(stderr); // This is not really needed since stderr is either line buffered or unbuffered.
+        int myRank = (int)global::mpi().getRank();
+        fprintf(stderr, "Memory errors at process %d: %s", myRank, allMemoryMessages().c_str());
+        fflush(stderr);  // This is not really needed since stderr is either line buffered or
+                         // unbuffered.
     }
 }
 
 void PlbErrors::printIOMessages() const
 {
     if (!ioEmpty()) {
-        int myRank = (int) global::mpi().getRank();
-        fprintf(stderr, "IO errors at process %d: %s", myRank, allIOMessages().c_str()); 
-        fflush(stderr); // This is not really needed since stderr is either line buffered or unbuffered.
+        int myRank = (int)global::mpi().getRank();
+        fprintf(stderr, "IO errors at process %d: %s", myRank, allIOMessages().c_str());
+        fflush(stderr);  // This is not really needed since stderr is either line buffered or
+                         // unbuffered.
     }
 }
 
 void PlbErrors::printNetworkMessages() const
 {
     if (!networkEmpty()) {
-        int myRank = (int) global::mpi().getRank();
-        fprintf(stderr, "Network errors at process %d: %s", myRank, allNetworkMessages().c_str()); 
-        fflush(stderr); // This is not really needed since stderr is either line buffered or unbuffered.
+        int myRank = (int)global::mpi().getRank();
+        fprintf(stderr, "Network errors at process %d: %s", myRank, allNetworkMessages().c_str());
+        fflush(stderr);  // This is not really needed since stderr is either line buffered or
+                         // unbuffered.
     }
 }
 
 void PlbErrors::printLogicMessages() const
 {
     if (!logicEmpty()) {
-        int myRank = (int) global::mpi().getRank();
-        fprintf(stderr, "Logic errors at process %d: %s", myRank, allLogicMessages().c_str()); 
-        fflush(stderr); // This is not really needed since stderr is either line buffered or unbuffered.
+        int myRank = (int)global::mpi().getRank();
+        fprintf(stderr, "Logic errors at process %d: %s", myRank, allLogicMessages().c_str());
+        fflush(stderr);  // This is not really needed since stderr is either line buffered or
+                         // unbuffered.
     }
 }
 
 void PlbErrors::printOutOfRangeMessages() const
 {
     if (!outOfRangeEmpty()) {
-        int myRank = (int) global::mpi().getRank();
-        fprintf(stderr, "Out-of-range errors at process %d: %s", myRank, allOutOfRangeMessages().c_str()); 
-        fflush(stderr); // This is not really needed since stderr is either line buffered or unbuffered.
+        int myRank = (int)global::mpi().getRank();
+        fprintf(
+            stderr, "Out-of-range errors at process %d: %s", myRank,
+            allOutOfRangeMessages().c_str());
+        fflush(stderr);  // This is not really needed since stderr is either line buffered or
+                         // unbuffered.
     }
 }
 
-std::set<std::string> const& PlbErrors::getMessages() const
+std::set<std::string> const &PlbErrors::getMessages() const
 {
     return messages;
 }
 
-std::set<std::string> const& PlbErrors::getMemoryMessages() const
+std::set<std::string> const &PlbErrors::getMemoryMessages() const
 {
     return memoryMessages;
 }
 
-std::set<std::string> const& PlbErrors::getIOMessages() const
+std::set<std::string> const &PlbErrors::getIOMessages() const
 {
     return ioMessages;
 }
 
-std::set<std::string> const& PlbErrors::getNetworkMessages() const
+std::set<std::string> const &PlbErrors::getNetworkMessages() const
 {
     return networkMessages;
 }
 
-std::set<std::string> const& PlbErrors::getLogicMessages() const
+std::set<std::string> const &PlbErrors::getLogicMessages() const
 {
     return logicMessages;
 }
 
-std::set<std::string> const& PlbErrors::getOutOfRangeMessages() const
+std::set<std::string> const &PlbErrors::getOutOfRangeMessages() const
 {
     return outOfRangeMessages;
 }
 
-PlbErrors& plbErrors()
+PlbErrors &plbErrors()
 {
     static PlbErrors errors;
     return errors;
@@ -765,13 +810,14 @@ void throwExceptionIfOutOfRangeErrorsOccurred()
     }
 }
 
-static void printErrorsSerially(std::string const& message)
+static void printErrorsSerially(std::string const &message)
 {
     global::mpi().barrier();
     if (global::mpi().getRank() == 0) {
-        fprintf(stderr, "\nErrors\n"); 
-        fprintf(stderr, "------\n"); 
-        fflush(stderr); // This is not really needed since stderr is either line buffered or unbuffered.
+        fprintf(stderr, "\nErrors\n");
+        fprintf(stderr, "------\n");
+        fflush(stderr);  // This is not really needed since stderr is either line buffered or
+                         // unbuffered.
     }
     printSerially(stderr, message);
 }
@@ -780,8 +826,10 @@ void abortIfErrorsOccurred()
 {
     try {
         throwGenericExceptionIfErrorsOccurred();
-    } catch (PlbException& exception) {
-        std::string message = "Caught exception in process " + util::val2str(global::mpi().getRank()) + ". " + exception.what() + "\n";
+    } catch (PlbException &exception) {
+        std::string message = "Caught exception in process "
+                              + util::val2str(global::mpi().getRank()) + ". " + exception.what()
+                              + "\n";
         printErrorsSerially(message);
         exit(-1);
     }
@@ -791,8 +839,10 @@ void abortIfMemoryErrorsOccurred()
 {
     try {
         throwExceptionIfMemoryErrorsOccurred();
-    } catch (PlbMemoryException& exception) {
-        std::string message = "Caught exception in process " + util::val2str(global::mpi().getRank()) + ". " + exception.what() + "\n";
+    } catch (PlbMemoryException &exception) {
+        std::string message = "Caught exception in process "
+                              + util::val2str(global::mpi().getRank()) + ". " + exception.what()
+                              + "\n";
         printErrorsSerially(message);
         exit(-1);
     }
@@ -802,8 +852,10 @@ void abortIfIOErrorsOccurred()
 {
     try {
         throwExceptionIfIOErrorsOccurred();
-    } catch (PlbIOException& exception) {
-        std::string message = "Caught exception in process " + util::val2str(global::mpi().getRank()) + ". " + exception.what() + "\n";
+    } catch (PlbIOException &exception) {
+        std::string message = "Caught exception in process "
+                              + util::val2str(global::mpi().getRank()) + ". " + exception.what()
+                              + "\n";
         printErrorsSerially(message);
         exit(-1);
     }
@@ -813,8 +865,10 @@ void abortIfNetworkErrorsOccurred()
 {
     try {
         throwExceptionIfNetworkErrorsOccurred();
-    } catch (PlbNetworkException& exception) {
-        std::string message = "Caught exception in process " + util::val2str(global::mpi().getRank()) + ". " + exception.what() + "\n";
+    } catch (PlbNetworkException &exception) {
+        std::string message = "Caught exception in process "
+                              + util::val2str(global::mpi().getRank()) + ". " + exception.what()
+                              + "\n";
         printErrorsSerially(message);
         exit(-1);
     }
@@ -824,8 +878,10 @@ void abortIfLogicErrorsOccurred()
 {
     try {
         throwExceptionIfLogicErrorsOccurred();
-    } catch (PlbLogicException& exception) {
-        std::string message = "Caught exception in process " + util::val2str(global::mpi().getRank()) + ". " + exception.what() + "\n";
+    } catch (PlbLogicException &exception) {
+        std::string message = "Caught exception in process "
+                              + util::val2str(global::mpi().getRank()) + ". " + exception.what()
+                              + "\n";
         printErrorsSerially(message);
         exit(-1);
     }
@@ -835,8 +891,10 @@ void abortIfOutOfRangeErrorsOccurred()
 {
     try {
         throwExceptionIfOutOfRangeErrorsOccurred();
-    } catch (PlbOutOfRangeException& exception) {
-        std::string message = "Caught exception in process " + util::val2str(global::mpi().getRank()) + ". " + exception.what() + "\n";
+    } catch (PlbOutOfRangeException &exception) {
+        std::string message = "Caught exception in process "
+                              + util::val2str(global::mpi().getRank()) + ". " + exception.what()
+                              + "\n";
         printErrorsSerially(message);
         exit(-1);
     }
@@ -844,20 +902,21 @@ void abortIfOutOfRangeErrorsOccurred()
 
 static void signalHandler(int i)
 {
-    // Technically in the signal handler we should not manipulate static data and we should use only reentrant functions.
-    // In this first implementation of basic signal handling we want to be as simple and portable as possible.
+    // Technically in the signal handler we should not manipulate static data and we should use only
+    // reentrant functions. In this first implementation of basic signal handling we want to be as
+    // simple and portable as possible.
     global::plbErrors().printMessages();
     exit(i);
 }
 
 void catchStandardSignals()
 {
-    (void) signal(SIGABRT, signalHandler);
-    (void) signal(SIGFPE, signalHandler);
-    (void) signal(SIGILL, signalHandler);
-    (void) signal(SIGINT, signalHandler);
-    (void) signal(SIGSEGV, signalHandler);
-    (void) signal(SIGTERM, signalHandler);
+    (void)signal(SIGABRT, signalHandler);
+    (void)signal(SIGFPE, signalHandler);
+    (void)signal(SIGILL, signalHandler);
+    (void)signal(SIGINT, signalHandler);
+    (void)signal(SIGSEGV, signalHandler);
+    (void)signal(SIGTERM, signalHandler);
 }
 
 }  // namespace plb

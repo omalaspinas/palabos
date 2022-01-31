@@ -5,7 +5,7 @@
  * own the IP rights for most of the code base. Since October 2019, the
  * Palabos project is maintained by the University of Geneva and accepts
  * source code contributions from the community.
- * 
+ *
  * Contact:
  * Jonas Latt
  * Computer Science Department
@@ -14,7 +14,7 @@
  * 1227 Carouge, Switzerland
  * jonas.latt@unige.ch
  *
- * The most recent release of Palabos can be downloaded at 
+ * The most recent release of Palabos can be downloaded at
  * <https://palabos.unige.ch/>
  *
  * The library Palabos is free software: you can redistribute it and/or
@@ -29,7 +29,7 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 #ifndef EMPIRICAL_DATA_H
 #define EMPIRICAL_DATA_H
@@ -51,8 +51,8 @@ namespace plb {
 ///	year = {1978},
 ///	lccn = {77006592},
 ///	keywords = {bench-data}
-///} 
-/// But I used the easier to read document 
+///}
+/// But I used the easier to read document
 /// Drag on spherical particles and steady settling velocities
 /// R. Shankar Subramanian
 /// Department of Chemical and Biomolecular Engineering
@@ -60,10 +60,14 @@ namespace plb {
 
 double empirical_sphere_drag(double Re);
 
-double computeTerminalVelocity(double densityRatio, double vSphere, double r, double kinematicViscosity, double gravity=9.8, bool doOutput=true);
+double computeTerminalVelocity(
+    double densityRatio, double vSphere, double r, double kinematicViscosity, double gravity = 9.8,
+    bool doOutput = true);
 
-double computeOptimalRadius(double targetRe, double densityRatio, double kinematicViscosity, double gravity=9.8, bool doOutput=true);
+double computeOptimalRadius(
+    double targetRe, double densityRatio, double kinematicViscosity, double gravity = 9.8,
+    bool doOutput = true);
 
-} // namespace plb
+}  // namespace plb
 
 #endif  // EMPIRICAL_DATA_H

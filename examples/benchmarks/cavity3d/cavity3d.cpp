@@ -5,7 +5,7 @@
  * own the IP rights for most of the code base. Since October 2019, the
  * Palabos project is maintained by the University of Geneva and accepts
  * source code contributions from the community.
- * 
+ *
  * Contact:
  * Jonas Latt
  * Computer Science Department
@@ -14,7 +14,7 @@
  * 1227 Carouge, Switzerland
  * jonas.latt@unige.ch
  *
- * The most recent release of Palabos can be downloaded at 
+ * The most recent release of Palabos can be downloaded at
  * <https://palabos.unige.ch/>
  *
  * The library Palabos is free software: you can redistribute it and/or
@@ -29,15 +29,16 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 /** \file
-  * Flow in a lid-driven 3D cavity. Benchmark case
-**/
+ * Flow in a lid-driven 3D cavity. Benchmark case
+ **/
+
+#include <iostream>
 
 #include "palabos3D.h"
-#include "palabos3D.hh"   // include full template code
-#include <iostream>
+#include "palabos3D.hh"  // include full template code
 
 using namespace plb;
 using namespace std;
@@ -45,38 +46,36 @@ using namespace std;
 typedef double T;
 #define DESCRIPTOR descriptors::D3Q19Descriptor
 
-void cavitySetup( MultiBlockLattice3D<T,DESCRIPTOR>& lattice,
-                  IncomprFlowParam<T> const& parameters,
-                  OnLatticeBoundaryCondition3D<T,DESCRIPTOR>& boundaryCondition )
+void cavitySetup(
+    MultiBlockLattice3D<T, DESCRIPTOR> &lattice, IncomprFlowParam<T> const &parameters,
+    OnLatticeBoundaryCondition3D<T, DESCRIPTOR> &boundaryCondition)
 {
     const plint nx = parameters.getNx();
     const plint ny = parameters.getNy();
     const plint nz = parameters.getNz();
-    Box3D topLid = Box3D(0, nx-1, ny-1, ny-1, 0, nz-1);
-    Box3D everythingButTopLid = Box3D(0, nx-1, 0, ny-2, 0, nz-1);
+    Box3D topLid = Box3D(0, nx - 1, ny - 1, ny - 1, 0, nz - 1);
+    Box3D everythingButTopLid = Box3D(0, nx - 1, 0, ny - 2, 0, nz - 1);
 
     // All walls implement a Dirichlet velocity condition.
     boundaryCondition.setVelocityConditionOnBlockBoundaries(lattice);
 
-    T u = std::sqrt((T)2)/(T)2 * parameters.getLatticeU();
-    initializeAtEquilibrium(lattice, everythingButTopLid, (T) 1., Array<T,3>((T)0.,(T)0.,(T)0.) );
-    initializeAtEquilibrium(lattice, topLid, (T) 1., Array<T,3>(u,(T)0.,u) );
-    setBoundaryVelocity(lattice, topLid, Array<T,3>(u,0.,u) );
+    T u = std::sqrt((T)2) / (T)2 * parameters.getLatticeU();
+    initializeAtEquilibrium(lattice, everythingButTopLid, (T)1., Array<T, 3>((T)0., (T)0., (T)0.));
+    initializeAtEquilibrium(lattice, topLid, (T)1., Array<T, 3>(u, (T)0., u));
+    setBoundaryVelocity(lattice, topLid, Array<T, 3>(u, 0., u));
 
     lattice.initialize();
 }
 
-int main(int argc, char* argv[]) {
-
+int main(int argc, char *argv[])
+{
     plbInit(&argc, &argv);
-    //defaultMultiBlockPolicy3D().toggleBlockingCommunication(true);
+    // defaultMultiBlockPolicy3D().toggleBlockingCommunication(true);
 
     plint N;
     try {
         global::argv(1).read(N);
-    }
-    catch(...)
-    {
+    } catch (...) {
         pcout << "Wrong parameters. The syntax is " << std::endl;
         pcout << argv[0] << " N" << std::endl;
         pcout << "where N is the resolution. The benchmark cases published " << std::endl;
@@ -84,58 +83,55 @@ int main(int argc, char* argv[]) {
         exit(1);
     }
 
-    pcout << "Starting benchmark with " << N+1 << "x" << N+1 << "x" << N+1 << " grid points "
+    pcout << "Starting benchmark with " << N + 1 << "x" << N + 1 << "x" << N + 1 << " grid points "
           << "(approx. 2 minutes on modern processors)." << std::endl;
 
-
     IncomprFlowParam<T> parameters(
-            (T) 1e-2,  // uMax
-            (T) 1.,    // Re
-            N,         // N
-            1.,        // lx
-            1.,        // ly
-            1.         // lz
+        (T)1e-2,  // uMax
+        (T)1.,    // Re
+        N,        // N
+        1.,       // lx
+        1.,       // ly
+        1.        // lz
     );
 
-
-    MultiBlockLattice3D<T, DESCRIPTOR> lattice (
-            parameters.getNx(), parameters.getNy(), parameters.getNz(),
-            new BGKdynamics<T,DESCRIPTOR>(parameters.getOmega()) );
+    MultiBlockLattice3D<T, DESCRIPTOR> lattice(
+        parameters.getNx(), parameters.getNy(), parameters.getNz(),
+        new BGKdynamics<T, DESCRIPTOR>(parameters.getOmega()));
 
     plint numCores = global::mpi().getSize();
     pcout << "Number of MPI threads: " << numCores << std::endl;
     // Current cores run approximately at 5 Mega Sus.
-    T estimateSus= 5.e6*numCores;
+    T estimateSus = 5.e6 * numCores;
     // The benchmark should run for approximately two minutes
     // (2*60 seconds).
     T wishNumSeconds = 60.;
     plint numCells = lattice.getBoundingBox().nCells();
 
     // Run at least three iterations.
-    plint numIter = std::max( (plint)3,
-                              (plint)(estimateSus*wishNumSeconds/numCells+0.5));
+    plint numIter = std::max((plint)3, (plint)(estimateSus * wishNumSeconds / numCells + 0.5));
 
-    OnLatticeBoundaryCondition3D<T,DESCRIPTOR>* boundaryCondition
-        = createLocalBoundaryCondition3D<T,DESCRIPTOR>();
+    OnLatticeBoundaryCondition3D<T, DESCRIPTOR> *boundaryCondition =
+        createLocalBoundaryCondition3D<T, DESCRIPTOR>();
 
     cavitySetup(lattice, parameters, *boundaryCondition);
 
     // Run the benchmark once "to warm up the machine".
-    for (plint iT=0; iT<numIter; ++iT) {
+    for (plint iT = 0; iT < numIter; ++iT) {
         lattice.collideAndStream();
     }
 
     // Run the benchmark for good.
     global::timer("benchmark").start();
     global::profiler().turnOn();
-    for (plint iT=0; iT<numIter; ++iT) {
+    for (plint iT = 0; iT < numIter; ++iT) {
         lattice.collideAndStream();
     }
 
     pcout << "After " << numIter << " iterations: "
-          << (T) (numCells*numIter) /
-             global::timer("benchmark").getTime() / 1.e6
-          << " Mega site updates per second." << std::endl << std::endl;
+          << (T)(numCells * numIter) / global::timer("benchmark").getTime() / 1.e6
+          << " Mega site updates per second." << std::endl
+          << std::endl;
 
     global::profiler().writeReport();
 

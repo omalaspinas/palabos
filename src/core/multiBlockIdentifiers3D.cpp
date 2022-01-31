@@ -5,7 +5,7 @@
  * own the IP rights for most of the code base. Since October 2019, the
  * Palabos project is maintained by the University of Geneva and accepts
  * source code contributions from the community.
- * 
+ *
  * Contact:
  * Jonas Latt
  * Computer Science Department
@@ -14,7 +14,7 @@
  * 1227 Carouge, Switzerland
  * jonas.latt@unige.ch
  *
- * The most recent release of Palabos can be downloaded at 
+ * The most recent release of Palabos can be downloaded at
  * <https://palabos.unige.ch/>
  *
  * The library Palabos is free software: you can redistribute it and/or
@@ -29,17 +29,18 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-
+ */
 
 #include "core/multiBlockIdentifiers3D.h"
+
 #include "core/util.h"
 
 namespace plb {
 
 namespace meta {
 
-MultiBlockRegistration3D::~MultiBlockRegistration3D() {
+MultiBlockRegistration3D::~MultiBlockRegistration3D()
+{
     Str_str_str_gen_map::iterator it1 = generators.begin();
     for (; it1 != generators.end(); ++it1) {
         Str_str_gen_map::iterator it2 = it1->second.begin();
@@ -52,15 +53,14 @@ MultiBlockRegistration3D::~MultiBlockRegistration3D() {
     }
 }
 
-int MultiBlockRegistration3D::announce (
-        std::string T_name, std::string Descriptor_name,
-        std::string nameOfMultiBlock, MultiBlockGenerator3D* generator )
+int MultiBlockRegistration3D::announce(
+    std::string T_name, std::string Descriptor_name, std::string nameOfMultiBlock,
+    MultiBlockGenerator3D *generator)
 {
-    if (Descriptor_name=="")  {
-        Descriptor_name="NA";
+    if (Descriptor_name == "") {
+        Descriptor_name = "NA";
     }
-    Str_gen_map::iterator it = 
-        generators[T_name][Descriptor_name].find(nameOfMultiBlock);
+    Str_gen_map::iterator it = generators[T_name][Descriptor_name].find(nameOfMultiBlock);
     if (it != generators[T_name][Descriptor_name].end()) {
         delete it->second;
     }
@@ -68,12 +68,12 @@ int MultiBlockRegistration3D::announce (
     return numRegistered++;
 }
 
-MultiBlock3D* MultiBlockRegistration3D::generate (
-                  std::string T_name, std::string Descriptor_name,
-                  std::string nameOfMultiBlock, MultiBlockManagement3D const& manager, plint nDim )
+MultiBlock3D *MultiBlockRegistration3D::generate(
+    std::string T_name, std::string Descriptor_name, std::string nameOfMultiBlock,
+    MultiBlockManagement3D const &manager, plint nDim)
 {
-    if (Descriptor_name=="") {
-        Descriptor_name="NA";
+    if (Descriptor_name == "") {
+        Descriptor_name = "NA";
     }
     Str_str_str_gen_map::iterator it1 = generators.find(T_name);
     if (it1 == generators.end()) {
@@ -86,13 +86,13 @@ MultiBlock3D* MultiBlockRegistration3D::generate (
     Str_gen_map::iterator it3 = it2->second.find(nameOfMultiBlock);
     if (it3 == it2->second.end()) {
         return 0;
-    }
-    else {
+    } else {
         return it3->second->generate(manager, nDim);
     }
 }
 
-MultiBlockRegistration3D& multiBlockRegistration3D() {
+MultiBlockRegistration3D &multiBlockRegistration3D()
+{
     static MultiBlockRegistration3D instance;
     return instance;
 }

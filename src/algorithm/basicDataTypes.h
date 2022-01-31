@@ -5,7 +5,7 @@
  * own the IP rights for most of the code base. Since October 2019, the
  * Palabos project is maintained by the University of Geneva and accepts
  * source code contributions from the community.
- * 
+ *
  * Contact:
  * Jonas Latt
  * Computer Science Department
@@ -14,7 +14,7 @@
  * 1227 Carouge, Switzerland
  * jonas.latt@unige.ch
  *
- * The most recent release of Palabos can be downloaded at 
+ * The most recent release of Palabos can be downloaded at
  * <https://palabos.unige.ch/>
  *
  * The library Palabos is free software: you can redistribute it and/or
@@ -29,47 +29,51 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 #ifndef BASIC_DATA_TYPES_H
 #define BASIC_DATA_TYPES_H
 
-#include "core/globalDefs.h"
 #include <set>
 #include <typeinfo>
 
+#include "core/globalDefs.h"
+
 namespace plb {
 
-
-template<typename T>
+template <typename T>
 class EnumeratedUniqueObjects {
 public:
-    pluint operator[] (T const& object) {
+    pluint operator[](T const &object)
+    {
         typename std::set<T>::iterator pos = objects.insert(object).first;
         return distance(objects.begin(), pos);
     }
+
 private:
     std::set<T> objects;
 };
 
-struct TypeInfoComparator
-{
-    bool operator () (std::type_info const* t1, std::type_info const* t2) const {
+struct TypeInfoComparator {
+    bool operator()(std::type_info const *t1, std::type_info const *t2) const
+    {
         return t1->before(*t2);
     }
 };
 
-
 class EnumeratedUniqueTypeIds {
 public:
-    pluint operator[] (std::type_info const& object) {
-        std::set<std::type_info const*, TypeInfoComparator>::iterator pos = objects.insert(&object).first;
+    pluint operator[](std::type_info const &object)
+    {
+        std::set<std::type_info const *, TypeInfoComparator>::iterator pos =
+            objects.insert(&object).first;
         return std::distance(objects.begin(), pos);
     }
+
 private:
-    std::set<std::type_info const*, TypeInfoComparator> objects;
+    std::set<std::type_info const *, TypeInfoComparator> objects;
 };
 
-} // namespace plb
+}  // namespace plb
 
 #endif  // BASIC_DATA_TYPES_H

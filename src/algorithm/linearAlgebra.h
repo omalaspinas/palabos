@@ -5,7 +5,7 @@
  * own the IP rights for most of the code base. Since October 2019, the
  * Palabos project is maintained by the University of Geneva and accepts
  * source code contributions from the community.
- * 
+ *
  * Contact:
  * Jonas Latt
  * Computer Science Department
@@ -14,7 +14,7 @@
  * 1227 Carouge, Switzerland
  * jonas.latt@unige.ch
  *
- * The most recent release of Palabos can be downloaded at 
+ * The most recent release of Palabos can be downloaded at
  * <https://palabos.unige.ch/>
  *
  * The library Palabos is free software: you can redistribute it and/or
@@ -29,13 +29,13 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 #ifndef LINEAR_ALGEBRA_H
 #define LINEAR_ALGEBRA_H
 
-#include "core/globalDefs.h"
 #include "core/array.h"
+#include "core/globalDefs.h"
 
 namespace plb {
 
@@ -43,8 +43,8 @@ namespace plb {
 //   vector v1Unit and to each other.
 //   ATTENTION: it is a prerequisite that the input vector v1Unit is unitary. If you
 //   have a non-unitary vector v1, you should provide v1/norm(v1) as argument.
-template<typename T>
-void gramSchmidt(Array<T,3> const& v1Unit, Array<T,3>& v2Unit, Array<T,3>& v3Unit);
+template <typename T>
+void gramSchmidt(Array<T, 3> const &v1Unit, Array<T, 3> &v2Unit, Array<T, 3> &v3Unit);
 
 // Computation of eigen-vectors and eigen-values for symmetric 3x3 matrices.
 /**Symmetric matrix A => eigenvectors in columns of V, corresponding
@@ -55,10 +55,9 @@ void gramSchmidt(Array<T,3> const& v1Unit, Array<T,3>& v2Unit, Array<T,3>& v3Uni
 //\TODO:
 // (1) Switch the Array<Array<T,3>,3> type to SymmetricTensor, as used in Palabos.
 // (2) Change the "eps = pow(2.0,-52.0)" line in the code to something that's type-specific.
-template<typename T>
-void eigenDecomposition(Array<Array<T,3>,3> const& A, Array<Array<T,3>,3>& V, Array<T,3>& d);
+template <typename T>
+void eigenDecomposition(Array<Array<T, 3>, 3> const &A, Array<Array<T, 3>, 3> &V, Array<T, 3> &d);
 
-} // namespace plb
+}  // namespace plb
 
 #endif  // LINEAR_ALGEBRA_H
-

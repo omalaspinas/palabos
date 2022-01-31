@@ -5,7 +5,7 @@
  * own the IP rights for most of the code base. Since October 2019, the
  * Palabos project is maintained by the University of Geneva and accepts
  * source code contributions from the community.
- * 
+ *
  * Contact:
  * Jonas Latt
  * Computer Science Department
@@ -14,7 +14,7 @@
  * 1227 Carouge, Switzerland
  * jonas.latt@unige.ch
  *
- * The most recent release of Palabos can be downloaded at 
+ * The most recent release of Palabos can be downloaded at
  * <https://palabos.unige.ch/>
  *
  * The library Palabos is free software: you can redistribute it and/or
@@ -29,7 +29,7 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 /** \file
  * Simulation of a 3D Rayleigh-Taylor instability, which describes a symmetry breakdown,
@@ -40,10 +40,11 @@
  * couple more than two phases, using the same approach as the one shown here.
  **/
 
-#include "palabos3D.h"
-#include "palabos3D.hh"
 #include <cstdlib>
 #include <iostream>
+
+#include "palabos3D.h"
+#include "palabos3D.hh"
 
 using namespace plb;
 using namespace std;
@@ -59,42 +60,40 @@ typedef double T;
  *  to setup the initial condition. For efficiency reasons, this approach should
  *  always be preferred over explicit space loops in end-user codes.
  */
-template<typename T, template<typename U> class Descriptor>
-class TwoLayerInitializer : public OneCellIndexedWithRandFunctional3D<T,Descriptor> {
+template <typename T, template <typename U> class Descriptor>
+class TwoLayerInitializer : public OneCellIndexedWithRandFunctional3D<T, Descriptor> {
 public:
-    TwoLayerInitializer(plint ny_, bool topLayer_)
-        : ny(ny_),
-          topLayer(topLayer_)
-    { }
-    TwoLayerInitializer<T,Descriptor>* clone() const {
-        return new TwoLayerInitializer<T,Descriptor>(*this);
+    TwoLayerInitializer(plint ny_, bool topLayer_) : ny(ny_), topLayer(topLayer_) { }
+    TwoLayerInitializer<T, Descriptor> *clone() const
+    {
+        return new TwoLayerInitializer<T, Descriptor>(*this);
     }
-    virtual void execute(plint iX, plint iY, plint iZ, T rand_val, Cell<T,Descriptor>& cell) const {
+    virtual void execute(plint iX, plint iY, plint iZ, T rand_val, Cell<T, Descriptor> &cell) const
+    {
         T densityFluctuations = 1.e-2;
-        T almostNoFluid       = 1.e-4;
-        Array<T,3> zeroVelocity (0.,0.,0.);
+        T almostNoFluid = 1.e-4;
+        Array<T, 3> zeroVelocity(0., 0., 0.);
 
         T rho = (T)1;
         // Add a random perturbation to the initial condition to instantiate the
         //   instability.
-        if ( (topLayer && iY>ny/2) || (!topLayer && iY <= ny/2) ) {
+        if ((topLayer && iY > ny / 2) || (!topLayer && iY <= ny / 2)) {
             rho += rand_val * densityFluctuations;
-        }
-        else {
+        } else {
             rho = almostNoFluid;
         }
 
         iniCellAtEquilibrium(cell, rho, zeroVelocity);
     }
+
 private:
     plint ny;
     bool topLayer;
 };
 
-void rayleighTaylorSetup( MultiBlockLattice3D<T, DESCRIPTOR>& heavyFluid,
-                          MultiBlockLattice3D<T, DESCRIPTOR>& lightFluid,
-                          T rho0, T rho1,
-                          T force )
+void rayleighTaylorSetup(
+    MultiBlockLattice3D<T, DESCRIPTOR> &heavyFluid, MultiBlockLattice3D<T, DESCRIPTOR> &lightFluid,
+    T rho0, T rho1, T force)
 {
     // The setup is: periodicity along horizontal direction, bounce-back on top
     // and bottom. The upper half is initially filled with fluid 1 + random noise,
@@ -103,46 +102,57 @@ void rayleighTaylorSetup( MultiBlockLattice3D<T, DESCRIPTOR>& heavyFluid,
     plint nx = heavyFluid.getNx();
     plint ny = heavyFluid.getNy();
     plint nz = heavyFluid.getNz();
-    
+
     // Bounce-back on bottom wall (where the light fluid is, initially).
-    defineDynamics(heavyFluid, Box3D(0,nx-1, 0,0, 0,nz-1), new BounceBack<T, DESCRIPTOR>(rho0) );
-    defineDynamics(lightFluid, Box3D(0,nx-1, 0,0, 0,nz-1), new BounceBack<T, DESCRIPTOR>(rho1) );
+    defineDynamics(
+        heavyFluid, Box3D(0, nx - 1, 0, 0, 0, nz - 1), new BounceBack<T, DESCRIPTOR>(rho0));
+    defineDynamics(
+        lightFluid, Box3D(0, nx - 1, 0, 0, 0, nz - 1), new BounceBack<T, DESCRIPTOR>(rho1));
     // Bounce-back on top wall (where the heavy fluid is, initially).
-    defineDynamics(heavyFluid, Box3D(0,nx-1, ny-1,ny-1, 0,nz-1), new BounceBack<T, DESCRIPTOR>(rho1) );
-    defineDynamics(lightFluid, Box3D(0,nx-1, ny-1,ny-1, 0,nz-1), new BounceBack<T, DESCRIPTOR>(rho0) );
-   
+    defineDynamics(
+        heavyFluid, Box3D(0, nx - 1, ny - 1, ny - 1, 0, nz - 1),
+        new BounceBack<T, DESCRIPTOR>(rho1));
+    defineDynamics(
+        lightFluid, Box3D(0, nx - 1, ny - 1, ny - 1, 0, nz - 1),
+        new BounceBack<T, DESCRIPTOR>(rho0));
+
     // Initialize top layer.
-    applyIndexed(heavyFluid, Box3D(0, nx-1, 0, ny-1, 0, nz-1),
-                 new TwoLayerInitializer<T,DESCRIPTOR>(ny, true) );
+    applyIndexed(
+        heavyFluid, Box3D(0, nx - 1, 0, ny - 1, 0, nz - 1),
+        new TwoLayerInitializer<T, DESCRIPTOR>(ny, true));
     // Initialize bottom layer.
-    applyIndexed(lightFluid, Box3D(0, nx-1, 0, ny-1, 0, nz-1),
-                 new TwoLayerInitializer<T,DESCRIPTOR>(ny, false) );
+    applyIndexed(
+        lightFluid, Box3D(0, nx - 1, 0, ny - 1, 0, nz - 1),
+        new TwoLayerInitializer<T, DESCRIPTOR>(ny, false));
 
     // Let's have gravity acting on the heavy fluid only. This represents a situation
     //   where the molecular mass of the light species is very small, and thus the
     //   action of gravity on this species is negligible.
-    setExternalVector(heavyFluid, heavyFluid.getBoundingBox(),
-                      DESCRIPTOR<T>::ExternalField::forceBeginsAt, Array<T,3>(0.,-force,0.));
-    setExternalVector(lightFluid, lightFluid.getBoundingBox(),
-                      DESCRIPTOR<T>::ExternalField::forceBeginsAt, Array<T,3>(0.,0.,0.));
+    setExternalVector(
+        heavyFluid, heavyFluid.getBoundingBox(), DESCRIPTOR<T>::ExternalField::forceBeginsAt,
+        Array<T, 3>(0., -force, 0.));
+    setExternalVector(
+        lightFluid, lightFluid.getBoundingBox(), DESCRIPTOR<T>::ExternalField::forceBeginsAt,
+        Array<T, 3>(0., 0., 0.));
 
     lightFluid.initialize();
     heavyFluid.initialize();
 }
 
-void writePpms(MultiBlockLattice3D<T, DESCRIPTOR>& heavyFluid,
-               MultiBlockLattice3D<T, DESCRIPTOR>& lightFluid, plint iT)
+void writePpms(
+    MultiBlockLattice3D<T, DESCRIPTOR> &heavyFluid, MultiBlockLattice3D<T, DESCRIPTOR> &lightFluid,
+    plint iT)
 {
     const plint nx = heavyFluid.getNx();
     const plint ny = heavyFluid.getNy();
     const plint nz = heavyFluid.getNz();
-    Box3D slice(0, nx-1, 0, ny-1, nz/2, nz/2);
+    Box3D slice(0, nx - 1, 0, ny - 1, nz / 2, nz / 2);
 
     ImageWriter<T> imageWriter("leeloo");
-    imageWriter.writeScaledPpm(createFileName("rho_heavy_", iT, 6),
-                               *computeDensity(heavyFluid, slice));
-    imageWriter.writeScaledPpm(createFileName("rho_light_", iT, 6),
-                               *computeDensity(lightFluid, slice));
+    imageWriter.writeScaledPpm(
+        createFileName("rho_heavy_", iT, 6), *computeDensity(heavyFluid, slice));
+    imageWriter.writeScaledPpm(
+        createFileName("rho_light_", iT, 6), *computeDensity(lightFluid, slice));
 }
 
 int main(int argc, char *argv[])
@@ -152,13 +162,13 @@ int main(int argc, char *argv[])
 
     const T omega1 = 1.0;
     const T omega2 = 1.0;
-    const plint nx   = 225;
-    const plint ny   = 75;
-    const plint nz   = 225;
-    const T G      = 1.2;
-    T force        = 0.15/(T)ny; //1.e-3;
+    const plint nx = 225;
+    const plint ny = 75;
+    const plint nz = 225;
+    const T G = 1.2;
+    T force = 0.15 / (T)ny;  // 1.e-3;
 #ifndef PLB_REGRESSION
-    const plint maxIter  = 10000;
+    const plint maxIter = 10000;
     const plint saveIter = 100;
     const plint statIter = 10;
 #else
@@ -168,10 +178,10 @@ int main(int argc, char *argv[])
 
     // Use regularized BGK dynamics to improve numerical stability (but note that
     //   BGK dynamics works well too).
-    MultiBlockLattice3D<T, DESCRIPTOR> heavyFluid (
-            nx,ny,nz, new ExternalMomentRegularizedBGKdynamics<T, DESCRIPTOR>(omega1) );
-    MultiBlockLattice3D<T, DESCRIPTOR> lightFluid (
-            nx,ny,nz, new ExternalMomentRegularizedBGKdynamics<T, DESCRIPTOR>(omega2) );
+    MultiBlockLattice3D<T, DESCRIPTOR> heavyFluid(
+        nx, ny, nz, new ExternalMomentRegularizedBGKdynamics<T, DESCRIPTOR>(omega1));
+    MultiBlockLattice3D<T, DESCRIPTOR> lightFluid(
+        nx, ny, nz, new ExternalMomentRegularizedBGKdynamics<T, DESCRIPTOR>(omega2));
 
     // Make x- and z-directions periodic.
     heavyFluid.periodicity().toggle(0, true);
@@ -179,17 +189,17 @@ int main(int argc, char *argv[])
     lightFluid.periodicity().toggle(0, true);
     lightFluid.periodicity().toggle(2, true);
 
-    T rho1 = 1.; // Fictitious density experienced by the partner fluid on a Bounce-Back node.
-    T rho0 = 0.; // Fictitious density experienced by the partner fluid on a Bounce-Back node.
-    
+    T rho1 = 1.;  // Fictitious density experienced by the partner fluid on a Bounce-Back node.
+    T rho0 = 0.;  // Fictitious density experienced by the partner fluid on a Bounce-Back node.
+
     // Store a pointer to all lattices (two in the present application) in a vector to
     //   create the Shan/Chen coupling therm. The heavy fluid being at the first place
     //   in the vector, the coupling term is going to be executed at the end of the call
     //   to collideAndStream() or stream() for the heavy fluid.
-    vector<MultiBlockLattice3D<T, DESCRIPTOR>* > blockLattices;
+    vector<MultiBlockLattice3D<T, DESCRIPTOR> *> blockLattices;
     blockLattices.push_back(&heavyFluid);
     blockLattices.push_back(&lightFluid);
-    
+
     // The argument "constOmegaValues" to the Shan/Chen processor is optional,
     //   and is used for efficiency reasons only. It tells the data processor
     //   that the relaxation times are constant, and that their inverse must be
@@ -198,18 +208,17 @@ int main(int argc, char *argv[])
     constOmegaValues.push_back(omega1);
     constOmegaValues.push_back(omega2);
     plint processorLevel = 1;
-    integrateProcessingFunctional (
-            new ShanChenMultiComponentProcessor3D<T,DESCRIPTOR>(G,constOmegaValues),
-            Box3D(0,nx-1,1,ny-2,0,nz-1),
-            blockLattices, processorLevel );
+    integrateProcessingFunctional(
+        new ShanChenMultiComponentProcessor3D<T, DESCRIPTOR>(G, constOmegaValues),
+        Box3D(0, nx - 1, 1, ny - 2, 0, nz - 1), blockLattices, processorLevel);
 
     rayleighTaylorSetup(heavyFluid, lightFluid, rho0, rho1, force);
-	
+
     pcout << "Starting simulation" << endl;
     // Main loop over time iterations.
-    for (plint iT=0; iT<maxIter; ++iT) {
+    for (plint iT = 0; iT < maxIter; ++iT) {
 #ifndef PLB_REGRESSION
-        if (iT%saveIter==0) {
+        if (iT % saveIter == 0) {
             writePpms(heavyFluid, lightFluid, iT);
         }
 #endif
@@ -229,14 +238,12 @@ int main(int argc, char *argv[])
         //   during the function call to heavyFluid.initialize().
         heavyFluid.collideAndStream();
 
-        if (iT%statIter==0) {
-            pcout << "Average energy fluid one = "
-                  << getStoredAverageEnergy<T>(heavyFluid);
-            pcout << ", average energy fluid two = "
-                  << getStoredAverageEnergy<T>(lightFluid) << endl;
+        if (iT % statIter == 0) {
+            pcout << "Average energy fluid one = " << getStoredAverageEnergy<T>(heavyFluid);
+            pcout << ", average energy fluid two = " << getStoredAverageEnergy<T>(lightFluid)
+                  << endl;
         }
     }
 
     return 0;
 }
-

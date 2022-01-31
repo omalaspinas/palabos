@@ -5,7 +5,7 @@
  * own the IP rights for most of the code base. Since October 2019, the
  * Palabos project is maintained by the University of Geneva and accepts
  * source code contributions from the community.
- * 
+ *
  * Contact:
  * Jonas Latt
  * Computer Science Department
@@ -14,7 +14,7 @@
  * 1227 Carouge, Switzerland
  * jonas.latt@unige.ch
  *
- * The most recent release of Palabos can be downloaded at 
+ * The most recent release of Palabos can be downloaded at
  * <https://palabos.unige.ch/>
  *
  * The library Palabos is free software: you can redistribute it and/or
@@ -29,26 +29,25 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 /** \file
  * Groups all the include files for the 3D multiBlock.
  */
 
-#include "multiGrid/multiScale.h"
+#include "multiGrid/coarseGridProcessors3D.h"
+#include "multiGrid/defaultMultiGridPolicy3D.h"
+#include "multiGrid/domainDivision3D.h"
+#include "multiGrid/fineGridProcessors3D.h"
+#include "multiGrid/gridConversion3D.h"
+#include "multiGrid/helperFineGridProcessors3D.h"
+#include "multiGrid/interpolationHelper.h"
+#include "multiGrid/multiGridDataAnalysisWrapper3D.h"
 #include "multiGrid/multiGridDataField3D.h"
-#include "multiGrid/multiGridOperations3D.h"
-#include "multiGrid/multiGridManagement3D.h"
+#include "multiGrid/multiGridDataProcessorWrapper3D.h"
 #include "multiGrid/multiGridGenerator3D.h"
 #include "multiGrid/multiGridLattice3D.h"
-#include "multiGrid/defaultMultiGridPolicy3D.h"
-#include "multiGrid/coarseGridProcessors3D.h"
-#include "multiGrid/fineGridProcessors3D.h"
-#include "multiGrid/multiGridDataAnalysisWrapper3D.h"
-#include "multiGrid/multiGridDataProcessorWrapper3D.h"
-#include "multiGrid/gridConversion3D.h"
-#include "multiGrid/domainDivision3D.h"
-#include "multiGrid/interpolationHelper.h"
-#include "multiGrid/helperFineGridProcessors3D.h"
+#include "multiGrid/multiGridManagement3D.h"
+#include "multiGrid/multiGridOperations3D.h"
+#include "multiGrid/multiScale.h"
 #include "multiGrid/parallelizer3D.h"
-

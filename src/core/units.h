@@ -5,7 +5,7 @@
  * own the IP rights for most of the code base. Since October 2019, the
  * Palabos project is maintained by the University of Geneva and accepts
  * source code contributions from the community.
- * 
+ *
  * Contact:
  * Jonas Latt
  * Computer Science Department
@@ -14,7 +14,7 @@
  * 1227 Carouge, Switzerland
  * jonas.latt@unige.ch
  *
- * The most recent release of Palabos can be downloaded at 
+ * The most recent release of Palabos can be downloaded at
  * <https://palabos.unige.ch/>
  *
  * The library Palabos is free software: you can redistribute it and/or
@@ -29,24 +29,25 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 #ifndef UNITS_H
 #define UNITS_H
 
-#include "core/globalDefs.h"
+#include <fstream>
+#include <string>
+
 #include "core/array.h"
 #include "core/geometry2D.h"
 #include "core/geometry3D.h"
-#include "parallelism/mpiManager.h"
+#include "core/globalDefs.h"
 #include "io/parallelIO.h"
-#include <string>
-#include <fstream>
+#include "parallelism/mpiManager.h"
 
 namespace plb {
 
 /// Numeric parameters for isothermal, incompressible flow.
-template<typename T>
+template <typename T>
 class IncomprFlowParam {
 public:
     /// Constructor
@@ -57,62 +58,124 @@ public:
      *  \param ly_ y-length in dimensionless units (e.g. 1).
      *  \param lz_ z-length in dimensionless units (e.g. 1).
      */
-    IncomprFlowParam(T physicalU_, T latticeU_, T Re_, T physicalLength_, plint resolution_, T lx_, T ly_, T lz_=T() )
-        : physicalU(physicalU_), latticeU(latticeU_), Re(Re_), physicalLength(physicalLength_),
-          resolution(resolution_), lx(lx_), ly(ly_), lz(lz_)
+    IncomprFlowParam(
+        T physicalU_, T latticeU_, T Re_, T physicalLength_, plint resolution_, T lx_, T ly_,
+        T lz_ = T()) :
+        physicalU(physicalU_),
+        latticeU(latticeU_),
+        Re(Re_),
+        physicalLength(physicalLength_),
+        resolution(resolution_),
+        lx(lx_),
+        ly(ly_),
+        lz(lz_)
     { }
-    
-    IncomprFlowParam(T latticeU_, T Re_, plint resolution_, T lx_, T ly_, T lz_=T() )
-    : latticeU(latticeU_), Re(Re_), resolution(resolution_), lx(lx_), ly(ly_), lz(lz_)
-    { 
-        physicalU      = (T)1;
-        physicalLength = (T)1; 
+
+    IncomprFlowParam(T latticeU_, T Re_, plint resolution_, T lx_, T ly_, T lz_ = T()) :
+        latticeU(latticeU_), Re(Re_), resolution(resolution_), lx(lx_), ly(ly_), lz(lz_)
+    {
+        physicalU = (T)1;
+        physicalLength = (T)1;
     }
     /// velocity in lattice units (proportional to Mach number)
-    T getLatticeU() const { return latticeU; }
+    T getLatticeU() const
+    {
+        return latticeU;
+    }
     /// velocity in physical units
-    T getPhysicalU() const { return physicalU; }
+    T getPhysicalU() const
+    {
+        return physicalU;
+    }
     /// Reynolds number
-    T getRe() const      { return Re; }
+    T getRe() const
+    {
+        return Re;
+    }
     /// physical resolution
-    T getPhysicalLength() const { return physicalLength; }
+    T getPhysicalLength() const
+    {
+        return physicalLength;
+    }
     /// resolution
-    plint getResolution() const { return resolution; }
+    plint getResolution() const
+    {
+        return resolution;
+    }
     /// x-length in dimensionless units
-    T getLx() const      { return getPhysicalLength()*lx; }
+    T getLx() const
+    {
+        return getPhysicalLength() * lx;
+    }
     /// y-length in dimensionless units
-    T getLy() const      { return getPhysicalLength()*ly; }
+    T getLy() const
+    {
+        return getPhysicalLength() * ly;
+    }
     /// z-length in dimensionless units
-    T getLz() const      { return getPhysicalLength()*lz; }
+    T getLz() const
+    {
+        return getPhysicalLength() * lz;
+    }
     /// lattice spacing in dimensionless units
-    T getDeltaX() const  { return (T)getPhysicalLength()/(T)getResolution(); }
+    T getDeltaX() const
+    {
+        return (T)getPhysicalLength() / (T)getResolution();
+    }
     /// time step in dimensionless units
-    T getDeltaT() const  { return getDeltaX()*getLatticeU()/getPhysicalU(); }
+    T getDeltaT() const
+    {
+        return getDeltaX() * getLatticeU() / getPhysicalU();
+    }
     /// conversion from dimensionless to lattice units for space coordinate
-    plint nCell(T l) const { return (int)(l/getDeltaX()+(T)0.5); }
+    plint nCell(T l) const
+    {
+        return (int)(l / getDeltaX() + (T)0.5);
+    }
     /// conversion from dimensionless to lattice units for time coordinate
-    plint nStep(T t) const { return (int)(t/getDeltaT()+(T)0.5); }
+    plint nStep(T t) const
+    {
+        return (int)(t / getDeltaT() + (T)0.5);
+    }
     /// number of lattice cells in x-direction
-    plint getNx(bool offLattice=false) const { return nCell(getLx())+1+(int)offLattice; }
+    plint getNx(bool offLattice = false) const
+    {
+        return nCell(getLx()) + 1 + (int)offLattice;
+    }
     /// number of lattice cells in y-direction
-    plint getNy(bool offLattice=false) const { return nCell(getLy())+1+(int)offLattice; }
+    plint getNy(bool offLattice = false) const
+    {
+        return nCell(getLy()) + 1 + (int)offLattice;
+    }
     /// number of lattice cells in z-direction
-    plint getNz(bool offLattice=false) const { return nCell(getLz())+1+(int)offLattice; }
+    plint getNz(bool offLattice = false) const
+    {
+        return nCell(getLz()) + 1 + (int)offLattice;
+    }
     /// viscosity in lattice units
-    T getLatticeNu() const { return getLatticeU()*(T)getResolution()/Re; }
+    T getLatticeNu() const
+    {
+        return getLatticeU() * (T)getResolution() / Re;
+    }
     /// relaxation time
-    T getTau() const       { return (T)3*getLatticeNu()+(T)0.5; }
+    T getTau() const
+    {
+        return (T)3 * getLatticeNu() + (T)0.5;
+    }
     /// relaxation frequency
-    T getOmega() const     { return (T)1 / getTau(); }
+    T getOmega() const
+    {
+        return (T)1 / getTau();
+    }
+
 private:
     T physicalU, latticeU, Re, physicalLength;
     plint resolution;
     T lx, ly, lz;
 };
 
-template<typename T>
-void writeLogFile(IncomprFlowParam<T> const& parameters,
-                  std::string const& title)
+template <typename T>
+void writeLogFile(IncomprFlowParam<T> const &parameters, std::string const &title)
 {
     std::string fullName = global::directories().getLogOutDir() + "plbLog.dat";
     plb_ofstream ofile(fullName.c_str());
@@ -129,7 +192,7 @@ void writeLogFile(IncomprFlowParam<T> const& parameters,
 }
 
 /// Numeric parameters for isothermal, incompressible flow.
-template<typename T>
+template <typename T>
 class ComprFlowParam {
 public:
     /// Constructor
@@ -141,72 +204,157 @@ public:
      *  \param ly_ y-length in dimensionless units (e.g. 1).
      *  \param lz_ z-length in dimensionless units (e.g. 1).
      */
-    ComprFlowParam(T latticeU_, T latticeRho_, T latticeTemp_, T physU_, T physRho_, T physTemp_, 
-                   T Re_, T Pe_, plint resolution_, T lx_, T ly_, T lz_=T() )
-        : latticeU(latticeU_), latticeRho(latticeRho_), latticeTemp(latticeTemp_), 
-          physRho(physRho_), physU(physU_), physTemp(physTemp_), 
-          Re(Re_), Pe(Pe_), resolution(resolution_), lx(lx_), ly(ly_), lz(lz_)
+    ComprFlowParam(
+        T latticeU_, T latticeRho_, T latticeTemp_, T physU_, T physRho_, T physTemp_, T Re_, T Pe_,
+        plint resolution_, T lx_, T ly_, T lz_ = T()) :
+        latticeU(latticeU_),
+        latticeRho(latticeRho_),
+        latticeTemp(latticeTemp_),
+        physRho(physRho_),
+        physU(physU_),
+        physTemp(physTemp_),
+        Re(Re_),
+        Pe(Pe_),
+        resolution(resolution_),
+        lx(lx_),
+        ly(ly_),
+        lz(lz_)
     { }
-    /// velocity in lattice units 
-    T getLatticeU() const { return latticeU; }
-    /// density in lattice units 
-    T getLatticeRho() const { return latticeRho; }
-    /// temperature in lattice units 
-    T getLatticeTemp() const { return latticeTemp; }
-    /// velocity in physical units 
-    T getPhysicalU() const { return physU; }
-    /// density in physical units 
-    T getPhysicalRho() const { return physRho; }
-    /// temperature in physical units 
-    T getPhysicalTemp() const { return physTemp; }
+    /// velocity in lattice units
+    T getLatticeU() const
+    {
+        return latticeU;
+    }
+    /// density in lattice units
+    T getLatticeRho() const
+    {
+        return latticeRho;
+    }
+    /// temperature in lattice units
+    T getLatticeTemp() const
+    {
+        return latticeTemp;
+    }
+    /// velocity in physical units
+    T getPhysicalU() const
+    {
+        return physU;
+    }
+    /// density in physical units
+    T getPhysicalRho() const
+    {
+        return physRho;
+    }
+    /// temperature in physical units
+    T getPhysicalTemp() const
+    {
+        return physTemp;
+    }
     /// Reynolds number
-    T getRe() const      { return Re; }
+    T getRe() const
+    {
+        return Re;
+    }
     /// Peclet number (= Re*Pr)
-    T getPe() const      { return Pe; }
+    T getPe() const
+    {
+        return Pe;
+    }
     /// resolution
-    plint getResolution() const { return resolution; }
+    plint getResolution() const
+    {
+        return resolution;
+    }
     /// x-length in dimensionless units
-    T getLx() const      { return lx; }
+    T getLx() const
+    {
+        return lx;
+    }
     /// y-length in dimensionless units
-    T getLy() const      { return ly; }
+    T getLy() const
+    {
+        return ly;
+    }
     /// z-length in dimensionless units
-    T getLz() const      { return lz; }
+    T getLz() const
+    {
+        return lz;
+    }
     /// lattice spacing in dimensionless units
-    T getDeltaX() const  { return (T)1/(T)getResolution(); }
+    T getDeltaX() const
+    {
+        return (T)1 / (T)getResolution();
+    }
     /// time step in dimensionless units
-    T getDeltaT() const  { return getDeltaX() * getLatticeU() / getPhysicalU(); }
+    T getDeltaT() const
+    {
+        return getDeltaX() * getLatticeU() / getPhysicalU();
+    }
     /// density in dimensionless units
-    T getDeltaRho() const  { return getPhysicalRho() / getLatticeRho(); }
+    T getDeltaRho() const
+    {
+        return getPhysicalRho() / getLatticeRho();
+    }
     /// density in dimensionless units
-    T getDeltaTemp() const  { return getPhysicalTemp() / getLatticeTemp(); }
+    T getDeltaTemp() const
+    {
+        return getPhysicalTemp() / getLatticeTemp();
+    }
     /// conversion from dimensionless to lattice units for space coordinate
-    plint nCell(T l) const { return (int)(l/getDeltaX()+(T)0.5); }
+    plint nCell(T l) const
+    {
+        return (int)(l / getDeltaX() + (T)0.5);
+    }
     /// conversion from dimensionless to lattice units for time coordinate
-    plint nStep(T t) const { return (int)(t/getDeltaT()+(T)0.5); }
+    plint nStep(T t) const
+    {
+        return (int)(t / getDeltaT() + (T)0.5);
+    }
     /// number of lattice cells in x-direction
-    plint getNx(bool offLattice=false) const { return nCell(lx)+1+(int)offLattice; }
+    plint getNx(bool offLattice = false) const
+    {
+        return nCell(lx) + 1 + (int)offLattice;
+    }
     /// number of lattice cells in y-direction
-    plint getNy(bool offLattice=false) const { return nCell(ly)+1+(int)offLattice; }
+    plint getNy(bool offLattice = false) const
+    {
+        return nCell(ly) + 1 + (int)offLattice;
+    }
     /// number of lattice cells in z-direction
-    plint getNz(bool offLattice=false) const { return nCell(lz)+1+(int)offLattice; }
+    plint getNz(bool offLattice = false) const
+    {
+        return nCell(lz) + 1 + (int)offLattice;
+    }
     /// viscosity in lattice units
-    T getLatticeMu() const { return getLatticeU()*getResolution()*getLatticeRho() / Re; }
-    /// viscosity in lattice units 
-    T getLatticeKappa() const { return getLatticeU()*getResolution()*getLatticeRho() / Pe; }
+    T getLatticeMu() const
+    {
+        return getLatticeU() * getResolution() * getLatticeRho() / Re;
+    }
+    /// viscosity in lattice units
+    T getLatticeKappa() const
+    {
+        return getLatticeU() * getResolution() * getLatticeRho() / Pe;
+    }
     /// relaxation time
-    T getTau() const       { return getLatticeMu() / getLatticeRho() / getLatticeTemp()+(T)0.5; }
+    T getTau() const
+    {
+        return getLatticeMu() / getLatticeRho() / getLatticeTemp() + (T)0.5;
+    }
     // TODO for the moment only Pr = 1 (Pe = Re) fluids are simulable....
     /// relaxation frequency
-    T getOmega() const     { return (T)1 / getTau(); }
+    T getOmega() const
+    {
+        return (T)1 / getTau();
+    }
+
 private:
     T latticeU, latticeRho, latticeTemp, physRho, physU, physTemp, Re, Pe;
     plint resolution;
     T lx, ly, lz;
 };
 
-template<typename T>
-void writeLogFile(ComprFlowParam<T> const& parameters,
-                  std::string const& title)
+template <typename T>
+void writeLogFile(ComprFlowParam<T> const &parameters, std::string const &title)
 {
     std::string fullName = global::directories().getLogOutDir() + "plbLog.dat";
     plb_ofstream ofile(fullName.c_str());
@@ -233,11 +381,11 @@ public:
     /// This constructor explicitly sets the physical domain. The
     /// resolution isn't specified here. You should specify it later on,
     /// for example with set_dx() or set_xResolution().
-    Units3D(Cuboid<double> const& physDomain);
+    Units3D(Cuboid<double> const &physDomain);
     /// This constructor explicitly sets the physical domain. The
     /// resolution isn't specified here. You should specify it later on,
     /// for example with set_dx() or set_xResolution().
-    Units3D(Array<double,3> const& lowerLeftCorner, Array<double,3> const& upperRightCorner);
+    Units3D(Array<double, 3> const &lowerLeftCorner, Array<double, 3> const &upperRightCorner);
     /// This constructor sets the physical domain automatically, using
     /// the origin as lower-left corner.
     Units3D(plint nx, plint ny, plint nz, double dx_);
@@ -283,7 +431,7 @@ public:
     /// each direction.
     void extend(plint delta);
     /// Enlarge the domain (both the physical and the LB one) by the number
-    /// of indicated nodes in each (positive and negative) direction. In 
+    /// of indicated nodes in each (positive and negative) direction. In
     /// x-direction for example, the domain gets bigger by dx1+dx0 nodes.
     void extend(plint dx0, plint dx1, plint dy0, plint dy1, plint dz0, plint dz1);
     /// Enlarge dthe domain (both the physical and the LB one) by half a
@@ -293,11 +441,12 @@ public:
     /// Shift the domain by the numbr of indicated nodes in each space
     /// direction.
     void shift(double dx0, double dy0, double dz0);
+
 public:
     /// Computational domain in physical units.
     Cuboid<double> physDomain() const;
     /// Value of lower-left corner, corresponding to the origin in lattice units.
-    Array<double,3> physOffset() const;
+    Array<double, 3> physOffset() const;
     /// Computational domain in lattice units (lower-left corner is always (0,0,0)).
     Box3D lbDomain() const;
     /// Returns the resolution in x-direction. If the x-direction is periodic,
@@ -332,64 +481,66 @@ public:
     /// Converts a velocity from lattice to physical units.
     double physVel(double lbVel) const;
     /// Converts a velocity from physical to lattice units.
-    Array<double,3> lbVel(Array<double,3> const& physVel) const;
+    Array<double, 3> lbVel(Array<double, 3> const &physVel) const;
     /// Converts a velocity from lattice to physical units.
-    Array<double,3> physVel(Array<double,3> const& lbVel) const;
+    Array<double, 3> physVel(Array<double, 3> const &lbVel) const;
     /// Converts an acceleration from physical to lattice units.
     double lbAcceleration(double physAcceleration) const;
     /// Converts an acceleration from lattice to physical units.
     double physAcceleration(double lbAcceleration) const;
     /// Converts an acceleration from physical to lattice units.
-    Array<double,3> lbAcceleration(Array<double,3> const& physAcceleration) const;
+    Array<double, 3> lbAcceleration(Array<double, 3> const &physAcceleration) const;
     /// Converts an acceleration from lattice to physical units.
-    Array<double,3> physAcceleration(Array<double,3> const& lbAcceleration) const;
+    Array<double, 3> physAcceleration(Array<double, 3> const &lbAcceleration) const;
     /// Converts a kinematic viscosity from physical to lattice units.
     double lbVisc(double physVisc) const;
     /// Converts a kinematic viscosity from lattice to physical units.
     double physVisc(double lbVisc) const;
     /// Converts a physical-units viscosity to relaxation time.
-    double tau(double physVisc, double cs2 = 1./3.) const;
+    double tau(double physVisc, double cs2 = 1. / 3.) const;
     /// Converts a physical-units viscosity to relaxation frequency.
-    double omega(double physVisc, double cs2 = 1./3.) const;
+    double omega(double physVisc, double cs2 = 1. / 3.) const;
     /// Converts a pressure from physical to lattice units. The parameter
     /// rho0 is the fluid density in physical units.
-    double lbPressure(double physPressure, double rho0=1.0) const;
+    double lbPressure(double physPressure, double rho0 = 1.0) const;
     /// Converts a pressure from lattice to physical units. The parameter
     /// rho0 is the fluid density in physical units.
-    double physPressure(double lbPressure, double rho0=1.0) const;
+    double physPressure(double lbPressure, double rho0 = 1.0) const;
     /// Converts a scalar force from physical to lattice units. The parameter
     /// rho0 is the fluid density in physical units.
-    double lbForce(double physForce, double rho0=1.0) const;
+    double lbForce(double physForce, double rho0 = 1.0) const;
     /// Converts a scalar force from lattice to physical units. The parameter
     /// rho0 is the fluid density in physical units.
-    double physForce(double lbForce, double rho0=1.0) const;
+    double physForce(double lbForce, double rho0 = 1.0) const;
     /// Converts a vector force from physical to lattice units. The parameter
     /// rho0 is the fluid density in physical units.
-    Array<double,3> lbForce(Array<double,3> const& physForce, double rho0=1.0) const;
+    Array<double, 3> lbForce(Array<double, 3> const &physForce, double rho0 = 1.0) const;
     /// Converts a vector force from lattice to physical units. The parameter
     /// rho0 is the fluid density in physical units.
-    Array<double,3> physForce(Array<double,3> const& lbForce, double rho0=1.0) const;
+    Array<double, 3> physForce(Array<double, 3> const &lbForce, double rho0 = 1.0) const;
     /// Converts a scalar torque from physical to lattice units. The parameter
     /// rho0 is the fluid density in physical units.
-    double lbTorque(double physTorque, double rho0=1.0) const;
+    double lbTorque(double physTorque, double rho0 = 1.0) const;
     /// Converts a scalar torque from lattice to physical units. The parameter
     /// rho0 is the fluid density in physical units.
-    double physTorque(double lbTorque, double rho0=1.0) const;
+    double physTorque(double lbTorque, double rho0 = 1.0) const;
     /// Converts a vector torque from physical to lattice units. The parameter
     /// rho0 is the fluid density in physical units.
-    Array<double,3> lbTorque(Array<double,3> const& physTorque, double rho0=1.0) const;
+    Array<double, 3> lbTorque(Array<double, 3> const &physTorque, double rho0 = 1.0) const;
     /// Converts a vector torque from lattice to physical units. The parameter
     /// rho0 is the fluid density in physical units.
-    Array<double,3> physTorque(Array<double,3> const& lbTorque, double rho0=1.0) const;
+    Array<double, 3> physTorque(Array<double, 3> const &lbTorque, double rho0 = 1.0) const;
     /// Converts a vector coordinate from physical to lattice units. No rounding
     /// involved.
-    Array<double,3> lbCoord(Array<double,3> const& physCoord) const;
+    Array<double, 3> lbCoord(Array<double, 3> const &physCoord) const;
     /// Converts a vector coordinate from lattice to physical units. No rounding
     /// involved.
-    Array<double,3> physCoord(Array<double,3> const& lbCoord) const;
+    Array<double, 3> physCoord(Array<double, 3> const &lbCoord) const;
+
 private:
     void computePhysDomain();
-    plint adjustLength(double x0, double& x1);
+    plint adjustLength(double x0, double &x1);
+
 private:
     Box3D lbDomain_;
     Cuboid<double> physDomain_;
@@ -400,4 +551,3 @@ private:
 }  // namespace plb
 
 #endif  // UNITS_H
-

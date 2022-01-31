@@ -5,7 +5,7 @@
  * own the IP rights for most of the code base. Since October 2019, the
  * Palabos project is maintained by the University of Geneva and accepts
  * source code contributions from the community.
- * 
+ *
  * Contact:
  * Jonas Latt
  * Computer Science Department
@@ -14,7 +14,7 @@
  * 1227 Carouge, Switzerland
  * jonas.latt@unige.ch
  *
- * The most recent release of Palabos can be downloaded at 
+ * The most recent release of Palabos can be downloaded at
  * <https://palabos.unige.ch/>
  *
  * The library Palabos is free software: you can redistribute it and/or
@@ -29,302 +29,312 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 #ifndef CREATE_BUBBLES_3D_HH
 #define CREATE_BUBBLES_3D_HH
 
-#include "multiPhysics/createBubbles3D.h"
-#include "offLattice/makeSparse3D.h"
-#include "atomicBlock/dataProcessingFunctional3D.h"
-#include "multiPhysics/freeSurfaceUtil3D.h"
 #include <limits>
 
+#include "atomicBlock/dataProcessingFunctional3D.h"
+#include "multiPhysics/createBubbles3D.h"
+#include "multiPhysics/freeSurfaceUtil3D.h"
+#include "offLattice/makeSparse3D.h"
 
 namespace plb {
 
-template<typename T, template<typename U> class Descriptor>
-void punchSphere(FreeSurfaceFields3D<T,Descriptor>& fields, Array<T,3> const& center, T radius,
-                 T rhoEmpty, T rho0, Dynamics<T,Descriptor>& dynamics)
+template <typename T, template <typename U> class Descriptor>
+void punchSphere(
+    FreeSurfaceFields3D<T, Descriptor> &fields, Array<T, 3> const &center, T radius, T rhoEmpty,
+    T rho0, Dynamics<T, Descriptor> &dynamics)
 {
-    applyProcessingFunctional (
-            new PunchSphere3D<T,Descriptor>(center, radius, rho0),
-            fields.lattice.getBoundingBox(), fields.freeSurfaceArgs );
+    applyProcessingFunctional(
+        new PunchSphere3D<T, Descriptor>(center, radius, rho0), fields.lattice.getBoundingBox(),
+        fields.freeSurfaceArgs);
 
-    applyProcessingFunctional (
-        new FreeSurfaceComputeInterfaceLists3D<T,Descriptor>(),
-        fields.lattice.getBoundingBox(), fields.freeSurfaceArgs );
+    applyProcessingFunctional(
+        new FreeSurfaceComputeInterfaceLists3D<T, Descriptor>(), fields.lattice.getBoundingBox(),
+        fields.freeSurfaceArgs);
 
-    applyProcessingFunctional (
-        new FreeSurfaceIniInterfaceToAnyNodes3D<T,Descriptor>(rhoEmpty),
-        fields.lattice.getBoundingBox(), fields.freeSurfaceArgs );
+    applyProcessingFunctional(
+        new FreeSurfaceIniInterfaceToAnyNodes3D<T, Descriptor>(rhoEmpty),
+        fields.lattice.getBoundingBox(), fields.freeSurfaceArgs);
 
-    applyProcessingFunctional (
-        new FreeSurfaceIniEmptyToInterfaceNodes3D<T,Descriptor>(dynamics.clone(), Array<T,3>((T)0.,(T)0.,(T)0.)),
-                                fields.lattice.getBoundingBox(),
-                                fields.freeSurfaceArgs );
+    applyProcessingFunctional(
+        new FreeSurfaceIniEmptyToInterfaceNodes3D<T, Descriptor>(
+            dynamics.clone(), Array<T, 3>((T)0., (T)0., (T)0.)),
+        fields.lattice.getBoundingBox(), fields.freeSurfaceArgs);
 
-    applyProcessingFunctional (
-        new FreeSurfaceRemoveFalseInterfaceCells3D<T,Descriptor>(rhoEmpty),
-        fields.lattice.getBoundingBox(), fields.freeSurfaceArgs );
+    applyProcessingFunctional(
+        new FreeSurfaceRemoveFalseInterfaceCells3D<T, Descriptor>(rhoEmpty),
+        fields.lattice.getBoundingBox(), fields.freeSurfaceArgs);
 
-    applyProcessingFunctional (
-        new FreeSurfaceEqualMassExcessReDistribution3D<T,Descriptor>(),
-        fields.lattice.getBoundingBox(), fields.freeSurfaceArgs );
+    applyProcessingFunctional(
+        new FreeSurfaceEqualMassExcessReDistribution3D<T, Descriptor>(),
+        fields.lattice.getBoundingBox(), fields.freeSurfaceArgs);
 
-    applyProcessingFunctional (
-        new FreeSurfaceComputeStatistics3D<T,Descriptor>,
-        fields.lattice.getBoundingBox(), fields.freeSurfaceArgs );
+    applyProcessingFunctional(
+        new FreeSurfaceComputeStatistics3D<T, Descriptor>, fields.lattice.getBoundingBox(),
+        fields.freeSurfaceArgs);
 }
 
-template<typename T, template<typename U> class Descriptor>
-void analyticalPunchSphere(FreeSurfaceFields3D<T,Descriptor>& fields, Array<T,3> const& center, T radius,
-                           T rhoEmpty, T rho0, plint subDivision, Dynamics<T,Descriptor>& dynamics)
+template <typename T, template <typename U> class Descriptor>
+void analyticalPunchSphere(
+    FreeSurfaceFields3D<T, Descriptor> &fields, Array<T, 3> const &center, T radius, T rhoEmpty,
+    T rho0, plint subDivision, Dynamics<T, Descriptor> &dynamics)
 {
-    applyProcessingFunctional (
-            new AnalyticalPunchSphere3D<T,Descriptor>(center, radius, rho0, subDivision),
-            fields.lattice.getBoundingBox(), fields.freeSurfaceArgs );
+    applyProcessingFunctional(
+        new AnalyticalPunchSphere3D<T, Descriptor>(center, radius, rho0, subDivision),
+        fields.lattice.getBoundingBox(), fields.freeSurfaceArgs);
 
-    applyProcessingFunctional (
-        new FreeSurfaceComputeInterfaceLists3D<T,Descriptor>(),
-        fields.lattice.getBoundingBox(), fields.freeSurfaceArgs );
+    applyProcessingFunctional(
+        new FreeSurfaceComputeInterfaceLists3D<T, Descriptor>(), fields.lattice.getBoundingBox(),
+        fields.freeSurfaceArgs);
 
-    applyProcessingFunctional (
-        new FreeSurfaceIniInterfaceToAnyNodes3D<T,Descriptor>(rhoEmpty),
-        fields.lattice.getBoundingBox(), fields.freeSurfaceArgs );
+    applyProcessingFunctional(
+        new FreeSurfaceIniInterfaceToAnyNodes3D<T, Descriptor>(rhoEmpty),
+        fields.lattice.getBoundingBox(), fields.freeSurfaceArgs);
 
-    applyProcessingFunctional (
-        new FreeSurfaceIniEmptyToInterfaceNodes3D<T,Descriptor>(dynamics.clone(), Array<T,3>((T)0.,(T)0.,(T)0.)),
-                                fields.lattice.getBoundingBox(),
-                                fields.freeSurfaceArgs );
+    applyProcessingFunctional(
+        new FreeSurfaceIniEmptyToInterfaceNodes3D<T, Descriptor>(
+            dynamics.clone(), Array<T, 3>((T)0., (T)0., (T)0.)),
+        fields.lattice.getBoundingBox(), fields.freeSurfaceArgs);
 
-    applyProcessingFunctional (
-        new FreeSurfaceRemoveFalseInterfaceCells3D<T,Descriptor>(rhoEmpty),
-        fields.lattice.getBoundingBox(), fields.freeSurfaceArgs );
+    applyProcessingFunctional(
+        new FreeSurfaceRemoveFalseInterfaceCells3D<T, Descriptor>(rhoEmpty),
+        fields.lattice.getBoundingBox(), fields.freeSurfaceArgs);
 
-    applyProcessingFunctional (
-        new FreeSurfaceEqualMassExcessReDistribution3D<T,Descriptor>(),
-        fields.lattice.getBoundingBox(), fields.freeSurfaceArgs );
+    applyProcessingFunctional(
+        new FreeSurfaceEqualMassExcessReDistribution3D<T, Descriptor>(),
+        fields.lattice.getBoundingBox(), fields.freeSurfaceArgs);
 
-    applyProcessingFunctional (
-        new FreeSurfaceComputeStatistics3D<T,Descriptor>,
-        fields.lattice.getBoundingBox(), fields.freeSurfaceArgs );
+    applyProcessingFunctional(
+        new FreeSurfaceComputeStatistics3D<T, Descriptor>, fields.lattice.getBoundingBox(),
+        fields.freeSurfaceArgs);
 }
 
-template<typename T, template<typename U> class Descriptor>
-T computeAverageSphereDensity(FreeSurfaceFields3D<T,Descriptor>& fields, Array<T,3> const& center, T radius)
+template <typename T, template <typename U> class Descriptor>
+T computeAverageSphereDensity(
+    FreeSurfaceFields3D<T, Descriptor> &fields, Array<T, 3> const &center, T radius)
 {
-    CalculateAverageSphereDensity3D<T,Descriptor> functional(center, radius);
-    applyProcessingFunctional (
-            functional, fields.lattice.getBoundingBox(), fields.freeSurfaceArgs );
+    CalculateAverageSphereDensity3D<T, Descriptor> functional(center, radius);
+    applyProcessingFunctional(functional, fields.lattice.getBoundingBox(), fields.freeSurfaceArgs);
     return functional.getAverageDensity();
 }
 
-template<typename T, template<typename U> class Descriptor>
-void punchSphere(FreeSurfaceSetup<T,Descriptor>& setup, Array<T,3> const& center, T radius,
-                 T rhoEmpty, T rho0, Dynamics<T,Descriptor>& dynamics)
+template <typename T, template <typename U> class Descriptor>
+void punchSphere(
+    FreeSurfaceSetup<T, Descriptor> &setup, Array<T, 3> const &center, T radius, T rhoEmpty, T rho0,
+    Dynamics<T, Descriptor> &dynamics)
 {
-    applyProcessingFunctional (
-            new PunchSphere3D<T,Descriptor>(center, radius, rho0),
-            setup.getGroup().getBoundingBox(), setup.freeSurfaceArgs );
+    applyProcessingFunctional(
+        new PunchSphere3D<T, Descriptor>(center, radius, rho0), setup.getGroup().getBoundingBox(),
+        setup.freeSurfaceArgs);
 
-    applyProcessingFunctional (
-        new FreeSurfaceComputeInterfaceLists3D<T,Descriptor>(),
-        setup.getGroup().getBoundingBox(), setup.freeSurfaceArgs );
+    applyProcessingFunctional(
+        new FreeSurfaceComputeInterfaceLists3D<T, Descriptor>(), setup.getGroup().getBoundingBox(),
+        setup.freeSurfaceArgs);
 
-    applyProcessingFunctional (
-        new FreeSurfaceIniInterfaceToAnyNodes3D<T,Descriptor>(rhoEmpty),
-        setup.getGroup().getBoundingBox(), setup.freeSurfaceArgs );
+    applyProcessingFunctional(
+        new FreeSurfaceIniInterfaceToAnyNodes3D<T, Descriptor>(rhoEmpty),
+        setup.getGroup().getBoundingBox(), setup.freeSurfaceArgs);
 
-    applyProcessingFunctional (
-        new FreeSurfaceIniEmptyToInterfaceNodes3D<T,Descriptor>(dynamics.clone(), Array<T,3>((T)0.,(T)0.,(T)0.)),
-                                setup.getGroup().getBoundingBox(),
-                                setup.freeSurfaceArgs );
+    applyProcessingFunctional(
+        new FreeSurfaceIniEmptyToInterfaceNodes3D<T, Descriptor>(
+            dynamics.clone(), Array<T, 3>((T)0., (T)0., (T)0.)),
+        setup.getGroup().getBoundingBox(), setup.freeSurfaceArgs);
 
-    applyProcessingFunctional (
-        new FreeSurfaceRemoveFalseInterfaceCells3D<T,Descriptor>(rhoEmpty),
-        setup.getGroup().getBoundingBox(), setup.freeSurfaceArgs );
+    applyProcessingFunctional(
+        new FreeSurfaceRemoveFalseInterfaceCells3D<T, Descriptor>(rhoEmpty),
+        setup.getGroup().getBoundingBox(), setup.freeSurfaceArgs);
 
-    applyProcessingFunctional (
-        new FreeSurfaceEqualMassExcessReDistribution3D<T,Descriptor>(),
-        setup.getGroup().getBoundingBox(), setup.freeSurfaceArgs );
+    applyProcessingFunctional(
+        new FreeSurfaceEqualMassExcessReDistribution3D<T, Descriptor>(),
+        setup.getGroup().getBoundingBox(), setup.freeSurfaceArgs);
 
-    applyProcessingFunctional (
-        new FreeSurfaceComputeStatistics3D<T,Descriptor>,
-        setup.getGroup().getBoundingBox(), setup.freeSurfaceArgs );
+    applyProcessingFunctional(
+        new FreeSurfaceComputeStatistics3D<T, Descriptor>, setup.getGroup().getBoundingBox(),
+        setup.freeSurfaceArgs);
 }
 
-template<typename T, template<typename U> class Descriptor>
-void analyticalPunchSphere(FreeSurfaceSetup<T,Descriptor>& setup, Array<T,3> const& center, T radius,
-                           T rhoEmpty, T rho0, plint subDivision, Dynamics<T,Descriptor>& dynamics)
+template <typename T, template <typename U> class Descriptor>
+void analyticalPunchSphere(
+    FreeSurfaceSetup<T, Descriptor> &setup, Array<T, 3> const &center, T radius, T rhoEmpty, T rho0,
+    plint subDivision, Dynamics<T, Descriptor> &dynamics)
 {
-    applyProcessingFunctional (
-            new AnalyticalPunchSphere3D<T,Descriptor>(center, radius, rho0, subDivision),
-            setup.getGroup().getBoundingBox(), setup.freeSurfaceArgs );
+    applyProcessingFunctional(
+        new AnalyticalPunchSphere3D<T, Descriptor>(center, radius, rho0, subDivision),
+        setup.getGroup().getBoundingBox(), setup.freeSurfaceArgs);
 
-    applyProcessingFunctional (
-        new FreeSurfaceComputeInterfaceLists3D<T,Descriptor>(),
-        setup.getGroup().getBoundingBox(), setup.freeSurfaceArgs );
+    applyProcessingFunctional(
+        new FreeSurfaceComputeInterfaceLists3D<T, Descriptor>(), setup.getGroup().getBoundingBox(),
+        setup.freeSurfaceArgs);
 
-    applyProcessingFunctional (
-        new FreeSurfaceIniInterfaceToAnyNodes3D<T,Descriptor>(rhoEmpty),
-        setup.getGroup().getBoundingBox(), setup.freeSurfaceArgs );
+    applyProcessingFunctional(
+        new FreeSurfaceIniInterfaceToAnyNodes3D<T, Descriptor>(rhoEmpty),
+        setup.getGroup().getBoundingBox(), setup.freeSurfaceArgs);
 
-    applyProcessingFunctional (
-        new FreeSurfaceIniEmptyToInterfaceNodes3D<T,Descriptor>(dynamics.clone(), Array<T,3>((T)0.,(T)0.,(T)0.)),
-                                setup.getGroup().getBoundingBox(),
-                                setup.freeSurfaceArgs );
+    applyProcessingFunctional(
+        new FreeSurfaceIniEmptyToInterfaceNodes3D<T, Descriptor>(
+            dynamics.clone(), Array<T, 3>((T)0., (T)0., (T)0.)),
+        setup.getGroup().getBoundingBox(), setup.freeSurfaceArgs);
 
-    applyProcessingFunctional (
-        new FreeSurfaceRemoveFalseInterfaceCells3D<T,Descriptor>(rhoEmpty),
-        setup.getGroup().getBoundingBox(), setup.freeSurfaceArgs );
+    applyProcessingFunctional(
+        new FreeSurfaceRemoveFalseInterfaceCells3D<T, Descriptor>(rhoEmpty),
+        setup.getGroup().getBoundingBox(), setup.freeSurfaceArgs);
 
-    applyProcessingFunctional (
-        new FreeSurfaceEqualMassExcessReDistribution3D<T,Descriptor>(),
-        setup.getGroup().getBoundingBox(), setup.freeSurfaceArgs );
+    applyProcessingFunctional(
+        new FreeSurfaceEqualMassExcessReDistribution3D<T, Descriptor>(),
+        setup.getGroup().getBoundingBox(), setup.freeSurfaceArgs);
 
-    applyProcessingFunctional (
-        new FreeSurfaceComputeStatistics3D<T,Descriptor>,
-        setup.getGroup().getBoundingBox(), setup.freeSurfaceArgs );
+    applyProcessingFunctional(
+        new FreeSurfaceComputeStatistics3D<T, Descriptor>, setup.getGroup().getBoundingBox(),
+        setup.freeSurfaceArgs);
 }
 
-template<typename T, template<typename U> class Descriptor>
-T computeAverageSphereDensity(FreeSurfaceSetup<T,Descriptor>& setup, Array<T,3> const& center, T radius)
+template <typename T, template <typename U> class Descriptor>
+T computeAverageSphereDensity(
+    FreeSurfaceSetup<T, Descriptor> &setup, Array<T, 3> const &center, T radius)
 {
-    CalculateAverageSphereDensity3D<T,Descriptor> functional(center, radius);
-    applyProcessingFunctional (
-            functional, setup.getGroup().getBoundingBox(), setup.freeSurfaceArgs );
+    CalculateAverageSphereDensity3D<T, Descriptor> functional(center, radius);
+    applyProcessingFunctional(functional, setup.getGroup().getBoundingBox(), setup.freeSurfaceArgs);
     return functional.getAverageDensity();
 }
 
-template<typename T, template<typename U> class Descriptor>
-void punchSphere(FreeSurfaceWrapper<T,Descriptor>& wrapper, Array<T,3> const& center, T radius,
-                 T rhoEmpty, T rho0, Dynamics<T,Descriptor>& dynamics)
+template <typename T, template <typename U> class Descriptor>
+void punchSphere(
+    FreeSurfaceWrapper<T, Descriptor> &wrapper, Array<T, 3> const &center, T radius, T rhoEmpty,
+    T rho0, Dynamics<T, Descriptor> &dynamics)
 {
-    applyProcessingFunctional (
-            new PunchSphere3D<T,Descriptor>(center, radius, rho0),
-            wrapper.getGroup().getBoundingBox(), wrapper.freeSurfaceArgs );
+    applyProcessingFunctional(
+        new PunchSphere3D<T, Descriptor>(center, radius, rho0), wrapper.getGroup().getBoundingBox(),
+        wrapper.freeSurfaceArgs);
 
-    applyProcessingFunctional (
-        new FreeSurfaceComputeInterfaceLists3D<T,Descriptor>(),
-        wrapper.getGroup().getBoundingBox(), wrapper.freeSurfaceArgs );
+    applyProcessingFunctional(
+        new FreeSurfaceComputeInterfaceLists3D<T, Descriptor>(),
+        wrapper.getGroup().getBoundingBox(), wrapper.freeSurfaceArgs);
 
-    applyProcessingFunctional (
-        new FreeSurfaceIniInterfaceToAnyNodes3D<T,Descriptor>(rhoEmpty),
-        wrapper.getGroup().getBoundingBox(), wrapper.freeSurfaceArgs );
+    applyProcessingFunctional(
+        new FreeSurfaceIniInterfaceToAnyNodes3D<T, Descriptor>(rhoEmpty),
+        wrapper.getGroup().getBoundingBox(), wrapper.freeSurfaceArgs);
 
-    applyProcessingFunctional (
-        new FreeSurfaceIniEmptyToInterfaceNodes3D<T,Descriptor>(dynamics.clone(), Array<T,3>((T)0.,(T)0.,(T)0.)),
-                                wrapper.getGroup().getBoundingBox(),
-                                wrapper.freeSurfaceArgs );
+    applyProcessingFunctional(
+        new FreeSurfaceIniEmptyToInterfaceNodes3D<T, Descriptor>(
+            dynamics.clone(), Array<T, 3>((T)0., (T)0., (T)0.)),
+        wrapper.getGroup().getBoundingBox(), wrapper.freeSurfaceArgs);
 
-    applyProcessingFunctional (
-        new FreeSurfaceRemoveFalseInterfaceCells3D<T,Descriptor>(rhoEmpty),
-        wrapper.getGroup().getBoundingBox(), wrapper.freeSurfaceArgs );
+    applyProcessingFunctional(
+        new FreeSurfaceRemoveFalseInterfaceCells3D<T, Descriptor>(rhoEmpty),
+        wrapper.getGroup().getBoundingBox(), wrapper.freeSurfaceArgs);
 
-    applyProcessingFunctional (
-        new FreeSurfaceEqualMassExcessReDistributionAndComputationOfLostMass3D<T,Descriptor>(wrapper.getReductionData()),
-        wrapper.getGroup().getBoundingBox(), wrapper.freeSurfaceArgs );
+    applyProcessingFunctional(
+        new FreeSurfaceEqualMassExcessReDistributionAndComputationOfLostMass3D<T, Descriptor>(
+            wrapper.getReductionData()),
+        wrapper.getGroup().getBoundingBox(), wrapper.freeSurfaceArgs);
 
     {
-        std::vector<MultiBlock3D*> args;
+        std::vector<MultiBlock3D *> args;
         args.push_back(&wrapper.getFlag());
         args.push_back(&wrapper.getMass());
 
-        applyProcessingFunctional (
+        applyProcessingFunctional(
             new FreeSurfaceComputeReductionsPerProcess3D<T>(wrapper.getReductionData()),
-            wrapper.getGroup().getBoundingBox(), wrapper.freeSurfaceArgs );
+            wrapper.getGroup().getBoundingBox(), wrapper.freeSurfaceArgs);
     }
 
     {
-        std::vector<MultiBlock3D*> args;
+        std::vector<MultiBlock3D *> args;
         args.push_back(&wrapper.getLattice());
 
 #ifdef PLB_MPI_PARALLEL
-        applyProcessingFunctional (
-            new FreeSurfaceComputeReductions3D(wrapper.getReductionData(), wrapper.getReductionCommunicator()),
-            wrapper.getGroup().getBoundingBox(), args );
+        applyProcessingFunctional(
+            new FreeSurfaceComputeReductions3D(
+                wrapper.getReductionData(), wrapper.getReductionCommunicator()),
+            wrapper.getGroup().getBoundingBox(), args);
 #else
-        applyProcessingFunctional (
+        applyProcessingFunctional(
             new FreeSurfaceComputeSerialReductions3D(wrapper.getReductionData()),
-            wrapper.getGroup().getBoundingBox(), args );
+            wrapper.getGroup().getBoundingBox(), args);
 #endif
 
-        applyProcessingFunctional (
+        applyProcessingFunctional(
             new FreeSurfaceResetReductionData3D(wrapper.getReductionData()),
-            wrapper.getGroup().getBoundingBox(), args );
+            wrapper.getGroup().getBoundingBox(), args);
     }
 }
 
-template<typename T, template<typename U> class Descriptor>
-void analyticalPunchSphere(FreeSurfaceWrapper<T,Descriptor>& wrapper, Array<T,3> const& center, T radius,
-                           T rhoEmpty, T rho0, plint subDivision, Dynamics<T,Descriptor>& dynamics)
+template <typename T, template <typename U> class Descriptor>
+void analyticalPunchSphere(
+    FreeSurfaceWrapper<T, Descriptor> &wrapper, Array<T, 3> const &center, T radius, T rhoEmpty,
+    T rho0, plint subDivision, Dynamics<T, Descriptor> &dynamics)
 {
-    applyProcessingFunctional (
-            new AnalyticalPunchSphere3D<T,Descriptor>(center, radius, rho0, subDivision),
-            wrapper.getGroup().getBoundingBox(), wrapper.freeSurfaceArgs );
+    applyProcessingFunctional(
+        new AnalyticalPunchSphere3D<T, Descriptor>(center, radius, rho0, subDivision),
+        wrapper.getGroup().getBoundingBox(), wrapper.freeSurfaceArgs);
 
-    applyProcessingFunctional (
-        new FreeSurfaceComputeInterfaceLists3D<T,Descriptor>(),
-        wrapper.getGroup().getBoundingBox(), wrapper.freeSurfaceArgs );
+    applyProcessingFunctional(
+        new FreeSurfaceComputeInterfaceLists3D<T, Descriptor>(),
+        wrapper.getGroup().getBoundingBox(), wrapper.freeSurfaceArgs);
 
-    applyProcessingFunctional (
-        new FreeSurfaceIniInterfaceToAnyNodes3D<T,Descriptor>(rhoEmpty),
-        wrapper.getGroup().getBoundingBox(), wrapper.freeSurfaceArgs );
+    applyProcessingFunctional(
+        new FreeSurfaceIniInterfaceToAnyNodes3D<T, Descriptor>(rhoEmpty),
+        wrapper.getGroup().getBoundingBox(), wrapper.freeSurfaceArgs);
 
-    applyProcessingFunctional (
-        new FreeSurfaceIniEmptyToInterfaceNodes3D<T,Descriptor>(dynamics.clone(), Array<T,3>((T)0.,(T)0.,(T)0.)),
-                                wrapper.getGroup().getBoundingBox(),
-                                wrapper.freeSurfaceArgs );
+    applyProcessingFunctional(
+        new FreeSurfaceIniEmptyToInterfaceNodes3D<T, Descriptor>(
+            dynamics.clone(), Array<T, 3>((T)0., (T)0., (T)0.)),
+        wrapper.getGroup().getBoundingBox(), wrapper.freeSurfaceArgs);
 
-    applyProcessingFunctional (
-        new FreeSurfaceRemoveFalseInterfaceCells3D<T,Descriptor>(rhoEmpty),
-        wrapper.getGroup().getBoundingBox(), wrapper.freeSurfaceArgs );
+    applyProcessingFunctional(
+        new FreeSurfaceRemoveFalseInterfaceCells3D<T, Descriptor>(rhoEmpty),
+        wrapper.getGroup().getBoundingBox(), wrapper.freeSurfaceArgs);
 
-    applyProcessingFunctional (
-        new FreeSurfaceEqualMassExcessReDistributionAndComputationOfLostMass3D<T,Descriptor>(wrapper.getReductionData()),
-        wrapper.getGroup().getBoundingBox(), wrapper.freeSurfaceArgs );
+    applyProcessingFunctional(
+        new FreeSurfaceEqualMassExcessReDistributionAndComputationOfLostMass3D<T, Descriptor>(
+            wrapper.getReductionData()),
+        wrapper.getGroup().getBoundingBox(), wrapper.freeSurfaceArgs);
 
     {
-        std::vector<MultiBlock3D*> args;
+        std::vector<MultiBlock3D *> args;
         args.push_back(&wrapper.getFlag());
         args.push_back(&wrapper.getMass());
 
-        applyProcessingFunctional (
+        applyProcessingFunctional(
             new FreeSurfaceComputeReductionsPerProcess3D<T>(wrapper.getReductionData()),
-            wrapper.getGroup().getBoundingBox(), wrapper.freeSurfaceArgs );
+            wrapper.getGroup().getBoundingBox(), wrapper.freeSurfaceArgs);
     }
 
     {
-        std::vector<MultiBlock3D*> args;
+        std::vector<MultiBlock3D *> args;
         args.push_back(&wrapper.getLattice());
 
 #ifdef PLB_MPI_PARALLEL
-        applyProcessingFunctional (
-            new FreeSurfaceComputeReductions3D(wrapper.getReductionData(), wrapper.getReductionCommunicator()),
-            wrapper.getGroup().getBoundingBox(), args );
+        applyProcessingFunctional(
+            new FreeSurfaceComputeReductions3D(
+                wrapper.getReductionData(), wrapper.getReductionCommunicator()),
+            wrapper.getGroup().getBoundingBox(), args);
 #else
-        applyProcessingFunctional (
+        applyProcessingFunctional(
             new FreeSurfaceComputeSerialReductions3D(wrapper.getReductionData()),
-            wrapper.getGroup().getBoundingBox(), args );
+            wrapper.getGroup().getBoundingBox(), args);
 #endif
 
-        applyProcessingFunctional (
+        applyProcessingFunctional(
             new FreeSurfaceResetReductionData3D(wrapper.getReductionData()),
-            wrapper.getGroup().getBoundingBox(), args );
+            wrapper.getGroup().getBoundingBox(), args);
     }
 }
 
-template<typename T, template<typename U> class Descriptor>
-T computeAverageSphereDensity(FreeSurfaceWrapper<T,Descriptor>& wrapper, Array<T,3> const& center, T radius)
+template <typename T, template <typename U> class Descriptor>
+T computeAverageSphereDensity(
+    FreeSurfaceWrapper<T, Descriptor> &wrapper, Array<T, 3> const &center, T radius)
 {
-    CalculateAverageSphereDensity3D<T,Descriptor> functional(center, radius);
-    applyProcessingFunctional (
-            functional, wrapper.getGroup().getBoundingBox(), wrapper.freeSurfaceArgs );
+    CalculateAverageSphereDensity3D<T, Descriptor> functional(center, radius);
+    applyProcessingFunctional(
+        functional, wrapper.getGroup().getBoundingBox(), wrapper.freeSurfaceArgs);
     return functional.getAverageDensity();
 }
 
 }  // namespace plb
 
 #endif  // CREATE_BUBBLES_3D_HH
-

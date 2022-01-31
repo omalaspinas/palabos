@@ -5,7 +5,7 @@
  * own the IP rights for most of the code base. Since October 2019, the
  * Palabos project is maintained by the University of Geneva and accepts
  * source code contributions from the community.
- * 
+ *
  * Contact:
  * Jonas Latt
  * Computer Science Department
@@ -14,7 +14,7 @@
  * 1227 Carouge, Switzerland
  * jonas.latt@unige.ch
  *
- * The most recent release of Palabos can be downloaded at 
+ * The most recent release of Palabos can be downloaded at
  * <https://palabos.unige.ch/>
  *
  * The library Palabos is free software: you can redistribute it and/or
@@ -29,35 +29,38 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 #ifndef OBSOLETE_FORMAT_WRAPPER_H
 #define OBSOLETE_FORMAT_WRAPPER_H
 
+#include <map>
+#include <string>
+
 #include "offLattice/rawTriangleMesh.h"
 #include "offLattice/triangleBoundary3D.h"
-#include <string>
-#include <map>
 
 namespace plb {
 
-
-template<typename T>
-RawTriangleMesh<T> triangleSetToRawTriangleMesh(TriangleSet<T> const& triangleSet, T eps=getEpsilon<T>(DBL));
+template <typename T>
+RawTriangleMesh<T> triangleSetToRawTriangleMesh(
+    TriangleSet<T> const &triangleSet, T eps = getEpsilon<T>(DBL));
 
 template <typename T>
-RawConnectedTriangleMesh<T> triangleSetToConnectedTriangleMesh(TriangleSet<T> const& triangleSet, T eps=getEpsilon<T>(DBL));
+RawConnectedTriangleMesh<T> triangleSetToConnectedTriangleMesh(
+    TriangleSet<T> const &triangleSet, T eps = getEpsilon<T>(DBL));
 
 template <typename T>
-TriangleSet<T> rawTriangleMeshToTriangleSet(RawTriangleMesh<T> const& triangleMesh, Precision precision = DBL );
+TriangleSet<T> rawTriangleMeshToTriangleSet(
+    RawTriangleMesh<T> const &triangleMesh, Precision precision = DBL);
 
 template <typename T>
-TriangleSet<T> rawTriangleMeshToTriangleSet(RawTriangleMesh<T> const& triangleMesh, T eps );
+TriangleSet<T> rawTriangleMeshToTriangleSet(RawTriangleMesh<T> const &triangleMesh, T eps);
 
 template <typename T>
-RawConnectedTriangleMesh<T> def_to_ConnectedMesh(TriangleBoundary3D<T>& boundary, std::string partNaming = "Part");
+RawConnectedTriangleMesh<T> def_to_ConnectedMesh(
+    TriangleBoundary3D<T> &boundary, std::string partNaming = "Part");
 
 }  // namespace plb
 
 #endif  // OBSOLETE_FORMAT_WRAPPER_H
-

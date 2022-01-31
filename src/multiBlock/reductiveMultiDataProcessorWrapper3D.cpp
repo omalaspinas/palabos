@@ -5,7 +5,7 @@
  * own the IP rights for most of the code base. Since October 2019, the
  * Palabos project is maintained by the University of Geneva and accepts
  * source code contributions from the community.
- * 
+ *
  * Contact:
  * Jonas Latt
  * Computer Science Department
@@ -14,7 +14,7 @@
  * 1227 Carouge, Switzerland
  * jonas.latt@unige.ch
  *
- * The most recent release of Palabos can be downloaded at 
+ * The most recent release of Palabos can be downloaded at
  * <https://palabos.unige.ch/>
  *
  * The library Palabos is free software: you can redistribute it and/or
@@ -29,37 +29,38 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 #include "multiBlock/reductiveMultiDataProcessorWrapper3D.h"
-#include "multiBlock/multiBlockLattice3D.h"
-#include "multiBlock/multiDataField3D.h"
-#include "multiBlock/multiBlockOperations3D.h"
+
 #include "atomicBlock/dataProcessor3D.h"
 #include "core/plbDebug.h"
+#include "multiBlock/multiBlockLattice3D.h"
+#include "multiBlock/multiBlockOperations3D.h"
+#include "multiBlock/multiDataField3D.h"
 
 namespace plb {
 
 /* *************** BoxProcessing3D, general case *************************** */
 
-void applyProcessingFunctional(ReductiveBoxProcessingFunctional3D& functional,
-                               Box3D domain, std::vector<MultiBlock3D*> multiBlocks)
+void applyProcessingFunctional(
+    ReductiveBoxProcessingFunctional3D &functional, Box3D domain,
+    std::vector<MultiBlock3D *> multiBlocks)
 {
     // Let the generator get off with a clone of the functional (because the generator
     //   owns its functional, whereas we still need our copy afterwards to get at the
     //   reducted values).
     ReductiveBoxProcessorGenerator3D generator(functional.clone(), domain);
-    executeDataProcessor(generator, multiBlocks );
+    executeDataProcessor(generator, multiBlocks);
     // Recover reducted values from the generator's functional.
     functional.getStatistics() = generator.getFunctional().getStatistics();
 }
 
-
 /* *************** DotProcessing, general case ***************************** */
 
-void applyProcessingFunctional(ReductiveDotProcessingFunctional3D& functional,
-                               DotList3D const& dotList,
-                               std::vector<MultiBlock3D*> multiBlocks)
+void applyProcessingFunctional(
+    ReductiveDotProcessingFunctional3D &functional, DotList3D const &dotList,
+    std::vector<MultiBlock3D *> multiBlocks)
 {
     // Let the generator get off with a clone of the functional (because the generator
     //   owns its functional, whereas we still need our copy afterwards to get at the
@@ -72,19 +73,19 @@ void applyProcessingFunctional(ReductiveDotProcessingFunctional3D& functional,
 
 /* *************** BoundedReductiveBoxProcessing3D, general case *********** */
 
-void applyProcessingFunctional(BoundedReductiveBoxProcessingFunctional3D& functional,
-                               Box3D domain, std::vector<MultiBlock3D*> multiBlocks,
-                               plint boundaryWidth )
+void applyProcessingFunctional(
+    BoundedReductiveBoxProcessingFunctional3D &functional, Box3D domain,
+    std::vector<MultiBlock3D *> multiBlocks, plint boundaryWidth)
 {
-    std::vector<ReductiveBoxProcessorGenerator3D*> generators;
+    std::vector<ReductiveBoxProcessorGenerator3D *> generators;
     functional.getGenerators(domain, boundaryWidth, generators);
-    std::vector<BlockStatistics const*> individualStatistics(generators.size());
-    for (pluint iGen=0; iGen<generators.size(); ++iGen) {
-        executeDataProcessor( *generators[iGen], multiBlocks );
+    std::vector<BlockStatistics const *> individualStatistics(generators.size());
+    for (pluint iGen = 0; iGen < generators.size(); ++iGen) {
+        executeDataProcessor(*generators[iGen], multiBlocks);
         individualStatistics[iGen] = &(generators[iGen]->getStatistics());
     }
     SerialCombinedStatistics().combine(individualStatistics, functional.getStatistics());
-    for (pluint iGen=0; iGen<generators.size(); ++iGen) {
+    for (pluint iGen = 0; iGen < generators.size(); ++iGen) {
         delete generators[iGen];
     }
 }

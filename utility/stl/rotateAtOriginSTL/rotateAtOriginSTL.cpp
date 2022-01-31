@@ -5,7 +5,7 @@
  * own the IP rights for most of the code base. Since October 2019, the
  * Palabos project is maintained by the University of Geneva and accepts
  * source code contributions from the community.
- * 
+ *
  * Contact:
  * Jonas Latt
  * Computer Science Department
@@ -14,7 +14,7 @@
  * 1227 Carouge, Switzerland
  * jonas.latt@unige.ch
  *
- * The most recent release of Palabos can be downloaded at 
+ * The most recent release of Palabos can be downloaded at
  * <https://palabos.unige.ch/>
  *
  * The library Palabos is free software: you can redistribute it and/or
@@ -29,7 +29,7 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 #include "palabos3D.h"
 #include "palabos3D.hh"
@@ -39,14 +39,14 @@ using namespace std;
 
 typedef double T;
 
-int main(int argc, char* argv[])
+int main(int argc, char *argv[])
 {
     plbInit(&argc, &argv);
     global::directories().setOutputDir("./");
     global::IOpolicy().activateParallelIO(false);
 
     string stlFileName, outFileName;
-    Array<T,3> normedAxis;
+    Array<T, 3> normedAxis;
     T theta;
     try {
         global::argv(1).read(stlFileName);
@@ -55,14 +55,15 @@ int main(int argc, char* argv[])
         global::argv(4).read(normedAxis[2]);
         global::argv(5).read(theta);
         global::argv(6).read(outFileName);
-    }
-    catch (PlbIOException& exception) {
-        pcout << "Wrong parameters; the syntax is: " 
-              << (std::string)global::argv(0) << " inputSTL.stl normedAxis_x normedAxis_y normedAxis_z angle outputSTL.stl"
+    } catch (PlbIOException &exception) {
+        pcout << "Wrong parameters; the syntax is: " << (std::string)global::argv(0)
+              << " inputSTL.stl normedAxis_x normedAxis_y normedAxis_z angle outputSTL.stl"
               << std::endl;
-        pcout << "If for example, you want your STL to be rotated around the y-axis for an angle of 12 degrees, you should write"
+        pcout << "If for example, you want your STL to be rotated around the y-axis for an angle "
+                 "of 12 degrees, you should write"
               << std::endl;
-        pcout << (std::string)global::argv(0) << " inputSTL.stl 0.0 1.0 0.0 12.0 outputSTL.stl" << std::endl;
+        pcout << (std::string)global::argv(0) << " inputSTL.stl 0.0 1.0 0.0 12.0 outputSTL.stl"
+              << std::endl;
         exit(-1);
     }
 
@@ -73,27 +74,23 @@ int main(int argc, char* argv[])
     }
     normedAxis /= norm(normedAxis);
 
-    TriangleSet<T>* triangleSet = 0;
+    TriangleSet<T> *triangleSet = 0;
     try {
         triangleSet = new TriangleSet<T>(stlFileName, DBL);
-    }
-    catch (PlbIOException& exception) {
-        pcout << "Error, could not read STL file " << stlFileName
-              << ": " << exception.what() << std::endl;
+    } catch (PlbIOException &exception) {
+        pcout << "Error, could not read STL file " << stlFileName << ": " << exception.what()
+              << std::endl;
         return -1;
     }
     try {
-        T pi = std::acos((T) -1);
-        theta *= (pi/(T)180.0);
+        T pi = std::acos((T)-1);
+        theta *= (pi / (T)180.0);
         triangleSet->rotateAtOrigin(normedAxis, theta);
         triangleSet->writeBinarySTL(outFileName);
-    }
-    catch (PlbIOException& exception) {
-            pcout << "Error in STL file " << stlFileName
-                  << ": " << exception.what() << std::endl;
-            exit(-1);
+    } catch (PlbIOException &exception) {
+        pcout << "Error in STL file " << stlFileName << ": " << exception.what() << std::endl;
+        exit(-1);
     }
 
     return 0;
 }
-

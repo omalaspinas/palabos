@@ -5,7 +5,7 @@
  * own the IP rights for most of the code base. Since October 2019, the
  * Palabos project is maintained by the University of Geneva and accepts
  * source code contributions from the community.
- * 
+ *
  * Contact:
  * Jonas Latt
  * Computer Science Department
@@ -14,7 +14,7 @@
  * 1227 Carouge, Switzerland
  * jonas.latt@unige.ch
  *
- * The most recent release of Palabos can be downloaded at 
+ * The most recent release of Palabos can be downloaded at
  * <https://palabos.unige.ch/>
  *
  * The library Palabos is free software: you can redistribute it and/or
@@ -29,7 +29,7 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 /** \file
  * A collection of dynamics classes (e.g. BGK) with which a Cell object
@@ -38,96 +38,92 @@
 #ifndef GENERALIZED_BOUNDARY_DYNAMICS_H
 #define GENERALIZED_BOUNDARY_DYNAMICS_H
 
-#include "core/globalDefs.h"
 #include "boundaryCondition/boundaryDynamics.h"
+#include "core/globalDefs.h"
 
 namespace plb {
 
 /// Generic velocity boundary dynamics for a straight wall
-template<typename T, template<typename U> class Descriptor>
-class GeneralizedVelocityBoundaryDynamics :
-    public StoreVelocityDynamics<T,Descriptor>
-{
+template <typename T, template <typename U> class Descriptor>
+class GeneralizedVelocityBoundaryDynamics : public StoreVelocityDynamics<T, Descriptor> {
 public:
-    GeneralizedVelocityBoundaryDynamics(Dynamics<T,Descriptor>* baseDynamics_,
-                                        std::vector<plint> missingIndices_,
-                                        bool automaticPrepareCollision = true);
-    GeneralizedVelocityBoundaryDynamics(HierarchicUnserializer& unserializer);
+    GeneralizedVelocityBoundaryDynamics(
+        Dynamics<T, Descriptor> *baseDynamics_, std::vector<plint> missingIndices_,
+        bool automaticPrepareCollision = true);
+    GeneralizedVelocityBoundaryDynamics(HierarchicUnserializer &unserializer);
 
     /// Clone the object, based on its dynamic type
-    virtual GeneralizedVelocityBoundaryDynamics<T,Descriptor>* clone() const;
+    virtual GeneralizedVelocityBoundaryDynamics<T, Descriptor> *clone() const;
 
     /// Return a unique ID for this class.
     virtual int getId() const;
 
-    virtual void serialize(HierarchicSerializer& serializer) const;
-    virtual void unserialize(HierarchicUnserializer& unserializer);
-    
-    void computeUlb(Cell<T,Descriptor> const& cell, 
-                    Array<T,Descriptor<T>::d> &uLb) const;
+    virtual void serialize(HierarchicSerializer &serializer) const;
+    virtual void unserialize(HierarchicUnserializer &unserializer);
+
+    void computeUlb(Cell<T, Descriptor> const &cell, Array<T, Descriptor<T>::d> &uLb) const;
 
     /// Execute completion scheme before base collision
-    virtual void completePopulations(Cell<T,Descriptor>& cell) const;
+    virtual void completePopulations(Cell<T, Descriptor> &cell) const;
+
 private:
     static int id;
     std::vector<plint> missingIndices, knownIndices;
 };
 
 /// Mass Conserving Generic velocity boundary dynamics for a straight wall
-template<typename T, template<typename U> class Descriptor>
+template <typename T, template <typename U> class Descriptor>
 class GeneralizedMassConservingVelocityBoundaryDynamics :
-    public StoreVelocityDynamics<T,Descriptor>
-{
+    public StoreVelocityDynamics<T, Descriptor> {
 public:
-    GeneralizedMassConservingVelocityBoundaryDynamics(Dynamics<T,Descriptor>* baseDynamics_,
-                                        std::vector<plint> missingIndices_,
-                                        std::vector<plint> knownIndices_,
-                                        std::vector<plint> inGoingIndices_,
-                                        bool automaticPrepareCollision = true);
-    GeneralizedMassConservingVelocityBoundaryDynamics(HierarchicUnserializer& unserializer);
+    GeneralizedMassConservingVelocityBoundaryDynamics(
+        Dynamics<T, Descriptor> *baseDynamics_, std::vector<plint> missingIndices_,
+        std::vector<plint> knownIndices_, std::vector<plint> inGoingIndices_,
+        bool automaticPrepareCollision = true);
+    GeneralizedMassConservingVelocityBoundaryDynamics(HierarchicUnserializer &unserializer);
 
     /// Clone the object, based on its dynamic type
-    virtual GeneralizedMassConservingVelocityBoundaryDynamics<T,Descriptor>* clone() const;
+    virtual GeneralizedMassConservingVelocityBoundaryDynamics<T, Descriptor> *clone() const;
 
     /// Return a unique ID for this class.
     virtual int getId() const;
 
-    virtual void serialize(HierarchicSerializer& serializer) const;
-    virtual void unserialize(HierarchicUnserializer& unserializer);
-    
-    void computeUlb(Cell<T,Descriptor> const& cell, 
-                    Array<T,Descriptor<T>::d> &uLb) const;
+    virtual void serialize(HierarchicSerializer &serializer) const;
+    virtual void unserialize(HierarchicUnserializer &unserializer);
+
+    void computeUlb(Cell<T, Descriptor> const &cell, Array<T, Descriptor<T>::d> &uLb) const;
 
     /// Execute completion scheme before base collision
-    virtual void completePopulations(Cell<T,Descriptor>& cell) const;
+    virtual void completePopulations(Cell<T, Descriptor> &cell) const;
+
 private:
     static int id;
     std::vector<plint> missingIndices, knownIndices, inGoingIndices;
 };
 
 /// Generic density Dirichlet boundary dynamics for a straight wall
-template<typename T, template<typename U> class Descriptor,
-         int direction, int orientation>
+template <typename T, template <typename U> class Descriptor, int direction, int orientation>
 class GeneralizedDensityBoundaryDynamics :
-     public DensityDirichletBoundaryDynamics<T,Descriptor,direction,orientation>
-{
+    public DensityDirichletBoundaryDynamics<T, Descriptor, direction, orientation> {
 public:
-    GeneralizedDensityBoundaryDynamics(Dynamics<T,Descriptor>* baseDynamics_,
-                                   std::vector<plint> missingIndices_,
-                                   bool automaticPrepareCollision = true);
-    GeneralizedDensityBoundaryDynamics(HierarchicUnserializer& unserializer);
+    GeneralizedDensityBoundaryDynamics(
+        Dynamics<T, Descriptor> *baseDynamics_, std::vector<plint> missingIndices_,
+        bool automaticPrepareCollision = true);
+    GeneralizedDensityBoundaryDynamics(HierarchicUnserializer &unserializer);
 
     /// Clone the object, based on its dynamic type
-    virtual GeneralizedDensityBoundaryDynamics<T,Descriptor,direction,orientation>* clone() const;
+    virtual GeneralizedDensityBoundaryDynamics<T, Descriptor, direction, orientation> *clone()
+        const;
 
     /// Return a unique ID for this class.
     virtual int getId() const;
-    
-    virtual void serialize(HierarchicSerializer& serializer) const;
-    virtual void unserialize(HierarchicUnserializer& unserializer);
+
+    virtual void serialize(HierarchicSerializer &serializer) const;
+    virtual void unserialize(HierarchicUnserializer &unserializer);
 
     /// Execute completion scheme before base collision
-    virtual void completePopulations(Cell<T,Descriptor>& cell) const;
+    virtual void completePopulations(Cell<T, Descriptor> &cell) const;
+
 private:
     static int id;
     std::vector<plint> missingIndices, knownIndices;
@@ -139,37 +135,34 @@ private:
 // ========================================================================== //
 
 /// Generic velocity and temperature boundary dynamics for a straight wall
-template<typename T, template<typename U> class Descriptor>
+template <typename T, template <typename U> class Descriptor>
 class GeneralizedVelocityTemperatureBoundaryDynamics :
-    public StoreTemperatureAndVelocityDynamics<T,Descriptor>
-{
+    public StoreTemperatureAndVelocityDynamics<T, Descriptor> {
 public:
-    GeneralizedVelocityTemperatureBoundaryDynamics(Dynamics<T,Descriptor>* baseDynamics_,
-                                        std::vector<plint> missingIndices_,
-                                        bool massConserving,
-                                        bool automaticPrepareCollision = true);
-    GeneralizedVelocityTemperatureBoundaryDynamics(Dynamics<T,Descriptor>* baseDynamics_,
-                                        std::vector<plint> missingIndices_,
-                                        std::vector<plint> knownIndices_,
-                                        bool massConserving,
-                                        bool automaticPrepareCollision = true);                                    
-                                        
-    GeneralizedVelocityTemperatureBoundaryDynamics(HierarchicUnserializer& unserializer);
+    GeneralizedVelocityTemperatureBoundaryDynamics(
+        Dynamics<T, Descriptor> *baseDynamics_, std::vector<plint> missingIndices_,
+        bool massConserving, bool automaticPrepareCollision = true);
+    GeneralizedVelocityTemperatureBoundaryDynamics(
+        Dynamics<T, Descriptor> *baseDynamics_, std::vector<plint> missingIndices_,
+        std::vector<plint> knownIndices_, bool massConserving,
+        bool automaticPrepareCollision = true);
+
+    GeneralizedVelocityTemperatureBoundaryDynamics(HierarchicUnserializer &unserializer);
 
     /// Clone the object, based on its dynamic type
-    virtual GeneralizedVelocityTemperatureBoundaryDynamics<T,Descriptor>* clone() const;
+    virtual GeneralizedVelocityTemperatureBoundaryDynamics<T, Descriptor> *clone() const;
 
     /// Return a unique ID for this class.
     virtual int getId() const;
 
-    virtual void serialize(HierarchicSerializer& serializer) const;
-    virtual void unserialize(HierarchicUnserializer& unserializer);
-    
-    void computeUlb(Cell<T,Descriptor> const& cell, 
-                    Array<T,Descriptor<T>::d> &uLb) const;
-    
+    virtual void serialize(HierarchicSerializer &serializer) const;
+    virtual void unserialize(HierarchicUnserializer &unserializer);
+
+    void computeUlb(Cell<T, Descriptor> const &cell, Array<T, Descriptor<T>::d> &uLb) const;
+
     /// Execute completion scheme before base collision
-    virtual void completePopulations(Cell<T,Descriptor>& cell) const;
+    virtual void completePopulations(Cell<T, Descriptor> &cell) const;
+
 private:
     static int id;
     std::vector<plint> missingIndices, knownIndices;
@@ -181,39 +174,38 @@ private:
 // ========================================================================== //
 
 /// Generic velocity and temperature boundary dynamics for a straight wall
-template<typename T, template<typename U> class Descriptor>
-class GeneralizedNextToBoundaryDynamics : public BoundaryCompositeDynamics<T,Descriptor>
-{
+template <typename T, template <typename U> class Descriptor>
+class GeneralizedNextToBoundaryDynamics : public BoundaryCompositeDynamics<T, Descriptor> {
 public:
-    GeneralizedNextToBoundaryDynamics(Dynamics<T,Descriptor>* baseDynamics_,
-                                  std::vector<plint> missingIndices_,
-                                  bool automaticPrepareCollision = true);
-                                  
-    GeneralizedNextToBoundaryDynamics(Dynamics<T,Descriptor>* baseDynamics_,
-                                  std::vector<plint> missingIndices_,
-                                  std::vector<plint> knownIndices_,
-                                  bool automaticPrepareCollision = true);
-                                  
-    GeneralizedNextToBoundaryDynamics(HierarchicUnserializer& unserializer);
+    GeneralizedNextToBoundaryDynamics(
+        Dynamics<T, Descriptor> *baseDynamics_, std::vector<plint> missingIndices_,
+        bool automaticPrepareCollision = true);
+
+    GeneralizedNextToBoundaryDynamics(
+        Dynamics<T, Descriptor> *baseDynamics_, std::vector<plint> missingIndices_,
+        std::vector<plint> knownIndices_, bool automaticPrepareCollision = true);
+
+    GeneralizedNextToBoundaryDynamics(HierarchicUnserializer &unserializer);
 
     /// Clone the object, based on its dynamic type
-    virtual GeneralizedNextToBoundaryDynamics<T,Descriptor>* clone() const;
+    virtual GeneralizedNextToBoundaryDynamics<T, Descriptor> *clone() const;
 
     /// Return a unique ID for this class.
     virtual int getId() const;
 
-    virtual void serialize(HierarchicSerializer& serializer) const;
-    virtual void unserialize(HierarchicUnserializer& unserializer);
-    
+    virtual void serialize(HierarchicSerializer &serializer) const;
+    virtual void unserialize(HierarchicUnserializer &unserializer);
+
     /// Execute completion scheme before base collision
-    virtual void completePopulations(Cell<T,Descriptor>& cell) ;
+    virtual void completePopulations(Cell<T, Descriptor> &cell);
+
 private:
     static int id;
     std::vector<plint> missingIndices, knownIndices;
     T rho, thetaBar;
-    Array<T,Descriptor<T>::d> u;
-    Array<T,SymmetricTensor<T,Descriptor>::n> PiNeq;
-    Array<T,SymmetricRankThreeTensor<T,Descriptor>::n> Qneq;
+    Array<T, Descriptor<T>::d> u;
+    Array<T, SymmetricTensor<T, Descriptor>::n> PiNeq;
+    Array<T, SymmetricRankThreeTensor<T, Descriptor>::n> Qneq;
 };
 
 }  // namespace plb

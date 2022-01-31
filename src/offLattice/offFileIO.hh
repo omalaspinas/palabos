@@ -5,7 +5,7 @@
  * own the IP rights for most of the code base. Since October 2019, the
  * Palabos project is maintained by the University of Geneva and accepts
  * source code contributions from the community.
- * 
+ *
  * Contact:
  * Jonas Latt
  * Computer Science Department
@@ -14,7 +14,7 @@
  * 1227 Carouge, Switzerland
  * jonas.latt@unige.ch
  *
- * The most recent release of Palabos can be downloaded at 
+ * The most recent release of Palabos can be downloaded at
  * <https://palabos.unige.ch/>
  *
  * The library Palabos is free software: you can redistribute it and/or
@@ -29,36 +29,35 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 #ifndef OFF_FILE_IO_HH
 #define OFF_FILE_IO_HH
 
-#include "core/runTimeDiagnostics.h"
-#include "offLattice/offFileIO.h"
-#include "offLattice/triangleMesh.h"
-#include "offLattice/connectedTriangleMesh.h"
-#include "offLattice/connectedTriangleUtil.h"
-
-#include <vector>
+#include <cstdio>
+#include <cstring>
 #include <fstream>
 #include <iomanip>
 #include <limits>
+#include <vector>
 
-#include <cstring>
-#include <cstdio>
+#include "core/runTimeDiagnostics.h"
+#include "offLattice/connectedTriangleMesh.h"
+#include "offLattice/connectedTriangleUtil.h"
+#include "offLattice/offFileIO.h"
+#include "offLattice/triangleMesh.h"
 
-#define PLB_CBUFSIZ 4096    // Must be undefined at the end of this file.
+#define PLB_CBUFSIZ 4096  // Must be undefined at the end of this file.
 
 namespace plb {
 
-template<typename T>
+template <typename T>
 OFFreader<T>::OFFreader(std::string fname)
 {
     readOFF(fname);
 }
 
-template<typename T>
+template <typename T>
 void OFFreader<T>::readOFF(std::string fname)
 {
     FILE *fp = fopen(fname.c_str(), "rb");
@@ -67,7 +66,7 @@ void OFFreader<T>::readOFF(std::string fname)
     char buf[PLB_CBUFSIZ];
     char *sp = fgets(buf, PLB_CBUFSIZ, fp);
     if (sp == NULL) {
-        throw PlbIOException("Problem reading file "+fname+".");
+        throw PlbIOException("Problem reading file " + fname + ".");
     }
 
     char *cp = NULL;
@@ -75,7 +74,7 @@ void OFFreader<T>::readOFF(std::string fname)
     // Currently only ASCII files with header OFF can be read.
     cp = strstr(buf, "BINARY");
     if (cp != NULL) {
-        throw PlbIOException("The file "+fname+" does not have an ASCII OFF formatting.");
+        throw PlbIOException("The file " + fname + " does not have an ASCII OFF formatting.");
     }
     std::vector<std::string> prefixes;
     prefixes.push_back("ST");
@@ -83,10 +82,10 @@ void OFFreader<T>::readOFF(std::string fname)
     prefixes.push_back("N");
     prefixes.push_back("4");
     prefixes.push_back("n");
-    for (int iPrefix = 0; iPrefix < (int) prefixes.size(); iPrefix++) {
+    for (int iPrefix = 0; iPrefix < (int)prefixes.size(); iPrefix++) {
         cp = strstr(buf, prefixes[iPrefix].c_str());
         if (cp != NULL) {
-            throw PlbIOException("The file "+fname+" does not have a simple OFF formatting.");
+            throw PlbIOException("The file " + fname + " does not have a simple OFF formatting.");
         }
     }
 
@@ -96,12 +95,12 @@ void OFFreader<T>::readOFF(std::string fname)
     if (cp != NULL) {
         failed = readAsciiOFF(fp);
     } else {
-        throw PlbIOException("The format of the file "+fname+" is not currently supported.");
+        throw PlbIOException("The format of the file " + fname + " is not currently supported.");
     }
     fclose(fp);
 
     if (failed) {
-        throw PlbIOException("Problem with file "+fname+".");
+        throw PlbIOException("Problem with file " + fname + ".");
     }
 }
 
@@ -111,8 +110,8 @@ void OFFreader<T>::readOFF(std::string fname)
 //          equal to 0. We do not do this here, because from the OFFreader we
 //          can directly create a connected mesh and we do not want to break
 //          vertex and triangle numbering.
-template<typename T>
-bool OFFreader<T>::readAsciiOFF(FILE* fp)
+template <typename T>
+bool OFFreader<T>::readAsciiOFF(FILE *fp)
 {
     char commentCharacter = '#';
     long NVertices = 0, NFaces = 0, NEdges = 0;
@@ -139,20 +138,21 @@ bool OFFreader<T>::readAsciiOFF(FILE* fp)
     }
 
     vertices.clear();
-    vertices.resize((size_t) NVertices);
+    vertices.resize((size_t)NVertices);
     for (long iVertex = 0; iVertex < NVertices; iVertex++) {
         if (readAhead(fp, commentCharacter) == EOF) {
             failed = true;
             return failed;
         }
-        if (fscanf(fp, fmt, &vertices[iVertex][0], &vertices[iVertex][1], &vertices[iVertex][2]) != 3) {
+        if (fscanf(fp, fmt, &vertices[iVertex][0], &vertices[iVertex][1], &vertices[iVertex][2])
+            != 3) {
             failed = true;
             return failed;
         }
     }
 
     facets.clear();
-    facets.resize((size_t) NFaces);
+    facets.resize((size_t)NFaces);
     for (long iFace = 0; iFace < NFaces; iFace++) {
         if (readAhead(fp, commentCharacter) == EOF) {
             failed = true;
@@ -163,7 +163,7 @@ bool OFFreader<T>::readAsciiOFF(FILE* fp)
             failed = true;
             return failed;
         }
-        facets[iFace].resize((size_t) Nv);
+        facets[iFace].resize((size_t)Nv);
         for (long iVertex = 0; iVertex < Nv; iVertex++) {
             long ind;
             if (fscanf(fp, "%ld", &ind) != 1) {
@@ -182,7 +182,7 @@ bool OFFreader<T>::readAsciiOFF(FILE* fp)
 }
 
 /// Skip nLines number of lines in the file.
-template<typename T>
+template <typename T>
 void OFFreader<T>::skipLines(plint nLines, FILE *fp) const
 {
     for (plint i = 0; i < nLines; i++)
@@ -194,7 +194,7 @@ void OFFreader<T>::skipLines(plint nLines, FILE *fp) const
 /// character is found, or EOF if the end-of-file is found. It "consumes" the
 /// rest of the line if the "commentCharacter" is found. Obviously, it works only
 /// with text files.
-template<typename T>
+template <typename T>
 int OFFreader<T>::readAhead(FILE *fp, char commentCharacter) const
 {
     int nextChar;
@@ -207,15 +207,15 @@ int OFFreader<T>::readAhead(FILE *fp, char commentCharacter) const
 #ifdef PLB_DEBUG
             int rv = ungetc(nextChar, fp);
 #endif
-            PLB_ASSERT(rv != EOF); // Unexpected error.
+            PLB_ASSERT(rv != EOF);  // Unexpected error.
             return 0;
         }
     }
     return EOF;
 }
 
-template<typename T>
-void writeAsciiOFF(TriangleMesh<T>& mesh, std::string fname, T eps, int numDecimalDigits)
+template <typename T>
+void writeAsciiOFF(TriangleMesh<T> &mesh, std::string fname, T eps, int numDecimalDigits)
 {
     typedef typename ConnectedTriangleMesh<T>::PTriangleIterator PTriangleIterator;
     typedef typename ConnectedTriangleMesh<T>::PVertexIterator PVertexIterator;
@@ -231,18 +231,18 @@ void writeAsciiOFF(TriangleMesh<T>& mesh, std::string fname, T eps, int numDecim
         std::ofstream ofile(fname.c_str());
         if (ofile.is_open()) {
             ofile << "OFF\n";
-            ofile << connectedMesh.getNumVertices() << " "
-                  << connectedMesh.getNumTriangles() << " " << 0 << '\n';
+            ofile << connectedMesh.getNumVertices() << " " << connectedMesh.getNumTriangles() << " "
+                  << 0 << '\n';
 
             plint vertexIDtagging = connectedMesh.getVertexTag("UniqueID");
             PVertexIterator vertexIterator(connectedMesh.vertexIterator());
-            std::map<plint,plint> toNewVertexID;
-            plint newVertexID=0;
+            std::map<plint, plint> toNewVertexID;
+            plint newVertexID = 0;
             while (!vertexIterator->end()) {
                 PVertex vertex(vertexIterator->next());
-                Array<T,3> v = vertex->get();
-                ofile << std::setprecision(numDecimalDigits) << std::scientific
-                      << v[0] << " " << v[1] << " " << v[2] << '\n';
+                Array<T, 3> v = vertex->get();
+                ofile << std::setprecision(numDecimalDigits) << std::scientific << v[0] << " "
+                      << v[1] << " " << v[2] << '\n';
                 toNewVertexID[vertex->tag(vertexIDtagging)] = newVertexID;
                 ++newVertexID;
             }
@@ -259,7 +259,7 @@ void writeAsciiOFF(TriangleMesh<T>& mesh, std::string fname, T eps, int numDecim
                 ind1 = v1->tag(vertexIDtagging);
                 ind2 = v2->tag(vertexIDtagging);
                 ofile << 3 << " " << toNewVertexID[ind0] << " " << toNewVertexID[ind1] << " "
-                           << toNewVertexID[ind2] << '\n';
+                      << toNewVertexID[ind2] << '\n';
             }
         }
     }
@@ -270,4 +270,3 @@ void writeAsciiOFF(TriangleMesh<T>& mesh, std::string fname, T eps, int numDecim
 #undef PLB_CBUFSIZ
 
 #endif  // OFF_FILE_IO_HH
-

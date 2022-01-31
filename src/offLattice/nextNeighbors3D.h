@@ -5,7 +5,7 @@
  * own the IP rights for most of the code base. Since October 2019, the
  * Palabos project is maintained by the University of Geneva and accepts
  * source code contributions from the community.
- * 
+ *
  * Contact:
  * Jonas Latt
  * Computer Science Department
@@ -14,7 +14,7 @@
  * 1227 Carouge, Switzerland
  * jonas.latt@unige.ch
  *
- * The most recent release of Palabos can be downloaded at 
+ * The most recent release of Palabos can be downloaded at
  * <https://palabos.unige.ch/>
  *
  * The library Palabos is free software: you can redistribute it and/or
@@ -29,7 +29,7 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 #ifndef NEXT_NEIGHBORS_3D_H
 #define NEXT_NEIGHBORS_3D_H
@@ -52,15 +52,16 @@ struct NextNeighbor {
     static const T invD[26];
 };
 
-template<typename T, template<typename U> class Descriptor>
+template <typename T, template <typename U> class Descriptor>
 struct NextNeighborPop {
     NextNeighborPop();
     int ids[NextNeighbor<T>::numNeighbors];
 };
 
-template<typename T, template<typename U> class Descriptor>
-inline plint nextNeighborPop(plint iNeighbor) {
-    static NextNeighborPop<T,Descriptor> instance;
+template <typename T, template <typename U> class Descriptor>
+inline plint nextNeighborPop(plint iNeighbor)
+{
+    static NextNeighborPop<T, Descriptor> instance;
     return instance.ids[iNeighbor];
 }
 

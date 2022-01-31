@@ -5,7 +5,7 @@
  * own the IP rights for most of the code base. Since October 2019, the
  * Palabos project is maintained by the University of Geneva and accepts
  * source code contributions from the community.
- * 
+ *
  * Contact:
  * Jonas Latt
  * Computer Science Department
@@ -14,7 +14,7 @@
  * 1227 Carouge, Switzerland
  * jonas.latt@unige.ch
  *
- * The most recent release of Palabos can be downloaded at 
+ * The most recent release of Palabos can be downloaded at
  * <https://palabos.unige.ch/>
  *
  * The library Palabos is free software: you can redistribute it and/or
@@ -29,61 +29,57 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 #ifndef TRIANGLE_HASH_H
 #define TRIANGLE_HASH_H
 
-#include "core/globalDefs.h"
-#include "atomicBlock/dataProcessingFunctional3D.h"
-#include "atomicBlock/dataField3D.h"
 #include "atomicBlock/atomicContainerBlock3D.h"
+#include "atomicBlock/dataField3D.h"
+#include "atomicBlock/dataProcessingFunctional3D.h"
+#include "core/globalDefs.h"
 #include "multiBlock/multiContainerBlock3D.h"
 #include "multiBlock/multiDataField3D.h"
-#include "particles/particleField3D.h"
 #include "offLattice/triangularSurfaceMesh.h"
+#include "particles/particleField3D.h"
 
 namespace plb {
 
-template<typename T>
+template <typename T>
 class TriangleHash {
 public:
-    TriangleHash(AtomicContainerBlock3D& hashContainer);
-    void assignTriangles(TriangularSurfaceMesh<T> const& mesh);
-    void bruteReAssignTriangles(TriangularSurfaceMesh<T> const& mesh);
-    template<class ParticleFieldT>
-    void reAssignTriangles (
-            TriangularSurfaceMesh<T> const& mesh, ParticleFieldT& particles,
-            std::vector<plint> const& nonParallelVertices );
-    void getTriangles (
-            Array<T,2> const& xRange,
-            Array<T,2> const& yRange,
-            Array<T,2> const& zRange,
-            std::vector<plint>& foundTriangles ) const;
-    void getTriangles (
-            Box3D const& domain,
-            std::vector<plint>& foundTriangles ) const;
+    TriangleHash(AtomicContainerBlock3D &hashContainer);
+    void assignTriangles(TriangularSurfaceMesh<T> const &mesh);
+    void bruteReAssignTriangles(TriangularSurfaceMesh<T> const &mesh);
+    template <class ParticleFieldT>
+    void reAssignTriangles(
+        TriangularSurfaceMesh<T> const &mesh, ParticleFieldT &particles,
+        std::vector<plint> const &nonParallelVertices);
+    void getTriangles(
+        Array<T, 2> const &xRange, Array<T, 2> const &yRange, Array<T, 2> const &zRange,
+        std::vector<plint> &foundTriangles) const;
+    void getTriangles(Box3D const &domain, std::vector<plint> &foundTriangles) const;
+
 private:
-    ScalarField3D<std::vector<plint> >& triangles;
-    std::vector<Dot3D>& assignedPositions;
+    ScalarField3D<std::vector<plint> > &triangles;
+    std::vector<Dot3D> &assignedPositions;
 };
 
-template<typename T>
+template <typename T>
 class CreateTriangleHash : public BoxProcessingFunctional3D {
 public:
-    CreateTriangleHash (
-            TriangularSurfaceMesh<T> const& mesh_ );
+    CreateTriangleHash(TriangularSurfaceMesh<T> const &mesh_);
     // Field 0: Hash.
-    virtual void processGenericBlocks (
-                Box3D domain, std::vector<AtomicBlock3D*> fields );
-    virtual CreateTriangleHash<T>* clone() const;
-    virtual void getTypeOfModification(std::vector<modif::ModifT>& modified) const;
+    virtual void processGenericBlocks(Box3D domain, std::vector<AtomicBlock3D *> fields);
+    virtual CreateTriangleHash<T> *clone() const;
+    virtual void getTypeOfModification(std::vector<modif::ModifT> &modified) const;
     virtual BlockDomain::DomainT appliesTo() const;
+
 private:
-    TriangularSurfaceMesh<T> const& mesh;
+    TriangularSurfaceMesh<T> const &mesh;
 };
 
-template<typename T, class ParticleFieldT>
+template <typename T, class ParticleFieldT>
 class ReAssignTriangleHash : public BoxProcessingFunctional3D {
 public:
     // The triangle hash includes the possibilities for triangles
@@ -95,37 +91,33 @@ public:
     //   vertices of all triangles connected to the vertices listed in
     //   nonParallelVertices are non-parallel, i.e. define on each
     //   processor.
-    ReAssignTriangleHash (
-            TriangularSurfaceMesh<T> const& mesh_,
-            std::vector<plint> const& nonParallelVertices_ );
+    ReAssignTriangleHash(
+        TriangularSurfaceMesh<T> const &mesh_, std::vector<plint> const &nonParallelVertices_);
     // Field 0: Hash; Field 1: Particles.
-    virtual void processGenericBlocks (
-                Box3D domain, std::vector<AtomicBlock3D*> fields );
-    virtual ReAssignTriangleHash<T,ParticleFieldT>* clone() const;
-    virtual void getTypeOfModification(std::vector<modif::ModifT>& modified) const;
+    virtual void processGenericBlocks(Box3D domain, std::vector<AtomicBlock3D *> fields);
+    virtual ReAssignTriangleHash<T, ParticleFieldT> *clone() const;
+    virtual void getTypeOfModification(std::vector<modif::ModifT> &modified) const;
     virtual BlockDomain::DomainT appliesTo() const;
+
 private:
-    TriangularSurfaceMesh<T> const& mesh;
+    TriangularSurfaceMesh<T> const &mesh;
     std::vector<plint> nonParallelVertices;
 };
 
-template<typename T>
+template <typename T>
 class BruteReAssignTriangleHash : public BoxProcessingFunctional3D {
 public:
-    BruteReAssignTriangleHash (
-            TriangularSurfaceMesh<T> const& mesh_ );
+    BruteReAssignTriangleHash(TriangularSurfaceMesh<T> const &mesh_);
     // Field 0: Hash.
-    virtual void processGenericBlocks (
-                Box3D domain, std::vector<AtomicBlock3D*> fields );
-    virtual BruteReAssignTriangleHash<T>* clone() const;
-    virtual void getTypeOfModification(std::vector<modif::ModifT>& modified) const;
+    virtual void processGenericBlocks(Box3D domain, std::vector<AtomicBlock3D *> fields);
+    virtual BruteReAssignTriangleHash<T> *clone() const;
+    virtual void getTypeOfModification(std::vector<modif::ModifT> &modified) const;
     virtual BlockDomain::DomainT appliesTo() const;
-private:
-    TriangularSurfaceMesh<T> const& mesh;
-};
 
+private:
+    TriangularSurfaceMesh<T> const &mesh;
+};
 
 }  // namespace plb
 
 #endif  // TRIANGLE_HASH_H
-

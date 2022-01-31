@@ -5,7 +5,7 @@
  * own the IP rights for most of the code base. Since October 2019, the
  * Palabos project is maintained by the University of Geneva and accepts
  * source code contributions from the community.
- * 
+ *
  * Contact:
  * Jonas Latt
  * Computer Science Department
@@ -14,7 +14,7 @@
  * 1227 Carouge, Switzerland
  * jonas.latt@unige.ch
  *
- * The most recent release of Palabos can be downloaded at 
+ * The most recent release of Palabos can be downloaded at
  * <https://palabos.unige.ch/>
  *
  * The library Palabos is free software: you can redistribute it and/or
@@ -29,7 +29,7 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 /** \file
  * Serializer and UnSerializer for atomic blocks -- header file.
@@ -37,26 +37,25 @@
 #ifndef ATOMIC_BLOCK_SERIALIZER_3D_H
 #define ATOMIC_BLOCK_SERIALIZER_3D_H
 
-#include "core/globalDefs.h"
-#include "core/util.h"
 #include "atomicBlock/atomicBlock3D.h"
+#include "core/globalDefs.h"
 #include "core/serializer.h"
+#include "core/util.h"
 
 namespace plb {
 
 class AtomicBlockSerializer3D : public DataSerializer {
 public:
-    AtomicBlockSerializer3D(AtomicBlock3D const& block_,
-                            IndexOrdering::OrderingT ordering_);
-    AtomicBlockSerializer3D(AtomicBlock3D const& block_,
-                            Box3D domain_,
-                            IndexOrdering::OrderingT ordering_);
-    virtual AtomicBlockSerializer3D* clone() const;
+    AtomicBlockSerializer3D(AtomicBlock3D const &block_, IndexOrdering::OrderingT ordering_);
+    AtomicBlockSerializer3D(
+        AtomicBlock3D const &block_, Box3D domain_, IndexOrdering::OrderingT ordering_);
+    virtual AtomicBlockSerializer3D *clone() const;
     virtual pluint getSize() const;
-    virtual const char* getNextDataBuffer(pluint& bufferSize) const;
+    virtual const char *getNextDataBuffer(pluint &bufferSize) const;
     virtual bool isEmpty() const;
+
 private:
-    AtomicBlock3D const& block;
+    AtomicBlock3D const &block;
     IndexOrdering::OrderingT ordering;
     Box3D domain;
     mutable std::vector<char> buffer;
@@ -65,18 +64,17 @@ private:
 
 class AtomicBlockUnSerializer3D : public DataUnSerializer {
 public:
-    AtomicBlockUnSerializer3D(AtomicBlock3D& block_,
-                              IndexOrdering::OrderingT ordering_);
-    AtomicBlockUnSerializer3D(AtomicBlock3D& block_,
-                              Box3D domain_,
-                              IndexOrdering::OrderingT ordering_);
-    virtual AtomicBlockUnSerializer3D* clone() const;
+    AtomicBlockUnSerializer3D(AtomicBlock3D &block_, IndexOrdering::OrderingT ordering_);
+    AtomicBlockUnSerializer3D(
+        AtomicBlock3D &block_, Box3D domain_, IndexOrdering::OrderingT ordering_);
+    virtual AtomicBlockUnSerializer3D *clone() const;
     virtual pluint getSize() const;
-    virtual char* getNextDataBuffer(pluint& bufferSize);
+    virtual char *getNextDataBuffer(pluint &bufferSize);
     virtual void commitData();
     virtual bool isFull() const;
+
 private:
-    AtomicBlock3D& block;
+    AtomicBlock3D &block;
     IndexOrdering::OrderingT ordering;
     Box3D domain;
     mutable std::vector<char> buffer;

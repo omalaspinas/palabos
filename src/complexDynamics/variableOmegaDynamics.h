@@ -5,7 +5,7 @@
  * own the IP rights for most of the code base. Since October 2019, the
  * Palabos project is maintained by the University of Geneva and accepts
  * source code contributions from the community.
- * 
+ *
  * Contact:
  * Jonas Latt
  * Computer Science Department
@@ -14,7 +14,7 @@
  * 1227 Carouge, Switzerland
  * jonas.latt@unige.ch
  *
- * The most recent release of Palabos can be downloaded at 
+ * The most recent release of Palabos can be downloaded at
  * <https://palabos.unige.ch/>
  *
  * The library Palabos is free software: you can redistribute it and/or
@@ -29,7 +29,7 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 /* Orestis Malaspinas designed some of the classes and concepts contained
  * in this file. */
@@ -37,8 +37,8 @@
 #ifndef VARIABLE_OMEGA_DYNAMICS_H
 #define VARIABLE_OMEGA_DYNAMICS_H
 
-#include "core/globalDefs.h"
 #include "core/dynamics.h"
+#include "core/globalDefs.h"
 
 namespace plb {
 
@@ -49,29 +49,30 @@ namespace plb {
  *  omega0, whereas the "omega" in "o.getBaseDynamics().setOmega()" and in
  *  "o.getBaseDynamics().getOmega()" is omega0+deltaOmega.
  **/
-template<typename T, template<typename U> class Descriptor>
-class VariableOmegaDynamics : public CompositeDynamics<T,Descriptor> {
+template <typename T, template <typename U> class Descriptor>
+class VariableOmegaDynamics : public CompositeDynamics<T, Descriptor> {
 public:
-    VariableOmegaDynamics(Dynamics<T,Descriptor>* baseDynamics_,
-                          bool automaticPrepareCollision_=true);
-    virtual void prepareCollision(Cell<T,Descriptor>& cell);
-    virtual T getOmegaFromCell(Cell<T,Descriptor> const& cell) const =0;
+    VariableOmegaDynamics(
+        Dynamics<T, Descriptor> *baseDynamics_, bool automaticPrepareCollision_ = true);
+    virtual void prepareCollision(Cell<T, Descriptor> &cell);
+    virtual T getOmegaFromCell(Cell<T, Descriptor> const &cell) const = 0;
 };
 
-/// A dynamics for relaxation parameter dependent on off-equilibrium stress, generic with respect to base dynamics.
+/// A dynamics for relaxation parameter dependent on off-equilibrium stress, generic with respect to
+/// base dynamics.
 /** Read the comments of VariableOmegaDynamics to understand the meaning of omega
  *  in setOmega and getOmega.
  **/
-template<typename T, template<typename U> class Descriptor>
-class OmegaFromPiDynamics : public VariableOmegaDynamics<T,Descriptor> {
+template <typename T, template <typename U> class Descriptor>
+class OmegaFromPiDynamics : public VariableOmegaDynamics<T, Descriptor> {
 public:
-    OmegaFromPiDynamics(Dynamics<T,Descriptor>* baseDynamics_,
-                        bool automaticPrepareCollision_=true);
-    virtual T getOmegaFromCell(Cell<T,Descriptor> const& cell) const;
-    virtual T getOmegaFromPiAndRhoBar(Array<T,SymmetricTensor<T,Descriptor>::n> const& PiNeq, T rhoBar) const =0;
+    OmegaFromPiDynamics(
+        Dynamics<T, Descriptor> *baseDynamics_, bool automaticPrepareCollision_ = true);
+    virtual T getOmegaFromCell(Cell<T, Descriptor> const &cell) const;
+    virtual T getOmegaFromPiAndRhoBar(
+        Array<T, SymmetricTensor<T, Descriptor>::n> const &PiNeq, T rhoBar) const = 0;
 };
 
-} // namespace plb
+}  // namespace plb
 
 #endif  // VARIABLE_OMEGA_DYNAMICS_H
-

@@ -5,7 +5,7 @@
  * own the IP rights for most of the code base. Since October 2019, the
  * Palabos project is maintained by the University of Geneva and accepts
  * source code contributions from the community.
- * 
+ *
  * Contact:
  * Jonas Latt
  * Computer Science Department
@@ -14,7 +14,7 @@
  * 1227 Carouge, Switzerland
  * jonas.latt@unige.ch
  *
- * The most recent release of Palabos can be downloaded at 
+ * The most recent release of Palabos can be downloaded at
  * <https://palabos.unige.ch/>
  *
  * The library Palabos is free software: you can redistribute it and/or
@@ -29,31 +29,31 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 #ifndef CONNECTED_TRIANGLE_SET_HH
 #define CONNECTED_TRIANGLE_SET_HH
-
-#include "core/array.h"
-#include "core/globalDefs.h"
-#include "core/geometry3D.h"
-#include "core/util.h"
-#include "offLattice/triangleSet.h"
-#include "offLattice/connectedTriangleSet.h"
-#include "latticeBoltzmann/geometricOperationTemplates.h"
 
 #include <cmath>
 #include <cstdio>
 #include <limits>
 
+#include "core/array.h"
+#include "core/geometry3D.h"
+#include "core/globalDefs.h"
+#include "core/util.h"
+#include "latticeBoltzmann/geometricOperationTemplates.h"
+#include "offLattice/connectedTriangleSet.h"
+#include "offLattice/triangleSet.h"
+
 namespace plb {
 
-template<typename T>
-ConnectedTriangleSet<T>::ConnectedTriangleSet(TriangleSet<T> const& triangleSet)
+template <typename T>
+ConnectedTriangleSet<T>::ConnectedTriangleSet(TriangleSet<T> const &triangleSet)
 {
-    std::vector<Array<Array<T,3>,3> > oldTriangles = triangleSet.getTriangles();
+    std::vector<Array<Array<T, 3>, 3> > oldTriangles = triangleSet.getTriangles();
 
-    numTriangles = (plint) oldTriangles.size();
+    numTriangles = (plint)oldTriangles.size();
     if (numTriangles == 0) {
         return;
     }
@@ -61,7 +61,7 @@ ConnectedTriangleSet<T>::ConnectedTriangleSet(TriangleSet<T> const& triangleSet)
     triangles.resize(numTriangles);
 
     T epsilon = triangleSet.getEpsilon();
-    PositionLessThan3D<T,VertexSetNode> lessThan(epsilon);
+    PositionLessThan3D<T, VertexSetNode> lessThan(epsilon);
     VertexSet vertexSet(lessThan);
 
     // Unify duplicated vertices.
@@ -69,7 +69,7 @@ ConnectedTriangleSet<T>::ConnectedTriangleSet(TriangleSet<T> const& triangleSet)
     plint globalVertex = 0;
     for (plint iTriangle = 0; iTriangle < numTriangles; iTriangle++) {
         for (plint localVertex = 0; localVertex < 3; localVertex++) {
-            Array<T,3> *vertex = &oldTriangles[iTriangle][localVertex];
+            Array<T, 3> *vertex = &oldTriangles[iTriangle][localVertex];
             VertexSetIterator it = vertexSet.find(VertexSetNode(-1, vertex));
             if (it == vertexSet.end()) {
                 globalVertex = numVertices;
@@ -102,29 +102,31 @@ ConnectedTriangleSet<T>::ConnectedTriangleSet(TriangleSet<T> const& triangleSet)
     }
 }
 
-template<typename T>
-void ConnectedTriangleSet<T>::swapGeometry(std::vector<Array<T,3> >& newVertices)
+template <typename T>
+void ConnectedTriangleSet<T>::swapGeometry(std::vector<Array<T, 3> > &newVertices)
 {
     PLB_ASSERT(newVertices.size() == vertices.size());
     vertices.swap(newVertices);
 }
 
-template<typename T>
-void ConnectedTriangleSet<T>::computeVertexAreaAndUnitNormal(plint iVertex, T& area,
-        Array<T,3>& unitNormal, std::vector<Array<T,3> > *newVertices, plint indexOffset) const
+template <typename T>
+void ConnectedTriangleSet<T>::computeVertexAreaAndUnitNormal(
+    plint iVertex, T &area, Array<T, 3> &unitNormal, std::vector<Array<T, 3> > *newVertices,
+    plint indexOffset) const
 {
     PLB_ASSERT(iVertex >= 0 && iVertex < numVertices);
-    area = (T) 0;
+    area = (T)0;
     unitNormal.resetToZero();
-    for (plint iTriangle = 0; iTriangle < (plint) trianglesOnVertex[iVertex].size(); iTriangle++) {
+    for (plint iTriangle = 0; iTriangle < (plint)trianglesOnVertex[iVertex].size(); iTriangle++) {
         plint globalTriangle = trianglesOnVertex[iVertex][iTriangle];
-        T triangleArea = (T) 0;
-        Array<T,3> triangleNormal((T) 0, (T) 0, (T) 0);
-        computeTriangleAreaAndUnitNormal(globalTriangle, triangleArea, triangleNormal, newVertices, indexOffset);
+        T triangleArea = (T)0;
+        Array<T, 3> triangleNormal((T)0, (T)0, (T)0);
+        computeTriangleAreaAndUnitNormal(
+            globalTriangle, triangleArea, triangleNormal, newVertices, indexOffset);
         area += triangleArea;
         unitNormal += triangleNormal;
     }
-    area /= (T) 3;
+    area /= (T)3;
 
     T normNormal = norm(unitNormal);
     if (!util::isZero(normNormal)) {
@@ -134,13 +136,14 @@ void ConnectedTriangleSet<T>::computeVertexAreaAndUnitNormal(plint iVertex, T& a
     }
 }
 
-template<typename T>
-void ConnectedTriangleSet<T>::computeTriangleAreaAndUnitNormal(plint iTriangle, T& area,
-        Array<T,3>& unitNormal, std::vector<Array<T,3> > *newVertices, plint indexOffset) const
+template <typename T>
+void ConnectedTriangleSet<T>::computeTriangleAreaAndUnitNormal(
+    plint iTriangle, T &area, Array<T, 3> &unitNormal, std::vector<Array<T, 3> > *newVertices,
+    plint indexOffset) const
 {
     PLB_ASSERT(iTriangle >= 0 && iTriangle < numTriangles);
 
-    std::vector<Array<T,3> > const* workingVertices = newVertices;
+    std::vector<Array<T, 3> > const *workingVertices = newVertices;
     if (workingVertices == 0) {
         workingVertices = &vertices;
         indexOffset = 0;
@@ -150,48 +153,51 @@ void ConnectedTriangleSet<T>::computeTriangleAreaAndUnitNormal(plint iTriangle, 
     plint v1 = triangles[iTriangle][1] + indexOffset;
     plint v2 = triangles[iTriangle][2] + indexOffset;
 
-    Array<T,3> const& a0 = (*workingVertices)[v0];
-    Array<T,3> const& a1 = (*workingVertices)[v1];
-    Array<T,3> const& a2 = (*workingVertices)[v2];
+    Array<T, 3> const &a0 = (*workingVertices)[v0];
+    Array<T, 3> const &a1 = (*workingVertices)[v1];
+    Array<T, 3> const &a2 = (*workingVertices)[v2];
 
     plb::computeTriangleAreaAndUnitNormal(a0, a1, a2, area, unitNormal);
 }
 
-template<typename T>
-void ConnectedTriangleSet<T>::writeOFF(std::string fname, std::vector<Array<T,3> > *newVertices,
-        plint indexOffset, int numDecimalDigits) const
+template <typename T>
+void ConnectedTriangleSet<T>::writeOFF(
+    std::string fname, std::vector<Array<T, 3> > *newVertices, plint indexOffset,
+    int numDecimalDigits) const
 {
     if (global::mpi().isMainProcessor()) {
         if (numTriangles == 0) {
             return;
         }
-        FILE *fp = fopen(fname.c_str(), "w");   // Only ASCII OFF files are written for the moment.
+        FILE *fp = fopen(fname.c_str(), "w");  // Only ASCII OFF files are written for the moment.
         PLB_ASSERT(fp != 0);
 
-        std::vector<Array<T,3> > const* workingVertices = newVertices;
+        std::vector<Array<T, 3> > const *workingVertices = newVertices;
         if (workingVertices == 0) {
             workingVertices = &vertices;
             indexOffset = 0;
         }
 
         fprintf(fp, "OFF\n");
-        long numVerticesL = (long) numVertices;
-        long numTrianglesL = (long) numTriangles;
-        long zero = (long) 0;
+        long numVerticesL = (long)numVertices;
+        long numTrianglesL = (long)numTriangles;
+        long zero = (long)0;
         fprintf(fp, "%ld %ld %ld\n", numVerticesL, numTrianglesL, zero);
 
         for (plint iVertex = 0; iVertex < numVertices; iVertex++) {
-            double v0 = (double) (*workingVertices)[iVertex+indexOffset][0];
-            double v1 = (double) (*workingVertices)[iVertex+indexOffset][1];
-            double v2 = (double) (*workingVertices)[iVertex+indexOffset][2];
-            fprintf(fp, "% .*e % .*e % .*e\n", numDecimalDigits, v0, numDecimalDigits, v1, numDecimalDigits, v2);
+            double v0 = (double)(*workingVertices)[iVertex + indexOffset][0];
+            double v1 = (double)(*workingVertices)[iVertex + indexOffset][1];
+            double v2 = (double)(*workingVertices)[iVertex + indexOffset][2];
+            fprintf(
+                fp, "% .*e % .*e % .*e\n", numDecimalDigits, v0, numDecimalDigits, v1,
+                numDecimalDigits, v2);
         }
 
         for (plint iTriangle = 0; iTriangle < numTriangles; iTriangle++) {
-            long three = (long) 3;
-            long t0 = (long) triangles[iTriangle][0];
-            long t1 = (long) triangles[iTriangle][1];
-            long t2 = (long) triangles[iTriangle][2];
+            long three = (long)3;
+            long t0 = (long)triangles[iTriangle][0];
+            long t1 = (long)triangles[iTriangle][1];
+            long t2 = (long)triangles[iTriangle][2];
             fprintf(fp, "%ld %ld %ld %ld\n", three, t0, t1, t2);
         }
 
@@ -199,15 +205,15 @@ void ConnectedTriangleSet<T>::writeOFF(std::string fname, std::vector<Array<T,3>
     }
 }
 
-template<typename T>
-TriangleSet<T>* ConnectedTriangleSet<T>::toTriangleSet(Precision precision, std::vector<Array<T,3> > const* newVertices,
-        plint indexOffset) const
+template <typename T>
+TriangleSet<T> *ConnectedTriangleSet<T>::toTriangleSet(
+    Precision precision, std::vector<Array<T, 3> > const *newVertices, plint indexOffset) const
 {
     if (numTriangles == 0) {
         return 0;
     }
 
-    std::vector<Array<T,3> > const* workingVertices = newVertices;
+    std::vector<Array<T, 3> > const *workingVertices = newVertices;
     if (workingVertices == 0) {
         workingVertices = &vertices;
         indexOffset = 0;
@@ -220,9 +226,9 @@ TriangleSet<T>* ConnectedTriangleSet<T>::toTriangleSet(Precision precision, std:
         plint iVertex0 = triangles[iTriangle][0] + indexOffset;
         plint iVertex1 = triangles[iTriangle][1] + indexOffset;
         plint iVertex2 = triangles[iTriangle][2] + indexOffset;
-        Array<T,3> vertex0 = (*workingVertices)[iVertex0];
-        Array<T,3> vertex1 = (*workingVertices)[iVertex1];
-        Array<T,3> vertex2 = (*workingVertices)[iVertex2];
+        Array<T, 3> vertex0 = (*workingVertices)[iVertex0];
+        Array<T, 3> vertex1 = (*workingVertices)[iVertex1];
+        Array<T, 3> vertex2 = (*workingVertices)[iVertex2];
         Triangle triangle(vertex0, vertex1, vertex2);
         vectorOfTriangles.push_back(triangle);
     }
@@ -230,15 +236,15 @@ TriangleSet<T>* ConnectedTriangleSet<T>::toTriangleSet(Precision precision, std:
     return new TriangleSet<T>(vectorOfTriangles, precision);
 }
 
-template<typename T>
-TriangleSet<T>* ConnectedTriangleSet<T>::toTriangleSet(T eps, std::vector<Array<T,3> > const* newVertices,
-        plint indexOffset) const
+template <typename T>
+TriangleSet<T> *ConnectedTriangleSet<T>::toTriangleSet(
+    T eps, std::vector<Array<T, 3> > const *newVertices, plint indexOffset) const
 {
     if (numTriangles == 0) {
         return 0;
     }
 
-    std::vector<Array<T,3> > const* workingVertices = newVertices;
+    std::vector<Array<T, 3> > const *workingVertices = newVertices;
     if (workingVertices == 0) {
         workingVertices = &vertices;
         indexOffset = 0;
@@ -251,9 +257,9 @@ TriangleSet<T>* ConnectedTriangleSet<T>::toTriangleSet(T eps, std::vector<Array<
         plint iVertex0 = triangles[iTriangle][0] + indexOffset;
         plint iVertex1 = triangles[iTriangle][1] + indexOffset;
         plint iVertex2 = triangles[iTriangle][2] + indexOffset;
-        Array<T,3> vertex0 = (*workingVertices)[iVertex0];
-        Array<T,3> vertex1 = (*workingVertices)[iVertex1];
-        Array<T,3> vertex2 = (*workingVertices)[iVertex2];
+        Array<T, 3> vertex0 = (*workingVertices)[iVertex0];
+        Array<T, 3> vertex1 = (*workingVertices)[iVertex1];
+        Array<T, 3> vertex2 = (*workingVertices)[iVertex2];
         Triangle triangle(vertex0, vertex1, vertex2);
         vectorOfTriangles.push_back(triangle);
     }
@@ -261,6 +267,6 @@ TriangleSet<T>* ConnectedTriangleSet<T>::toTriangleSet(T eps, std::vector<Array<
     return new TriangleSet<T>(vectorOfTriangles, eps);
 }
 
-} // namespace plb
+}  // namespace plb
 
 #endif  // CONNECTED_TRIANGLE_SET_HH

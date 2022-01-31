@@ -5,7 +5,7 @@
  * own the IP rights for most of the code base. Since October 2019, the
  * Palabos project is maintained by the University of Geneva and accepts
  * source code contributions from the community.
- * 
+ *
  * Contact:
  * Jonas Latt
  * Computer Science Department
@@ -14,7 +14,7 @@
  * 1227 Carouge, Switzerland
  * jonas.latt@unige.ch
  *
- * The most recent release of Palabos can be downloaded at 
+ * The most recent release of Palabos can be downloaded at
  * <https://palabos.unige.ch/>
  *
  * The library Palabos is free software: you can redistribute it and/or
@@ -29,62 +29,69 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 #include "algorithm/statistics.h"
-#include "core/util.h"
-#include <cmath>
+
 #include <algorithm>
+#include <cmath>
 #include <limits>
+
+#include "core/util.h"
 
 namespace plb {
 
 namespace util {
 
-Stats::Stats(std::vector<double> const& data)
+Stats::Stats(std::vector<double> const &data)
 {
     if (data.empty()) {
-        min=max=mean=stddev=0.;
+        min = max = mean = stddev = 0.;
         return;
     }
 
-    min =  std::numeric_limits<double>::max();
+    min = std::numeric_limits<double>::max();
     max = -std::numeric_limits<double>::max();
     mean = 0.;
     stddev = 0.;
-    for (pluint i=0; i<data.size(); ++i) {
+    for (pluint i = 0; i < data.size(); ++i) {
         mean += data[i];
-        if (data[i] < min) min = data[i];
-        if (data[i] > max) max = data[i];
+        if (data[i] < min)
+            min = data[i];
+        if (data[i] > max)
+            max = data[i];
     }
     mean /= (double)data.size();
-    if (data.size()==1) {
-        stddev=0.;
-    }
-    else {
-        for (pluint i=0; i<data.size(); ++i) {
-            stddev += sqr(data[i]-mean);
+    if (data.size() == 1) {
+        stddev = 0.;
+    } else {
+        for (pluint i = 0; i < data.size(); ++i) {
+            stddev += sqr(data[i] - mean);
         }
-        stddev = std::sqrt( stddev/( (double)(data.size()-1) ) );
+        stddev = std::sqrt(stddev / ((double)(data.size() - 1)));
     }
 }
 
-double Stats::getMean() const {
+double Stats::getMean() const
+{
     return mean;
 }
 
-double Stats::getStddev() const {
+double Stats::getStddev() const
+{
     return stddev;
 }
 
-double Stats::getMin() const {
+double Stats::getMin() const
+{
     return min;
 }
 
-double Stats::getMax() const {
+double Stats::getMax() const
+{
     return max;
 }
 
-} // namespace util
+}  // namespace util
 
-} // namespace plb
+}  // namespace plb

@@ -5,7 +5,7 @@
  * own the IP rights for most of the code base. Since October 2019, the
  * Palabos project is maintained by the University of Geneva and accepts
  * source code contributions from the community.
- * 
+ *
  * Contact:
  * Jonas Latt
  * Computer Science Department
@@ -14,7 +14,7 @@
  * 1227 Carouge, Switzerland
  * jonas.latt@unige.ch
  *
- * The most recent release of Palabos can be downloaded at 
+ * The most recent release of Palabos can be downloaded at
  * <https://palabos.unige.ch/>
  *
  * The library Palabos is free software: you can redistribute it and/or
@@ -29,19 +29,18 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
+
+#include <cmath>
+#include <fstream>
+#include <iomanip>
+#include <iostream>
+#include <vector>
 
 #include "palabos2D.h"
 #include "palabos2D.hh"
-
 #include "poiseuille.h"
 #include "poiseuille.hh"
-
-#include <vector>
-#include <cmath>
-#include <iostream>
-#include <fstream>
-#include <iomanip>
 
 using namespace plb;
 using namespace std;
@@ -49,47 +48,46 @@ using namespace std;
 typedef double T;
 #define DESCRIPTOR descriptors::D2Q9Descriptor
 
-
-int main(int argc, char* argv[]) {
+int main(int argc, char *argv[])
+{
     plbInit(&argc, &argv);
     global::directories().setOutputDir("./tmp/");
 
     // Define numeric parameters.
-    IncomprFlowParam<T> parameters (
-        (T) 1e-2,  // uMax
-        (T) 300.,  // Re
-        40,        // N
-        6.,        // lx
-        1.         // ly 
+    IncomprFlowParam<T> parameters(
+        (T)1e-2,  // uMax
+        (T)300.,  // Re
+        40,       // N
+        6.,       // lx
+        1.        // ly
     );
 
     writeLogFile(parameters, "Poiseuille flow");
 
-    MultiBlockLattice2D<T, DESCRIPTOR> lattice (
-              parameters.getNx(), parameters.getNy(),
-              new BGKdynamics<T,DESCRIPTOR>(parameters.getOmega()) );
+    MultiBlockLattice2D<T, DESCRIPTOR> lattice(
+        parameters.getNx(), parameters.getNy(),
+        new BGKdynamics<T, DESCRIPTOR>(parameters.getOmega()));
 
-    OnLatticeBoundaryCondition2D<T,DESCRIPTOR>*
-        boundaryCondition = createLocalBoundaryCondition2D<T,DESCRIPTOR>();
+    OnLatticeBoundaryCondition2D<T, DESCRIPTOR> *boundaryCondition =
+        createLocalBoundaryCondition2D<T, DESCRIPTOR>();
 
     MultiScalarField2D<bool> boolMask(parameters.getNx(), parameters.getNy());
 
     plb_ifstream ifile("geometry.dat");
     ifile >> boolMask;
 
-    defineDynamics(lattice, boolMask, new BounceBack<T,DESCRIPTOR>, true);
+    defineDynamics(lattice, boolMask, new BounceBack<T, DESCRIPTOR>, true);
 
     createPoiseuilleBoundaries(lattice, parameters, *boundaryCondition);
     lattice.initialize();
 
     // Main loop over time iterations.
-    for (plint iT=0; iT<80000; ++iT) {
-        if (iT%1000==0) {
-            pcout << "Writing image at dimensionless time " << iT*parameters.getDeltaT() << endl;
+    for (plint iT = 0; iT < 80000; ++iT) {
+        if (iT % 1000 == 0) {
+            pcout << "Writing image at dimensionless time " << iT * parameters.getDeltaT() << endl;
             ImageWriter<T> imageWriter("leeloo");
-            imageWriter.writeScaledGif (
-                    createFileName("velocity", iT, 6),
-                    *computeVelocityNorm(lattice) );
+            imageWriter.writeScaledGif(
+                createFileName("velocity", iT, 6), *computeVelocityNorm(lattice));
             pcout << computeAverageEnergy(lattice) << endl;
         }
 

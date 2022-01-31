@@ -5,7 +5,7 @@
  * own the IP rights for most of the code base. Since October 2019, the
  * Palabos project is maintained by the University of Geneva and accepts
  * source code contributions from the community.
- * 
+ *
  * Contact:
  * Jonas Latt
  * Computer Science Department
@@ -14,7 +14,7 @@
  * 1227 Carouge, Switzerland
  * jonas.latt@unige.ch
  *
- * The most recent release of Palabos can be downloaded at 
+ * The most recent release of Palabos can be downloaded at
  * <https://palabos.unige.ch/>
  *
  * The library Palabos is free software: you can redistribute it and/or
@@ -29,7 +29,7 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 /** \file
  * A fluid constrained between a hot bottom wall (no-slip for the velocity) and a cold
@@ -49,11 +49,11 @@
  * create the initial condition, and to trigger the instability.
  **/
 
-#include "palabos3D.h"
-#include "palabos3D.hh"
-
 #include <cstdlib>
 #include <iostream>
+
+#include "palabos3D.h"
+#include "palabos3D.hh"
 
 using namespace plb;
 using namespace std;
@@ -61,256 +61,261 @@ using namespace std;
 typedef double T;
 
 #define NSDESCRIPTOR descriptors::ForcedD3Q19Descriptor
-#define ADESCRIPTOR descriptors::AdvectionDiffusionD3Q7Descriptor
+#define ADESCRIPTOR  descriptors::AdvectionDiffusionD3Q7Descriptor
 
-#define ADYNAMICS AdvectionDiffusionBGKdynamics
+#define ADYNAMICS  AdvectionDiffusionBGKdynamics
 #define NSDYNAMICS GuoExternalForceBGKdynamics
 
 /// Initialization of the temperature field.
-template<typename T, template<typename NSU> class nsDescriptor, template<typename ADU> class adDescriptor>
-struct IniTemperatureRayleighBenardProcessor3D : public BoxProcessingFunctional3D_L<T,adDescriptor> 
-{
-    IniTemperatureRayleighBenardProcessor3D(RayleighBenardFlowParam<T,nsDescriptor,adDescriptor> parameters_)
-        : parameters(parameters_)
+template <
+    typename T, template <typename NSU> class nsDescriptor,
+    template <typename ADU> class adDescriptor>
+struct IniTemperatureRayleighBenardProcessor3D :
+    public BoxProcessingFunctional3D_L<T, adDescriptor> {
+    IniTemperatureRayleighBenardProcessor3D(
+        RayleighBenardFlowParam<T, nsDescriptor, adDescriptor> parameters_) :
+        parameters(parameters_)
     { }
-    virtual void process(Box3D domain, BlockLattice3D<T,adDescriptor>& adLattice)
+    virtual void process(Box3D domain, BlockLattice3D<T, adDescriptor> &adLattice)
     {
         Dot3D absoluteOffset = adLattice.getLocation();
-        
-        for (plint iX=domain.x0; iX<=domain.x1; ++iX) {
-            for (plint iY=domain.y0; iY<=domain.y1; ++iY) {
-                for (plint iZ=domain.z0; iZ<=domain.z1; ++iZ) {
+
+        for (plint iX = domain.x0; iX <= domain.x1; ++iX) {
+            for (plint iY = domain.y0; iY <= domain.y1; ++iY) {
+                for (plint iZ = domain.z0; iZ <= domain.z1; ++iZ) {
                     plint absoluteZ = absoluteOffset.z + iZ;
-                
-                    T temperature = parameters.getHotTemperature() 
-                            - parameters.getDeltaTemperature() /
-                              (T)(parameters.getNz()-1) * (T)absoluteZ;
-                
-                    Array<T,adDescriptor<T>::d> jEq(0., 0., 0.);
-                    adLattice.get(iX,iY,iZ).defineDensity(temperature);
-                    iniCellAtEquilibrium(adLattice.get(iX,iY,iZ), temperature, jEq);
+
+                    T temperature = parameters.getHotTemperature()
+                                    - parameters.getDeltaTemperature() / (T)(parameters.getNz() - 1)
+                                          * (T)absoluteZ;
+
+                    Array<T, adDescriptor<T>::d> jEq(0., 0., 0.);
+                    adLattice.get(iX, iY, iZ).defineDensity(temperature);
+                    iniCellAtEquilibrium(adLattice.get(iX, iY, iZ), temperature, jEq);
                 }
             }
         }
     }
-    virtual IniTemperatureRayleighBenardProcessor3D<T,nsDescriptor,adDescriptor>* clone() const
+    virtual IniTemperatureRayleighBenardProcessor3D<T, nsDescriptor, adDescriptor> *clone() const
     {
-        return new IniTemperatureRayleighBenardProcessor3D<T,nsDescriptor,adDescriptor>(*this);
+        return new IniTemperatureRayleighBenardProcessor3D<T, nsDescriptor, adDescriptor>(*this);
     }
-    
-    virtual void getTypeOfModification(std::vector<modif::ModifT>& modified) const {
+
+    virtual void getTypeOfModification(std::vector<modif::ModifT> &modified) const
+    {
         modified[0] = modif::staticVariables;
     }
-    virtual BlockDomain::DomainT appliesTo() const {
+    virtual BlockDomain::DomainT appliesTo() const
+    {
         return BlockDomain::bulkAndEnvelope;
     }
-private :
-    RayleighBenardFlowParam<T,nsDescriptor,adDescriptor> parameters;
+
+private:
+    RayleighBenardFlowParam<T, nsDescriptor, adDescriptor> parameters;
 };
 
 /// Perturbation of the temperature field to instantiate the instability.
-template<typename T, template<typename NSU> class nsDescriptor, template<typename ADU> class adDescriptor>
-struct PerturbTemperatureRayleighBenardProcessor3D : public BoxProcessingFunctional3D_L<T,adDescriptor> 
-{
-    PerturbTemperatureRayleighBenardProcessor3D(RayleighBenardFlowParam<T,nsDescriptor,adDescriptor> parameters_)
-        : parameters(parameters_)
+template <
+    typename T, template <typename NSU> class nsDescriptor,
+    template <typename ADU> class adDescriptor>
+struct PerturbTemperatureRayleighBenardProcessor3D :
+    public BoxProcessingFunctional3D_L<T, adDescriptor> {
+    PerturbTemperatureRayleighBenardProcessor3D(
+        RayleighBenardFlowParam<T, nsDescriptor, adDescriptor> parameters_) :
+        parameters(parameters_)
     { }
-    virtual void process(Box3D domain,BlockLattice3D<T,adDescriptor>& lattice)
+    virtual void process(Box3D domain, BlockLattice3D<T, adDescriptor> &lattice)
     {
         Dot3D absoluteOffset = lattice.getLocation();
-        
-        for (plint iX=domain.x0; iX<=domain.x1; ++iX) {
-            for (plint iY=domain.y0; iY<=domain.y1; ++iY) {
-                for (plint iZ=domain.z0; iZ<=domain.z1; ++iZ) {
+
+        for (plint iX = domain.x0; iX <= domain.x1; ++iX) {
+            for (plint iY = domain.y0; iY <= domain.y1; ++iY) {
+                for (plint iZ = domain.z0; iZ <= domain.z1; ++iZ) {
                     plint absoluteX = absoluteOffset.x + iX;
                     plint absoluteY = absoluteOffset.y + iY;
                     plint absoluteZ = absoluteOffset.z + iZ;
-                    
-                    if ((absoluteX == (parameters.getNx()-1)/2) 
-                         && (absoluteY == (parameters.getNy()-1)/2) && (absoluteZ == 1))
+
+                    if ((absoluteX == (parameters.getNx() - 1) / 2)
+                        && (absoluteY == (parameters.getNy() - 1) / 2) && (absoluteZ == 1))
                     {
                         T temperature = T();
                         temperature = parameters.getHotTemperature() * 1.1;
-                        
-                        Array<T,adDescriptor<T>::d> jEq(0.,0.,0.);
-                        lattice.get(iX,iY,iZ).defineDensity(temperature);
-                        iniCellAtEquilibrium(lattice.get(iX,iY,iZ), temperature, jEq);
+
+                        Array<T, adDescriptor<T>::d> jEq(0., 0., 0.);
+                        lattice.get(iX, iY, iZ).defineDensity(temperature);
+                        iniCellAtEquilibrium(lattice.get(iX, iY, iZ), temperature, jEq);
                     }
                 }
             }
         }
     }
-    virtual PerturbTemperatureRayleighBenardProcessor3D<T,nsDescriptor,adDescriptor>* clone() const
+    virtual PerturbTemperatureRayleighBenardProcessor3D<T, nsDescriptor, adDescriptor> *clone()
+        const
     {
-        return new PerturbTemperatureRayleighBenardProcessor3D<T,nsDescriptor,adDescriptor>(*this);
+        return new PerturbTemperatureRayleighBenardProcessor3D<T, nsDescriptor, adDescriptor>(
+            *this);
     }
-    virtual void getTypeOfModification(std::vector<modif::ModifT>& modified) const {
+    virtual void getTypeOfModification(std::vector<modif::ModifT> &modified) const
+    {
         modified[0] = modif::staticVariables;
     }
-private :
-    RayleighBenardFlowParam<T,nsDescriptor,adDescriptor> parameters;
+
+private:
+    RayleighBenardFlowParam<T, nsDescriptor, adDescriptor> parameters;
 };
 
-void rayleighBenardSetup (
-        MultiBlockLattice3D<T, NSDESCRIPTOR>& nsLattice,
-        MultiBlockLattice3D<T, ADESCRIPTOR>& adLattice,
-        OnLatticeBoundaryCondition3D<T,NSDESCRIPTOR>& nsBoundaryCondition,
-        OnLatticeAdvectionDiffusionBoundaryCondition3D<T,ADESCRIPTOR>& adBoundaryCondition,
-        RayleighBenardFlowParam<T,NSDESCRIPTOR,ADESCRIPTOR> &parameters )
+void rayleighBenardSetup(
+    MultiBlockLattice3D<T, NSDESCRIPTOR> &nsLattice, MultiBlockLattice3D<T, ADESCRIPTOR> &adLattice,
+    OnLatticeBoundaryCondition3D<T, NSDESCRIPTOR> &nsBoundaryCondition,
+    OnLatticeAdvectionDiffusionBoundaryCondition3D<T, ADESCRIPTOR> &adBoundaryCondition,
+    RayleighBenardFlowParam<T, NSDESCRIPTOR, ADESCRIPTOR> &parameters)
 {
     plint nx = parameters.getNx();
     plint ny = parameters.getNy();
     plint nz = parameters.getNz();
-    
-    Box3D bottom(0,nx-1,0,ny-1,0,0);
-    Box3D top(0,nx-1,0,ny-1,nz-1,nz-1);
-    
-    nsBoundaryCondition.addVelocityBoundary2N(bottom, nsLattice);
-    nsBoundaryCondition.addVelocityBoundary2P(top,    nsLattice);
-    
-    adBoundaryCondition.addTemperatureBoundary2N(bottom, adLattice);
-    adBoundaryCondition.addTemperatureBoundary2P(top,    adLattice);
 
-    initializeAtEquilibrium(nsLattice, nsLattice.getBoundingBox(), (T)1., Array<T,3>((T)0.,(T)0.,(T)0.) );
-    
+    Box3D bottom(0, nx - 1, 0, ny - 1, 0, 0);
+    Box3D top(0, nx - 1, 0, ny - 1, nz - 1, nz - 1);
+
+    nsBoundaryCondition.addVelocityBoundary2N(bottom, nsLattice);
+    nsBoundaryCondition.addVelocityBoundary2P(top, nsLattice);
+
+    adBoundaryCondition.addTemperatureBoundary2N(bottom, adLattice);
+    adBoundaryCondition.addTemperatureBoundary2P(top, adLattice);
+
+    initializeAtEquilibrium(
+        nsLattice, nsLattice.getBoundingBox(), (T)1., Array<T, 3>((T)0., (T)0., (T)0.));
+
     applyProcessingFunctional(
-            new IniTemperatureRayleighBenardProcessor3D<T,NSDESCRIPTOR,ADESCRIPTOR>(parameters), 
-            adLattice.getBoundingBox(), adLattice );
-    
+        new IniTemperatureRayleighBenardProcessor3D<T, NSDESCRIPTOR, ADESCRIPTOR>(parameters),
+        adLattice.getBoundingBox(), adLattice);
+
     nsLattice.initialize();
     adLattice.initialize();
 }
 
-void writeVTK(MultiBlockLattice3D<T,NSDESCRIPTOR>& nsLattice,
-              MultiBlockLattice3D<T,ADESCRIPTOR>& adLattice,
-              RayleighBenardFlowParam<T,NSDESCRIPTOR,ADESCRIPTOR> const& parameters, plint iter)
+void writeVTK(
+    MultiBlockLattice3D<T, NSDESCRIPTOR> &nsLattice, MultiBlockLattice3D<T, ADESCRIPTOR> &adLattice,
+    RayleighBenardFlowParam<T, NSDESCRIPTOR, ADESCRIPTOR> const &parameters, plint iter)
 {
     T dx = parameters.getDeltaX();
     T dt = parameters.getDeltaT();
-    
+
     VtkImageOutput3D<T> vtkOut(createFileName("vtk", iter, 6), dx);
-    vtkOut.writeData<float>(*computeVelocityNorm(nsLattice), "velocityNorm", dx/dt);
-    vtkOut.writeData<3,float>(*computeVelocity(nsLattice), "velocity", dx/dt);
-    // Temperature is the order-0 moment of the advection-diffusion model. It can 
+    vtkOut.writeData<float>(*computeVelocityNorm(nsLattice), "velocityNorm", dx / dt);
+    vtkOut.writeData<3, float>(*computeVelocity(nsLattice), "velocity", dx / dt);
+    // Temperature is the order-0 moment of the advection-diffusion model. It can
     //    therefore be computed with the function "computeDensity".
     vtkOut.writeData<float>(*computeDensity(adLattice), "temperature", (T)1);
 }
 
-void writeGif(MultiBlockLattice3D<T,NSDESCRIPTOR>& nsLattice,
-              MultiBlockLattice3D<T,ADESCRIPTOR>& adLattice,int iT)
+void writeGif(
+    MultiBlockLattice3D<T, NSDESCRIPTOR> &nsLattice, MultiBlockLattice3D<T, ADESCRIPTOR> &adLattice,
+    int iT)
 {
     const plint imSize = 600;
     const plint nx = nsLattice.getNx();
     const plint ny = nsLattice.getNy();
     const plint nz = nsLattice.getNz();
-    Box3D slice(0, nx-1, (ny-1)/2, (ny-1)/2, 0, nz-1);
+    Box3D slice(0, nx - 1, (ny - 1) / 2, (ny - 1) / 2, 0, nz - 1);
     ImageWriter<T> imageWriter("leeloo.map");
-    imageWriter.writeScaledGif(createFileName("u", iT, 6),
-                               *computeVelocityNorm(nsLattice, slice),
-                               imSize, imSize);
-    // Temperature is the order-0 moment of the advection-diffusion model. It can 
+    imageWriter.writeScaledGif(
+        createFileName("u", iT, 6), *computeVelocityNorm(nsLattice, slice), imSize, imSize);
+    // Temperature is the order-0 moment of the advection-diffusion model. It can
     //    therefore be computed with the function "computeDensity".
-    imageWriter.writeScaledGif(createFileName("temperature", iT, 6),
-                               *computeDensity(adLattice, slice),
-                               imSize, imSize);
+    imageWriter.writeScaledGif(
+        createFileName("temperature", iT, 6), *computeDensity(adLattice, slice), imSize, imSize);
 }
 
 int main(int argc, char *argv[])
 {
     plbInit(&argc, &argv);
-    
+
     global::timer("simTime").start();
-    
-    T Ra=0.;
+
+    T Ra = 0.;
     try {
         global::argv(1).read(Ra);
-    }
-    catch(PlbIOException& exception) {
+    } catch (PlbIOException &exception) {
         pcout << exception.what() << endl;
-        pcout << "The structure of the input parameters should be : "
-              << (string)global::argv(0) << " Ra" << endl;;
+        pcout << "The structure of the input parameters should be : " << (string)global::argv(0)
+              << " Ra" << endl;
+        ;
         // Exit the program, because wrong input data is a fatal error.
         exit(1);
     }
 
-    const T lx  = 2.0;
-    const T ly  = 2.0;
-    const T lz  = 1.0;
-    const T uMax  = 0.1;
+    const T lx = 2.0;
+    const T ly = 2.0;
+    const T lz = 1.0;
+    const T uMax = 0.1;
     const T Pr = 1.0;
-    
+
     const T hotTemperature = 1.0;
     const T coldTemperature = 0.0;
     const plint resolution = 30;
 
     global::directories().setOutputDir("./tmp/");
-    
-    RayleighBenardFlowParam<T,NSDESCRIPTOR,ADESCRIPTOR> parameters (
-            Ra, 
-            Pr, 
-            uMax,
-            coldTemperature,
-            hotTemperature, 
-            resolution, 
-            lx, 
-            ly,
-            lz );
-                                        
-    writeLogFile(parameters,"palabos.log");
-    
-    const double rayleigh = parameters.getResolution() * parameters.getResolution() * 
-            parameters.getResolution() * parameters.getDeltaTemperature() * 
-            parameters.getLatticeGravity() / (parameters.getLatticeNu()*parameters.getLatticeKappa());
+
+    RayleighBenardFlowParam<T, NSDESCRIPTOR, ADESCRIPTOR> parameters(
+        Ra, Pr, uMax, coldTemperature, hotTemperature, resolution, lx, ly, lz);
+
+    writeLogFile(parameters, "palabos.log");
+
+    const double rayleigh = parameters.getResolution() * parameters.getResolution()
+                            * parameters.getResolution() * parameters.getDeltaTemperature()
+                            * parameters.getLatticeGravity()
+                            / (parameters.getLatticeNu() * parameters.getLatticeKappa());
 
     const double prandtl = parameters.getLatticeNu() / parameters.getLatticeKappa();
 
     pcout << rayleigh << " " << prandtl << endl;
-        
+
     plint nx = parameters.getNx();
     plint ny = parameters.getNy();
     plint nz = parameters.getNz();
-    
+
     T nsOmega = parameters.getSolventOmega();
     T adOmega = parameters.getTemperatureOmega();
-    
-    MultiBlockLattice3D<T, NSDESCRIPTOR> nsLattice (
-            nx,ny,nz,new NSDYNAMICS<T, NSDESCRIPTOR>(nsOmega) );
+
+    MultiBlockLattice3D<T, NSDESCRIPTOR> nsLattice(
+        nx, ny, nz, new NSDYNAMICS<T, NSDESCRIPTOR>(nsOmega));
     // Use periodic boundary conditions.
     nsLattice.periodicity().toggleAll(true);
-            
-    MultiBlockLattice3D<T, ADESCRIPTOR> adLattice (
-            nx,ny,nz,new ADYNAMICS<T, ADESCRIPTOR>(adOmega) );
+
+    MultiBlockLattice3D<T, ADESCRIPTOR> adLattice(
+        nx, ny, nz, new ADYNAMICS<T, ADESCRIPTOR>(adOmega));
     // Use periodic boundary conditions.
     adLattice.periodicity().toggleAll(true);
-            
-    OnLatticeBoundaryCondition3D<T,NSDESCRIPTOR>*
-        nsBoundaryCondition = createLocalBoundaryCondition3D<T,NSDESCRIPTOR>();
-        
-    OnLatticeAdvectionDiffusionBoundaryCondition3D<T,ADESCRIPTOR>*
-        adBoundaryCondition = createLocalAdvectionDiffusionBoundaryCondition3D<T,ADESCRIPTOR>();
-    
+
+    OnLatticeBoundaryCondition3D<T, NSDESCRIPTOR> *nsBoundaryCondition =
+        createLocalBoundaryCondition3D<T, NSDESCRIPTOR>();
+
+    OnLatticeAdvectionDiffusionBoundaryCondition3D<T, ADESCRIPTOR> *adBoundaryCondition =
+        createLocalAdvectionDiffusionBoundaryCondition3D<T, ADESCRIPTOR>();
+
     nsLattice.toggleInternalStatistics(false);
     adLattice.toggleInternalStatistics(false);
 
-    rayleighBenardSetup(nsLattice, adLattice,*nsBoundaryCondition, *adBoundaryCondition, parameters);
-    
-    Array<T,NSDESCRIPTOR<T>::d> forceOrientation(T(),T(),(T)1);
+    rayleighBenardSetup(
+        nsLattice, adLattice, *nsBoundaryCondition, *adBoundaryCondition, parameters);
+
+    Array<T, NSDESCRIPTOR<T>::d> forceOrientation(T(), T(), (T)1);
     plint processorLevel = 1;
-    integrateProcessingFunctional (
-            new BoussinesqThermalProcessor3D<T,NSDESCRIPTOR,ADESCRIPTOR> (
-                parameters.getLatticeGravity(), parameters.getAverageTemperature(),
-                parameters.getDeltaTemperature(),forceOrientation ),
-            nsLattice.getBoundingBox(),
-            nsLattice, adLattice, processorLevel );
-    
+    integrateProcessingFunctional(
+        new BoussinesqThermalProcessor3D<T, NSDESCRIPTOR, ADESCRIPTOR>(
+            parameters.getLatticeGravity(), parameters.getAverageTemperature(),
+            parameters.getDeltaTemperature(), forceOrientation),
+        nsLattice.getBoundingBox(), nsLattice, adLattice, processorLevel);
+
 #ifndef PLB_REGRESSION
     T tIni = global::timer("simTime").stop();
     pcout << "time elapsed for rayleighBenardSetup:" << tIni << endl;
 #endif
     global::timer("simTime").start();
-    
+
 #ifndef PLB_REGRESSION
-    plint evalTime =10000;
+    plint evalTime = 10000;
 #endif
     plint iT = 0;
     plint maxT = 1000000000;
@@ -318,84 +323,76 @@ int main(int argc, char *argv[])
 #ifndef PLB_REGRESSION
     plint saveIter = 1000;
 #endif
-    util::ValueTracer<T> converge((T)1,(T)100,1.0e-3);
+    util::ValueTracer<T> converge((T)1, (T)100, 1.0e-3);
     bool convergedOnce = false;
 
     // Main loop over time iterations.
-    for (iT = 0; iT <= maxT; ++iT) 
-    {
+    for (iT = 0; iT <= maxT; ++iT) {
 #ifndef PLB_REGRESSION
-        if (iT == (evalTime))
-        {
+        if (iT == (evalTime)) {
             T tEval = global::timer("simTime").stop();
-            T remainTime = (tEval - tIni) / (T)evalTime * (T)maxT/(T)3600;
+            T remainTime = (tEval - tIni) / (T)evalTime * (T)maxT / (T)3600;
             global::timer("simTime").start();
             pcout << "Remaining " << (plint)remainTime << " hours, and ";
-            pcout << (plint)((T)60*(remainTime - (T)((plint)remainTime))+0.5) << " minutes." << endl;
+            pcout << (plint)((T)60 * (remainTime - (T)((plint)remainTime)) + 0.5) << " minutes."
+                  << endl;
         }
 #endif
-        if (iT % statIter == 0)
-        {
+        if (iT % statIter == 0) {
             int zDirection = 2;
-            T nusselt = computeNusseltNumber (
-                            nsLattice, adLattice,
-                            nsLattice.getBoundingBox(),
-                            zDirection, parameters.getDeltaX(), 
-                            parameters.getLatticeKappa(), parameters.getDeltaTemperature());
-            converge.takeValue(nusselt,true);
+            T nusselt = computeNusseltNumber(
+                nsLattice, adLattice, nsLattice.getBoundingBox(), zDirection,
+                parameters.getDeltaX(), parameters.getLatticeKappa(),
+                parameters.getDeltaTemperature());
+            converge.takeValue(nusselt, true);
         }
-        if (converge.hasConverged())
-        {
-            if (!convergedOnce)
-            {
+        if (converge.hasConverged()) {
+            if (!convergedOnce) {
                 convergedOnce = true;
                 converge.resetValues();
                 converge.setEpsilon(1.0e-11);
                 applyProcessingFunctional(
-                    new PerturbTemperatureRayleighBenardProcessor3D<T,NSDESCRIPTOR,ADESCRIPTOR>(parameters), 
-                    adLattice.getBoundingBox(),adLattice);
+                    new PerturbTemperatureRayleighBenardProcessor3D<T, NSDESCRIPTOR, ADESCRIPTOR>(
+                        parameters),
+                    adLattice.getBoundingBox(), adLattice);
                 pcout << "Intermetiate convergence.\n";
-            }
-            else
-            {
+            } else {
                 pcout << "Simulation is over.\n";
                 break;
             }
         }
 #ifndef PLB_REGRESSION
-        if (iT % saveIter == 0)
-        {
+        if (iT % saveIter == 0) {
             pcout << iT * parameters.getDeltaT() << " : Writing VTK." << endl;
             writeVTK(nsLattice, adLattice, parameters, iT);
-         
+
             pcout << iT << " : Writing gif." << endl;
-            writeGif(nsLattice,adLattice,iT);
+            writeGif(nsLattice, adLattice, iT);
         }
-#endif        
-        
+#endif
+
         // Lattice Boltzmann iteration step.
         adLattice.collideAndStream();
         nsLattice.collideAndStream();
     }
-    
+
 #ifndef PLB_REGRESSION
-    writeGif(nsLattice,adLattice,iT);
-    
+    writeGif(nsLattice, adLattice, iT);
+
     T tEnd = global::timer("simTime").stop();
-    
-    T totalTime = tEnd-tIni;
-    T nx100 = nsLattice.getNx()/(T)100;
-    T ny100 = nsLattice.getNy()/(T)100;
-    T nz100 = nsLattice.getNz()/(T)100;
+
+    T totalTime = tEnd - tIni;
+    T nx100 = nsLattice.getNx() / (T)100;
+    T ny100 = nsLattice.getNy() / (T)100;
+    T nz100 = nsLattice.getNz() / (T)100;
     pcout << "N=" << resolution << endl;
     pcout << "number of processors: " << global::mpi().getSize() << endl;
     pcout << "simulation time: " << totalTime << endl;
     pcout << "total time: " << tEnd << endl;
     pcout << "total iterations: " << iT << endl;
-    pcout << "Msus: " << nx100*ny100*nz100*(T)iT/totalTime << endl;
+    pcout << "Msus: " << nx100 * ny100 * nz100 * (T)iT / totalTime << endl;
 #endif
 
     delete nsBoundaryCondition;
     delete adBoundaryCondition;
 }
-

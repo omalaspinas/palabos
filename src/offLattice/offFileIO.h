@@ -5,7 +5,7 @@
  * own the IP rights for most of the code base. Since October 2019, the
  * Palabos project is maintained by the University of Geneva and accepts
  * source code contributions from the community.
- * 
+ *
  * Contact:
  * Jonas Latt
  * Computer Science Department
@@ -14,7 +14,7 @@
  * 1227 Carouge, Switzerland
  * jonas.latt@unige.ch
  *
- * The most recent release of Palabos can be downloaded at 
+ * The most recent release of Palabos can be downloaded at
  * <https://palabos.unige.ch/>
  *
  * The library Palabos is free software: you can redistribute it and/or
@@ -29,7 +29,7 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 #ifndef OFF_FILE_IO_H
 #define OFF_FILE_IO_H
@@ -39,20 +39,27 @@
  * on a RawTriangleMesh, or a RawConnectedTriangleMesh, or a DEFtriangleMesh.
  */
 
+#include <vector>
+
 #include "core/array.h"
 #include "core/globalDefs.h"
 #include "offLattice/triangleMesh.h"
 
-#include <vector>
-
 namespace plb {
 
-template<typename T>
+template <typename T>
 class OFFreader {
 public:
     OFFreader(std::string fname);
-    std::vector<Array<T,3> > const& getVertices() const { return vertices; }
-    std::vector<std::vector<plint> > const& getFacets() const { return facets; }
+    std::vector<Array<T, 3> > const &getVertices() const
+    {
+        return vertices;
+    }
+    std::vector<std::vector<plint> > const &getFacets() const
+    {
+        return facets;
+    }
+
 private:
     void readOFF(std::string fname);
     // Caution: in the readAsciiOFF method we keep all information that resides
@@ -61,18 +68,20 @@ private:
     //          equal to 0. We do not do this here, because from the OFFreader we
     //          can directly create a connected mesh and we do not want to break
     //          vertex and triangle numbering.
-    bool readAsciiOFF(FILE* fp);
-    void skipLines(plint nLines, FILE* fp) const;
+    bool readAsciiOFF(FILE *fp);
+    void skipLines(plint nLines, FILE *fp) const;
     int readAhead(FILE *fp, char commentCharacter) const;
+
 private:
-    std::vector<Array<T,3> > vertices;
+    std::vector<Array<T, 3> > vertices;
     std::vector<std::vector<plint> > facets;
 };
 
-template<typename T>
-void writeAsciiOFF(TriangleMesh<T>& mesh, std::string fname, T eps=getEpsilon<T>(DBL), int numDecimalDigits=10);
+template <typename T>
+void writeAsciiOFF(
+    TriangleMesh<T> &mesh, std::string fname, T eps = getEpsilon<T>(DBL),
+    int numDecimalDigits = 10);
 
 }  // namespace plb
 
 #endif  // OFF_FILE_IO_H
-

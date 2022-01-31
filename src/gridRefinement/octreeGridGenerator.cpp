@@ -5,7 +5,7 @@
  * own the IP rights for most of the code base. Since October 2019, the
  * Palabos project is maintained by the University of Geneva and accepts
  * source code contributions from the community.
- * 
+ *
  * Contact:
  * Jonas Latt
  * Computer Science Department
@@ -14,7 +14,7 @@
  * 1227 Carouge, Switzerland
  * jonas.latt@unige.ch
  *
- * The most recent release of Palabos can be downloaded at 
+ * The most recent release of Palabos can be downloaded at
  * <https://palabos.unige.ch/>
  *
  * The library Palabos is free software: you can redistribute it and/or
@@ -29,23 +29,23 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 #include "gridRefinement/octreeGridGenerator.h"
-#include "gridRefinement/octreeGridGenerator.hh"
-#include "io/parallelIO.h"
-#include "gridRefinement/octree.h"
-#include "gridRefinement/octree.hh"
 
-#include <cstdio>
 #include <cmath>
+#include <cstdio>
 #include <limits>
 
+#include "gridRefinement/octree.h"
+#include "gridRefinement/octree.hh"
+#include "gridRefinement/octreeGridGenerator.hh"
+#include "io/parallelIO.h"
+
 namespace plb {
-OctreeProcessLoads::OctreeProcessLoads(plint numProcesses_, plint numCellsPerBlock_, int minLeafLevel_)
-    : numProcesses(numProcesses_),
-      numCellsPerBlock(numCellsPerBlock_),
-      minLeafLevel(minLeafLevel_)
+OctreeProcessLoads::OctreeProcessLoads(
+    plint numProcesses_, plint numCellsPerBlock_, int minLeafLevel_) :
+    numProcesses(numProcesses_), numCellsPerBlock(numCellsPerBlock_), minLeafLevel(minLeafLevel_)
 {
     PLB_ASSERT(numProcesses > 0);
     PLB_ASSERT(numCellsPerBlock > 0);
@@ -67,23 +67,23 @@ void OctreeProcessLoads::clearLoad(plint processId)
 
 plint OctreeProcessLoads::getNumProcesses() const
 {
-    return(numProcesses);
+    return (numProcesses);
 }
 
 plint OctreeProcessLoads::getNumCellsPerBlock() const
 {
-    return(numCellsPerBlock);
+    return (numCellsPerBlock);
 }
 
 int OctreeProcessLoads::getMinLeafLevel() const
 {
-    return(minLeafLevel);
+    return (minLeafLevel);
 }
 
 plint OctreeProcessLoads::getLoad(plint processId) const
 {
     PLB_ASSERT(processId >= 0 && processId < numProcesses);
-    return(loads[processId]);
+    return (loads[processId]);
 }
 
 void OctreeProcessLoads::addLoad(plint processId, int level)
@@ -108,10 +108,8 @@ plint OctreeProcessLoads::getProcessWithMinLoad() const
     return(processId);
     */
 
-    //return((plint) std::distance(loads.begin(), std::min_element(loads.begin(), loads.end())));
-    return((plint) (std::min_element(loads.begin(), loads.end()) - loads.begin()));
+    // return((plint) std::distance(loads.begin(), std::min_element(loads.begin(), loads.end())));
+    return ((plint)(std::min_element(loads.begin(), loads.end()) - loads.begin()));
 }
 
-
-} // namespace plb
-
+}  // namespace plb

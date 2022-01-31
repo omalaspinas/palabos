@@ -5,7 +5,7 @@
  * own the IP rights for most of the code base. Since October 2019, the
  * Palabos project is maintained by the University of Geneva and accepts
  * source code contributions from the community.
- * 
+ *
  * Contact:
  * Jonas Latt
  * Computer Science Department
@@ -14,7 +14,7 @@
  * 1227 Carouge, Switzerland
  * jonas.latt@unige.ch
  *
- * The most recent release of Palabos can be downloaded at 
+ * The most recent release of Palabos can be downloaded at
  * <https://palabos.unige.ch/>
  *
  * The library Palabos is free software: you can redistribute it and/or
@@ -29,7 +29,7 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 /** \file
  * Serializer and UnSerializer for multi blocks -- header file.
@@ -38,33 +38,33 @@
 #define MULTI_BLOCK_SERIALIZER_3D_H
 
 #include "core/globalDefs.h"
-#include "multiBlock/multiBlock3D.h"
 #include "core/serializer.h"
 #include "core/util.h"
+#include "multiBlock/multiBlock3D.h"
 
 namespace plb {
 
 class MultiBlockSerializer3D : public DataSerializer {
 public:
-    MultiBlockSerializer3D(MultiBlock3D const& multiBlock_,
-                           IndexOrdering::OrderingT ordering_);
-    MultiBlockSerializer3D(MultiBlock3D const& multiBlock_,
-                           Box3D domain_,
-                           IndexOrdering::OrderingT ordering_);
-    virtual MultiBlockSerializer3D* clone() const;
+    MultiBlockSerializer3D(MultiBlock3D const &multiBlock_, IndexOrdering::OrderingT ordering_);
+    MultiBlockSerializer3D(
+        MultiBlock3D const &multiBlock_, Box3D domain_, IndexOrdering::OrderingT ordering_);
+    virtual MultiBlockSerializer3D *clone() const;
     virtual pluint getSize() const;
-    virtual const char* getNextDataBuffer(pluint& bufferSize) const;
+    virtual const char *getNextDataBuffer(pluint &bufferSize) const;
     virtual bool isEmpty() const;
+
 private:
-    SparseBlockStructure3D const& getSparseBlockStructure() const;
+    SparseBlockStructure3D const &getSparseBlockStructure() const;
     bool isLocal(plint blockId) const;
     void computeBufferAlongX(plint nextBlockId, plint nextChunkSize) const;
     void computeBufferAlongY(plint nextBlockId, plint nextChunkSize) const;
     void computeBufferAlongZ(plint nextBlockId, plint nextChunkSize) const;
     void communicateBuffer(plint bufferSize, plint fromBlockId, bool isAllocated) const;
     void fillBufferWithZeros(plint nextChunkSize) const;
+
 private:
-    MultiBlock3D const& multiBlock;
+    MultiBlock3D const &multiBlock;
     IndexOrdering::OrderingT ordering;
     Box3D domain;
     mutable plint iX, iY, iZ;
@@ -73,25 +73,25 @@ private:
 
 class MultiBlockUnSerializer3D : public DataUnSerializer {
 public:
-    MultiBlockUnSerializer3D(MultiBlock3D& multiBlock_,
-                             IndexOrdering::OrderingT ordering_);
-    MultiBlockUnSerializer3D(MultiBlock3D& multiBlock_,
-                             Box3D domain_,
-                             IndexOrdering::OrderingT ordering_);
-    virtual MultiBlockUnSerializer3D* clone() const;
+    MultiBlockUnSerializer3D(MultiBlock3D &multiBlock_, IndexOrdering::OrderingT ordering_);
+    MultiBlockUnSerializer3D(
+        MultiBlock3D &multiBlock_, Box3D domain_, IndexOrdering::OrderingT ordering_);
+    virtual MultiBlockUnSerializer3D *clone() const;
     virtual pluint getSize() const;
-    virtual char* getNextDataBuffer(pluint& bufferSize);
+    virtual char *getNextDataBuffer(pluint &bufferSize);
     virtual void commitData();
     virtual bool isFull() const;
+
 private:
-    SparseBlockStructure3D const& getSparseBlockStructure() const;
+    SparseBlockStructure3D const &getSparseBlockStructure() const;
     bool isLocal(plint blockId) const;
     void fillBufferAlongX(plint nextBlockId, plint nextChunkSize);
     void fillBufferAlongY(plint nextBlockId, plint nextChunkSize);
     void fillBufferAlongZ(plint nextBlockId, plint nextChunkSize);
     void communicateBuffer(plint bufferSize, plint toBlockId, bool isAllocated) const;
+
 private:
-    MultiBlock3D& multiBlock;
+    MultiBlock3D &multiBlock;
     IndexOrdering::OrderingT ordering;
     Box3D domain;
     mutable plint iX, iY, iZ;
@@ -100,19 +100,19 @@ private:
 
 class MultiBlockFastSerializer3D : public DataSerializer {
 public:
-    MultiBlockFastSerializer3D(MultiBlock3D const& multiBlock_,
-                               IndexOrdering::OrderingT ordering_);
-    MultiBlockFastSerializer3D(MultiBlock3D const& multiBlock_,
-                               Box3D domain_,
-                               IndexOrdering::OrderingT ordering_);
-    virtual MultiBlockFastSerializer3D* clone() const;
+    MultiBlockFastSerializer3D(MultiBlock3D const &multiBlock_, IndexOrdering::OrderingT ordering_);
+    MultiBlockFastSerializer3D(
+        MultiBlock3D const &multiBlock_, Box3D domain_, IndexOrdering::OrderingT ordering_);
+    virtual MultiBlockFastSerializer3D *clone() const;
     virtual pluint getSize() const;
-    virtual const char* getNextDataBuffer(pluint& bufferSize) const;
+    virtual const char *getNextDataBuffer(pluint &bufferSize) const;
     virtual bool isEmpty() const;
+
 private:
     pluint computeSlice() const;
+
 private:
-    MultiBlock3D const& multiBlock;
+    MultiBlock3D const &multiBlock;
     IndexOrdering::OrderingT ordering;
     Box3D domain;
     mutable plint pos;
@@ -121,24 +121,22 @@ private:
 
 class MultiBlockFastUnSerializer3D : public DataUnSerializer {
 public:
-    MultiBlockFastUnSerializer3D(MultiBlock3D& multiBlock_,
-                                 IndexOrdering::OrderingT ordering_);
-    MultiBlockFastUnSerializer3D(MultiBlock3D& multiBlock_,
-                                 Box3D domain_,
-                                 IndexOrdering::OrderingT ordering_);
-    virtual MultiBlockFastUnSerializer3D* clone() const;
+    MultiBlockFastUnSerializer3D(MultiBlock3D &multiBlock_, IndexOrdering::OrderingT ordering_);
+    MultiBlockFastUnSerializer3D(
+        MultiBlock3D &multiBlock_, Box3D domain_, IndexOrdering::OrderingT ordering_);
+    virtual MultiBlockFastUnSerializer3D *clone() const;
     virtual pluint getSize() const;
-    virtual char* getNextDataBuffer(pluint& bufferSize);
+    virtual char *getNextDataBuffer(pluint &bufferSize);
     virtual void commitData();
     virtual bool isFull() const;
+
 private:
-    MultiBlock3D& multiBlock;
+    MultiBlock3D &multiBlock;
     IndexOrdering::OrderingT ordering;
     Box3D domain;
     mutable plint pos;
     mutable std::vector<char> buffer;
 };
-
 
 }  //  namespace plb
 

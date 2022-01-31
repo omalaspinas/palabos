@@ -5,7 +5,7 @@
  * own the IP rights for most of the code base. Since October 2019, the
  * Palabos project is maintained by the University of Geneva and accepts
  * source code contributions from the community.
- * 
+ *
  * Contact:
  * Jonas Latt
  * Computer Science Department
@@ -14,7 +14,7 @@
  * 1227 Carouge, Switzerland
  * jonas.latt@unige.ch
  *
- * The most recent release of Palabos can be downloaded at 
+ * The most recent release of Palabos can be downloaded at
  * <https://palabos.unige.ch/>
  *
  * The library Palabos is free software: you can redistribute it and/or
@@ -29,7 +29,7 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 #include "algorithm/basicAlgorithms.h"
 
@@ -37,35 +37,36 @@ namespace plb {
 
 namespace algorithm {
 
-std::vector<plint> primeFactor(plint value) {
+std::vector<plint> primeFactor(plint value)
+{
     std::vector<plint> primeFactors;
     plint testFactor = 2;
     while (testFactor <= value) {
-        if (value%testFactor==0) {
+        if (value % testFactor == 0) {
             value /= testFactor;
             primeFactors.push_back(testFactor);
-        }
-        else {
+        } else {
             ++testFactor;
         }
     }
     return primeFactors;
 }
 
-std::vector<plint> evenRepartition(plint value, plint d) {
+std::vector<plint> evenRepartition(plint value, plint d)
+{
     std::vector<plint> primeFactors = primeFactor(value);
     std::vector<plint> repartition(d);
-    for (plint iRep=0; iRep<d; ++iRep) {
+    for (plint iRep = 0; iRep < d; ++iRep) {
         repartition[iRep] = 1;
     }
-    plint iDim=0;
-    for (plint iPrime=(int)(primeFactors.size()-1); iPrime>=0; --iPrime) {
+    plint iDim = 0;
+    for (plint iPrime = (int)(primeFactors.size() - 1); iPrime >= 0; --iPrime) {
         repartition[iDim] *= primeFactors[iPrime];
-        iDim = (iDim+1)%d;
+        iDim = (iDim + 1) % d;
     }
     return repartition;
 }
 
-}
+}  // namespace algorithm
 
-}
+}  // namespace plb

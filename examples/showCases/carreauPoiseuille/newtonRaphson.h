@@ -5,7 +5,7 @@
  * own the IP rights for most of the code base. Since October 2019, the
  * Palabos project is maintained by the University of Geneva and accepts
  * source code contributions from the community.
- * 
+ *
  * Contact:
  * Jonas Latt
  * Computer Science Department
@@ -14,7 +14,7 @@
  * 1227 Carouge, Switzerland
  * jonas.latt@unige.ch
  *
- * The most recent release of Palabos can be downloaded at 
+ * The most recent release of Palabos can be downloaded at
  * <https://palabos.unige.ch/>
  *
  * The library Palabos is free software: you can redistribute it and/or
@@ -29,7 +29,7 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 #include <cmath>
 
@@ -38,7 +38,6 @@
 #ifndef NEWTON_RAPHSON_H
 #define NEWTON_RAPHSON_H
 
-
 /** This class is a Newton-Raphson root finding solver.
  * It find y such that F(y)=0. It takes the function type as template
  * parameter and F(y), F'(y), the tolerance and the maximum iterations
@@ -46,44 +45,42 @@
  */
 
 template <typename T>
-class NewtonRaphson : public Function<T>
-{
-public :
-	NewtonRaphson(FunctionAndDerivative<T> *function_, T tol_, int maxIter_)
-		: function(function_), tol(tol_), maxIter(maxIter_)
-	{   }
+class NewtonRaphson : public Function<T> {
+public:
+    NewtonRaphson(FunctionAndDerivative<T> *function_, T tol_, int maxIter_) :
+        function(function_), tol(tol_), maxIter(maxIter_)
+    { }
 
-    ~NewtonRaphson() {
+    ~NewtonRaphson()
+    {
         delete function;
     }
-	
-	virtual T operator()(T y) const 
-	{
-		T root0 = T();
-		T root = T();
-// 		std::cout << root0 << std::endl;
-		for (int iPop = 0; iPop < maxIter; ++iPop)
-		{
-			root = root0 - (*(function))(y, root0) / function->derivative(y, root0);
-// 			std::cout << std::fabs((root - root0)) << std::endl;
-			if ((std::fabs((root - root0)/root0) < tol) || (root-root0) == T())
-			{
-// 				std::cout << root << std::endl;
-				return root;
-			}
-			root0 = root;
-		}
-		
-		std::cout << "Error Newton-Raphson never converged." << std::endl;
-		exit(1);
-        
-		return root;
+
+    virtual T operator()(T y) const
+    {
+        T root0 = T();
+        T root = T();
+        // 		std::cout << root0 << std::endl;
+        for (int iPop = 0; iPop < maxIter; ++iPop) {
+            root = root0 - (*(function))(y, root0) / function->derivative(y, root0);
+            // 			std::cout << std::fabs((root - root0)) << std::endl;
+            if ((std::fabs((root - root0) / root0) < tol) || (root - root0) == T()) {
+                // 				std::cout << root << std::endl;
+                return root;
+            }
+            root0 = root;
+        }
+
+        std::cout << "Error Newton-Raphson never converged." << std::endl;
+        exit(1);
+
+        return root;
     }
-	
-private :
-	FunctionAndDerivative<T> *function;
-	T tol;
-	int maxIter;
+
+private:
+    FunctionAndDerivative<T> *function;
+    T tol;
+    int maxIter;
 };
 
 #endif

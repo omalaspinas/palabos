@@ -5,7 +5,7 @@
  * own the IP rights for most of the code base. Since October 2019, the
  * Palabos project is maintained by the University of Geneva and accepts
  * source code contributions from the community.
- * 
+ *
  * Contact:
  * Jonas Latt
  * Computer Science Department
@@ -14,7 +14,7 @@
  * 1227 Carouge, Switzerland
  * jonas.latt@unige.ch
  *
- * The most recent release of Palabos can be downloaded at 
+ * The most recent release of Palabos can be downloaded at
  * <https://palabos.unige.ch/>
  *
  * The library Palabos is free software: you can redistribute it and/or
@@ -29,28 +29,30 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 #ifndef COLORMAPS_H
 #define COLORMAPS_H
 
-#include "core/globalDefs.h"
 #include <string>
 #include <vector>
+
+#include "core/globalDefs.h"
 
 namespace plb {
 
 struct ScalarFunction {
     virtual ~ScalarFunction() { }
-    virtual double operator() (double x) const =0;
-    virtual ScalarFunction* clone() const=0;
+    virtual double operator()(double x) const = 0;
+    virtual ScalarFunction *clone() const = 0;
 };
 
 class LinearFunction : public ScalarFunction {
 public:
     LinearFunction(double x1_, double x2_, double y1_, double y2_);
-    virtual double operator() (double x) const;
-    virtual LinearFunction* clone() const;
+    virtual double operator()(double x) const;
+    virtual LinearFunction *clone() const;
+
 private:
     double x1, x2, y1, y2;
 };
@@ -58,16 +60,16 @@ private:
 class PowerLawFunction : public ScalarFunction {
 public:
     PowerLawFunction(double x1_, double x2_, double y1_, double y2_, double b_);
-    virtual double operator() (double x) const;
-    virtual PowerLawFunction* clone() const;
+    virtual double operator()(double x) const;
+    virtual PowerLawFunction *clone() const;
+
 private:
     double x1, x2, y1, y2;
     double b;
 };
 
 struct Piece {
-    Piece(double closedBegin_, double openEnd_) : closedBegin(closedBegin_), openEnd(openEnd_)
-    { }
+    Piece(double closedBegin_, double openEnd_) : closedBegin(closedBegin_), openEnd(openEnd_) { }
     double closedBegin, openEnd;
 };
 
@@ -75,29 +77,30 @@ class PiecewiseFunction : public ScalarFunction {
 public:
     PiecewiseFunction() { }
     ~PiecewiseFunction();
-    PiecewiseFunction(PiecewiseFunction const& rhs);
-    PiecewiseFunction& operator=(PiecewiseFunction const& rhs);
-    void swap(PiecewiseFunction& rhs);
-    void addPiece(Piece piece, ScalarFunction* f);
-    virtual double operator() (double x) const;
-    virtual PiecewiseFunction* clone() const;
+    PiecewiseFunction(PiecewiseFunction const &rhs);
+    PiecewiseFunction &operator=(PiecewiseFunction const &rhs);
+    void swap(PiecewiseFunction &rhs);
+    void addPiece(Piece piece, ScalarFunction *f);
+    virtual double operator()(double x) const;
+    virtual PiecewiseFunction *clone() const;
+
 private:
-    std::vector<Piece > pieces;
-    std::vector<ScalarFunction*> functions;
+    std::vector<Piece> pieces;
+    std::vector<ScalarFunction *> functions;
 };
 
 struct rgb {
-    rgb(double r_, double g_, double b_) : r(r_), g(g_), b(b_)
-    { }
-    double r,g,b;
+    rgb(double r_, double g_, double b_) : r(r_), g(g_), b(b_) { }
+    double r, g, b;
 };
 
 class ColorMap {
 public:
-    ColorMap(PiecewiseFunction const& red_,
-             PiecewiseFunction const& green_,
-             PiecewiseFunction const& blue_);
+    ColorMap(
+        PiecewiseFunction const &red_, PiecewiseFunction const &green_,
+        PiecewiseFunction const &blue_);
     rgb get(double x) const;
+
 private:
     PiecewiseFunction red, green, blue;
 };
@@ -130,7 +133,7 @@ PiecewiseFunction generateRedBlueBlue();
 
 ColorMap generateMap(std::string mapName);
 
-} // namespace mapGenerators
+}  // namespace mapGenerators
 
 }  // namespace plb
 

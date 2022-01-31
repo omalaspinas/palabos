@@ -5,7 +5,7 @@
  * own the IP rights for most of the code base. Since October 2019, the
  * Palabos project is maintained by the University of Geneva and accepts
  * source code contributions from the community.
- * 
+ *
  * Contact:
  * Jonas Latt
  * Computer Science Department
@@ -14,7 +14,7 @@
  * 1227 Carouge, Switzerland
  * jonas.latt@unige.ch
  *
- * The most recent release of Palabos can be downloaded at 
+ * The most recent release of Palabos can be downloaded at
  * <https://palabos.unige.ch/>
  *
  * The library Palabos is free software: you can redistribute it and/or
@@ -29,7 +29,7 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 /** \file
  * Neumann boundary conditions -- header file.
@@ -37,71 +37,66 @@
 #ifndef NEUMANN_CONDITION_2D_H
 #define NEUMANN_CONDITION_2D_H
 
-#include "core/globalDefs.h"
-#include "core/blockLatticeBase2D.h"
 #include "atomicBlock/blockLattice2D.h"
 #include "atomicBlock/dataProcessorWrapper2D.h"
 #include "boundaryCondition/boundaryDynamics.h"
+#include "core/blockLatticeBase2D.h"
+#include "core/globalDefs.h"
 
 namespace plb {
 
-template<typename T, template<typename U> class Descriptor, int direction, int orientation>
-class CopyUnknownPopulationsFunctional2D : public BoxProcessingFunctional2D_L<T,Descriptor>
-{
+template <typename T, template <typename U> class Descriptor, int direction, int orientation>
+class CopyUnknownPopulationsFunctional2D : public BoxProcessingFunctional2D_L<T, Descriptor> {
 public:
-    virtual void process(Box2D domain, BlockLattice2D<T,Descriptor>& lattice);
-    virtual CopyUnknownPopulationsFunctional2D<T,Descriptor,direction,orientation>* clone() const;
-    virtual void getTypeOfModification(std::vector<modif::ModifT>& modified) const;
+    virtual void process(Box2D domain, BlockLattice2D<T, Descriptor> &lattice);
+    virtual CopyUnknownPopulationsFunctional2D<T, Descriptor, direction, orientation> *clone()
+        const;
+    virtual void getTypeOfModification(std::vector<modif::ModifT> &modified) const;
     virtual BlockDomain::DomainT appliesTo() const;
 };
 
-template<typename T, template<typename U> class Descriptor, int normalX, int normalY>
-class CopyAllPopulationsFunctional2D : public BoxProcessingFunctional2D_L<T,Descriptor>
-{
+template <typename T, template <typename U> class Descriptor, int normalX, int normalY>
+class CopyAllPopulationsFunctional2D : public BoxProcessingFunctional2D_L<T, Descriptor> {
 public:
-    virtual void process(Box2D domain, BlockLattice2D<T,Descriptor>& lattice);
-    virtual CopyAllPopulationsFunctional2D<T,Descriptor,normalX,normalY>* clone() const;
-    virtual void getTypeOfModification(std::vector<modif::ModifT>& modified) const;
+    virtual void process(Box2D domain, BlockLattice2D<T, Descriptor> &lattice);
+    virtual CopyAllPopulationsFunctional2D<T, Descriptor, normalX, normalY> *clone() const;
+    virtual void getTypeOfModification(std::vector<modif::ModifT> &modified) const;
     virtual BlockDomain::DomainT appliesTo() const;
 };
 
-template<typename T, template<typename U> class Descriptor, int normalX, int normalY>
-class CopyVelocityFunctional2D : public BoxProcessingFunctional2D_L<T,Descriptor>
-{
+template <typename T, template <typename U> class Descriptor, int normalX, int normalY>
+class CopyVelocityFunctional2D : public BoxProcessingFunctional2D_L<T, Descriptor> {
 public:
-    virtual void process(Box2D domain, BlockLattice2D<T,Descriptor>& lattice);
-    virtual CopyVelocityFunctional2D<T,Descriptor,normalX,normalY>* clone() const;
-    virtual void getTypeOfModification(std::vector<modif::ModifT>& modified) const;
+    virtual void process(Box2D domain, BlockLattice2D<T, Descriptor> &lattice);
+    virtual CopyVelocityFunctional2D<T, Descriptor, normalX, normalY> *clone() const;
+    virtual void getTypeOfModification(std::vector<modif::ModifT> &modified) const;
     virtual BlockDomain::DomainT appliesTo() const;
 };
 
-template<typename T, template<typename U> class Descriptor, int normalX, int normalY>
-class CopyTangentialVelocityFunctional2D : public BoxProcessingFunctional2D_L<T,Descriptor>
-{
+template <typename T, template <typename U> class Descriptor, int normalX, int normalY>
+class CopyTangentialVelocityFunctional2D : public BoxProcessingFunctional2D_L<T, Descriptor> {
 public:
-    virtual void process(Box2D domain, BlockLattice2D<T,Descriptor>& lattice);
-    virtual CopyTangentialVelocityFunctional2D<T,Descriptor,normalX,normalY>* clone() const;
-    virtual void getTypeOfModification(std::vector<modif::ModifT>& modified) const;
+    virtual void process(Box2D domain, BlockLattice2D<T, Descriptor> &lattice);
+    virtual CopyTangentialVelocityFunctional2D<T, Descriptor, normalX, normalY> *clone() const;
+    virtual void getTypeOfModification(std::vector<modif::ModifT> &modified) const;
     virtual BlockDomain::DomainT appliesTo() const;
 };
 
-template<typename T, template<typename U> class Descriptor, int normalX, int normalY>
-class CopyNormalVelocityFunctional2D : public BoxProcessingFunctional2D_L<T,Descriptor>
-{
+template <typename T, template <typename U> class Descriptor, int normalX, int normalY>
+class CopyNormalVelocityFunctional2D : public BoxProcessingFunctional2D_L<T, Descriptor> {
 public:
-    virtual void process(Box2D domain, BlockLattice2D<T,Descriptor>& lattice);
-    virtual CopyNormalVelocityFunctional2D<T,Descriptor,normalX,normalY>* clone() const;
-    virtual void getTypeOfModification(std::vector<modif::ModifT>& modified) const;
+    virtual void process(Box2D domain, BlockLattice2D<T, Descriptor> &lattice);
+    virtual CopyNormalVelocityFunctional2D<T, Descriptor, normalX, normalY> *clone() const;
+    virtual void getTypeOfModification(std::vector<modif::ModifT> &modified) const;
     virtual BlockDomain::DomainT appliesTo() const;
 };
 
-template<typename T, template<typename U> class Descriptor, int normalX, int normalY>
-class CopyDensityFunctional2D : public BoxProcessingFunctional2D_L<T,Descriptor>
-{
+template <typename T, template <typename U> class Descriptor, int normalX, int normalY>
+class CopyDensityFunctional2D : public BoxProcessingFunctional2D_L<T, Descriptor> {
 public:
-    virtual void process(Box2D domain, BlockLattice2D<T,Descriptor>& lattice);
-    virtual CopyDensityFunctional2D<T,Descriptor,normalX,normalY>* clone() const;
-    virtual void getTypeOfModification(std::vector<modif::ModifT>& modified) const;
+    virtual void process(Box2D domain, BlockLattice2D<T, Descriptor> &lattice);
+    virtual CopyDensityFunctional2D<T, Descriptor, normalX, normalY> *clone() const;
+    virtual void getTypeOfModification(std::vector<modif::ModifT> &modified) const;
     virtual BlockDomain::DomainT appliesTo() const;
 };
 

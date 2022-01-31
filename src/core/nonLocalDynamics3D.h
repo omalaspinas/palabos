@@ -5,7 +5,7 @@
  * own the IP rights for most of the code base. Since October 2019, the
  * Palabos project is maintained by the University of Geneva and accepts
  * source code contributions from the community.
- * 
+ *
  * Contact:
  * Jonas Latt
  * Computer Science Department
@@ -14,7 +14,7 @@
  * 1227 Carouge, Switzerland
  * jonas.latt@unige.ch
  *
- * The most recent release of Palabos can be downloaded at 
+ * The most recent release of Palabos can be downloaded at
  * <https://palabos.unige.ch/>
  *
  * The library Palabos is free software: you can redistribute it and/or
@@ -29,25 +29,26 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 #ifndef NON_LOCAL_DYNAMICS_3D_H
 #define NON_LOCAL_DYNAMICS_3D_H
 
-#include "core/globalDefs.h"
-#include "core/dynamics.h"
 #include "atomicBlock/blockLattice3D.h"
+#include "core/dynamics.h"
+#include "core/globalDefs.h"
 
 namespace plb {
 
-template<typename T, template<typename U> class Descriptor>
-class NonLocalDynamics3D : public CompositeDynamics<T,Descriptor> {
+template <typename T, template <typename U> class Descriptor>
+class NonLocalDynamics3D : public CompositeDynamics<T, Descriptor> {
 public:
-    NonLocalDynamics3D(Dynamics<T,Descriptor>* baseDynamics_);
+    NonLocalDynamics3D(Dynamics<T, Descriptor> *baseDynamics_);
     virtual bool isNonLocal() const;
-    virtual void prepareCollision(Cell<T,Descriptor>& cell);
+    virtual void prepareCollision(Cell<T, Descriptor> &cell);
 
-    virtual void nonLocalAction(plint iX, plint iY, plint iZ, BlockLattice3D<T,Descriptor>& lattice) =0;
+    virtual void nonLocalAction(
+        plint iX, plint iY, plint iZ, BlockLattice3D<T, Descriptor> &lattice) = 0;
 };
 
 /*
@@ -57,12 +58,12 @@ public:
     NonLocalBoundaryDynamics3D(Dynamics<T,Descriptor>* baseDynamics_);
     virtual bool isBoundary() const;
 
-    virtual void nonLocalAction(plint iX, plint iY, plint iZ, BlockLattice3D<T,Descriptor>& lattice);
-    virtual void boundaryCompletion(plint iX, plint iY, plint iZ, BlockLattice3D<T,Descriptor>& lattice) =0;
+    virtual void nonLocalAction(plint iX, plint iY, plint iZ, BlockLattice3D<T,Descriptor>&
+lattice); virtual void boundaryCompletion(plint iX, plint iY, plint iZ,
+BlockLattice3D<T,Descriptor>& lattice) =0;
 };
 */
 
 }  // namespace plb
 
 #endif  // NON_LOCAL_DYNAMICS_3D_H
-

@@ -5,7 +5,7 @@
  * own the IP rights for most of the code base. Since October 2019, the
  * Palabos project is maintained by the University of Geneva and accepts
  * source code contributions from the community.
- * 
+ *
  * Contact:
  * Jonas Latt
  * Computer Science Department
@@ -14,7 +14,7 @@
  * 1227 Carouge, Switzerland
  * jonas.latt@unige.ch
  *
- * The most recent release of Palabos can be downloaded at 
+ * The most recent release of Palabos can be downloaded at
  * <https://palabos.unige.ch/>
  *
  * The library Palabos is free software: you can redistribute it and/or
@@ -29,51 +29,56 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 #include "atomicBlock/atomicContainerBlock2D.h"
 
 namespace plb {
 
-AtomicContainerBlock2D::AtomicContainerBlock2D(plint nx_, plint ny_)
-    : AtomicBlock2D(nx_,ny_),
-      data(0)
+AtomicContainerBlock2D::AtomicContainerBlock2D(plint nx_, plint ny_) :
+    AtomicBlock2D(nx_, ny_), data(0)
 { }
 
-AtomicContainerBlock2D::~AtomicContainerBlock2D() {
+AtomicContainerBlock2D::~AtomicContainerBlock2D()
+{
     delete data;
 }
 
-AtomicContainerBlock2D& AtomicContainerBlock2D::operator=(AtomicContainerBlock2D const& rhs) {
+AtomicContainerBlock2D &AtomicContainerBlock2D::operator=(AtomicContainerBlock2D const &rhs)
+{
     AtomicContainerBlock2D tmp(rhs);
     swap(tmp);
     return *this;
 }
 
-AtomicContainerBlock2D::AtomicContainerBlock2D(AtomicContainerBlock2D const& rhs)
-    : AtomicBlock2D(rhs),
-      data(rhs.data ? rhs.data->clone() : 0)
+AtomicContainerBlock2D::AtomicContainerBlock2D(AtomicContainerBlock2D const &rhs) :
+    AtomicBlock2D(rhs), data(rhs.data ? rhs.data->clone() : 0)
 { }
 
-void AtomicContainerBlock2D::swap(AtomicContainerBlock2D& rhs) {
+void AtomicContainerBlock2D::swap(AtomicContainerBlock2D &rhs)
+{
     std::swap(data, rhs.data);
     AtomicBlock2D::swap(rhs);
 }
 
-void AtomicContainerBlock2D::setData(ContainerBlockData* data_) {
+void AtomicContainerBlock2D::setData(ContainerBlockData *data_)
+{
     delete data;
     data = data_;
 }
 
-ContainerBlockData* AtomicContainerBlock2D::getData() {
+ContainerBlockData *AtomicContainerBlock2D::getData()
+{
     return data;
 }
 
-ContainerBlockData const* AtomicContainerBlock2D::getData() const {
+ContainerBlockData const *AtomicContainerBlock2D::getData() const
+{
     return data;
 }
 
-identifiers::BlockId AtomicContainerBlock2D::getBlockId() const {
+identifiers::BlockId AtomicContainerBlock2D::getBlockId() const
+{
     return identifiers::getContainerId();
 }
 

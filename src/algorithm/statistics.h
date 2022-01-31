@@ -5,7 +5,7 @@
  * own the IP rights for most of the code base. Since October 2019, the
  * Palabos project is maintained by the University of Geneva and accepts
  * source code contributions from the community.
- * 
+ *
  * Contact:
  * Jonas Latt
  * Computer Science Department
@@ -14,7 +14,7 @@
  * 1227 Carouge, Switzerland
  * jonas.latt@unige.ch
  *
- * The most recent release of Palabos can be downloaded at 
+ * The most recent release of Palabos can be downloaded at
  * <https://palabos.unige.ch/>
  *
  * The library Palabos is free software: you can redistribute it and/or
@@ -29,13 +29,14 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 #ifndef STATISTICS_H
 #define STATISTICS_H
 
-#include "core/globalDefs.h"
 #include <vector>
+
+#include "core/globalDefs.h"
 
 namespace plb {
 
@@ -43,17 +44,18 @@ namespace util {
 
 class Stats {
 public:
-    Stats(std::vector<double> const& data);
+    Stats(std::vector<double> const &data);
     double getMean() const;
     double getStddev() const;
     double getMin() const;
     double getMax() const;
+
 private:
     double mean, stddev, min, max;
 };
 
-} // namespace util
+}  // namespace util
 
-} // namespace plb
+}  // namespace plb
 
 #endif  // STATISTICS_H

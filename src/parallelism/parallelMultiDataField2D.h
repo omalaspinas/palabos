@@ -5,7 +5,7 @@
  * own the IP rights for most of the code base. Since October 2019, the
  * Palabos project is maintained by the University of Geneva and accepts
  * source code contributions from the community.
- * 
+ *
  * Contact:
  * Jonas Latt
  * Computer Science Department
@@ -14,7 +14,7 @@
  * 1227 Carouge, Switzerland
  * jonas.latt@unige.ch
  *
- * The most recent release of Palabos can be downloaded at 
+ * The most recent release of Palabos can be downloaded at
  * <https://palabos.unige.ch/>
  *
  * The library Palabos is free software: you can redistribute it and/or
@@ -29,7 +29,7 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 /** \file
  * Parallel access to elements of a scalar/tensor field -- header file.
@@ -44,67 +44,66 @@
 
 namespace plb {
 
-template<typename T>
+template <typename T>
 class ParallelScalarAccess2D : public MultiScalarAccess2D<T> {
 public:
     ParallelScalarAccess2D();
-    virtual T& getDistributedScalar (
-            plint iX, plint iY,
-            MultiBlockManagement2D const& multiBlockManagement,
-            std::map<plint,ScalarField2D<T>*>& fields );
-    virtual T const& getDistributedScalar (
-            plint iX, plint iY,
-            MultiBlockManagement2D const& multiBlockManagement,
-            std::map<plint,ScalarField2D<T>*> const& fields ) const;
-    virtual ParallelScalarAccess2D<T>* clone() const;
+    virtual T &getDistributedScalar(
+        plint iX, plint iY, MultiBlockManagement2D const &multiBlockManagement,
+        std::map<plint, ScalarField2D<T> *> &fields);
+    virtual T const &getDistributedScalar(
+        plint iX, plint iY, MultiBlockManagement2D const &multiBlockManagement,
+        std::map<plint, ScalarField2D<T> *> const &fields) const;
+    virtual ParallelScalarAccess2D<T> *clone() const;
+
 private:
     mutable plint locatedBlock;
     mutable T distributedScalar;
 };
 
-
-template<typename T, int nDim>
-class ParallelTensorAccess2D : public MultiTensorAccess2D<T,nDim> {
+template <typename T, int nDim>
+class ParallelTensorAccess2D : public MultiTensorAccess2D<T, nDim> {
 public:
     ParallelTensorAccess2D();
-    virtual Array<T,nDim>& getDistributedTensor (
-            plint iX, plint iY,
-            MultiBlockManagement2D const& multiBlockManagement,
-            std::map<plint,TensorField2D<T,nDim>*>& fields );
-    virtual Array<T,nDim> const& getDistributedTensor (
-            plint iX, plint iY,
-            MultiBlockManagement2D const& multiBlockManagement,
-            std::map<plint,TensorField2D<T,nDim>*> const& fields ) const;
-    virtual ParallelTensorAccess2D<T,nDim>* clone() const;
+    virtual Array<T, nDim> &getDistributedTensor(
+        plint iX, plint iY, MultiBlockManagement2D const &multiBlockManagement,
+        std::map<plint, TensorField2D<T, nDim> *> &fields);
+    virtual Array<T, nDim> const &getDistributedTensor(
+        plint iX, plint iY, MultiBlockManagement2D const &multiBlockManagement,
+        std::map<plint, TensorField2D<T, nDim> *> const &fields) const;
+    virtual ParallelTensorAccess2D<T, nDim> *clone() const;
+
 private:
     mutable plint locatedBlock;
-    mutable Array<T,nDim> distributedTensor;
+    mutable Array<T, nDim> distributedTensor;
 };
 
-
-template<typename T>
+template <typename T>
 class ParallelNTensorAccess2D : public MultiNTensorAccess2D<T> {
 public:
     ParallelNTensorAccess2D();
     virtual ~ParallelNTensorAccess2D();
-    ParallelNTensorAccess2D(ParallelNTensorAccess2D<T> const& rhs);
-    virtual T* getDistributedNTensor (
-            plint iX, plint iY,
-            MultiBlockManagement2D const& multiBlockManagement,
-            std::map<plint,NTensorField2D<T>*>& fields );
-    virtual T const* getDistributedNTensor (
-            plint iX, plint iY,
-            MultiBlockManagement2D const& multiBlockManagement,
-            std::map<plint,NTensorField2D<T>*> const& fields ) const;
-    virtual ParallelNTensorAccess2D<T>* clone() const;
+    ParallelNTensorAccess2D(ParallelNTensorAccess2D<T> const &rhs);
+    virtual T *getDistributedNTensor(
+        plint iX, plint iY, MultiBlockManagement2D const &multiBlockManagement,
+        std::map<plint, NTensorField2D<T> *> &fields);
+    virtual T const *getDistributedNTensor(
+        plint iX, plint iY, MultiBlockManagement2D const &multiBlockManagement,
+        std::map<plint, NTensorField2D<T> *> const &fields) const;
+    virtual ParallelNTensorAccess2D<T> *clone() const;
+
 private:
-    ParallelNTensorAccess2D<T>& operator=(ParallelNTensorAccess2D<T> const& rhs) { return *this; }
+    ParallelNTensorAccess2D<T> &operator=(ParallelNTensorAccess2D<T> const &rhs)
+    {
+        return *this;
+    }
+
 private:
-    mutable T* distributedNTensor;
+    mutable T *distributedNTensor;
     mutable plint locatedBlock;
 };
 
-}
+}  // namespace plb
 
 #endif  // PLB_MPI_PARALLEL
 

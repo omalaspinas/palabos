@@ -5,7 +5,7 @@
  * own the IP rights for most of the code base. Since October 2019, the
  * Palabos project is maintained by the University of Geneva and accepts
  * source code contributions from the community.
- * 
+ *
  * Contact:
  * Jonas Latt
  * Computer Science Department
@@ -14,7 +14,7 @@
  * 1227 Carouge, Switzerland
  * jonas.latt@unige.ch
  *
- * The most recent release of Palabos can be downloaded at 
+ * The most recent release of Palabos can be downloaded at
  * <https://palabos.unige.ch/>
  *
  * The library Palabos is free software: you can redistribute it and/or
@@ -29,31 +29,30 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 /** \file
  * Groups all the include files for basic 2D dynamics.
  */
-#include "core/globalDefs.h"
-#include "core/plbComplex.h"
-#include "core/plbInit.h"
-#include "core/geometry2D.h"
-#include "core/blockIdentifiers.h"
-#include "core/dynamicsIdentifiers.h"
-#include "core/units.h"
-#include "core/dynamics.h"
-#include "core/cell.h"
-#include "core/blockStatistics.h"
-#include "core/dataFieldBase2D.h"
-#include "core/serializer.h"
-#include "core/blockLatticeBase2D.h"
 #include "core/block2D.h"
-#include "core/latticeStatistics.h"
-#include "core/plbTimer.h"
-#include "core/plbRandom.h"
-#include "core/plbLogFiles.h"
+#include "core/blockIdentifiers.h"
+#include "core/blockLatticeBase2D.h"
+#include "core/blockStatistics.h"
+#include "core/cell.h"
+#include "core/dataFieldBase2D.h"
+#include "core/dynamics.h"
+#include "core/dynamicsIdentifiers.h"
+#include "core/functions.h"
+#include "core/geometry2D.h"
+#include "core/globalDefs.h"
 #include "core/indexUtil.h"
+#include "core/latticeStatistics.h"
 #include "core/multiBlockIdentifiers2D.h"
 #include "core/nonLocalDynamics2D.h"
-#include "core/functions.h"
-
+#include "core/plbComplex.h"
+#include "core/plbInit.h"
+#include "core/plbLogFiles.h"
+#include "core/plbRandom.h"
+#include "core/plbTimer.h"
+#include "core/serializer.h"
+#include "core/units.h"

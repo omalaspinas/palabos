@@ -6,28 +6,29 @@
  * It is governed by the terms of the Mozilla Public License v. 2.0.
  *
  * This file is subject to the terms of the Mozilla Public License v. 2.0.
- * If a copy of the MPL was not distributed with this file, 
+ * If a copy of the MPL was not distributed with this file,
  * you can obtain one at http://mozilla.org/MPL/2.0/.
- * 
+ *
  * Contact:
  * Christos Kotsalos
  * kotsaloscv@gmail.com
  * Computer Science Department
  * University of Geneva
- * 
- * The most recent release of Palabos can be downloaded at 
+ *
+ * The most recent release of Palabos can be downloaded at
  * <https://palabos.unige.ch/>
-*/
+ */
 ///////////////////////////////////////////////////////////////////////////////
 #ifndef SOLVER_CPP
 #define SOLVER_CPP
 ///////////////////////////////////////////////////////////////////////////////
+#include "Solver.h"
+
 #include <iostream>
 
-#include "Solver.h"
-#include "LSSolver.h"
 #include "Constraint.h"
 #include "Force.h"
+#include "LSSolver.h"
 #include "common.h"
 ///////////////////////////////////////////////////////////////////////////////
 #define THREED
@@ -36,11 +37,12 @@
 #ifdef SHAPEOP_MSVC
 // Console Output
 #include <windows.h>
+
 #include <iostream>
 #endif
 #else
-#include "core/util.h"
 #include "core/plbLogFiles.h"
+#include "core/util.h"
 #endif
 ///////////////////////////////////////////////////////////////////////////////
 #ifdef SHAPEOP_OPENMP
@@ -50,8 +52,8 @@
 #define OMP_CRITICAL __pragma(omp critical)
 #else
 #define SHAPEOP_OMP_PARALLEL _Pragma("omp parallel")
-#define SHAPEOP_OMP_FOR _Pragma("omp for")
-#define OMP_CRITICAL _Pragma("omp critical")
+#define SHAPEOP_OMP_FOR      _Pragma("omp for")
+#define OMP_CRITICAL         _Pragma("omp critical")
 #endif
 #else
 #define SHAPEOP_OMP_PARALLEL
@@ -61,7 +63,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 #ifndef BENCHMARK
 #define WOLFE
-#endif // else backtracking
+#endif  // else backtracking
 ///////////////////////////////////////////////////////////////////////////////
 #define MASS_LUMPING_VOLUMETRIC
 ///////////////////////////////////////////////////////////////////////////////
@@ -73,106 +75,118 @@ Solver::Solver()
     rotations_ = Matrix33::Identity(3, 3);
 }
 ///////////////////////////////////////////////////////////////////////////////
-SHAPEOP_INLINE int Solver::addConstraint(const std::shared_ptr<Constraint>& c)
+SHAPEOP_INLINE int Solver::addConstraint(const std::shared_ptr<Constraint> &c)
 {
     constraints_.push_back(c);
     return static_cast<int>(constraints_.size() - 1);
 }
 ///////////////////////////////////////////////////////////////////////////////
-std::vector<std::shared_ptr<Constraint>>& Solver::getConstraints()
+std::vector<std::shared_ptr<Constraint>> &Solver::getConstraints()
 {
     return constraints_;
 }
 ///////////////////////////////////////////////////////////////////////////////
-SHAPEOP_INLINE std::shared_ptr<Constraint>& Solver::getConstraint(int id)
+SHAPEOP_INLINE std::shared_ptr<Constraint> &Solver::getConstraint(int id)
 {
     return constraints_[id];
 }
 ///////////////////////////////////////////////////////////////////////////////
-SHAPEOP_INLINE int Solver::addForces(const std::shared_ptr<Force>& f)
+SHAPEOP_INLINE int Solver::addForces(const std::shared_ptr<Force> &f)
 {
     forces_.push_back(f);
     return static_cast<int>(forces_.size() - 1);
 }
 ///////////////////////////////////////////////////////////////////////////////
-SHAPEOP_INLINE std::shared_ptr<Force>& Solver::getForce(int id)
+SHAPEOP_INLINE std::shared_ptr<Force> &Solver::getForce(int id)
 {
     return forces_[id];
 }
 ///////////////////////////////////////////////////////////////////////////////
-SHAPEOP_INLINE void Solver::setPoints(const Matrix3X& p) { points_ = p; }
+SHAPEOP_INLINE void Solver::setPoints(const Matrix3X &p)
+{
+    points_ = p;
+}
 ///////////////////////////////////////////////////////////////////////////////
-SHAPEOP_INLINE void Solver::setVelocities(const Matrix3X& v) { velocities_ = v; }
+SHAPEOP_INLINE void Solver::setVelocities(const Matrix3X &v)
+{
+    velocities_ = v;
+}
 ///////////////////////////////////////////////////////////////////////////////
-SHAPEOP_INLINE const Matrix3X& Solver::getPoints() const { return points_; }
+SHAPEOP_INLINE const Matrix3X &Solver::getPoints() const
+{
+    return points_;
+}
 ///////////////////////////////////////////////////////////////////////////////
-SHAPEOP_INLINE void Solver::setTimeStep(Scalar timestep) { delta_ = timestep; }
+SHAPEOP_INLINE void Solver::setTimeStep(Scalar timestep)
+{
+    delta_ = timestep;
+}
 ///////////////////////////////////////////////////////////////////////////////
-SHAPEOP_INLINE Scalar Solver::getTimeStep() { return delta_; }
+SHAPEOP_INLINE Scalar Solver::getTimeStep()
+{
+    return delta_;
+}
 ///////////////////////////////////////////////////////////////////////////////
-SHAPEOP_INLINE Matrix3X& Solver::getVelocities()
+SHAPEOP_INLINE Matrix3X &Solver::getVelocities()
 {
     return velocities_;
 }
 ///////////////////////////////////////////////////////////////////////////////
 SHAPEOP_INLINE void Solver::setConnectivityList(
-    const std::vector<std::vector<int>>& connectivity_list)
+    const std::vector<std::vector<int>> &connectivity_list)
 {
     connectivity_list_ = connectivity_list;
 }
 ///////////////////////////////////////////////////////////////////////////////
-SHAPEOP_INLINE const std::vector<std::vector<int>>&
-    Solver::getConnectivityList() const
+SHAPEOP_INLINE const std::vector<std::vector<int>> &Solver::getConnectivityList() const
 {
     return connectivity_list_;
 }
 ///////////////////////////////////////////////////////////////////////////////
-SHAPEOP_INLINE void Solver::set_Palabos_Forces(const Matrix3X& force_matrix)
+SHAPEOP_INLINE void Solver::set_Palabos_Forces(const Matrix3X &force_matrix)
 {
     Palabos_Forces_ = force_matrix;
 }
 ///////////////////////////////////////////////////////////////////////////////
-SHAPEOP_INLINE const Matrix3X& Solver::get_Palabos_Forces() const
+SHAPEOP_INLINE const Matrix3X &Solver::get_Palabos_Forces() const
 {
     return Palabos_Forces_;
 }
 ///////////////////////////////////////////////////////////////////////////////
-SHAPEOP_INLINE void Solver::set_onSurfaceParticle(
-    const std::vector<bool>& onSurfaceParticle)
+SHAPEOP_INLINE void Solver::set_onSurfaceParticle(const std::vector<bool> &onSurfaceParticle)
 {
     onSurfaceParticle_ = onSurfaceParticle;
 }
 ///////////////////////////////////////////////////////////////////////////////
-SHAPEOP_INLINE const std::vector<bool>& Solver::get_onSurfaceParticle() const
+SHAPEOP_INLINE const std::vector<bool> &Solver::get_onSurfaceParticle() const
 {
     return onSurfaceParticle_;
 }
 ///////////////////////////////////////////////////////////////////////////////
-SHAPEOP_INLINE void Solver::shiftPoints(Vector3 vec){
+SHAPEOP_INLINE void Solver::shiftPoints(Vector3 vec)
+{
     SHAPEOP_OMP_PARALLEL
     {
-        SHAPEOP_OMP_FOR for (int i = 0; i < static_cast<int>(points_.cols());
-        ++i)
-    {
-        points_.col(i) += vec;
-    }
+        SHAPEOP_OMP_FOR for (int i = 0; i < static_cast<int>(points_.cols()); ++i)
+        {
+            points_.col(i) += vec;
+        }
     }
 }
 ///////////////////////////////////////////////////////////////////////////////
-SHAPEOP_INLINE void Solver::rotatePoints(const std::string& axis, const Scalar& theta){
+SHAPEOP_INLINE void Solver::rotatePoints(const std::string &axis, const Scalar &theta)
+{
     Matrix33 R;
 
     if (axis.compare("x") == 0) {
         R.col(0) = Vector3(1., 0., 0.);
         R.col(1) = Vector3(0., std::cos(theta), std::sin(theta));
         R.col(2) = Vector3(0., -std::sin(theta), std::cos(theta));
-    }
-    else if (axis.compare("y") == 0) {
+    } else if (axis.compare("y") == 0) {
         R.col(0) = Vector3(std::cos(theta), 0., -std::sin(theta));
         R.col(1) = Vector3(0., 1., 0.);
         R.col(2) = Vector3(std::sin(theta), 0., std::cos(theta));
-    }
-    else {
+    } else {
         R.col(0) = Vector3(std::cos(theta), std::sin(theta), 0.);
         R.col(1) = Vector3(-std::sin(theta), std::cos(theta), 0.);
         R.col(2) = Vector3(0., 0., 1.);
@@ -180,24 +194,22 @@ SHAPEOP_INLINE void Solver::rotatePoints(const std::string& axis, const Scalar& 
 
     SHAPEOP_OMP_PARALLEL
     {
-        SHAPEOP_OMP_FOR for (int i = 0; i < static_cast<int>(points_.cols());
-        ++i)
-    {
-        points_.col(i) = R * points_.col(i);
-    }
+        SHAPEOP_OMP_FOR for (int i = 0; i < static_cast<int>(points_.cols()); ++i)
+        {
+            points_.col(i) = R * points_.col(i);
+        }
     }
 
-    rotations_ = R*rotations_;
+    rotations_ = R * rotations_;
 }
 ///////////////////////////////////////////////////////////////////////////////
-SHAPEOP_INLINE void Solver::calculateArea(Scalar& Area){
-
+SHAPEOP_INLINE void Solver::calculateArea(Scalar &Area)
+{
     Area = 0.;
 
     size_t SurfaceMaterialConstraint = 0;
     size_t AreaConstraint = 0;
-    for (int i = 0; i < static_cast<int>(constraints_.size()); ++i)
-    {
+    for (int i = 0; i < static_cast<int>(constraints_.size()); ++i) {
         if (constraints_[i]->get_ConstraintType().compare("SurfaceMaterial") == 0)
             ++SurfaceMaterialConstraint;
         if (constraints_[i]->get_ConstraintType().compare("Area") == 0)
@@ -209,28 +221,23 @@ SHAPEOP_INLINE void Solver::calculateArea(Scalar& Area){
         useSurfaceMaterialConstraint = true;
     if (AreaConstraint != 0)
         useAreaConstraint = true;
-    if (SurfaceMaterialConstraint != 0 && AreaConstraint != 0)
-    {
+    if (SurfaceMaterialConstraint != 0 && AreaConstraint != 0) {
         useSurfaceMaterialConstraint = true;
         useAreaConstraint = false;
     }
-    if (SurfaceMaterialConstraint == 0 && AreaConstraint == 0)
-    {
+    if (SurfaceMaterialConstraint == 0 && AreaConstraint == 0) {
         std::cout << "CANNOT COMPUTE AREA ! \n";
     }
 
-
-    for (int i = 0; i < static_cast<int>(constraints_.size()); ++i)
-    {
-        if (useSurfaceMaterialConstraint)
-        {
+    for (int i = 0; i < static_cast<int>(constraints_.size()); ++i) {
+        if (useSurfaceMaterialConstraint) {
             if (constraints_[i]->get_ConstraintType().compare("SurfaceMaterial") == 0) {
-                auto c = std::dynamic_pointer_cast<plb::npfem::SurfaceMaterialConstraint>(getConstraint(i));
+                auto c = std::dynamic_pointer_cast<plb::npfem::SurfaceMaterialConstraint>(
+                    getConstraint(i));
                 c->calculateArea(points_, Area);
             }
         }
-        if (useAreaConstraint)
-        {
+        if (useAreaConstraint) {
             if (constraints_[i]->get_ConstraintType().compare("Area") == 0) {
                 auto c = std::dynamic_pointer_cast<plb::npfem::AreaConstraint>(getConstraint(i));
                 c->calculateArea(points_, Area);
@@ -239,23 +246,23 @@ SHAPEOP_INLINE void Solver::calculateArea(Scalar& Area){
     }
 }
 ///////////////////////////////////////////////////////////////////////////////
-SHAPEOP_INLINE void Solver::calculateVolume(Scalar& Volume)
+SHAPEOP_INLINE void Solver::calculateVolume(Scalar &Volume)
 {
     Volume = 0.;
 
     SHAPEOP_OMP_PARALLEL
     {
         SHAPEOP_OMP_FOR for (int i = 0; i < static_cast<int>(constraints_.size()); ++i)
-    {
-        if (constraints_[i]->get_ConstraintType().compare("Volume") == 0) {
-            auto c = std::dynamic_pointer_cast<plb::npfem::VolumeConstraint>(getConstraint(i));
-            c->calculateVolume(points_, Volume);
+        {
+            if (constraints_[i]->get_ConstraintType().compare("Volume") == 0) {
+                auto c = std::dynamic_pointer_cast<plb::npfem::VolumeConstraint>(getConstraint(i));
+                c->calculateVolume(points_, Volume);
+            }
         }
-    }
     }
 }
 ///////////////////////////////////////////////////////////////////////////////
-SHAPEOP_INLINE void Solver::calculateVolumeFromSurfaceAndPrepareConstraint(Scalar& Volume)
+SHAPEOP_INLINE void Solver::calculateVolumeFromSurfaceAndPrepareConstraint(Scalar &Volume)
 {
     Volume = 0.;
     gradC_ = Matrix3X::Zero(3, points_.cols());
@@ -265,38 +272,43 @@ SHAPEOP_INLINE void Solver::calculateVolumeFromSurfaceAndPrepareConstraint(Scala
     SHAPEOP_OMP_PARALLEL
     {
         SHAPEOP_OMP_FOR for (int i = 0; i < static_cast<int>(constraints_.size()); ++i)
-    {
-        if (constraints_[i]->get_ConstraintType().compare("SurfaceMaterial") == 0) {
-            auto c = std::dynamic_pointer_cast<plb::npfem::SurfaceMaterialConstraint>(getConstraint(i));
-            std::vector<int> idI_ = c->get_idI();
+        {
+            if (constraints_[i]->get_ConstraintType().compare("SurfaceMaterial") == 0) {
+                auto c = std::dynamic_pointer_cast<plb::npfem::SurfaceMaterialConstraint>(
+                    getConstraint(i));
+                std::vector<int> idI_ = c->get_idI();
 
-            Matrix32 edges, P;
-            edges.col(0) = points_.col(idI_[1]) - points_.col(idI_[0]);
-            edges.col(1) = points_.col(idI_[2]) - points_.col(idI_[0]);
-            P.col(0) = edges.col(0).normalized();
-            P.col(1) = (edges.col(1) - edges.col(1).dot(P.col(0)) * P.col(0)).normalized();
+                Matrix32 edges, P;
+                edges.col(0) = points_.col(idI_[1]) - points_.col(idI_[0]);
+                edges.col(1) = points_.col(idI_[2]) - points_.col(idI_[0]);
+                P.col(0) = edges.col(0).normalized();
+                P.col(1) = (edges.col(1) - edges.col(1).dot(P.col(0)) * P.col(0)).normalized();
 
-            Scalar Area = std::abs((P.transpose() * edges).determinant() / 2.);
-            Vector3 normal = (edges.col(0)).cross(edges.col(1));
-            normal.normalize();
+                Scalar Area = std::abs((P.transpose() * edges).determinant() / 2.);
+                Vector3 normal = (edges.col(0)).cross(edges.col(1));
+                normal.normalize();
 
-            Scalar local_Vol = (1. / 9.) * Area * (points_.col(idI_[0]) + points_.col(idI_[1]) + points_.col(idI_[2])).dot(normal);
+                Scalar local_Vol =
+                    (1. / 9.) * Area
+                    * (points_.col(idI_[0]) + points_.col(idI_[1]) + points_.col(idI_[2]))
+                          .dot(normal);
 
-            OMP_CRITICAL
-            {
-                Volume += local_Vol;
-            gradC_.col(idI_[0]) += (1. / 3.) * Area * normal;
-            gradC_.col(idI_[1]) += (1. / 3.) * Area * normal;
-            gradC_.col(idI_[2]) += (1. / 3.) * Area * normal;
+                OMP_CRITICAL
+                {
+                    Volume += local_Vol;
+                    gradC_.col(idI_[0]) += (1. / 3.) * Area * normal;
+                    gradC_.col(idI_[1]) += (1. / 3.) * Area * normal;
+                    gradC_.col(idI_[2]) += (1. / 3.) * Area * normal;
+                }
             }
         }
     }
-    }
 
-        if (applyGlobalVolumeConservation_) {
-            Scalar C = Volume - Volume0_;
-            deltaX_ = -(C / gradC_.squaredNorm()) * gradC_; // There is a mass weighting, but I consider uniform distribution
-        }
+    if (applyGlobalVolumeConservation_) {
+        Scalar C = Volume - Volume0_;
+        deltaX_ = -(C / gradC_.squaredNorm())
+                  * gradC_;  // There is a mass weighting, but I consider uniform distribution
+    }
 }
 ///////////////////////////////////////////////////////////////////////////////
 SHAPEOP_INLINE void Solver::mass_lumping()
@@ -305,12 +317,14 @@ SHAPEOP_INLINE void Solver::mass_lumping()
     for (int i = 0; i < static_cast<int>(constraints_.size()); ++i) {
 #ifdef MASS_LUMPING_VOLUMETRIC
         if (constraints_[i]->get_ConstraintType().compare("VolumeMaterial") == 0) {
-            auto c = std::dynamic_pointer_cast<plb::npfem::VolumeMaterialConstraint>(getConstraint(i));
+            auto c =
+                std::dynamic_pointer_cast<plb::npfem::VolumeMaterialConstraint>(getConstraint(i));
             c->mass_lumping(points_, triplets);
         }
 #else
         if (constraints_[i]->get_ConstraintType().compare("SurfaceMaterial") == 0) {
-            auto c = std::dynamic_pointer_cast<plb::npfem::SurfaceMaterialConstraint>(getConstraint(i));
+            auto c =
+                std::dynamic_pointer_cast<plb::npfem::SurfaceMaterialConstraint>(getConstraint(i));
             c->mass_lumping(points_, triplets);
         }
 #endif
@@ -318,15 +332,10 @@ SHAPEOP_INLINE void Solver::mass_lumping()
     M_.setFromTriplets(triplets.begin(), triplets.end());
 }
 ///////////////////////////////////////////////////////////////////////////////
-SHAPEOP_INLINE bool Solver::initialize(Scalar Calpha
-    , Scalar Cbeta
-    , Scalar timestep
-    , Scalar rho
-    , bool doModalAnalysis
-    , bool applyGlobalVolumeConservation
-    , Scalar globalVolumeConservationWeight
-    , Scalar externalSolverSpatialResolution
-    , Scalar externalSolverTimeResolution)
+SHAPEOP_INLINE bool Solver::initialize(
+    Scalar Calpha, Scalar Cbeta, Scalar timestep, Scalar rho, bool doModalAnalysis,
+    bool applyGlobalVolumeConservation, Scalar globalVolumeConservationWeight,
+    Scalar externalSolverSpatialResolution, Scalar externalSolverTimeResolution)
 {
 #ifdef NPFEM_SA
 #ifdef SHAPEOP_MSVC
@@ -357,19 +366,17 @@ SHAPEOP_INLINE bool Solver::initialize(Scalar Calpha
         calculateVolumeFromSurfaceAndPrepareConstraint(Volume0_);
     else
         calculateVolume(Volume0_);
-#endif //THREED
+#endif  // THREED
 
 #ifdef NPFEM_SA
-    std::cout << "***********************************************************"
-        << std::endl;
-    std::cout << "CPU VERSION >> Number of Points & Constraints: " << n_points
-        << " - " << n_constraints << std::endl;
+    std::cout << "***********************************************************" << std::endl;
+    std::cout << "CPU VERSION >> Number of Points & Constraints: " << n_points << " - "
+              << n_constraints << std::endl;
     std::cout << "Initial Area: " << Area0_ << std::endl;
 #ifdef THREED
     std::cout << "Initial Volume: " << Volume0_ << std::endl;
 #endif
-    std::cout << "***********************************************************"
-        << std::endl;
+    std::cout << "***********************************************************" << std::endl;
 #endif
 
     // Setup the Projective Dynamics system
@@ -410,8 +417,8 @@ SHAPEOP_INLINE bool Solver::initialize(Scalar Calpha
     // See Liu_2017 & Thesis for more
     SparseMatrix Laplacian = Bt * B;
 
-    Calpha_ = Calpha; // PBD Damping
-    Cbeta_ = Cbeta; // Rayleigh Damping (no mass contribution)
+    Calpha_ = Calpha;  // PBD Damping
+    Cbeta_ = Cbeta;    // Rayleigh Damping (no mass contribution)
     delta_ = timestep;
     rho_ = rho;
     oldPoints_ = Matrix3X(3, n_points);
@@ -425,10 +432,10 @@ SHAPEOP_INLINE bool Solver::initialize(Scalar Calpha
     M_tilde_inv_ = MatrixXX(n_points, n_points);
     M_star_ = SparseMatrix(n_points, n_points);
 
-    //mass_lumping(); // Go with uniform ditribution
+    // mass_lumping(); // Go with uniform ditribution
     M_.setIdentity();
 #ifdef THREED
-    M_ *= (Volume0_ * rho_) / n_points; // mass = Volume * density
+    M_ *= (Volume0_ * rho_) / n_points;  // mass = Volume * density
 #else
     M_ *= 1.;
 #endif
@@ -454,9 +461,9 @@ SHAPEOP_INLINE bool Solver::initialize(Scalar Calpha
             dampingRatios_(mode) = 0.5 * Cbeta_ * omega;
 #ifndef NPFEM_SA
             global::logfile_nonparallel("NaturalPeriods_and_DampingRatio.log")
-                .flushEntry("Mode: " + util::val2str(mode) + ": "
-                    + util::val2str(naturalPeriods_(mode)) + " | "
-                    + util::val2str(dampingRatios_(mode)));
+                .flushEntry(
+                    "Mode: " + util::val2str(mode) + ": " + util::val2str(naturalPeriods_(mode))
+                    + " | " + util::val2str(dampingRatios_(mode)));
 #endif
         }
     }
@@ -470,12 +477,12 @@ SHAPEOP_INLINE bool Solver::initialize(Scalar Calpha
 
     // Palabos interface
     Palabos_Forces_ = Matrix3X::Zero(3, n_points);
-    //bodyID_ = 0;
+    // bodyID_ = 0;
     Palabos_iT_ = 0;
 
     // Prefactorize matrix
     solver_ = std::make_shared<plb::npfem::SimplicialLDLTSolver>();
-    solver_->initialize(M_star_ + Laplacian); // Hessian Approximation
+    solver_->initialize(M_star_ + Laplacian);  // Hessian Approximation
 
 #ifdef NUM_STABILITY
     MatrixXX N_dense = MatrixXX(M_star_ + Laplacian);
@@ -494,19 +501,19 @@ SHAPEOP_INLINE bool Solver::initialize(Scalar Calpha
     return solver_->info() == Eigen::Success;
 }
 ///////////////////////////////////////////////////////////////////////////////
-std::vector<int> *Solver::get_mesh_graph() {
-
+std::vector<int> *Solver::get_mesh_graph()
+{
     if (graph != NULL) {
-        //std::cout << "NOT NULL" << std::endl;
+        // std::cout << "NOT NULL" << std::endl;
         return graph;
     }
     graph = new std::vector<int>[points_.cols()];
 
-    Eigen::SparseMatrix<bool>lookUp = Eigen::SparseMatrix<bool>(points_.cols(), points_.cols());
+    Eigen::SparseMatrix<bool> lookUp = Eigen::SparseMatrix<bool>(points_.cols(), points_.cols());
 
     for (auto &tri : connectivity_list_) {
-        for (int i = 0; i<3; i++) {
-            //lookUp.coeffRef(tri[i], tri[(i + 1)%3]) = true;
+        for (int i = 0; i < 3; i++) {
+            // lookUp.coeffRef(tri[i], tri[(i + 1)%3]) = true;
             lookUp.coeffRef(tri[i], tri[(i + 1) % 3]) = true;
             lookUp.coeffRef(tri[i], tri[(i + 2) % 3]) = true;
         }
@@ -522,21 +529,12 @@ std::vector<int> *Solver::get_mesh_graph() {
     return graph;
 }
 ///////////////////////////////////////////////////////////////////////////////
-SHAPEOP_INLINE bool Solver::solve(int m
-    , unsigned int max_iterations
-    , unsigned int max_line_search_loops
-    , unsigned int max_attempts_to_solve_stagnation
-    , unsigned int convergence_window
-    , Scalar tol
-    , Scalar gamma
-    , Scalar gamma2
-    , Scalar collisions_threshold_rep
-    , Scalar collisions_weight_rep
-    , Scalar collisions_threshold_nonRep
-    , Scalar collisions_weight_nonRep
-    , Scalar beta_morse
-    , Scalar max_u_lb
-    , Scalar max_u_lb_fin)
+SHAPEOP_INLINE bool Solver::solve(
+    int m, unsigned int max_iterations, unsigned int max_line_search_loops,
+    unsigned int max_attempts_to_solve_stagnation, unsigned int convergence_window, Scalar tol,
+    Scalar gamma, Scalar gamma2, Scalar collisions_threshold_rep, Scalar collisions_weight_rep,
+    Scalar collisions_threshold_nonRep, Scalar collisions_weight_nonRep, Scalar beta_morse,
+    Scalar max_u_lb, Scalar max_u_lb_fin)
 {
 #ifdef NPFEM_SA
 #ifdef SHAPEOP_MSVC
@@ -550,7 +548,8 @@ SHAPEOP_INLINE bool Solver::solve(int m
     max_u_lb_fin_ = max_u_lb_fin;
 
     // m = 2, simple (naive) Quasi-Newton & m > 2, L-BFGS
-    if (m < 2) m = 15;
+    if (m < 2)
+        m = 15;
 
     // For convergence issues, move the points at the origin.
     pointsTI_ = points_;
@@ -570,15 +569,19 @@ SHAPEOP_INLINE bool Solver::solve(int m
 
     for (size_t i = 0; i < verticesOfCollidingPieces_.size(); ++i) {
         // Block of size (p,q), starting at (i,j) -> matrix.block(i,j,p,q);
-        collidingCandidatesPoints_.block(0, shift, 3, verticesOfCollidingPieces_[i].cols()) = verticesOfCollidingPieces_[i];
-        normalsCollidingCandidatesPoints_.block(0, shift, 3, normalsOfCollidingPieces_[i].cols()) = normalsOfCollidingPieces_[i];
+        collidingCandidatesPoints_.block(0, shift, 3, verticesOfCollidingPieces_[i].cols()) =
+            verticesOfCollidingPieces_[i];
+        normalsCollidingCandidatesPoints_.block(0, shift, 3, normalsOfCollidingPieces_[i].cols()) =
+            normalsOfCollidingPieces_[i];
         shift += verticesOfCollidingPieces_[i].cols();
     }
 
     if (numCollidingCandidatesPoints > 0) {
         collidingCandidatesPoints_.colwise() -= centroid_;
         collisionDetection(collisions_threshold_rep, collisions_threshold_nonRep);
-        addCollisionConstraints(collisions_threshold_rep, collisions_weight_rep, collisions_threshold_nonRep, collisions_weight_nonRep, beta_morse);
+        addCollisionConstraints(
+            collisions_threshold_rep, collisions_weight_rep, collisions_threshold_nonRep,
+            collisions_weight_nonRep, beta_morse);
     }
 
 #ifdef NPFEM_SA
@@ -590,20 +593,19 @@ SHAPEOP_INLINE bool Solver::solve(int m
         }
     }
 #endif
-    
+
     // Momentum = The new positions in the absence of internal forces
     momentum_ = points_
-        + (delta_ * M_tilde_inv_ * M_ * velocities_.transpose()
-            + delta_ * delta_ * M_tilde_inv_ * Palabos_Forces_.transpose())
-        .transpose();
+                + (delta_ * M_tilde_inv_ * M_ * velocities_.transpose()
+                   + delta_ * delta_ * M_tilde_inv_ * Palabos_Forces_.transpose())
+                      .transpose();
 
     // Kharevych variational damping (it is not actively used)
     oldPoints_ = points_;
     if (oldPointsHistory_ == 0) {
         oldPointsEWMA_ = oldPoints_;
         ++oldPointsHistory_;
-    }
-    else {
+    } else {
         Scalar C_EWMA = 0.8;
         oldPointsEWMA_ = C_EWMA * oldPoints_ + (1. - C_EWMA) * oldPointsEWMA_;
     }
@@ -627,19 +629,19 @@ SHAPEOP_INLINE bool Solver::solve(int m
 
     // LBFGS
     std::vector<Matrix3X> iterates, gradients;
-    Matrix3X descent_direction = Matrix3X::Zero(3, points_.cols()), q = Matrix3X::Zero(3, points_.cols());
+    Matrix3X descent_direction = Matrix3X::Zero(3, points_.cols()),
+             q = Matrix3X::Zero(3, points_.cols());
 
     // Main Optimization Loop to advance body at t+1
-    while (true)
-    {
+    while (true) {
         // Store History
         iterates.push_back(points_);
         if (static_cast<int>(iterates.size()) >= m)
             iterates.erase(iterates.begin());
 
-        gradients.push_back((M_star_ * (points_ - momentum_).transpose()
-            + L_ * points_.transpose() - J_ * projections_.transpose()
-            - f_int_nonePD_.transpose()).transpose());
+        gradients.push_back((M_star_ * (points_ - momentum_).transpose() + L_ * points_.transpose()
+                             - J_ * projections_.transpose() - f_int_nonePD_.transpose())
+                                .transpose());
         if (static_cast<int>(gradients.size()) >= m)
             gradients.erase(gradients.begin());
 
@@ -649,8 +651,7 @@ SHAPEOP_INLINE bool Solver::solve(int m
         if (static_cast<unsigned int>(objective_history.size()) > convergence_window)
             objective_history.erase(objective_history.begin());
 
-        if (static_cast<unsigned int>(objective_history.size()) >= convergence_window)
-        {
+        if (static_cast<unsigned int>(objective_history.size()) >= convergence_window) {
             Scalar mean = 0.;
             for (int i = 0; i < static_cast<int>(objective_history.size()); ++i)
                 mean += objective_history[i];
@@ -671,30 +672,31 @@ SHAPEOP_INLINE bool Solver::solve(int m
         q = -gradients.back();
 
         std::vector<Matrix3X> s, y;
-        for (std::vector<Matrix3X>::iterator iter = iterates.begin();
-            iter != iterates.end() - 1; ++iter)
+        for (std::vector<Matrix3X>::iterator iter = iterates.begin(); iter != iterates.end() - 1;
+             ++iter)
             s.push_back(*(iter + 1) - *iter);
 
-        for (std::vector<Matrix3X>::iterator iter = gradients.begin();
-            iter != gradients.end() - 1; ++iter)
+        for (std::vector<Matrix3X>::iterator iter = gradients.begin(); iter != gradients.end() - 1;
+             ++iter)
             y.push_back(*(iter + 1) - *iter);
 
         // See Nocedal Chapter 7 for more details
         std::vector<Scalar> rho, alpha;
         for (int i = static_cast<int>(s.size()) - 1; i >= 0; --i) {
             rho.insert(rho.begin(), 1. / (y[i] * s[i].transpose()).trace());
-            alpha.insert(
-                alpha.begin(), (*rho.begin() * s[i] * q.transpose()).trace());
+            alpha.insert(alpha.begin(), (*rho.begin() * s[i] * q.transpose()).trace());
             q -= *alpha.begin() * y[i];
         }
 
         SHAPEOP_OMP_PARALLEL
         {
 #ifdef NUM_STABILITY
-            SHAPEOP_OMP_FOR for (int j = 0; j < 3; ++j) descent_direction.row(j) = (N_dense_inv_ * gradients.back().row(j).transpose()).transpose();
+            SHAPEOP_OMP_FOR for (int j = 0; j < 3; ++j) descent_direction.row(j) =
+                (N_dense_inv_ * gradients.back().row(j).transpose()).transpose();
 #else
-            SHAPEOP_OMP_FOR for (int j = 0; j < 3; ++j) descent_direction.row(j)
-            = solver_->solve(q.row(j).transpose(), gradients.back().row(j).transpose()).transpose();
+            SHAPEOP_OMP_FOR for (int j = 0; j < 3; ++j) descent_direction.row(j) =
+                solver_->solve(q.row(j).transpose(), gradients.back().row(j).transpose())
+                    .transpose();
 #endif
         }
 
@@ -705,8 +707,8 @@ SHAPEOP_INLINE bool Solver::solve(int m
         }
 
         // Line search loop with Wolfe conditions (gamma & gamma2)
-        Scalar directional_derivative_prev
-            = (gradients.back() * descent_direction.transpose()).trace();
+        Scalar directional_derivative_prev =
+            (gradients.back() * descent_direction.transpose()).trace();
         Scalar alpha_ = 2.;
         bool Armijo_condition = false;
 #ifdef WOLFE
@@ -722,19 +724,17 @@ SHAPEOP_INLINE bool Solver::solve(int m
 
             // plus one is for stability purposes
             Scalar evalObjective_tmp = evalObjective(points_, momentum_);
-            Armijo_condition
-                = evalObjective_tmp
-                <= (objective_history.back()
-                    + gamma * alpha_ * directional_derivative_prev);
+            Armijo_condition =
+                evalObjective_tmp
+                <= (objective_history.back() + gamma * alpha_ * directional_derivative_prev);
 
 #ifdef WOLFE
             // curvature condition
-            Matrix3X grad = (M_star_ * (points_ - momentum_).transpose()
-                + L_ * points_.transpose()
-                - J_ * projections_.transpose() - f_int_nonePD_.transpose())
-                .transpose();
+            Matrix3X grad = (M_star_ * (points_ - momentum_).transpose() + L_ * points_.transpose()
+                             - J_ * projections_.transpose() - f_int_nonePD_.transpose())
+                                .transpose();
             curvature_condition = (grad * descent_direction.transpose()).trace()
-                >= gamma2 * directional_derivative_prev;
+                                  >= gamma2 * directional_derivative_prev;
 #endif
 
             line_search_loops += 1;
@@ -754,7 +754,7 @@ SHAPEOP_INLINE bool Solver::solve(int m
                 attempts_to_solve_stagnation++;
                 break;
             }
-            }
+        }
 
         ++it;
 
@@ -765,16 +765,15 @@ SHAPEOP_INLINE bool Solver::solve(int m
 
         if (it == max_iterations)
             break;
-        }
+    }
 
 #ifdef NPFEM_SA
     std::cout << "Loops until convergence: " << it << " | ";
     if (it != 0)
         std::cout << "Average Line Search Loops: "
-        << ((Scalar)(avg_line_search_loops)) / ((Scalar)(it))
-        << " | attempts_to_solve_stagnation: "
-        << attempts_to_solve_stagnation
-        << std::endl;
+                  << ((Scalar)(avg_line_search_loops)) / ((Scalar)(it))
+                  << " | attempts_to_solve_stagnation: " << attempts_to_solve_stagnation
+                  << std::endl;
 #else
     /*
     if (it != 0)
@@ -803,7 +802,7 @@ SHAPEOP_INLINE bool Solver::solve(int m
         calculateVolumeFromSurfaceAndPrepareConstraint(Volume_);
     else
         calculateVolume(Volume_);
-#endif // THREED
+#endif  // THREED
 
     Vector3 mean_velocity(0., 0., 0.);
     for (int i = 0; i < static_cast<int>(points_.cols()); ++i)
@@ -812,15 +811,14 @@ SHAPEOP_INLINE bool Solver::solve(int m
 
     std::cout << "Mean Velocity (micro-m/micro-sec): " << mean_velocity.norm() << std::endl;
 
-    std::cout << "Area Conservation (%): "
-        << 100. * std::abs(Area_ - Area0_) / Area0_ << std::endl;
+    std::cout << "Area Conservation (%): " << 100. * std::abs(Area_ - Area0_) / Area0_ << std::endl;
 
 #ifdef THREED
-    std::cout << "Volume Conservation (%): "
-        << 100. * std::abs(Volume_ - Volume0_) / Volume0_ << std::endl;
+    std::cout << "Volume Conservation (%): " << 100. * std::abs(Volume_ - Volume0_) / Volume0_
+              << std::endl;
 
     std::cout << "Volume: " << Volume_ << std::endl;
-#endif // THREED
+#endif  // THREED
 #else
     /*
     Vector3 Total_Force_on_Body(0., 0., 0.);
@@ -838,34 +836,34 @@ SHAPEOP_INLINE bool Solver::solve(int m
     else
         calculateVolume(Volume_);
 
-    /*
-    logfile_nonparallel(
-    "body_" + util::val2str(bodyID_) + "_ShapeOp_BodyForce.log")
-    .flushEntry("Palabos iT: " + util::val2str(Palabos_iT_)
-    + " | Total Force on Body (picoNewtons): "
-    + util::val2str(Total_Force_on_Body.norm()));
+        /*
+        logfile_nonparallel(
+        "body_" + util::val2str(bodyID_) + "_ShapeOp_BodyForce.log")
+        .flushEntry("Palabos iT: " + util::val2str(Palabos_iT_)
+        + " | Total Force on Body (picoNewtons): "
+        + util::val2str(Total_Force_on_Body.norm()));
 
-    logfile_nonparallel(
-    "body_" + util::val2str(bodyID_) + "_ShapeOp_MeanVelocity.log")
-    .flushEntry("Palabos iT: " + util::val2str(Palabos_iT_)
-    + " | Mean Velocity (micro-m/micro-sec): "
-    + util::val2str(mean_velocity.norm()));
+        logfile_nonparallel(
+        "body_" + util::val2str(bodyID_) + "_ShapeOp_MeanVelocity.log")
+        .flushEntry("Palabos iT: " + util::val2str(Palabos_iT_)
+        + " | Mean Velocity (micro-m/micro-sec): "
+        + util::val2str(mean_velocity.norm()));
 
-    logfile_nonparallel(
-    "body_" + util::val2str(bodyID_) + "_ShapeOp_ConservedQuantities.log")
-    .flushEntry("Palabos iT: " + util::val2str(Palabos_iT_)
-    + " | Area Conservation (%): "
-    + util::val2str(100. * std::abs(Area_ - Area0_) / Area0_)
-    + " | Volume Conservation (%): "
-    + util::val2str(100. * std::abs(Volume_ - Volume0_) / Volume0_));
-    */
+        logfile_nonparallel(
+        "body_" + util::val2str(bodyID_) + "_ShapeOp_ConservedQuantities.log")
+        .flushEntry("Palabos iT: " + util::val2str(Palabos_iT_)
+        + " | Area Conservation (%): "
+        + util::val2str(100. * std::abs(Area_ - Area0_) / Area0_)
+        + " | Volume Conservation (%): "
+        + util::val2str(100. * std::abs(Volume_ - Volume0_) / Volume0_));
+        */
 
-    //logfile_nonparallel(
-    //    "body_" + util::val2str(bodyID_) + "_Energy.csv")
-    //    .flushEntry(util::val2str(evalKinPlusPotEnergy(points_)));
-#endif // NPFEM_SA
+        // logfile_nonparallel(
+        //     "body_" + util::val2str(bodyID_) + "_Energy.csv")
+        //     .flushEntry(util::val2str(evalKinPlusPotEnergy(points_)));
+#endif  // NPFEM_SA
 
-    //GyrationTensor();
+    // GyrationTensor();
 
     if (numCollidingCandidatesPoints > 0)
         removeCollisionConstraints();
@@ -877,7 +875,7 @@ SHAPEOP_INLINE bool Solver::solve(int m
     return solver_->info() == Eigen::Success;
 }
 ///////////////////////////////////////////////////////////////////////////////
-SHAPEOP_INLINE Scalar Solver::evalKinPlusPotEnergy(const Matrix3X& x)
+SHAPEOP_INLINE Scalar Solver::evalKinPlusPotEnergy(const Matrix3X &x)
 {
     Scalar none_PD_energy = 0.;
     for (int i = 0; i < static_cast<int>(constraints_.size()); ++i)
@@ -886,12 +884,11 @@ SHAPEOP_INLINE Scalar Solver::evalKinPlusPotEnergy(const Matrix3X& x)
     Scalar C = 0.5 * (projections_ * projections_.transpose()).trace();
 
     return 0.5 * (velocities_ * M_tilde_ * velocities_.transpose()).trace()
-         + 0.5 * (x * L_ * x.transpose()).trace()
-         - (x * J_ * projections_.transpose()).trace() + C
-         + none_PD_energy;
+           + 0.5 * (x * L_ * x.transpose()).trace() - (x * J_ * projections_.transpose()).trace()
+           + C + none_PD_energy;
 }
 ///////////////////////////////////////////////////////////////////////////////
-SHAPEOP_INLINE Scalar Solver::evalObjective(const Matrix3X& x, const Matrix3X& y)
+SHAPEOP_INLINE Scalar Solver::evalObjective(const Matrix3X &x, const Matrix3X &y)
 {
     Scalar none_PD_energy = 0.;
     for (int i = 0; i < static_cast<int>(constraints_.size()); ++i)
@@ -901,18 +898,16 @@ SHAPEOP_INLINE Scalar Solver::evalObjective(const Matrix3X& x, const Matrix3X& y
         none_PD_energy += 0.5 * globalVolumeConservationWeight_ * deltaX_.squaredNorm();
 
     Scalar C = 0.5 * (projections_ * projections_.transpose()).trace();
-    //Scalar C = projections_.squaredNorm() / 2;
+    // Scalar C = projections_.squaredNorm() / 2;
 
 #ifdef NUM_STABILITY
-    return 0.5 * ((x - y)*M_star_).cwiseProduct((x - y)).sum()
-        + 0.5*((x*L_).cwiseProduct(x)).sum()
-        - ((x*J_).cwiseProduct(projections_)).sum() + C
-        + none_PD_energy;
+    return 0.5 * ((x - y) * M_star_).cwiseProduct((x - y)).sum()
+           + 0.5 * ((x * L_).cwiseProduct(x)).sum() - ((x * J_).cwiseProduct(projections_)).sum()
+           + C + none_PD_energy;
 #else
     return 0.5 * ((x - y) * M_star_ * (x - y).transpose()).trace()
-        + 0.5 * (x * L_ * x.transpose()).trace()
-        - (x * J_ * projections_.transpose()).trace() + C
-        + none_PD_energy;
+           + 0.5 * (x * L_ * x.transpose()).trace() - (x * J_ * projections_.transpose()).trace()
+           + C + none_PD_energy;
 #endif
 }
 ///////////////////////////////////////////////////////////////////////////////
@@ -922,8 +917,7 @@ SHAPEOP_INLINE void Solver::GyrationTensor()
     for (int m = 0; m < 3; ++m) {
         for (int n = 0; n < 3; ++n) {
             for (int i = 0; i < points_.cols(); ++i) {
-                G_(m, n) += (points_.col(i)[m] - Xcm_[m]) *
-                    (points_.col(i)[n] - Xcm_[n]);
+                G_(m, n) += (points_.col(i)[m] - Xcm_[m]) * (points_.col(i)[n] - Xcm_[n]);
             }
         }
     }
@@ -932,8 +926,7 @@ SHAPEOP_INLINE void Solver::GyrationTensor()
     Eigen::SelfAdjointEigenSolver<Matrix33> eigensolver(G_);
     if (eigensolver.info() != Eigen::Success) {
         ;
-    }
-    else {
+    } else {
         // Ascending order: First is the smallest!
         Vector3 eigenvalues = eigensolver.eigenvalues();
         if (G_flag_ == 0) {
@@ -941,12 +934,12 @@ SHAPEOP_INLINE void Solver::GyrationTensor()
             ++G_flag_;
         }
 #ifdef NPFEM_SA
-        std::cout << "The eigenvalues of the Gyration tensor are:\n" << eigensolver.eigenvalues().transpose() << "\n";
+        std::cout << "The eigenvalues of the Gyration tensor are:\n"
+                  << eigensolver.eigenvalues().transpose() << "\n";
 #else
-        global::logfile_nonparallel(
-            "body_" + util::val2str(bodyID_) + "_ShapeOp_GyrationEigen.log")
+        global::logfile_nonparallel("body_" + util::val2str(bodyID_) + "_ShapeOp_GyrationEigen.log")
             .flushEntry(util::val2str(std::abs(eigenvalues[0] - restShapeEigenvalues_[0])));
-#endif // NPFEM_SA
+#endif  // NPFEM_SA
     }
 }
 ///////////////////////////////////////////////////////////////////////////////
@@ -992,8 +985,7 @@ SHAPEOP_INLINE void Solver::PBD_Damping()
 
     Vector3 Ocm = Icm_inv * L;
 
-    for (int i = 0; i < static_cast<int>(velocities_.cols()); ++i)
-    {
+    for (int i = 0; i < static_cast<int>(velocities_.cols()); ++i) {
         // See PBD Muller
         Vector3 dvi = Vcm + Ocm.cross(r.col(i)) - velocities_.col(i);
         velocities_.col(i) += Calpha_ * dvi;
@@ -1006,10 +998,8 @@ SHAPEOP_INLINE void Solver::PBD_Damping()
     Matrix3X lattice_velocities = velocities_ / C_vel;
 
     size_t velocityLimit = 0;
-    for (int i = 0; i < static_cast<int>(velocities_.cols()); ++i)
-    {
-        if (lattice_velocities.col(i).norm() >= max_u_lb_)
-        {
+    for (int i = 0; i < static_cast<int>(velocities_.cols()); ++i) {
+        if (lattice_velocities.col(i).norm() >= max_u_lb_) {
             lattice_velocities.col(i).normalize();
             lattice_velocities.col(i) *= max_u_lb_fin_;
 
@@ -1020,15 +1010,16 @@ SHAPEOP_INLINE void Solver::PBD_Damping()
     }
 
 #ifdef ENABLE_LOGS
-    if (velocityLimit > 0)
-    {
+    if (velocityLimit > 0) {
         global::logfile_nonparallel("instability.log")
-            .flushEntry("At Palabos iT=" + util::val2str(Palabos_iT_) + " | ShapeOp bodyID=" + util::val2str(bodyID_) +
-                " | VELOCITY LIMIT ACTIVATED, on " + util::val2str(velocityLimit) + " vertices");
+            .flushEntry(
+                "At Palabos iT=" + util::val2str(Palabos_iT_)
+                + " | ShapeOp bodyID=" + util::val2str(bodyID_) + " | VELOCITY LIMIT ACTIVATED, on "
+                + util::val2str(velocityLimit) + " vertices");
     }
-#endif // ENABLE_LOGS
+#endif  // ENABLE_LOGS
 
-#endif // !NPFEM_SA
+#endif  // !NPFEM_SA
 
     points_ = oldPoints_ + velocities_ * delta_;
 }
@@ -1041,24 +1032,25 @@ SHAPEOP_INLINE void Solver::computeInternalForces()
 #ifdef NUM_STABILITY
         for (int i = static_cast<int>(constraints_.size()) - 1; i >= 0; --i) {
 #else
-        SHAPEOP_OMP_FOR for (int i = 0; i < static_cast<int>(constraints_.size()); ++i) {
+        SHAPEOP_OMP_FOR for (int i = 0; i < static_cast<int>(constraints_.size()); ++i)
+        {
 #endif
-        constraints_[i]->project(points_, projections_, f_int_nonePD_, oldPointsEWMA_);
+            constraints_[i]->project(points_, projections_, f_int_nonePD_, oldPointsEWMA_);
         }
     }
 
 #ifdef THREED
     // Spring-Like force
     Scalar Volume;
-    if (applyGlobalVolumeConservation_)
-    {
+    if (applyGlobalVolumeConservation_) {
         calculateVolumeFromSurfaceAndPrepareConstraint(Volume);
         f_int_nonePD_ += globalVolumeConservationWeight_ * deltaX_;
     }
-#endif //THREED
+#endif  // THREED
 }
 ///////////////////////////////////////////////////////////////////////////////
-SHAPEOP_INLINE void Solver::collisionDetection(Scalar collisions_threshold_rep, Scalar collisions_threshold_nonRep)
+SHAPEOP_INLINE void Solver::collisionDetection(
+    Scalar collisions_threshold_rep, Scalar collisions_threshold_nonRep)
 {
     collidingPointsInfo_.clear();
 
@@ -1066,17 +1058,17 @@ SHAPEOP_INLINE void Solver::collisionDetection(Scalar collisions_threshold_rep, 
     // This tmp_struct is needed for compatibility with different Eigen versions
     // Eigen::Matrix<num_t, Dynamic, Dynamic> mat(nSamples, dim); FROM NANOFLANN
     unsigned int dim = 3;
-    Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic> tmp_struct(collidingCandidatesPoints_.cols(), dim);
+    Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic> tmp_struct(
+        collidingCandidatesPoints_.cols(), dim);
     tmp_struct = collidingCandidatesPoints_.transpose();
     kd_tree extendedPoints_index(tmp_struct, 10 /* default value (optimal 10.-.50) */);
     extendedPoints_index.index->buildIndex();
 
-    // Important note: If L2 norms are used, notice that search radius and all 
+    // Important note: If L2 norms are used, notice that search radius and all
     // passed and returned distances are actually squared distances.
 
     // Check for every point on my Defo Body the NNs and investigate collisions
-    for (int i = 0; i < points_.cols(); ++i)
-    {
+    for (int i = 0; i < points_.cols(); ++i) {
         if (!onSurfaceParticle_[i])
             continue;
 
@@ -1097,7 +1089,8 @@ SHAPEOP_INLINE void Solver::collisionDetection(Scalar collisions_threshold_rep, 
         nanoflann::KNNResultSet<Scalar> resultSet(num_results);
 
         resultSet.init(&ret_indexes[0], &out_dists_sqr[0]);
-        extendedPoints_index.index->findNeighbors(resultSet, &query_pt[0], nanoflann::SearchParams(10));
+        extendedPoints_index.index->findNeighbors(
+            resultSet, &query_pt[0], nanoflann::SearchParams(10));
 
         Vector3 collidingPoint = collidingCandidatesPoints_.col(ret_indexes[0]);
         Vector3 collidingPointNormal = normalsCollidingCandidatesPoints_.col(ret_indexes[0]);
@@ -1108,16 +1101,17 @@ SHAPEOP_INLINE void Solver::collisionDetection(Scalar collisions_threshold_rep, 
         else
             collisions_threshold = collisions_threshold_nonRep;
 
-        if ((collidingPoint - bodyPoint).norm() <= collisions_threshold)
-        {
+        if ((collidingPoint - bodyPoint).norm() <= collisions_threshold) {
             std::vector<Vector3> container(2);
-            
+
             if (collidingPointNormal.norm() >= 2.0)
                 // 0.5 is to decode the info of repulsion
-                container[0] = collidingPoint + collisions_threshold * 0.5 * collidingPointNormal; // offset here
+                container[0] = collidingPoint
+                               + collisions_threshold * 0.5 * collidingPointNormal;  // offset here
             else
-                container[0] = collidingPoint + collisions_threshold * collidingPointNormal; // offset here
-            
+                container[0] =
+                    collidingPoint + collisions_threshold * collidingPointNormal;  // offset here
+
             container[1] = collidingPointNormal;
             collidingPointsInfo_[i] = container;
         }
@@ -1126,12 +1120,10 @@ SHAPEOP_INLINE void Solver::collisionDetection(Scalar collisions_threshold_rep, 
 ///////////////////////////////////////////////////////////////////////////////
 SHAPEOP_INLINE void Solver::addCollisionConstraints(
     Scalar collisions_threshold_rep, Scalar collisionsWeight_rep,
-    Scalar collisions_threshold_nonRep, Scalar collisionsWeight_nonRep,
-    Scalar beta_morse)
+    Scalar collisions_threshold_nonRep, Scalar collisionsWeight_nonRep, Scalar beta_morse)
 {
     std::unordered_map<int, std::vector<Vector3>>::const_iterator it;
-    for (it = collidingPointsInfo_.cbegin(); it != collidingPointsInfo_.cend(); ++it)
-    {
+    for (it = collidingPointsInfo_.cbegin(); it != collidingPointsInfo_.cend(); ++it) {
         std::vector<int> idI;
         idI.push_back(it->first);
         Vector3 collidingPoint = it->second[0];
@@ -1139,11 +1131,13 @@ SHAPEOP_INLINE void Solver::addCollisionConstraints(
 
         // 1. is a dummy collision weight. Set them below.
         auto c = std::make_shared<CollisionConstraint>(idI, 1., points_);
-        
+
         c->setCollindingPoint(collidingPoint);
         c->setCollindingPointNormal(collidingPointNormal);
         // set the augmented collision energy
-        c->setParams(collisions_threshold_rep, collisionsWeight_rep, collisions_threshold_nonRep, collisionsWeight_nonRep, beta_morse);
+        c->setParams(
+            collisions_threshold_rep, collisionsWeight_rep, collisions_threshold_nonRep,
+            collisionsWeight_nonRep, beta_morse);
 
         addConstraint(c);
     }
@@ -1156,7 +1150,7 @@ SHAPEOP_INLINE void Solver::removeCollisionConstraints()
         constraints_.pop_back();
 }
 ///////////////////////////////////////////////////////////////////////////////
-} // namespace npfem
-} // namespace plb
+}  // namespace npfem
+}  // namespace plb
 ///////////////////////////////////////////////////////////////////////////////
-#endif // SOLVER_CPP
+#endif  // SOLVER_CPP

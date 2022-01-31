@@ -5,7 +5,7 @@
  * own the IP rights for most of the code base. Since October 2019, the
  * Palabos project is maintained by the University of Geneva and accepts
  * source code contributions from the community.
- * 
+ *
  * Contact:
  * Jonas Latt
  * Computer Science Department
@@ -14,7 +14,7 @@
  * 1227 Carouge, Switzerland
  * jonas.latt@unige.ch
  *
- * The most recent release of Palabos can be downloaded at 
+ * The most recent release of Palabos can be downloaded at
  * <https://palabos.unige.ch/>
  *
  * The library Palabos is free software: you can redistribute it and/or
@@ -29,7 +29,7 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 /** \file
  * Descriptor for nearest-neighbor 2D lattices. In principle, thanks
@@ -52,39 +52,41 @@ namespace plb {
 
 namespace descriptors {
 
-    struct ExternalOmegaDescriptor2d {
-        static const int numScalars    = 1;
-        static const int numSpecies    = 1;
-        static const int omegaBeginsAt = 0;
-        static const int sizeOfOmega   = 1;
-    };
+struct ExternalOmegaDescriptor2d {
+    static const int numScalars = 1;
+    static const int numSpecies = 1;
+    static const int omegaBeginsAt = 0;
+    static const int sizeOfOmega = 1;
+};
 
-    struct ExternalOmegaAndForceDescriptor2d {
-        static const int numScalars    = 3;
-        static const int numSpecies    = 2;
-        static const int omegaBeginsAt = 0;
-        static const int sizeOfOmega   = 1;
-        static const int forceBeginsAt = 1;
-        static const int sizeOfForce   = 2;
-    };
+struct ExternalOmegaAndForceDescriptor2d {
+    static const int numScalars = 3;
+    static const int numSpecies = 2;
+    static const int omegaBeginsAt = 0;
+    static const int sizeOfOmega = 1;
+    static const int forceBeginsAt = 1;
+    static const int sizeOfForce = 2;
+};
 
-    template <typename T> struct ExternalOmegaD2Q9Descriptor
-        : public D2Q9DescriptorBase<T>, public ExternalOmegaDescriptor2d
-    {
-        static const char name[];
-    };
+template <typename T>
+struct ExternalOmegaD2Q9Descriptor :
+    public D2Q9DescriptorBase<T>,
+    public ExternalOmegaDescriptor2d {
+    static const char name[];
+};
 
-    template <typename T> struct ForcedExternalOmegaD2Q9Descriptor
-        : public D2Q9DescriptorBase<T>, public ExternalOmegaAndForceDescriptor2d
-    {
-        static const char name[];
-    };
+template <typename T>
+struct ForcedExternalOmegaD2Q9Descriptor :
+    public D2Q9DescriptorBase<T>,
+    public ExternalOmegaAndForceDescriptor2d {
+    static const char name[];
+};
 
-    template<typename T>
-    const char ExternalOmegaD2Q9Descriptor<T>::name[] = "ExternalOmegaD2Q9";
+template <typename T>
+const char ExternalOmegaD2Q9Descriptor<T>::name[] = "ExternalOmegaD2Q9";
 
-    template<typename T>
-    const char ExternalOmegaAndForceD2Q9Descriptor<T>::name[] = "ExternalOmegaAndForceD2Q9";
+template <typename T>
+const char ExternalOmegaAndForceD2Q9Descriptor<T>::name[] = "ExternalOmegaAndForceD2Q9";
 
 }  // namespace descriptors
 

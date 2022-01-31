@@ -57,8 +57,8 @@ void defineCylinderGeometry(
     const plint nx = parameters.getNx();
     const plint ny = parameters.getNy();
 
-    int cx     = nx / 4;
-    int cy     = ny / 2 + ny / 10;
+    int cx = nx / 4;
+    int cy = ny / 2 + ny / 10;
     int radius = cy / 4;
 
     createCylinder(lattice, cx, cy, radius);
@@ -135,9 +135,9 @@ int main(int argc, char *argv[])
     );
     const T logT = (T)0.02;
 #ifndef PLB_REGRESSION
-    const T imSave  = (T)0.1;
+    const T imSave = (T)0.1;
     const T vtkSave = (T)3.;
-    const T maxT    = (T)10.1;
+    const T maxT = (T)10.1;
 #else
     const T maxT = (T)0.5;
 #endif

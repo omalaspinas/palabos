@@ -5,7 +5,7 @@
  * own the IP rights for most of the code base. Since October 2019, the
  * Palabos project is maintained by the University of Geneva and accepts
  * source code contributions from the community.
- * 
+ *
  * Contact:
  * Jonas Latt
  * Computer Science Department
@@ -14,7 +14,7 @@
  * 1227 Carouge, Switzerland
  * jonas.latt@unige.ch
  *
- * The most recent release of Palabos can be downloaded at 
+ * The most recent release of Palabos can be downloaded at
  * <https://palabos.unige.ch/>
  *
  * The library Palabos is free software: you can redistribute it and/or
@@ -29,13 +29,14 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 #ifndef BASIC_ALGORITHMS_H
 #define BASIC_ALGORITHMS_H
 
-#include "core/globalDefs.h"
 #include <vector>
+
+#include "core/globalDefs.h"
 
 namespace plb {
 
@@ -45,11 +46,11 @@ std::vector<plint> primeFactor(plint value);
 
 std::vector<plint> evenRepartition(plint value, plint d);
 
-} // namespace algorithm
+}  // namespace algorithm
 
-template<typename T>
+template <typename T>
 class PIDController {
-public: 
+public:
     PIDController();
     // Kp: proportional coefficient.
     // Ki: integral coefficient.
@@ -57,31 +58,33 @@ public:
     T operator()(T target, T current, T Kp = 0.8, T Ki = 0.2, T Kd = 0.2);
     void saveState(std::string baseFileName, plint fileNamePadding, plint iIter);
     void loadState(std::string baseFileName, plint fileNamePadding, plint iIter);
-private: 
+
+private:
     T error;
     T sumErrors;
     T deltaError;
     T oldError;
 };
 
-template<typename T>
+template <typename T>
 class Relaxation {
-public: 
+public:
     Relaxation();
-    Relaxation(T omega_, T equilibrium_ = (T) 0, T initialValue_ = (T) 0);
+    Relaxation(T omega_, T equilibrium_ = (T)0, T initialValue_ = (T)0);
     void setOmega(T omega_);
     void setEquilibrium(T equilibrium_);
     void setInitialValue(T initialValue_);
     T iterate();
     void saveState(std::string baseFileName, plint fileNamePadding, plint iIter);
     void loadState(std::string baseFileName, plint fileNamePadding, plint iIter);
-private: 
+
+private:
     T omega;
     T equilibrium;
     T previous;
     T next;
 };
 
-} // namespace plb
+}  // namespace plb
 
 #endif  // BASIC_ALGORITHMS_H

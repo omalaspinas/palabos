@@ -5,7 +5,7 @@
  * own the IP rights for most of the code base. Since October 2019, the
  * Palabos project is maintained by the University of Geneva and accepts
  * source code contributions from the community.
- * 
+ *
  * Contact:
  * Jonas Latt
  * Computer Science Department
@@ -14,7 +14,7 @@
  * 1227 Carouge, Switzerland
  * jonas.latt@unige.ch
  *
- * The most recent release of Palabos can be downloaded at 
+ * The most recent release of Palabos can be downloaded at
  * <https://palabos.unige.ch/>
  *
  * The library Palabos is free software: you can redistribute it and/or
@@ -29,7 +29,7 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 /** \file
  * Helper functions for domain initialization -- header file.
@@ -37,17 +37,17 @@
 #ifndef CO_PROCESSOR_INSTANTIATION_3D_H
 #define CO_PROCESSOR_INSTANTIATION_3D_H
 
-#include "core/globalDefs.h"
-#include "coProcessors/coProcessorFunctional3D.h"
 #include <map>
+
+#include "coProcessors/coProcessorFunctional3D.h"
+#include "core/globalDefs.h"
 
 namespace plb {
 
-template<typename T, template<typename U> class Descriptor>
-std::map<plint,PureDynamics<T> > identifyBlocksWithPureDynamics (
-        MultiBlockLattice3D<T,Descriptor>& lattice, plint dynamicsId );
+template <typename T, template <typename U> class Descriptor>
+std::map<plint, PureDynamics<T> > identifyBlocksWithPureDynamics(
+    MultiBlockLattice3D<T, Descriptor> &lattice, plint dynamicsId);
 
 }  // namespace plb
 
 #endif  // CO_PROCESSOR_INSTANTIATION_3D_H
-
