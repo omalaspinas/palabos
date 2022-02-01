@@ -1,0 +1,9 @@
+# The syntax must be leak:<pattern>
+# In this particular case we also suppress 
+# two other warnings that seem to be coming
+# from openmpi. malloc and calloc are never
+# explicility called from Palabos so it must be OK.
+leak:strdup
+leak:__interceptor_malloc
+leak:malloc
+leak:calloc
