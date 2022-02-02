@@ -20,7 +20,8 @@ if(BUILD_TESTING)
     add_custom_target(${PROJECT_NAME}_test
         ALL
         DEPENDS ${PROJECT_NAME}
-        COMMAND "LSAN_OPTIONS=suppressions=${CMAKE_CURRENT_SOURCE_DIR}/test/LAsan.supp" ./${PROJECT_NAME} > test/output.dat || (cat test/output.dat\; exit 1)
+        COMMAND "LSAN_OPTIONS=suppressions=${LSAN_SUPPRESSION_FILE}" ./${PROJECT_NAME} > test/output.dat || (cat test/output.dat\; exit 1)
+
         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
         COMMENT "run generated test in ${CMAKE_CURRENT_SOURCE_DIR}"
         SOURCES ./${EXECUTABLE_NAME}.cpp
