@@ -96,7 +96,7 @@ int main(int argc, char *argv[])
     std::unique_ptr<MultiScalarField2D<bool>> boolFlag1 =
         copyConvert<unsignedType, bool>(*evaluate(checkFlag1, flagField));
 
-#ifndef PLB_PLB_REGRESSION
+#ifdef PLB_REGRESSION
     pcout << flagField << std::endl;
     pcout << *boolFlag1 << std::endl;
 #endif
