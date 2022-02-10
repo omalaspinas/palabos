@@ -5,7 +5,7 @@
  * own the IP rights for most of the code base. Since October 2019, the
  * Palabos project is maintained by the University of Geneva and accepts
  * source code contributions from the community.
- * 
+ *
  * Contact:
  * Jonas Latt
  * Computer Science Department
@@ -14,7 +14,7 @@
  * 1227 Carouge, Switzerland
  * jonas.latt@unige.ch
  *
- * The most recent release of Palabos can be downloaded at 
+ * The most recent release of Palabos can be downloaded at
  * <https://palabos.unige.ch/>
  *
  * The library Palabos is free software: you can redistribute it and/or
@@ -29,29 +29,27 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 /** \file
  * Groups all the 3D include files in the directory multiPhysics.
  */
 
-#include "multiPhysics/boussinesqThermalProcessor3D.h"
 #include "multiPhysics/advectionDiffusion3D.h"
+#include "multiPhysics/bodyForce3D.h"
+#include "multiPhysics/boussinesqThermalProcessor3D.h"
+#include "multiPhysics/bubbleHistory3D.h"
+#include "multiPhysics/bubbleMatch3D.h"
+#include "multiPhysics/createBubbles3D.h"
+#include "multiPhysics/freeSurfaceAnalysis3D.h"
+#include "multiPhysics/freeSurfaceBoundaryCondition3D.h"
+#include "multiPhysics/freeSurfaceInitializer3D.h"
+#include "multiPhysics/freeSurfaceModel3D.h"
+#include "multiPhysics/freeSurfaceUtil3D.h"
+#include "multiPhysics/heLeeProcessor3D.h"
 #include "multiPhysics/interparticlePotential.h"
+#include "multiPhysics/multiFreeSurfaceModel3D.h"
 #include "multiPhysics/shanChenLattices3D.h"
 #include "multiPhysics/shanChenProcessor3D.h"
 #include "multiPhysics/thermalDataAnalysis3D.h"
-#include "multiPhysics/heLeeProcessor3D.h"
-#include "multiPhysics/heLeeProcessor3D.h"
-#include "multiPhysics/freeSurfaceUtil3D.h"
-#include "multiPhysics/freeSurfaceModel3D.h"
-#include "multiPhysics/freeSurfaceBoundaryCondition3D.h"
-#include "multiPhysics/freeSurfaceInitializer3D.h"
-#include "multiPhysics/freeSurfaceAnalysis3D.h"
-#include "multiPhysics/multiFreeSurfaceModel3D.h"
-#include "multiPhysics/createBubbles3D.h"
-#include "multiPhysics/bubbleHistory3D.h"
-#include "multiPhysics/bubbleMatch3D.h"
 #include "multiPhysics/twoPhaseModel3D.h"
-#include "multiPhysics/bodyForce3D.h"
-

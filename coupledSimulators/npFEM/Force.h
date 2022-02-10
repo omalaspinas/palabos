@@ -6,18 +6,18 @@
  * It is governed by the terms of the Mozilla Public License v. 2.0.
  *
  * This file is subject to the terms of the Mozilla Public License v. 2.0.
- * If a copy of the MPL was not distributed with this file, 
+ * If a copy of the MPL was not distributed with this file,
  * you can obtain one at http://mozilla.org/MPL/2.0/.
- * 
+ *
  * Contact:
  * Christos Kotsalos
  * kotsaloscv@gmail.com
  * Computer Science Department
  * University of Geneva
- * 
- * The most recent release of Palabos can be downloaded at 
+ *
+ * The most recent release of Palabos can be downloaded at
  * <https://palabos.unige.ch/>
-*/
+ */
 ///////////////////////////////////////////////////////////////////////////////
 #ifndef FORCE_H
 #define FORCE_H
@@ -31,14 +31,17 @@ Forces: keep it like this for legacy reasons and compatibility with Grasshopper
 namespace plb {
 namespace npfem {
 ///////////////////////////////////////////////////////////////////////////////
-/* 
+/*
 Base class of any forces. This class defines interface of a ShapeOp force.
 */
 class SHAPEOP_API Force {
 public:
-    virtual ~Force() { ; }
+    virtual ~Force()
+    {
+        ;
+    }
     /* Get force vector.*/
-    virtual Vector3 get(const Matrix3X& positions, int id) const = 0;
+    virtual Vector3 get(const Matrix3X &positions, int id) const = 0;
     virtual int getId() const = 0;
 };
 ///////////////////////////////////////////////////////////////////////////////
@@ -46,11 +49,13 @@ public:
 class SHAPEOP_API GravityForce : public Force {
 public:
     /* Constructor taking the gravity vector as parameter. */
-    GravityForce(const Vector3& f);
-    virtual ~GravityForce() { ; }
+    GravityForce(const Vector3 &f);
+    virtual ~GravityForce()
+    {
+        ;
+    }
     /* Get gravity vector. */
-    virtual Vector3 get(
-        const Matrix3X& /*positions*/, int /*id*/) const override final;
+    virtual Vector3 get(const Matrix3X & /*positions*/, int /*id*/) const override final;
     virtual int getId() const override final;
 
 private:
@@ -61,15 +66,17 @@ private:
 class SHAPEOP_API VertexForce : public Force {
 public:
     /* Constructor taking the force and the vertex id as parameters. */
-    VertexForce(const Vector3& f = Vector3::Zero(), int id = -1);
-    virtual ~VertexForce() { ; }
+    VertexForce(const Vector3 &f = Vector3::Zero(), int id = -1);
+    virtual ~VertexForce()
+    {
+        ;
+    }
     /* Get force vector. */
-    virtual Vector3 get(
-        const Matrix3X& /*position*/, int id) const override final;
+    virtual Vector3 get(const Matrix3X & /*position*/, int id) const override final;
     /* Set a new vertex id. */
     void setId(int id);
     /* Set a new force.*/
-    void setForce(const Vector3& f);
+    void setForce(const Vector3 &f);
     virtual int getId() const override final;
 
 private:
@@ -77,12 +84,12 @@ private:
     int id_;
 };
 ///////////////////////////////////////////////////////////////////////////////
-} // namespace npfem
-} // namespace plb
+}  // namespace npfem
+}  // namespace plb
 ///////////////////////////////////////////////////////////////////////////////
 #ifdef SHAPEOP_HEADER_ONLY
 #include "Force.cpp"
 #endif
 ///////////////////////////////////////////////////////////////////////////////
-#endif // FORCE_H
+#endif  // FORCE_H
 ///////////////////////////////////////////////////////////////////////////////

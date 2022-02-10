@@ -5,7 +5,7 @@
  * own the IP rights for most of the code base. Since October 2019, the
  * Palabos project is maintained by the University of Geneva and accepts
  * source code contributions from the community.
- * 
+ *
  * Contact:
  * Jonas Latt
  * Computer Science Department
@@ -14,7 +14,7 @@
  * 1227 Carouge, Switzerland
  * jonas.latt@unige.ch
  *
- * The most recent release of Palabos can be downloaded at 
+ * The most recent release of Palabos can be downloaded at
  * <https://palabos.unige.ch/>
  *
  * The library Palabos is free software: you can redistribute it and/or
@@ -29,20 +29,19 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 /** \file
  * Groups all the include template files for the 3D particles directory.
  */
 
-#include "particles/particle3D.hh"
-#include "particles/particleIdentifiers3D.hh"
-#include "particles/particleField3D.hh"
 #include "particles/multiParticleField3D.hh"
-#include "particles/particleProcessingFunctional3D.hh"
+#include "particles/particle3D.hh"
+#include "particles/particleField3D.hh"
+#include "particles/particleIdentifiers3D.hh"
 #include "particles/particleNonLocalTransfer3D.hh"
+#include "particles/particleProcessingFunctional3D.hh"
+#include "particles/particleVtk3D.hh"
 #include "particles/visualParticle3D.hh"
 #include "particles/visualParticleFunctional3D.hh"
 #include "particles/visualParticleWrapper3D.hh"
-#include "particles/particleVtk3D.hh"
-

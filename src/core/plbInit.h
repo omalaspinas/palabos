@@ -5,7 +5,7 @@
  * own the IP rights for most of the code base. Since October 2019, the
  * Palabos project is maintained by the University of Geneva and accepts
  * source code contributions from the community.
- * 
+ *
  * Contact:
  * Jonas Latt
  * Computer Science Department
@@ -14,7 +14,7 @@
  * 1227 Carouge, Switzerland
  * jonas.latt@unige.ch
  *
- * The most recent release of Palabos can be downloaded at 
+ * The most recent release of Palabos can be downloaded at
  * <https://palabos.unige.ch/>
  *
  * The library Palabos is free software: you can redistribute it and/or
@@ -29,7 +29,7 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 /** \file
  * LB initialisation routine -- header file.
@@ -37,15 +37,16 @@
 #ifndef PLB_INIT_H
 #define PLB_INIT_H
 
-#include "core/globalDefs.h"
-#include "parallelism/mpiManager.h"
-#include "io/parallelIO.h"
-#include <vector>
 #include <string>
+#include <vector>
+
+#include "core/globalDefs.h"
+#include "io/parallelIO.h"
+#include "parallelism/mpiManager.h"
 
 namespace plb {
 
-void plbInit(int *argc, char ***argv, bool verbous=false);
+void plbInit(int *argc, char ***argv, bool verbous = false);
 #ifdef PLB_MPI_PARALLEL
 void plbInit(MPI_Comm communicator);
 #endif
@@ -53,35 +54,39 @@ void plbInit();
 
 namespace global {
 
-    class MainArgv {
-    public:
-        MainArgv(std::string argument_, int whichArg_);
-        operator std::string() const;
-        template<typename T> void read(T& variable);
-        template<typename T> bool readNoThrow(T& variable);
-    private:
-        std::string argument;
-        int whichArg;
-    };
+class MainArgv {
+public:
+    MainArgv(std::string argument_, int whichArg_);
+    operator std::string() const;
+    template <typename T>
+    void read(T &variable);
+    template <typename T>
+    bool readNoThrow(T &variable);
 
-    class MainArgs {
-    public:
-        int argc() const;
-        MainArgv argv(int whichArg) const;
-        void setArgs(int argcValue, char*** argvPointer);
-        void setArgs(std::vector<std::string> arguments_);
-    private:
-        MainArgs();
-    private:
-        std::vector<std::string> arguments;
+private:
+    std::string argument;
+    int whichArg;
+};
 
-    friend MainArgs& mainArguments();
-    };
+class MainArgs {
+public:
+    int argc() const;
+    MainArgv argv(int whichArg) const;
+    void setArgs(int argcValue, char ***argvPointer);
+    void setArgs(std::vector<std::string> arguments_);
 
+private:
+    MainArgs();
 
-    MainArgs& mainArguments();
-    int argc();
-    MainArgv argv(int whichArg);
+private:
+    std::vector<std::string> arguments;
+
+    friend MainArgs &mainArguments();
+};
+
+MainArgs &mainArguments();
+int argc();
+MainArgv argv(int whichArg);
 
 }  // namespace global
 

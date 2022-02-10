@@ -5,7 +5,7 @@
  * own the IP rights for most of the code base. Since October 2019, the
  * Palabos project is maintained by the University of Geneva and accepts
  * source code contributions from the community.
- * 
+ *
  * Contact:
  * Jonas Latt
  * Computer Science Department
@@ -14,7 +14,7 @@
  * 1227 Carouge, Switzerland
  * jonas.latt@unige.ch
  *
- * The most recent release of Palabos can be downloaded at 
+ * The most recent release of Palabos can be downloaded at
  * <https://palabos.unige.ch/>
  *
  * The library Palabos is free software: you can redistribute it and/or
@@ -29,7 +29,7 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 /** \file
  * Definition of a LB cell -- generic implementation.
@@ -38,9 +38,10 @@
 #define CELL_HH
 
 #include <algorithm>
+#include <cstring>
+
 #include "core/cell.h"
 #include "core/util.h"
-#include <cstring>
 
 namespace plb {
 
@@ -51,9 +52,8 @@ namespace plb {
  * be used directly after construction; the method attributeDynamics()
  * must be used first.
  */
-template<typename T, template<typename U> class Descriptor>
-Cell<T,Descriptor>::Cell()
-    : takesStat(true), dynamics(0)
+template <typename T, template <typename U> class Descriptor>
+Cell<T, Descriptor>::Cell() : takesStat(true), dynamics(0)
 {
     iniPop();
     iniExternal();
@@ -64,90 +64,105 @@ Cell<T,Descriptor>::Cell()
  * owned by the Cell object, the user must ensure its proper
  * destruction and a sufficient life time.
  */
-template<typename T, template<typename U> class Descriptor>
-Cell<T,Descriptor>::Cell(Dynamics<T,Descriptor>* dynamics_)
-    : takesStat(true), dynamics(dynamics_)
+template <typename T, template <typename U> class Descriptor>
+Cell<T, Descriptor>::Cell(Dynamics<T, Descriptor> *dynamics_) : takesStat(true), dynamics(dynamics_)
 {
     iniPop();
     iniExternal();
 }
 
-template<typename T, template<typename U> class Descriptor>
-void Cell<T,Descriptor>::attributeDynamics(Dynamics<T,Descriptor>* dynamics_) {
+template <typename T, template <typename U> class Descriptor>
+void Cell<T, Descriptor>::attributeDynamics(Dynamics<T, Descriptor> *dynamics_)
+{
     dynamics = dynamics_;
 }
 
-template<typename T, template<typename U> class Descriptor>
-Dynamics<T,Descriptor> const& Cell<T,Descriptor>::getDynamics() const {
+template <typename T, template <typename U> class Descriptor>
+Dynamics<T, Descriptor> const &Cell<T, Descriptor>::getDynamics() const
+{
     PLB_PRECONDITION(dynamics);
     return *dynamics;
 }
 
-template<typename T, template<typename U> class Descriptor>
-Dynamics<T,Descriptor>& Cell<T,Descriptor>::getDynamics() {
+template <typename T, template <typename U> class Descriptor>
+Dynamics<T, Descriptor> &Cell<T, Descriptor>::getDynamics()
+{
     PLB_PRECONDITION(dynamics);
     return *dynamics;
 }
 
-template<typename T, template<typename U> class Descriptor>
-void Cell<T,Descriptor>::revert() {
-    for (plint iPop=1; iPop<=Descriptor<T>::numPop/2; ++iPop) {
-        std::swap(f[iPop],f[iPop+Descriptor<T>::numPop/2]);
+template <typename T, template <typename U> class Descriptor>
+void Cell<T, Descriptor>::revert()
+{
+    for (plint iPop = 1; iPop <= Descriptor<T>::numPop / 2; ++iPop) {
+        std::swap(f[iPop], f[iPop + Descriptor<T>::numPop / 2]);
     }
 }
 
-template<typename T, template<typename U> class Descriptor>
-void Cell<T,Descriptor>::iniPop() {
+template <typename T, template <typename U> class Descriptor>
+void Cell<T, Descriptor>::iniPop()
+{
     f.resetToZero();
 }
 
-template<typename T, template<typename U> class Descriptor>
-void Cell<T,Descriptor>::iniExternal() {
-    for (plint iData=0; iData<Descriptor<T>::ExternalField::numScalars; ++iData) {
+template <typename T, template <typename U> class Descriptor>
+void Cell<T, Descriptor>::iniExternal()
+{
+    for (plint iData = 0; iData < Descriptor<T>::ExternalField::numScalars; ++iData) {
         *external.get(iData) = T();
     }
 }
 
-template<typename T, template<typename U> class Descriptor>
-void Cell<T,Descriptor>::serialize(char* data) const {
+template <typename T, template <typename U> class Descriptor>
+void Cell<T, Descriptor>::serialize(char *data) const
+{
     const plint numPop = Descriptor<T>::numPop;
     const plint numExt = Descriptor<T>::ExternalField::numScalars;
-    memcpy((void*)data, (const void*)(&f[0]), numPop*sizeof(T));
-    if (numExt>0) {
-        memcpy((void*)(data+numPop*sizeof(T)), (const void*)(external.get(0)), numExt*sizeof(T));
+    memcpy((void *)data, (const void *)(&f[0]), numPop * sizeof(T));
+    if (numExt > 0) {
+        memcpy(
+            (void *)(data + numPop * sizeof(T)), (const void *)(external.get(0)),
+            numExt * sizeof(T));
     }
 }
 
-template<typename T, template<typename U> class Descriptor>
-void Cell<T,Descriptor>::unSerialize(char const* data) {
+template <typename T, template <typename U> class Descriptor>
+void Cell<T, Descriptor>::unSerialize(char const *data)
+{
     const plint numPop = Descriptor<T>::numPop;
     const plint numExt = Descriptor<T>::ExternalField::numScalars;
 
-    memcpy((void*)(&f[0]), (const void*)data, numPop*sizeof(T));
-    if (numExt>0) {
-        memcpy((void*)(external.get(0)), (const void*)(data+numPop*sizeof(T)), numExt*sizeof(T));
+    memcpy((void *)(&f[0]), (const void *)data, numPop * sizeof(T));
+    if (numExt > 0) {
+        memcpy(
+            (void *)(external.get(0)), (const void *)(data + numPop * sizeof(T)),
+            numExt * sizeof(T));
     }
 }
 
-template<typename T, template<typename U> class Descriptor>
-void iniCellAtEquilibrium(Cell<T,Descriptor>& cell, T density, Array<T,Descriptor<T>::d> const& velocity) {
-    Array<T,Descriptor<T>::d> j;
-    VectorTemplate<T,Descriptor>::multiplyByScalar(velocity, density, j);
-    T jSqr = VectorTemplate<T,Descriptor>::normSqr(j);
+template <typename T, template <typename U> class Descriptor>
+void iniCellAtEquilibrium(
+    Cell<T, Descriptor> &cell, T density, Array<T, Descriptor<T>::d> const &velocity)
+{
+    Array<T, Descriptor<T>::d> j;
+    VectorTemplate<T, Descriptor>::multiplyByScalar(velocity, density, j);
+    T jSqr = VectorTemplate<T, Descriptor>::normSqr(j);
     T rhoBar = Descriptor<T>::rhoBar(density);
-    for (plint iPop=0; iPop<Descriptor<T>::numPop; ++iPop) {
+    for (plint iPop = 0; iPop < Descriptor<T>::numPop; ++iPop) {
         cell[iPop] = cell.computeEquilibrium(iPop, rhoBar, j, jSqr);
     }
 }
 
-template<typename T, template<typename U> class Descriptor>
-void iniCellAtEquilibrium(Cell<T,Descriptor>& cell, T density, Array<T,Descriptor<T>::d> const& velocity, T temperature) {
-    Array<T,Descriptor<T>::d> j;
-    VectorTemplate<T,Descriptor>::multiplyByScalar(velocity, density, j);
-    T jSqr = VectorTemplate<T,Descriptor>::normSqr(j);
+template <typename T, template <typename U> class Descriptor>
+void iniCellAtEquilibrium(
+    Cell<T, Descriptor> &cell, T density, Array<T, Descriptor<T>::d> const &velocity, T temperature)
+{
+    Array<T, Descriptor<T>::d> j;
+    VectorTemplate<T, Descriptor>::multiplyByScalar(velocity, density, j);
+    T jSqr = VectorTemplate<T, Descriptor>::normSqr(j);
     T rhoBar = Descriptor<T>::rhoBar(density);
-    for (plint iPop=0; iPop<Descriptor<T>::numPop; ++iPop) {
-        cell[iPop] = cell.computeEquilibrium(iPop, rhoBar, j, jSqr, temperature-(T)1);
+    for (plint iPop = 0; iPop < Descriptor<T>::numPop; ++iPop) {
+        cell[iPop] = cell.computeEquilibrium(iPop, rhoBar, j, jSqr, temperature - (T)1);
     }
 }
 

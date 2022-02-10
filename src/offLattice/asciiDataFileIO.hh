@@ -5,7 +5,7 @@
  * own the IP rights for most of the code base. Since October 2019, the
  * Palabos project is maintained by the University of Geneva and accepts
  * source code contributions from the community.
- * 
+ *
  * Contact:
  * Jonas Latt
  * Computer Science Department
@@ -14,7 +14,7 @@
  * 1227 Carouge, Switzerland
  * jonas.latt@unige.ch
  *
- * The most recent release of Palabos can be downloaded at 
+ * The most recent release of Palabos can be downloaded at
  * <https://palabos.unige.ch/>
  *
  * The library Palabos is free software: you can redistribute it and/or
@@ -29,20 +29,21 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 #ifndef ASCII_DATA_FILE_IO_HH
 #define ASCII_DATA_FILE_IO_HH
 
+#include <fstream>
 #include <limits>
 #include <map>
-#include <fstream>
+
 #include "offLattice/asciiDataFileIO.h"
 
 namespace plb {
 
-template<typename T>
-void writeAsciiData(RawConnectedTriangleMesh<T>& mesh, FileName fname)
+template <typename T>
+void writeAsciiData(RawConnectedTriangleMesh<T> &mesh, FileName fname)
 {
     typedef typename ConnectedTriangleMesh<T>::PTriangleIterator PTriangleIterator;
     typedef typename ConnectedTriangleMesh<T>::PVertexIterator PVertexIterator;
@@ -55,10 +56,10 @@ void writeAsciiData(RawConnectedTriangleMesh<T>& mesh, FileName fname)
     if (mesh.getNumTriangles() == 0)
         return;
 
-    for (plint iPart=0; iPart<mesh.numParts(); ++iPart) {
+    for (plint iPart = 0; iPart < mesh.numParts(); ++iPart) {
         FileName partFileName(fname);
         if (mesh.numParts() > 1) {
-            partFileName.setName(createFileName(partFileName.getName()+"_", iPart, 3));
+            partFileName.setName(createFileName(partFileName.getName() + "_", iPart, 3));
         }
         RawConnectedTriangleMesh<T> part = extractConnectedPart(mesh, iPart);
         std::ofstream ofile(partFileName.get().c_str());
@@ -66,9 +67,9 @@ void writeAsciiData(RawConnectedTriangleMesh<T>& mesh, FileName fname)
         std::scientific(ofile);
 
         plint vertexIDtagging = part.getVertexTag("UniqueID");
-        std::map<plint,plint> toNewVertexID;
+        std::map<plint, plint> toNewVertexID;
         PVertexIterator vertexIt = part.vertexIterator();
-        plint newVertexID=0;
+        plint newVertexID = 0;
         while (!vertexIt->end()) {
             PVertex vertex(vertexIt->next());
             toNewVertexID[vertex->tag(vertexIDtagging)] = newVertexID;
@@ -94,17 +95,18 @@ void writeAsciiData(RawConnectedTriangleMesh<T>& mesh, FileName fname)
             plint i0 = triangle->vertex(0)->tag(vertexIDtagging);
             plint i1 = triangle->vertex(1)->tag(vertexIDtagging);
             plint i2 = triangle->vertex(2)->tag(vertexIDtagging);
-            ofile << toNewVertexID[i0] << " " << toNewVertexID[i1] << " " << toNewVertexID[i2] << "\n";
+            ofile << toNewVertexID[i0] << " " << toNewVertexID[i1] << " " << toNewVertexID[i2]
+                  << "\n";
         }
         ofile << "\n";
-        for (plint property=0; property<mesh.numVertexProperties(); ++property) {
+        for (plint property = 0; property < mesh.numVertexProperties(); ++property) {
             ofile << "Scalar property: " << mesh.getVertexPropertyName(property) << "\n";
             vertexIt = part.vertexIterator();
             while (!vertexIt->end()) {
                 PVertex vertex = vertexIt->next();
                 ofile << vertex->property(property) << "\n";
             }
-            if (property != mesh.numVertexProperties()-1) {
+            if (property != mesh.numVertexProperties() - 1) {
                 ofile << "\n";
             }
         }
@@ -113,6 +115,4 @@ void writeAsciiData(RawConnectedTriangleMesh<T>& mesh, FileName fname)
 
 }  // namespace plb
 
-
 #endif  // ASCII_DATA_FILE_IO_HH
-

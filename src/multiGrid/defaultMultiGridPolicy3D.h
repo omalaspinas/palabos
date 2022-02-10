@@ -5,7 +5,7 @@
  * own the IP rights for most of the code base. Since October 2019, the
  * Palabos project is maintained by the University of Geneva and accepts
  * source code contributions from the community.
- * 
+ *
  * Contact:
  * Jonas Latt
  * Computer Science Department
@@ -14,7 +14,7 @@
  * 1227 Carouge, Switzerland
  * jonas.latt@unige.ch
  *
- * The most recent release of Palabos can be downloaded at 
+ * The most recent release of Palabos can be downloaded at
  * <https://palabos.unige.ch/>
  *
  * The library Palabos is free software: you can redistribute it and/or
@@ -29,67 +29,66 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 #ifndef DEFAULT_MULTI_GRID_POLICY_3D_H
 #define DEFAULT_MULTI_GRID_POLICY_3D_H
+
+#include <cmath>
 
 #include "multiBlock/defaultMultiBlockPolicy3D.h"
 #include "multiGrid/multiGrid3D.h"
 #include "multiGrid/multiGridManagement3D.h"
 
-#include <cmath>
-
 namespace plb {
 
 class DefaultMultiGridPolicy3D {
-  public:
+public:
     /// return a default communicator for a multiGrid with a number of levels
-    std::vector< BlockCommunicator3D* > getBlockCommunicator(plint levels){
-      PLB_ASSERT(levels>0);
-      std::vector< BlockCommunicator3D* > res;
-      for (int i = 0; i < levels; ++i){
-        res.push_back(defaultMultiBlockPolicy3D().getBlockCommunicator());
-      }
-      return res;
+    std::vector<BlockCommunicator3D *> getBlockCommunicator(plint levels)
+    {
+        PLB_ASSERT(levels > 0);
+        std::vector<BlockCommunicator3D *> res;
+        for (int i = 0; i < levels; ++i) {
+            res.push_back(defaultMultiBlockPolicy3D().getBlockCommunicator());
+        }
+        return res;
     }
-    
+
     /// return a default MultiGridManagement3D
-    MultiGridManagement3D getMultiGridManagement(plint nx, plint ny, plint numLevels, plint referenceLevel) {
-        return MultiGridManagement3D(nx, ny, numLevels, referenceLevel );
+    MultiGridManagement3D getMultiGridManagement(
+        plint nx, plint ny, plint numLevels, plint referenceLevel)
+    {
+        return MultiGridManagement3D(nx, ny, numLevels, referenceLevel);
     }
-    
+
     /// return a vector of CombinedStatistics
-    std::vector<CombinedStatistics*> getCombinedStatistics(plint levels) {
-        PLB_ASSERT(levels>0);
-        std::vector<CombinedStatistics*> stats(levels);
-        for (int i = 0; i < levels; ++i){
+    std::vector<CombinedStatistics *> getCombinedStatistics(plint levels)
+    {
+        PLB_ASSERT(levels > 0);
+        std::vector<CombinedStatistics *> stats(levels);
+        for (int i = 0; i < levels; ++i) {
             // it will be defaultMultiBlockPolicy3D who will give us serial or parallel
             stats[i] = defaultMultiBlockPolicy3D().getCombinedStatistics();
         }
         return stats;
     }
 
-    
-    friend DefaultMultiGridPolicy3D& defaultMultiGridPolicy3D();
-    
-  private:
-    
-    DefaultMultiGridPolicy3D()
-        :numProcesses(global::mpi().getSize())
-    {}
-    
-  private:
-    int               numProcesses;
+    friend DefaultMultiGridPolicy3D &defaultMultiGridPolicy3D();
+
+private:
+    DefaultMultiGridPolicy3D() : numProcesses(global::mpi().getSize()) { }
+
+private:
+    int numProcesses;
 };
 
-inline DefaultMultiGridPolicy3D& defaultMultiGridPolicy3D(){
-  static DefaultMultiGridPolicy3D singleton;
-  return singleton;
+inline DefaultMultiGridPolicy3D &defaultMultiGridPolicy3D()
+{
+    static DefaultMultiGridPolicy3D singleton;
+    return singleton;
 }
 
-
-} // namespace plb
+}  // namespace plb
 
 #endif  // DEFAULT_MULTI_GRID_POLICY_3D_H
-

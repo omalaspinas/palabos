@@ -50,6 +50,14 @@ a gitlab runner. If possible set your own runner (it's not possible for us to pr
 Palabos project. See the [appropriate documentation](https://docs.gitlab.com/runner/install/) to do so. This would make the 
 maintainers life much simpler by haveing the CI perform the tests on your branch directly.
 
+## Code formatting
+
+In order to have an uniform code formatting we are using a custom 
+`clang-format` configuration file that can be found at the root of the project 
+and which is named `.clang-format`. A `bash` script named `run-clang-format.sh` 
+can help you format your code in place. Note that the continuous integration 
+will fail if you have not formatted your code before making your merge request.
+
 ## Feature requests
 
 Feature requests can be created as issues. Keep in mind that we are an open source community

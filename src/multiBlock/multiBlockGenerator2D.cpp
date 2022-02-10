@@ -5,7 +5,7 @@
  * own the IP rights for most of the code base. Since October 2019, the
  * Palabos project is maintained by the University of Geneva and accepts
  * source code contributions from the community.
- * 
+ *
  * Contact:
  * Jonas Latt
  * Computer Science Department
@@ -14,7 +14,7 @@
  * 1227 Carouge, Switzerland
  * jonas.latt@unige.ch
  *
- * The most recent release of Palabos can be downloaded at 
+ * The most recent release of Palabos can be downloaded at
  * <https://palabos.unige.ch/>
  *
  * The library Palabos is free software: you can redistribute it and/or
@@ -29,35 +29,35 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 /** \file
  * Copy 2D multiblocks on a new parallel distribution -- compiled code.
  */
 
+#include "multiBlock/multiBlockGenerator2D.h"
 
 #include "core/globalDefs.h"
-#include "multiBlock/multiBlockGenerator2D.h"
-#include "multiBlock/sparseBlockStructure2D.h"
-#include "multiBlock/localMultiBlockInfo2D.h"
-#include "multiBlock/nonLocalTransfer2D.h"
-#include "multiBlock/defaultMultiBlockPolicy2D.h"
-#include "multiBlock/multiBlockOperations2D.h"
 #include "dataProcessors/dataAnalysisWrapper2D.h"
 #include "dataProcessors/ntensorAnalysisWrapper2D.h"
+#include "multiBlock/defaultMultiBlockPolicy2D.h"
+#include "multiBlock/localMultiBlockInfo2D.h"
+#include "multiBlock/multiBlockOperations2D.h"
+#include "multiBlock/nonLocalTransfer2D.h"
+#include "multiBlock/sparseBlockStructure2D.h"
 
 namespace plb {
 
-std::unique_ptr<MultiContainerBlock2D> generateMultiContainerBlock (
-        MultiBlock2D& multiBlock, plint envelopeWidth )
+std::unique_ptr<MultiContainerBlock2D> generateMultiContainerBlock(
+    MultiBlock2D &multiBlock, plint envelopeWidth)
 {
     MultiBlockManagement2D sparseBlockManagement(multiBlock.getMultiBlockManagement());
-    MultiContainerBlock2D* block = new MultiContainerBlock2D (
-            MultiBlockManagement2D (
-                sparseBlockManagement.getSparseBlockStructure(),
-                sparseBlockManagement.getThreadAttribution().clone(),
-                envelopeWidth, sparseBlockManagement.getRefinementLevel() ),
-            defaultMultiBlockPolicy2D().getCombinedStatistics() );
+    MultiContainerBlock2D *block = new MultiContainerBlock2D(
+        MultiBlockManagement2D(
+            sparseBlockManagement.getSparseBlockStructure(),
+            sparseBlockManagement.getThreadAttribution().clone(), envelopeWidth,
+            sparseBlockManagement.getRefinementLevel()),
+        defaultMultiBlockPolicy2D().getCombinedStatistics());
 
     block->periodicity().toggle(0, multiBlock.periodicity().get(0));
     block->periodicity().toggle(1, multiBlock.periodicity().get(1));
@@ -65,17 +65,15 @@ std::unique_ptr<MultiContainerBlock2D> generateMultiContainerBlock (
     return std::unique_ptr<MultiContainerBlock2D>(block);
 }
 
-MultiContainerBlock2D* createMultiContainerBlock2D (
-        MultiBlockManagement2D const& management,
-        PeriodicitySwitch2D& periodicity,
-        plint envelopeWidth, plint gridLevel )
+MultiContainerBlock2D *createMultiContainerBlock2D(
+    MultiBlockManagement2D const &management, PeriodicitySwitch2D &periodicity, plint envelopeWidth,
+    plint gridLevel)
 {
-    MultiContainerBlock2D* block = new MultiContainerBlock2D (
-            MultiBlockManagement2D (
-                management.getSparseBlockStructure(),
-                management.getThreadAttribution().clone(),
-                envelopeWidth, gridLevel ),
-            defaultMultiBlockPolicy2D().getCombinedStatistics() );
+    MultiContainerBlock2D *block = new MultiContainerBlock2D(
+        MultiBlockManagement2D(
+            management.getSparseBlockStructure(), management.getThreadAttribution().clone(),
+            envelopeWidth, gridLevel),
+        defaultMultiBlockPolicy2D().getCombinedStatistics());
 
     block->periodicity().toggle(0, periodicity.get(0));
     block->periodicity().toggle(1, periodicity.get(1));

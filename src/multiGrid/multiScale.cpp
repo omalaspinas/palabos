@@ -5,7 +5,7 @@
  * own the IP rights for most of the code base. Since October 2019, the
  * Palabos project is maintained by the University of Geneva and accepts
  * source code contributions from the community.
- * 
+ *
  * Contact:
  * Jonas Latt
  * Computer Science Department
@@ -14,7 +14,7 @@
  * 1227 Carouge, Switzerland
  * jonas.latt@unige.ch
  *
- * The most recent release of Palabos can be downloaded at 
+ * The most recent release of Palabos can be downloaded at
  * <https://palabos.unige.ch/>
  *
  * The library Palabos is free software: you can redistribute it and/or
@@ -29,25 +29,25 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 /** \file
  * Multi scale manager -- generic implementation.
  */
 
 #include "multiGrid/multiScale.h"
+
 #include "multiBlock/multiBlockManagement2D.h"
 #include "multiBlock/multiBlockManagement3D.h"
 
 namespace plb {
 
-
-
 ///////////////// Class PowerTwoMultiScaleManager //////////////////////////
 
-plint PowerTwoMultiScaleManager::twoToTheLevel(plint nLevel) {
+plint PowerTwoMultiScaleManager::twoToTheLevel(plint nLevel)
+{
     plint powerOfTwo = 1;
-    for (plint iL=0; iL<nLevel; ++iL) {
+    for (plint iL = 0; iL < nLevel; ++iL) {
         powerOfTwo *= 2;
     }
     return powerOfTwo;
@@ -55,151 +55,148 @@ plint PowerTwoMultiScaleManager::twoToTheLevel(plint nLevel) {
 
 Box2D PowerTwoMultiScaleManager::scaleBox(Box2D box, plint nLevel) const
 {
-    if (nLevel>0) {
+    if (nLevel > 0) {
         return box.multiply(twoToTheLevel(nLevel));
-    }
-    else if (nLevel<0) {
+    } else if (nLevel < 0) {
         // If the fine-grid box does not fit with the coarse-grid box,
         //   let's shrink the coarse-grid box by one fine cell. This
         //   makes sure we'll never exceed the fine-grid box
         return box.divideAndFitSmaller(twoToTheLevel(-nLevel));
-    }
-    else {
+    } else {
         return box;
     }
 }
 
 Box3D PowerTwoMultiScaleManager::scaleBox(Box3D box, plint nLevel) const
 {
-    if (nLevel>0) {
+    if (nLevel > 0) {
         return box.multiply(twoToTheLevel(nLevel));
-    }
-    else if (nLevel<0) {
+    } else if (nLevel < 0) {
         // If the fine-grid box does not fit with the coarse-grid box,
         //   let's shrink the coarse-grid box by one fine cell. This
         //   makes sure we'll never exceed the fine-grid box
         return box.divideAndFitSmaller(twoToTheLevel(-nLevel));
-    }
-    else {
+    } else {
         return box;
     }
 }
 
-MultiBlockManagement2D PowerTwoMultiScaleManager::scaleMultiBlockManagement (
-        MultiBlockManagement2D const& multiBlockManagement, plint nLevel ) const
+MultiBlockManagement2D PowerTwoMultiScaleManager::scaleMultiBlockManagement(
+    MultiBlockManagement2D const &multiBlockManagement, plint nLevel) const
 {
-    SparseBlockStructure2D const& sparseBlock = multiBlockManagement.getSparseBlockStructure();
+    SparseBlockStructure2D const &sparseBlock = multiBlockManagement.getSparseBlockStructure();
 
     Box2D rescaledBoundingBox = scaleBox(sparseBlock.getBoundingBox(), nLevel);
     SparseBlockStructure2D scaledSparseBlock(rescaledBoundingBox);
 
-    std::map<plint,Box2D>::const_iterator it = sparseBlock.getBulks().begin();
+    std::map<plint, Box2D>::const_iterator it = sparseBlock.getBulks().begin();
     for (; it != sparseBlock.getBulks().end(); ++it) {
         Box2D scaledBulk = scaleBox(it->second, nLevel);
-        Box2D scaledUniqueBulk = scaledBulk; //TODO: compute unique bulk properly.
+        Box2D scaledUniqueBulk = scaledBulk;  // TODO: compute unique bulk properly.
         plint blockId = it->first;
         scaledSparseBlock.addBlock(scaledBulk, scaledUniqueBulk, blockId);
     }
-    return MultiBlockManagement2D (
-               scaledSparseBlock,
-               multiBlockManagement.getThreadAttribution().clone(),
-               multiBlockManagement.getEnvelopeWidth(),
-               multiBlockManagement.getRefinementLevel()+nLevel );
+    return MultiBlockManagement2D(
+        scaledSparseBlock, multiBlockManagement.getThreadAttribution().clone(),
+        multiBlockManagement.getEnvelopeWidth(),
+        multiBlockManagement.getRefinementLevel() + nLevel);
 }
 
-MultiBlockManagement3D PowerTwoMultiScaleManager::scaleMultiBlockManagement (
-        MultiBlockManagement3D const& multiBlockManagement, plint nLevel ) const
+MultiBlockManagement3D PowerTwoMultiScaleManager::scaleMultiBlockManagement(
+    MultiBlockManagement3D const &multiBlockManagement, plint nLevel) const
 {
-    SparseBlockStructure3D const& sparseBlock
-        = multiBlockManagement.getSparseBlockStructure();
+    SparseBlockStructure3D const &sparseBlock = multiBlockManagement.getSparseBlockStructure();
 
     Box3D rescaledBoundingBox = scaleBox(sparseBlock.getBoundingBox(), nLevel);
     SparseBlockStructure3D scaledSparseBlock(rescaledBoundingBox);
 
-    std::map<plint,Box3D>::const_iterator it = sparseBlock.getBulks().begin();
+    std::map<plint, Box3D>::const_iterator it = sparseBlock.getBulks().begin();
     for (; it != sparseBlock.getBulks().end(); ++it) {
         Box3D scaledBulk = scaleBox(it->second, nLevel);
-        Box3D scaledUniqueBulk = scaledBulk; //TODO: compute unique bulk properly.
+        Box3D scaledUniqueBulk = scaledBulk;  // TODO: compute unique bulk properly.
         plint blockId = it->first;
         scaledSparseBlock.addBlock(scaledBulk, scaledUniqueBulk, blockId);
     }
 
-    return MultiBlockManagement3D (
-               scaledSparseBlock,
-               multiBlockManagement.getThreadAttribution().clone(),
-               multiBlockManagement.getEnvelopeWidth(),
-               multiBlockManagement.getRefinementLevel()+nLevel );
+    return MultiBlockManagement3D(
+        scaledSparseBlock, multiBlockManagement.getThreadAttribution().clone(),
+        multiBlockManagement.getEnvelopeWidth(),
+        multiBlockManagement.getRefinementLevel() + nLevel);
 }
-
 
 ///////////////// Class ConvectiveMultiScaleManager //////////////////////////
 
-void ConvectiveMultiScaleManager::scaleVelocity(Array<double,2>& u, plint nLevel) const
+void ConvectiveMultiScaleManager::scaleVelocity(Array<double, 2> &u, plint nLevel) const
 {
     // Velocity is scale-invariant in convective scaling.
 }
 
-void ConvectiveMultiScaleManager::scaleVelocity(Array<double,3>& u, plint nLevel) const
+void ConvectiveMultiScaleManager::scaleVelocity(Array<double, 3> &u, plint nLevel) const
 {
     // Velocity is scale-invariant in convective scaling.
 }
 
-double ConvectiveMultiScaleManager::scaleDeltaX(plint nLevel) const {
-    if (nLevel>0) {
+double ConvectiveMultiScaleManager::scaleDeltaX(plint nLevel) const
+{
+    if (nLevel > 0) {
         return 1. / (double)this->twoToTheLevel(nLevel);
-    }
-    else if (nLevel<0) {
+    } else if (nLevel < 0) {
         return (double)this->twoToTheLevel(-nLevel);
-    }
-    else {
+    } else {
         return 1.;
     }
 }
 
-double ConvectiveMultiScaleManager::scaleDeltaT(plint nLevel) const {
+double ConvectiveMultiScaleManager::scaleDeltaT(plint nLevel) const
+{
     // dt scale is equal to dx scale by definition in convective scaling.
     return scaleDeltaX(nLevel);
 }
 
-ConvectiveMultiScaleManager* ConvectiveMultiScaleManager::clone() const {
+ConvectiveMultiScaleManager *ConvectiveMultiScaleManager::clone() const
+{
     return new ConvectiveMultiScaleManager(*this);
 }
 
-
 namespace global {
 
-    DefaultMultiScaleManager::DefaultMultiScaleManager() {
-        defaultManager = new ConvectiveMultiScaleManager();
-    }
+DefaultMultiScaleManager::DefaultMultiScaleManager()
+{
+    defaultManager = new ConvectiveMultiScaleManager();
+}
 
-    DefaultMultiScaleManager::~DefaultMultiScaleManager() {
-        delete defaultManager;
-    }
+DefaultMultiScaleManager::~DefaultMultiScaleManager()
+{
+    delete defaultManager;
+}
 
-    void DefaultMultiScaleManager::set(MultiScaleManager* newManager) {
-        delete defaultManager;
-        defaultManager = newManager;
-    }
+void DefaultMultiScaleManager::set(MultiScaleManager *newManager)
+{
+    delete defaultManager;
+    defaultManager = newManager;
+}
 
-    MultiScaleManager const& DefaultMultiScaleManager::get() const {
-        return *defaultManager;
-    }
+MultiScaleManager const &DefaultMultiScaleManager::get() const
+{
+    return *defaultManager;
+}
 
+DefaultMultiScaleManager &accessDefaultMultiScaleManager()
+{
+    static DefaultMultiScaleManager defaultMultiScaleManager;
+    return defaultMultiScaleManager;
+}
 
-    DefaultMultiScaleManager& accessDefaultMultiScaleManager() {
-        static DefaultMultiScaleManager defaultMultiScaleManager;
-        return defaultMultiScaleManager;
-    }
+MultiScaleManager const &getDefaultMultiScaleManager()
+{
+    return accessDefaultMultiScaleManager().get();
+}
 
-    MultiScaleManager const& getDefaultMultiScaleManager() {
-        return accessDefaultMultiScaleManager().get();
-    }
-
-    void setDefaultMultiScaleManager(MultiScaleManager* newMultiScaleManager) {
-        accessDefaultMultiScaleManager().set(newMultiScaleManager);
-    }
+void setDefaultMultiScaleManager(MultiScaleManager *newMultiScaleManager)
+{
+    accessDefaultMultiScaleManager().set(newMultiScaleManager);
+}
 
 }  // namespace global
 
 }  // namespace plb
-

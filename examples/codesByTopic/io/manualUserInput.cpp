@@ -5,7 +5,7 @@
  * own the IP rights for most of the code base. Since October 2019, the
  * Palabos project is maintained by the University of Geneva and accepts
  * source code contributions from the community.
- * 
+ *
  * Contact:
  * Jonas Latt
  * Computer Science Department
@@ -14,7 +14,7 @@
  * 1227 Carouge, Switzerland
  * jonas.latt@unige.ch
  *
- * The most recent release of Palabos can be downloaded at 
+ * The most recent release of Palabos can be downloaded at
  * <https://palabos.unige.ch/>
  *
  * The library Palabos is free software: you can redistribute it and/or
@@ -29,16 +29,17 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
+
+#include <cmath>
+#include <fstream>
+#include <iomanip>
+#include <iostream>
+#include <sstream>
+#include <vector>
 
 #include "palabos2D.h"
 #include "palabos2D.hh"
-#include <vector>
-#include <cmath>
-#include <iostream>
-#include <fstream>
-#include <sstream>
-#include <iomanip>
 
 using namespace plb;
 using namespace plb::descriptors;
@@ -47,108 +48,109 @@ using namespace std;
 typedef double T;
 #define DESCRIPTOR D2Q9Descriptor
 
-void cavitySetup( MultiBlockLattice2D<T,DESCRIPTOR>& lattice,
-                  IncomprFlowParam<T> const& parameters,
-                  OnLatticeBoundaryCondition2D<T,DESCRIPTOR>& boundaryCondition )
+void cavitySetup(
+    MultiBlockLattice2D<T, DESCRIPTOR> &lattice, IncomprFlowParam<T> const &parameters,
+    OnLatticeBoundaryCondition2D<T, DESCRIPTOR> &boundaryCondition)
 {
     const plint nx = parameters.getNx();
     const plint ny = parameters.getNy();
 
     boundaryCondition.setVelocityConditionOnBlockBoundaries(lattice);
 
-    setBoundaryVelocity(lattice, lattice.getBoundingBox(), Array<T,2>((T)0.,(T)0.) );
-    initializeAtEquilibrium(lattice, lattice.getBoundingBox(), (T)1., Array<T,2>((T)0.,(T)0.) );
+    setBoundaryVelocity(lattice, lattice.getBoundingBox(), Array<T, 2>((T)0., (T)0.));
+    initializeAtEquilibrium(lattice, lattice.getBoundingBox(), (T)1., Array<T, 2>((T)0., (T)0.));
 
     T u = parameters.getLatticeU();
-    setBoundaryVelocity(lattice, Box2D(1, nx-2, ny-1, ny-1), Array<T,2>(u,(T)0.) );
-    initializeAtEquilibrium(lattice, Box2D(1, nx-2, ny-1, ny-1), (T)1., Array<T,2>(u,(T)0.) );
+    setBoundaryVelocity(lattice, Box2D(1, nx - 2, ny - 1, ny - 1), Array<T, 2>(u, (T)0.));
+    initializeAtEquilibrium(
+        lattice, Box2D(1, nx - 2, ny - 1, ny - 1), (T)1., Array<T, 2>(u, (T)0.));
 
     lattice.initialize();
 }
 
-template<class BlockLatticeT>
-void writeGifs(BlockLatticeT& lattice, plint iter)
+template <class BlockLatticeT>
+void writeGifs(BlockLatticeT &lattice, plint iter)
 {
     const plint imSize = 600;
 
     ImageWriter<T> imageWriter("leeloo");
-    imageWriter.writeScaledGif(createFileName("uz", iter, 6),
-                               *computeKineticEnergy(lattice),
-                               imSize, imSize );
+    imageWriter.writeScaledGif(
+        createFileName("uz", iter, 6), *computeKineticEnergy(lattice), imSize, imSize);
 }
 
-
-void getParametersFromCommandLine(int argc, char* argv[], T& Re, plint& N) {
+void getParametersFromCommandLine(int argc, char *argv[], T &Re, plint &N)
+{
     // Make sure the command line has two paramters.
     if (argc != 3) {
         pcout << "Error; Correct syntax is \" " << argv[0] << " Re N\"" << endl;
         exit(-1);
-    } 
+    }
 
     // Read Reynolds number and resolution from command line.
     stringstream ReStr, NStr;
-    ReStr << argv[1]; ReStr >> Re;
-    NStr  << argv[2]; NStr >> N;
+    ReStr << argv[1];
+    ReStr >> Re;
+    NStr << argv[2];
+    NStr >> N;
 }
 
-void getParametersFromParamFile(T& Re, plint& N) {
+void getParametersFromParamFile(T &Re, plint &N)
+{
     plb_ifstream ifile("parameters.dat");
     ifile >> Re >> N;
     global::mpi().bCast(&Re, 1);
     global::mpi().bCast(&N, 1);
 }
 
-int main(int argc, char* argv[]) {
+int main(int argc, char *argv[])
+{
     plbInit(&argc, &argv);
 
     global::directories().setOutputDir("./tmp/");
 
-    T    Re; // Reynolds number.
+    T Re;     // Reynolds number.
     plint N;  // Resolution.
 
-    //getParametersFromCommandLine(argc, argv, Re, N);
+    // getParametersFromCommandLine(argc, argv, Re, N);
     getParametersFromParamFile(Re, N);
 
     IncomprFlowParam<T> parameters(
-            (T) 1e-2,  // uMax
-            (T) 100.,  // Re
-            128,        // N
-            1.,        // lx
-            1.         // ly 
+        (T)1e-2,  // uMax
+        (T)100.,  // Re
+        128,      // N
+        1.,       // lx
+        1.        // ly
     );
-    const T logT     = (T)0.1;
-    const T imSave   = (T)0.2;
-    const T maxT     = (T)10.1;
+    const T logT = (T)0.1;
+    const T imSave = (T)0.2;
+    const T maxT = (T)10.1;
 
     writeLogFile(parameters, "2D cavity");
 
-    MultiBlockLattice2D<T, DESCRIPTOR> lattice (
-              parameters.getNx(), parameters.getNy(),
-              new BGKdynamics<T,DESCRIPTOR>(parameters.getOmega()) );
+    MultiBlockLattice2D<T, DESCRIPTOR> lattice(
+        parameters.getNx(), parameters.getNy(),
+        new BGKdynamics<T, DESCRIPTOR>(parameters.getOmega()));
 
-    OnLatticeBoundaryCondition2D<T,DESCRIPTOR>*
-        //boundaryCondition = createInterpBoundaryCondition2D<T,DESCRIPTOR>();
-        boundaryCondition = createLocalBoundaryCondition2D<T,DESCRIPTOR>();
+    OnLatticeBoundaryCondition2D<T, DESCRIPTOR> *
+        // boundaryCondition = createInterpBoundaryCondition2D<T,DESCRIPTOR>();
+        boundaryCondition = createLocalBoundaryCondition2D<T, DESCRIPTOR>();
 
     cavitySetup(lattice, parameters, *boundaryCondition);
 
     // Main loop over time iterations.
-    for (plint iT=0; iT*parameters.getDeltaT()<maxT; ++iT) {
-        if ((iT+1)%parameters.nStep(logT)==0) {
+    for (plint iT = 0; iT * parameters.getDeltaT() < maxT; ++iT) {
+        if ((iT + 1) % parameters.nStep(logT) == 0) {
             pcout << computeAverageDensity(lattice) << endl;
             pcout << computeAverageEnergy(lattice) << endl;
         }
-        if (iT%parameters.nStep(logT)==0) {
-            pcout << "step " << iT
-                  << "; lattice time=" << lattice.getTimeCounter().getTime()
-                  << "; t=" << iT*parameters.getDeltaT()
-                  << "; av energy="
-                  << setprecision(10) << getStoredAverageEnergy<T>(lattice)
-                   << "; av rho="
-                 << getStoredAverageDensity<T>(lattice) << endl;
+        if (iT % parameters.nStep(logT) == 0) {
+            pcout << "step " << iT << "; lattice time=" << lattice.getTimeCounter().getTime()
+                  << "; t=" << iT * parameters.getDeltaT() << "; av energy=" << setprecision(10)
+                  << getStoredAverageEnergy<T>(lattice)
+                  << "; av rho=" << getStoredAverageDensity<T>(lattice) << endl;
         }
 
-        if (iT%parameters.nStep(imSave)==0 && iT>0) {
+        if (iT % parameters.nStep(imSave) == 0 && iT > 0) {
             pcout << "Saving Gif ..." << endl;
             writeGifs(lattice, iT);
             pcout << endl;

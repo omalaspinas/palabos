@@ -5,7 +5,7 @@
  * own the IP rights for most of the code base. Since October 2019, the
  * Palabos project is maintained by the University of Geneva and accepts
  * source code contributions from the community.
- * 
+ *
  * Contact:
  * Jonas Latt
  * Computer Science Department
@@ -14,7 +14,7 @@
  * 1227 Carouge, Switzerland
  * jonas.latt@unige.ch
  *
- * The most recent release of Palabos can be downloaded at 
+ * The most recent release of Palabos can be downloaded at
  * <https://palabos.unige.ch/>
  *
  * The library Palabos is free software: you can redistribute it and/or
@@ -29,49 +29,54 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 #include "io/serializerIO_2D.h"
-#include "core/plbDebug.h"
-#include "core/runTimeDiagnostics.h"
-#include "parallelism/mpiManager.h"
-#include "multiBlock/multiBlockSerializer2D.h"
+
+#include <fstream>
 #include <istream>
 #include <ostream>
-#include <fstream>
+
+#include "core/plbDebug.h"
+#include "core/runTimeDiagnostics.h"
+#include "multiBlock/multiBlockSerializer2D.h"
+#include "parallelism/mpiManager.h"
 
 namespace plb {
 
-void saveBinaryBlock(Block2D const& block, std::string fName, bool enforceUint) {
-    std::ofstream* ostr = 0;
+void saveBinaryBlock(Block2D const &block, std::string fName, bool enforceUint)
+{
+    std::ofstream *ostr = 0;
     bool isOK = true;
     if (global::mpi().isMainProcessor()) {
         ostr = new std::ofstream(fName.c_str());
         isOK = (bool)(*ostr);
     }
-    plbMainProcIOError( !isOK, std::string("Could not open binary file ")+
-                               fName+std::string(" for saving") );
-    serializerToBase64Stream( block.getBlockSerializer(block.getBoundingBox(),
-                              global::IOpolicy().getIndexOrderingForStreams()), ostr, enforceUint );
+    plbMainProcIOError(
+        !isOK, std::string("Could not open binary file ") + fName + std::string(" for saving"));
+    serializerToBase64Stream(
+        block.getBlockSerializer(
+            block.getBoundingBox(), global::IOpolicy().getIndexOrderingForStreams()),
+        ostr, enforceUint);
     delete ostr;
 }
 
-void loadBinaryBlock(Block2D& block, std::string fName, bool enforceUint) {
-    std::ifstream* istr = 0;
+void loadBinaryBlock(Block2D &block, std::string fName, bool enforceUint)
+{
+    std::ifstream *istr = 0;
     bool isOK = true;
     if (global::mpi().isMainProcessor()) {
         istr = new std::ifstream(fName.c_str());
         isOK = (bool)(*istr);
     }
-    plbMainProcIOError( !isOK, std::string("Could not open binary file ")+
-                               fName+std::string(" for reading") );
-    base64StreamToUnSerializer (
-            istr, block.getBlockUnSerializer (
-                block.getBoundingBox(),
-                global::IOpolicy().getIndexOrderingForStreams()),
-            enforceUint );
+    plbMainProcIOError(
+        !isOK, std::string("Could not open binary file ") + fName + std::string(" for reading"));
+    base64StreamToUnSerializer(
+        istr,
+        block.getBlockUnSerializer(
+            block.getBoundingBox(), global::IOpolicy().getIndexOrderingForStreams()),
+        enforceUint);
     delete istr;
 }
 
-} // namespace plb
-
+}  // namespace plb

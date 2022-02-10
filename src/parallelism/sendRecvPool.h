@@ -5,7 +5,7 @@
  * own the IP rights for most of the code base. Since October 2019, the
  * Palabos project is maintained by the University of Geneva and accepts
  * source code contributions from the community.
- * 
+ *
  * Contact:
  * Jonas Latt
  * Computer Science Department
@@ -14,7 +14,7 @@
  * 1227 Carouge, Switzerland
  * jonas.latt@unige.ch
  *
- * The most recent release of Palabos can be downloaded at 
+ * The most recent release of Palabos can be downloaded at
  * <https://palabos.unige.ch/>
  *
  * The library Palabos is free software: you can redistribute it and/or
@@ -29,7 +29,7 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 /** \file
  * Wrapper functions that simplify the use of MPI
@@ -38,12 +38,13 @@
 #ifndef SEND_RECV_POOL_H
 #define SEND_RECV_POOL_H
 
+#include <map>
+#include <sstream>
+#include <vector>
+
 #include "core/globalDefs.h"
 #include "core/util.h"
 #include "parallelism/mpiManager.h"
-#include <map>
-#include <vector>
-#include <sstream>
 
 namespace plb {
 
@@ -51,9 +52,7 @@ namespace plb {
 
 /// This is a "write-only" storage for the communication between a pair of processors.
 struct PoolEntry {
-    PoolEntry()
-        : cumDataLength(0), lengths()
-    { }
+    PoolEntry() : cumDataLength(0), lengths() { }
     int cumDataLength;
     std::vector<int> lengths;
 };
@@ -62,24 +61,33 @@ struct PoolEntry {
 class SendRecvPool {
 public:
     typedef std::map<int, PoolEntry> SubsT;
+
 public:
-    void subscribeMessage(int proc, int numData) {
-        PoolEntry& entry = subscriptions[proc];
+    void subscribeMessage(int proc, int numData)
+    {
+        PoolEntry &entry = subscriptions[proc];
         entry.lengths.push_back(numData);
         entry.cumDataLength += numData;
     }
-    void clear() {
+    void clear()
+    {
         subscriptions.clear();
     }
-    SubsT::const_iterator begin() const {
-        //PLB_PRECONDITION( !subscriptions.empty() );
+    SubsT::const_iterator begin() const
+    {
+        // PLB_PRECONDITION( !subscriptions.empty() );
         return subscriptions.begin();
     }
-    SubsT::const_iterator end() const {
-        //PLB_PRECONDITION( !subscriptions.empty() );
+    SubsT::const_iterator end() const
+    {
+        // PLB_PRECONDITION( !subscriptions.empty() );
         return subscriptions.end();
     }
-    bool empty() const { return subscriptions.empty(); }
+    bool empty() const
+    {
+        return subscriptions.empty();
+    }
+
 private:
     SubsT subscriptions;
 };
@@ -87,37 +95,33 @@ private:
 /// This is a storage device for the communication between a pair of processors,
 ///   to be used in action.
 struct CommunicatorEntry {
-    CommunicatorEntry() 
-        : lengths(),
-          cumDataLength(0),
-          messages(),
-          data(),
-          currentMessage(0)
-    { } 
-    CommunicatorEntry(PoolEntry const& poolEntry)
-        : lengths(poolEntry.lengths),
-          cumDataLength(poolEntry.cumDataLength),
-          messages(lengths.size()),
-          currentMessage(0)
+    CommunicatorEntry() : lengths(), cumDataLength(0), messages(), data(), currentMessage(0) { }
+    CommunicatorEntry(PoolEntry const &poolEntry) :
+        lengths(poolEntry.lengths),
+        cumDataLength(poolEntry.cumDataLength),
+        messages(lengths.size()),
+        currentMessage(0)
     {
-        for (pluint iMessage=0; iMessage<messages.size(); ++iMessage) {
+        for (pluint iMessage = 0; iMessage < messages.size(); ++iMessage) {
             messages[iMessage].resize(lengths[iMessage]);
         }
     }
-    void reset() {
-        currentMessage=0;
+    void reset()
+    {
+        currentMessage = 0;
     }
-    std::string info() {
+    std::string info()
+    {
         std::stringstream infostr;
-        for (pluint iL=0; iL<lengths.size(); ++iL) {
+        for (pluint iL = 0; iL < lengths.size(); ++iL) {
             int length = lengths[iL];
-            PLB_ASSERT(length==(int)messages[iL].size());
+            PLB_ASSERT(length == (int)messages[iL].size());
             infostr << length << " ";
         }
         return infostr.str();
     }
     std::vector<int> lengths;
-    int              cumDataLength;
+    int cumDataLength;
     std::vector<std::vector<char> > messages;
     /// The variable data holds the message which in the end is being sent.
     ///   Having data here guarantees its persistence throughout the non-
@@ -125,43 +129,47 @@ struct CommunicatorEntry {
     ///   allocations.
     std::vector<char> data;
     /// If the data is dynamic, it must be sent and received piecewise,
-    ///   and the individual sizes must be known. 
+    ///   and the individual sizes must be known.
     ///   Having data here guarantees its persistence throughout the non-
     ///   blocking communication pattern and avoids unnecessery de- and re-
     ///   allocations.
     std::vector<int> dynamicDataSizes;
     int currentMessage;
     MPI_Request sizeRequest, messageRequest;
-    MPI_Status  sizeStatus, messageStatus;
+    MPI_Status sizeStatus, messageStatus;
 };
 
 /// The "in-action" device for all messages sent from a processor.
 class SendPoolCommunicator {
 public:
     SendPoolCommunicator() { }
-    SendPoolCommunicator(SendRecvPool const& pool);
-    std::vector<char>& getSendBuffer(int toProc);
+    SendPoolCommunicator(SendRecvPool const &pool);
+    std::vector<char> &getSendBuffer(int toProc);
     void acceptMessage(int toProc, bool staticMessage);
     void finalize(bool staticMessage);
+
 private:
     void startCommunication(int toProc, bool staticMessage);
+
 private:
-    std::map<int, CommunicatorEntry > subscriptions;
+    std::map<int, CommunicatorEntry> subscriptions;
 };
 
 /// The "in-action" device for all messages received on a processor.
 class RecvPoolCommunicator {
 public:
     RecvPoolCommunicator() { }
-    RecvPoolCommunicator(SendRecvPool const& pool);
+    RecvPoolCommunicator(SendRecvPool const &pool);
     /// Initiate non-blocking communication.
     void startBeingReceptive(bool staticMessage);
-    std::vector<char> const& receiveMessage(int fromProc, bool staticMessage);
+    std::vector<char> const &receiveMessage(int fromProc, bool staticMessage);
+
 private:
     void finalizeStatic(int fromProc);
     void receiveDynamic(int fromProc);
+
 private:
-    std::map<int, CommunicatorEntry > subscriptions;
+    std::map<int, CommunicatorEntry> subscriptions;
 };
 
 #endif  // PLB_MPI_PARALLEL

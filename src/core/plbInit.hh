@@ -5,7 +5,7 @@
  * own the IP rights for most of the code base. Since October 2019, the
  * Palabos project is maintained by the University of Geneva and accepts
  * source code contributions from the community.
- * 
+ *
  * Contact:
  * Jonas Latt
  * Computer Science Department
@@ -14,7 +14,7 @@
  * 1227 Carouge, Switzerland
  * jonas.latt@unige.ch
  *
- * The most recent release of Palabos can be downloaded at 
+ * The most recent release of Palabos can be downloaded at
  * <https://palabos.unige.ch/>
  *
  * The library Palabos is free software: you can redistribute it and/or
@@ -29,7 +29,7 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 /** \file
  * LB initialisation routine -- generic code.
@@ -37,16 +37,18 @@
 #ifndef PLB_INIT_HH
 #define PLB_INIT_HH
 
+#include <sstream>
+
 #include "core/plbInit.h"
 #include "core/runTimeDiagnostics.h"
-#include <sstream>
 
 namespace plb {
 
 namespace global {
 
-template<typename T>
-void MainArgv::read(T& variable) {
+template <typename T>
+void MainArgv::read(T &variable)
+{
     T tmp = T();
     std::stringstream argStream;
     argStream << argument;
@@ -59,8 +61,9 @@ void MainArgv::read(T& variable) {
     variable = tmp;
 }
 
-template<typename T>
-bool MainArgv::readNoThrow(T& variable) {
+template <typename T>
+bool MainArgv::readNoThrow(T &variable)
+{
     T tmp = T();
     std::stringstream argStream;
     argStream << argument;

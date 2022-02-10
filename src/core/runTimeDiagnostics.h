@@ -5,7 +5,7 @@
  * own the IP rights for most of the code base. Since October 2019, the
  * Palabos project is maintained by the University of Geneva and accepts
  * source code contributions from the community.
- * 
+ *
  * Contact:
  * Jonas Latt
  * Computer Science Department
@@ -14,7 +14,7 @@
  * 1227 Carouge, Switzerland
  * jonas.latt@unige.ch
  *
- * The most recent release of Palabos can be downloaded at 
+ * The most recent release of Palabos can be downloaded at
  * <https://palabos.unige.ch/>
  *
  * The library Palabos is free software: you can redistribute it and/or
@@ -29,17 +29,18 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 #ifndef RUN_TIME_DIAGNOSTICS_H
 #define RUN_TIME_DIAGNOSTICS_H
 
-#include "core/globalDefs.h"
 #include <cstdio>
-#include <string>
-#include <fstream>
 #include <exception>
+#include <fstream>
 #include <set>
+#include <string>
+
+#include "core/globalDefs.h"
 
 namespace plb {
 
@@ -48,19 +49,20 @@ public:
     DiagnosticFileSingleton(std::string fName_);
     ~DiagnosticFileSingleton();
     void write(std::string message);
+
 private:
     DiagnosticFileSingleton();
-    std::ofstream* ofile;
+    std::ofstream *ofile;
     std::string fName;
 };
 
-DiagnosticFileSingleton& warningFile();
-DiagnosticFileSingleton& errorFile();
+DiagnosticFileSingleton &warningFile();
+DiagnosticFileSingleton &errorFile();
 
 // This function prints messages sent from each process, sorted by increasing
 // process rank. All processes must call this function. The messages
 // are sent through the master process.
-void printSerially(FILE* fp, std::string const& message);
+void printSerially(FILE *fp, std::string const &message);
 
 /// Invoke this function on all processes. If one process yields true,
 ///   a warning is issued to the warning file.
@@ -102,14 +104,15 @@ void plbOutOfRangeError(bool issueError, std::string message);
 void plbOutOfRangeError(std::string message);
 void plbMainProcOutOfRangeError(bool issueError, std::string message);
 
-class PlbException : public std::exception
-{ };
+class PlbException : public std::exception {
+};
 
 class PlbGenericException : public PlbException {
 public:
     PlbGenericException(std::string message_) throw();
     virtual ~PlbGenericException() throw() { }
-    virtual const char* what() const throw();
+    virtual const char *what() const throw();
+
 private:
     std::string message;
 };
@@ -118,7 +121,8 @@ class PlbMemoryException : public PlbException {
 public:
     PlbMemoryException(std::string message_) throw();
     virtual ~PlbMemoryException() throw() { }
-    virtual const char* what() const throw();
+    virtual const char *what() const throw();
+
 private:
     std::string message;
 };
@@ -127,7 +131,8 @@ class PlbIOException : public PlbException {
 public:
     PlbIOException(std::string message_) throw();
     virtual ~PlbIOException() throw() { }
-    virtual const char* what() const throw();
+    virtual const char *what() const throw();
+
 private:
     std::string message;
 };
@@ -136,7 +141,8 @@ class PlbNetworkException : public PlbException {
 public:
     PlbNetworkException(std::string message_) throw();
     virtual ~PlbNetworkException() throw() { }
-    virtual const char* what() const throw();
+    virtual const char *what() const throw();
+
 private:
     std::string message;
 };
@@ -145,7 +151,8 @@ class PlbLogicException : public PlbException {
 public:
     PlbLogicException(std::string message_) throw();
     virtual ~PlbLogicException() throw() { }
-    virtual const char* what() const throw();
+    virtual const char *what() const throw();
+
 private:
     std::string message;
 };
@@ -154,7 +161,8 @@ class PlbOutOfRangeException : public PlbException {
 public:
     PlbOutOfRangeException(std::string message_) throw();
     virtual ~PlbOutOfRangeException() throw() { }
-    virtual const char* what() const throw();
+    virtual const char *what() const throw();
+
 private:
     std::string message;
 };
@@ -163,12 +171,12 @@ namespace global {
 
 class PlbErrors {
 public:
-    void registerError(std::string const& message);
-    void registerMemoryError(std::string const& message);
-    void registerIOError(std::string const& message);
-    void registerNetworkError(std::string const& message);
-    void registerLogicError(std::string const& message);
-    void registerOutOfRangeError(std::string const& message);
+    void registerError(std::string const &message);
+    void registerMemoryError(std::string const &message);
+    void registerIOError(std::string const &message);
+    void registerNetworkError(std::string const &message);
+    void registerLogicError(std::string const &message);
+    void registerOutOfRangeError(std::string const &message);
 
     void clear();
     void memoryClear();
@@ -184,12 +192,12 @@ public:
     bool logicEmpty() const;
     bool outOfRangeEmpty() const;
 
-    bool messageExists(std::string const& message) const;
-    bool memoryMessageExists(std::string const& message) const;
-    bool ioMessageExists(std::string const& message) const;
-    bool networkMessageExists(std::string const& message) const;
-    bool logicMessageExists(std::string const& message) const;
-    bool outOfRangeMessageExists(std::string const& message) const;
+    bool messageExists(std::string const &message) const;
+    bool memoryMessageExists(std::string const &message) const;
+    bool ioMessageExists(std::string const &message) const;
+    bool networkMessageExists(std::string const &message) const;
+    bool logicMessageExists(std::string const &message) const;
+    bool outOfRangeMessageExists(std::string const &message) const;
 
     std::string allMessages() const;
     std::string allMemoryMessages() const;
@@ -205,12 +213,13 @@ public:
     void printLogicMessages() const;
     void printOutOfRangeMessages() const;
 
-    std::set<std::string> const& getMessages() const;
-    std::set<std::string> const& getMemoryMessages() const;
-    std::set<std::string> const& getIOMessages() const;
-    std::set<std::string> const& getNetworkMessages() const;
-    std::set<std::string> const& getLogicMessages() const;
-    std::set<std::string> const& getOutOfRangeMessages() const;
+    std::set<std::string> const &getMessages() const;
+    std::set<std::string> const &getMemoryMessages() const;
+    std::set<std::string> const &getIOMessages() const;
+    std::set<std::string> const &getNetworkMessages() const;
+    std::set<std::string> const &getLogicMessages() const;
+    std::set<std::string> const &getOutOfRangeMessages() const;
+
 private:
     std::set<std::string> messages;
     std::set<std::string> memoryMessages;
@@ -220,7 +229,7 @@ private:
     std::set<std::string> outOfRangeMessages;
 };
 
-PlbErrors& plbErrors();
+PlbErrors &plbErrors();
 
 }  // namespace global
 

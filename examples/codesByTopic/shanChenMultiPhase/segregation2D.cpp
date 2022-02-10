@@ -5,7 +5,7 @@
  * own the IP rights for most of the code base. Since October 2019, the
  * Palabos project is maintained by the University of Geneva and accepts
  * source code contributions from the community.
- * 
+ *
  * Contact:
  * Jonas Latt
  * Computer Science Department
@@ -14,7 +14,7 @@
  * 1227 Carouge, Switzerland
  * jonas.latt@unige.ch
  *
- * The most recent release of Palabos can be downloaded at 
+ * The most recent release of Palabos can be downloaded at
  * <https://palabos.unige.ch/>
  *
  * The library Palabos is free software: you can redistribute it and/or
@@ -29,12 +29,13 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
+
+#include <cstdlib>
+#include <iostream>
 
 #include "palabos2D.h"
 #include "palabos2D.hh"
-#include <cstdlib>
-#include <iostream>
 
 using namespace plb;
 using namespace std;
@@ -46,9 +47,9 @@ typedef double T;
 template <typename T, template <typename U> class Descriptor>
 class RandomInitializer : public BoxProcessingFunctional2D_L<T, Descriptor> {
 public:
-    RandomInitializer(T rho0_, T maxRho_, Box2D const& boundingBox_, uint32_t const* seed_)
-        : rho0(rho0_), maxRho(maxRho_), nY(boundingBox_.getNy()), seed(seed_) {};
-    virtual void process(Box2D domain, BlockLattice2D<T, Descriptor>& lattice)
+    RandomInitializer(T rho0_, T maxRho_, Box2D const &boundingBox_, uint32_t const *seed_) :
+        rho0(rho0_), maxRho(maxRho_), nY(boundingBox_.getNy()), seed(seed_) {};
+    virtual void process(Box2D domain, BlockLattice2D<T, Descriptor> &lattice)
     {
         Dot2D location = lattice.getLocation();
         sitmo::prng_engine eng(*seed);
@@ -62,7 +63,7 @@ public:
                     eng.discard(globalY - rng_index);
                     rng_index = globalY;
                 }
-                T randNumber = (T) eng() / (T) sitmo::prng_engine::max();
+                T randNumber = (T)eng() / (T)sitmo::prng_engine::max();
                 ++rng_index;
 
                 T rho = rho0 + randNumber * maxRho;
@@ -71,17 +72,19 @@ public:
                 iniCellAtEquilibrium(lattice.get(iX, iY), rho, zeroVelocity);
 
                 lattice.get(iX, iY).setExternalField(
-                    Descriptor<T>::ExternalField::densityBeginsAt, Descriptor<T>::ExternalField::sizeOfDensity, &rho);
-                lattice.get(iX, iY).setExternalField(Descriptor<T>::ExternalField::momentumBeginsAt,
+                    Descriptor<T>::ExternalField::densityBeginsAt,
+                    Descriptor<T>::ExternalField::sizeOfDensity, &rho);
+                lattice.get(iX, iY).setExternalField(
+                    Descriptor<T>::ExternalField::momentumBeginsAt,
                     Descriptor<T>::ExternalField::sizeOfMomentum, &zeroVelocity[0]);
             }
         }
     };
-    virtual RandomInitializer<T, Descriptor>* clone() const
+    virtual RandomInitializer<T, Descriptor> *clone() const
     {
         return new RandomInitializer<T, Descriptor>(*this);
     };
-    virtual void getTypeOfModification(std::vector<modif::ModifT>& modified) const
+    virtual void getTypeOfModification(std::vector<modif::ModifT> &modified) const
     {
         modified[0] = modif::staticVariables;
     };
@@ -89,7 +92,7 @@ public:
 private:
     T rho0, maxRho;
     plint nY;
-    uint32_t const* seed;
+    uint32_t const *seed;
 };
 
 int main(int argc, char *argv[])
@@ -100,60 +103,60 @@ int main(int argc, char *argv[])
     uint32_t seed = 1;
 
     // For the choice of the parameters G, rho0, and psi0, we refer to the book
-    //   Michael C. Sukop and Daniel T. Thorne (2006), 
+    //   Michael C. Sukop and Daniel T. Thorne (2006),
     //   Lattice Boltzmann Modeling; an Introduction for Geoscientists and Engineers.
     //   Springer-Verlag Berlin/Heidelberg.
-    
+
     const T omega = 1.0;
-    const int nx   = 400;
-    const int ny   = 400;
-    const T G      = -120.0;
+    const int nx = 400;
+    const int ny = 400;
+    const T G = -120.0;
 #ifndef PLB_REGRESSION
-    const int maxIter  = 100001;
+    const int maxIter = 100001;
     const int saveIter = 100;
 #else
-    const int maxIter  = 1001;
+    const int maxIter = 1001;
 #endif
     const int statIter = 100;
-    
+
     const T rho0 = 200.0;
     const T deltaRho = 1.0;
     const T psi0 = 4.0;
 
-    MultiBlockLattice2D<T, DESCRIPTOR> lattice (
-            nx,ny, new ExternalMomentBGKdynamics<T, DESCRIPTOR>(omega) );
-            
+    MultiBlockLattice2D<T, DESCRIPTOR> lattice(
+        nx, ny, new ExternalMomentBGKdynamics<T, DESCRIPTOR>(omega));
+
     lattice.periodicity().toggleAll(true);
 
     // Use a random initial condition, to activate the phase separation.
-    applyProcessingFunctional(new RandomInitializer<T, DESCRIPTOR>(rho0, deltaRho, lattice.getBoundingBox(), &seed),
+    applyProcessingFunctional(
+        new RandomInitializer<T, DESCRIPTOR>(rho0, deltaRho, lattice.getBoundingBox(), &seed),
         lattice.getBoundingBox(), lattice);
 
     // Add the data processor which implements the Shan/Chen interaction potential.
     plint processorLevel = 1;
-    integrateProcessingFunctional (
-            new ShanChenSingleComponentProcessor2D<T,DESCRIPTOR> (
-                G, new interparticlePotential::PsiShanChen94<T>(psi0,rho0) ),
-            lattice.getBoundingBox(), lattice, processorLevel );
+    integrateProcessingFunctional(
+        new ShanChenSingleComponentProcessor2D<T, DESCRIPTOR>(
+            G, new interparticlePotential::PsiShanChen94<T>(psi0, rho0)),
+        lattice.getBoundingBox(), lattice, processorLevel);
 
     lattice.initialize();
-    
+
     pcout << "Starting simulation" << endl;
-    for (int iT=0; iT<maxIter; ++iT) {
-        if (iT%statIter==0) {
-            std::unique_ptr<MultiScalarField2D<T> > rho( computeDensity(lattice) );
+    for (int iT = 0; iT < maxIter; ++iT) {
+        if (iT % statIter == 0) {
+            std::unique_ptr<MultiScalarField2D<T> > rho(computeDensity(lattice));
             pcout << iT << ": Average rho fluid one = " << computeAverage(*rho) << endl;
             pcout << "Minimum density: " << computeMin(*rho) << endl;
             pcout << "Maximum density: " << computeMax(*rho) << endl;
         }
 #ifndef PLB_REGRESSION
-        if (iT%saveIter == 0) {
-            ImageWriter<T>("leeloo").writeScaledGif (
-                    createFileName("rho", iT, 6), *computeDensity(lattice) );
+        if (iT % saveIter == 0) {
+            ImageWriter<T>("leeloo").writeScaledGif(
+                createFileName("rho", iT, 6), *computeDensity(lattice));
         }
 #endif
 
         lattice.collideAndStream();
     }
 }
-

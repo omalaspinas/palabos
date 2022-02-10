@@ -5,7 +5,7 @@
  * own the IP rights for most of the code base. Since October 2019, the
  * Palabos project is maintained by the University of Geneva and accepts
  * source code contributions from the community.
- * 
+ *
  * Contact:
  * Jonas Latt
  * Computer Science Department
@@ -14,7 +14,7 @@
  * 1227 Carouge, Switzerland
  * jonas.latt@unige.ch
  *
- * The most recent release of Palabos can be downloaded at 
+ * The most recent release of Palabos can be downloaded at
  * <https://palabos.unige.ch/>
  *
  * The library Palabos is free software: you can redistribute it and/or
@@ -29,7 +29,7 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 /* This code was written with help of a Fortran code kindly provided
  * by Prof. Taehun Lee, and contains important contributions by
@@ -39,9 +39,9 @@
 #ifndef HE_LEE_PROCESSOR_3D_H
 #define HE_LEE_PROCESSOR_3D_H
 
-#include "core/globalDefs.h"
-#include "atomicBlock/dataProcessorWrapper3D.h"
 #include "atomicBlock/blockLattice3D.h"
+#include "atomicBlock/dataProcessorWrapper3D.h"
+#include "core/globalDefs.h"
 #include "multiPhysics/interparticlePotential.h"
 
 namespace plb {
@@ -137,14 +137,14 @@ namespace plb {
  *  Comment: laplaceMu is taken from the previous time step
  *  to preserve an explicit scheme.
  **/
-template<typename T, template<typename U> class Descriptor >
-class Compute_C_processor : public BoxProcessingFunctional3D
-{
+template <typename T, template <typename U> class Descriptor>
+class Compute_C_processor : public BoxProcessingFunctional3D {
 public:
     Compute_C_processor(T M_);
-    virtual void processGenericBlocks(Box3D domain, std::vector<AtomicBlock3D*> blocks);
-    virtual Compute_C_processor<T,Descriptor>* clone() const;
-    virtual void getTypeOfModification(std::vector<modif::ModifT>& modified) const;
+    virtual void processGenericBlocks(Box3D domain, std::vector<AtomicBlock3D *> blocks);
+    virtual Compute_C_processor<T, Descriptor> *clone() const;
+    virtual void getTypeOfModification(std::vector<modif::ModifT> &modified) const;
+
 private:
     T M;
 };
@@ -155,14 +155,14 @@ private:
  *  In: C
  *  Out: gradC, rho, mu
  */
-template<typename T>
-class Compute_gradC_rho_mu_processor : public BoxProcessingFunctional3D
-{
+template <typename T>
+class Compute_gradC_rho_mu_processor : public BoxProcessingFunctional3D {
 public:
     Compute_gradC_rho_mu_processor(T beta_, T kappa_, T rho_h_, T rho_l_);
-    virtual void processGenericBlocks(Box3D domain, std::vector<AtomicBlock3D*> blocks);
-    virtual Compute_gradC_rho_mu_processor<T>* clone() const;
-    virtual void getTypeOfModification(std::vector<modif::ModifT>& modified) const;
+    virtual void processGenericBlocks(Box3D domain, std::vector<AtomicBlock3D *> blocks);
+    virtual Compute_gradC_rho_mu_processor<T> *clone() const;
+    virtual void getTypeOfModification(std::vector<modif::ModifT> &modified) const;
+
 private:
     T beta, kappa;
     T rho_h, rho_l;
@@ -174,14 +174,13 @@ private:
  *  In: mu
  *  Out: gradMu, laplaceMu
  **/
-template<typename T, template<typename U> class Descriptor >
-class Compute_gradMu_laplaceMu_processor : public BoxProcessingFunctional3D
-{
+template <typename T, template <typename U> class Descriptor>
+class Compute_gradMu_laplaceMu_processor : public BoxProcessingFunctional3D {
 public:
     Compute_gradMu_laplaceMu_processor();
-    virtual void processGenericBlocks(Box3D domain, std::vector<AtomicBlock3D*> blocks);
-    virtual Compute_gradMu_laplaceMu_processor<T,Descriptor>* clone() const;
-    virtual void getTypeOfModification(std::vector<modif::ModifT>& modified) const;
+    virtual void processGenericBlocks(Box3D domain, std::vector<AtomicBlock3D *> blocks);
+    virtual Compute_gradMu_laplaceMu_processor<T, Descriptor> *clone() const;
+    virtual void getTypeOfModification(std::vector<modif::ModifT> &modified) const;
 };
 
 /// Compute derivatives of the chemical potential mu, and the flow velocity
@@ -190,14 +189,14 @@ public:
  *  In: mu
  *  Out: gradMu, laplaceMu, u, p1.
  **/
-template<typename T, template<typename U> class Descriptor >
-class Compute_gradMu_laplaceMu_u_p1_processor : public BoxProcessingFunctional3D
-{
+template <typename T, template <typename U> class Descriptor>
+class Compute_gradMu_laplaceMu_u_p1_processor : public BoxProcessingFunctional3D {
 public:
     Compute_gradMu_laplaceMu_u_p1_processor(T rho_h_, T rho_l_, T RT_);
-    virtual void processGenericBlocks(Box3D domain, std::vector<AtomicBlock3D*> blocks);
-    virtual Compute_gradMu_laplaceMu_u_p1_processor<T,Descriptor>* clone() const;
-    virtual void getTypeOfModification(std::vector<modif::ModifT>& modified) const;
+    virtual void processGenericBlocks(Box3D domain, std::vector<AtomicBlock3D *> blocks);
+    virtual Compute_gradMu_laplaceMu_u_p1_processor<T, Descriptor> *clone() const;
+    virtual void getTypeOfModification(std::vector<modif::ModifT> &modified) const;
+
 private:
     T rho_h, rho_l, RT;
 };
@@ -209,25 +208,25 @@ private:
  *  In: f, g, C, rho, gradC, mu, gradMu, laplaceMu, u, p1
  *  Out: f, g
  **/
-template<typename T, template<typename U> class Descriptor >
-class HeLeeCollisionProcessor : public BoxProcessingFunctional3D
-{
+template <typename T, template <typename U> class Descriptor>
+class HeLeeCollisionProcessor : public BoxProcessingFunctional3D {
 public:
-    HeLeeCollisionProcessor (
-            T rho_h_, T rho_l_, T tau_h_, T tau_l_, T M_, T RT_,
-            bool initialize_ = false );
-    virtual void processGenericBlocks(Box3D domain, std::vector<AtomicBlock3D*> blocks);
-    virtual HeLeeCollisionProcessor<T,Descriptor>* clone() const;
-    virtual void getTypeOfModification(std::vector<modif::ModifT>& modified) const;
+    HeLeeCollisionProcessor(
+        T rho_h_, T rho_l_, T tau_h_, T tau_l_, T M_, T RT_, bool initialize_ = false);
+    virtual void processGenericBlocks(Box3D domain, std::vector<AtomicBlock3D *> blocks);
+    virtual HeLeeCollisionProcessor<T, Descriptor> *clone() const;
+    virtual void getTypeOfModification(std::vector<modif::ModifT> &modified) const;
+
 private:
-    void computeAdvectionTerms (
-        ScalarField3D<T> const& C, T& adv_gradC, T& bias_adv_gradC,
-        plint iX, plint iY, plint iZ, plint iPop );
+    void computeAdvectionTerms(
+        ScalarField3D<T> const &C, T &adv_gradC, T &bias_adv_gradC, plint iX, plint iY, plint iZ,
+        plint iPop);
+
 private:
     T rho_h, rho_l, tau_h, tau_l, M, RT;
     bool initialize;
 };
 
-}  // namespace Palabos
+}  // namespace plb
 
 #endif  // HE_LEE_LATTICES_3D_H

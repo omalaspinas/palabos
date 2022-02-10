@@ -5,7 +5,7 @@
  * own the IP rights for most of the code base. Since October 2019, the
  * Palabos project is maintained by the University of Geneva and accepts
  * source code contributions from the community.
- * 
+ *
  * Contact:
  * Jonas Latt
  * Computer Science Department
@@ -14,7 +14,7 @@
  * 1227 Carouge, Switzerland
  * jonas.latt@unige.ch
  *
- * The most recent release of Palabos can be downloaded at 
+ * The most recent release of Palabos can be downloaded at
  * <https://palabos.unige.ch/>
  *
  * The library Palabos is free software: you can redistribute it and/or
@@ -29,7 +29,7 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 /* Orestis Malaspinas contributed this code.
  */
@@ -37,57 +37,61 @@
 #ifndef ZOU_HE_DYNAMICS_H
 #define ZOU_HE_DYNAMICS_H
 
-#include "core/globalDefs.h"
 #include "boundaryCondition/boundaryDynamics.h"
+#include "core/globalDefs.h"
 
 namespace plb {
 
 /**
-* Implementation of Zou-He boundary condition following
-* the paper from Zou and He. This implementation is lattice independent.
-* The implementation follow the idea proposed in the paper
-* Qisu Zou, Xiaoyi He, 
-* "On pressure and velocity boundary conditions for the lattice Boltzmann BGK model",
-* Phys. Fluids , (1997), Volume 9, Issue 6, pp. 1591-1598
-*/
-template<typename T, template<typename U> class Descriptor, int direction, int orientation>
-class ZouHeVelocityDynamics : public VelocityDirichletBoundaryDynamics<T,Descriptor,direction,orientation>
-{
+ * Implementation of Zou-He boundary condition following
+ * the paper from Zou and He. This implementation is lattice independent.
+ * The implementation follow the idea proposed in the paper
+ * Qisu Zou, Xiaoyi He,
+ * "On pressure and velocity boundary conditions for the lattice Boltzmann BGK model",
+ * Phys. Fluids , (1997), Volume 9, Issue 6, pp. 1591-1598
+ */
+template <typename T, template <typename U> class Descriptor, int direction, int orientation>
+class ZouHeVelocityDynamics :
+    public VelocityDirichletBoundaryDynamics<T, Descriptor, direction, orientation> {
 public:
     /// Constructor
-    ZouHeVelocityDynamics(Dynamics<T,Descriptor>* baseDynamics, bool automaticPrepareCollision = true);
-    ZouHeVelocityDynamics(HierarchicUnserializer& unserializer);
+    ZouHeVelocityDynamics(
+        Dynamics<T, Descriptor> *baseDynamics, bool automaticPrepareCollision = true);
+    ZouHeVelocityDynamics(HierarchicUnserializer &unserializer);
     /// Clone the object on its dynamic type.
-    virtual ZouHeVelocityDynamics<T, Descriptor, direction, orientation>* clone() const;
+    virtual ZouHeVelocityDynamics<T, Descriptor, direction, orientation> *clone() const;
     /// Return a unique ID for this class.
     virtual int getId() const;
     /// Execute completion scheme before base collision
-    virtual void completePopulations(Cell<T,Descriptor>& cell) const;
+    virtual void completePopulations(Cell<T, Descriptor> &cell) const;
+
 private:
     static int id;
 };
 
 /**
-* Implementation of Zou-He boundary condition following
-* the paper from Zou and He. This implementation is lattice independent.
-* The implementation follow the idea proposed in the paper
-* Qisu Zou, Xiaoyi He, 
-* "On pressure and velocity boundary conditions for the lattice Boltzmann BGK model",
-* Phys. Fluids , (1997), Volume 9, Issue 6, pp. 1591-1598
-*/
-template<typename T, template<typename U> class Descriptor, int direction, int orientation>
-class ZouHePressureDynamics : public DensityDirichletBoundaryDynamics<T,Descriptor,direction,orientation>
-{
+ * Implementation of Zou-He boundary condition following
+ * the paper from Zou and He. This implementation is lattice independent.
+ * The implementation follow the idea proposed in the paper
+ * Qisu Zou, Xiaoyi He,
+ * "On pressure and velocity boundary conditions for the lattice Boltzmann BGK model",
+ * Phys. Fluids , (1997), Volume 9, Issue 6, pp. 1591-1598
+ */
+template <typename T, template <typename U> class Descriptor, int direction, int orientation>
+class ZouHePressureDynamics :
+    public DensityDirichletBoundaryDynamics<T, Descriptor, direction, orientation> {
 public:
     /// Constructor
-    ZouHePressureDynamics(Dynamics<T,Descriptor>* baseDynamics, bool automaticPrepareCollision = true);
-    ZouHePressureDynamics(HierarchicUnserializer& unserializer);
+    ZouHePressureDynamics(
+        Dynamics<T, Descriptor> *baseDynamics, bool automaticPrepareCollision = true);
+    ZouHePressureDynamics(HierarchicUnserializer &unserializer);
     /// Clone the object on its dynamic type.
-    virtual ZouHePressureDynamics<T, Descriptor, direction, orientation>* clone() const;
+    virtual ZouHePressureDynamics<T, Descriptor, direction, orientation> *clone() const;
     /// Return a unique ID for this class.
     virtual int getId() const;
     /// Execute completion scheme before base collision
-    virtual void completePopulations(Cell<T,Descriptor>& cell) const;
+    virtual void completePopulations(Cell<T, Descriptor> &cell) const;
+
 private:
     static int id;
 };

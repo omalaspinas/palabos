@@ -1,7 +1,7 @@
 if(CI)
 ###############################################################################
 
-set(EXECUTABLE_NAME "cavity3d")
+set(EXECUTABLE_NAME "unsignedTypes")
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
 
@@ -21,12 +21,12 @@ if(BUILD_TESTING)
         ALL
         DEPENDS ${PROJECT_NAME}
         COMMAND "LSAN_OPTIONS=suppressions=${LSAN_SUPPRESSION_FILE}" ./${PROJECT_NAME} > test/output.dat || (cat test/output.dat\; exit 1)
+
         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
         COMMENT "run generated test in ${CMAKE_CURRENT_SOURCE_DIR}"
         SOURCES ./${EXECUTABLE_NAME}.cpp
     )
 endif()
-
 
 if (BUILD_TESTING)
     enable_testing()
@@ -48,7 +48,7 @@ cmake_minimum_required(VERSION 2.8.12)
 project(palabosCodesByTopic)
 enable_language(CXX)
 
-set(EXECUTABLE_NAME "cavity3d")
+set(EXECUTABLE_NAME "unsignedTypes")
 set (CMAKE_RUNTIME_OUTPUT_DIRECTORY "../")
 find_program(CCACHE_PROGRAM ccache)
 if(CCACHE_PROGRAM)

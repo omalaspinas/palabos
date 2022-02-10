@@ -5,7 +5,7 @@
  * own the IP rights for most of the code base. Since October 2019, the
  * Palabos project is maintained by the University of Geneva and accepts
  * source code contributions from the community.
- * 
+ *
  * Contact:
  * Jonas Latt
  * Computer Science Department
@@ -14,7 +14,7 @@
  * 1227 Carouge, Switzerland
  * jonas.latt@unige.ch
  *
- * The most recent release of Palabos can be downloaded at 
+ * The most recent release of Palabos can be downloaded at
  * <https://palabos.unige.ch/>
  *
  * The library Palabos is free software: you can redistribute it and/or
@@ -29,38 +29,39 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 /** \file A helper for initialising 2D boundaries -- header file.  */
 
 #ifndef GENERALIZED_BOUNDARY_CONDITION_2D_H
 #define GENERALIZED_BOUNDARY_CONDITION_2D_H
 
-#include "core/globalDefs.h"
 #include "boundaryCondition/boundaryCondition.h"
 #include "boundaryCondition/boundaryCondition2D.h"
 #include "core/dynamics.h"
+#include "core/globalDefs.h"
 
 namespace plb {
 
-template<typename T, template<typename U> class Descriptor> class BlockLattice2D;
-template<typename T, template<typename U> class Descriptor> class MultiBlockLattice2D;
-
+template <typename T, template <typename U> class Descriptor>
+class BlockLattice2D;
+template <typename T, template <typename U> class Descriptor>
+class MultiBlockLattice2D;
 
 ////////// Factory functions //////////////////////////////////////////////////
 
-template<typename T, template<typename U> class Descriptor>
-OnLatticeBoundaryCondition2D<T,Descriptor>* createGeneralizedBoundaryCondition2D();
+template <typename T, template <typename U> class Descriptor>
+OnLatticeBoundaryCondition2D<T, Descriptor> *createGeneralizedBoundaryCondition2D();
 
-template<typename T, template<typename U> class Descriptor>
-OnLatticeBoundaryCondition2D<T,Descriptor>* createDynamicsBasedGeneralizedBoundaryCondition2D();
+template <typename T, template <typename U> class Descriptor>
+OnLatticeBoundaryCondition2D<T, Descriptor> *createDynamicsBasedGeneralizedBoundaryCondition2D();
 
+template <typename T, template <typename U> class Descriptor>
+OnLatticeBoundaryCondition2D<T, Descriptor> *createGeneralizedMassConservingBoundaryCondition2D();
 
-template<typename T, template<typename U> class Descriptor>
-OnLatticeBoundaryCondition2D<T,Descriptor>* createGeneralizedMassConservingBoundaryCondition2D();
-
-template<typename T, template<typename U> class Descriptor>
-OnLatticeBoundaryCondition2D<T,Descriptor>* createDynamicsBasedGeneralizedMassConservingBoundaryCondition2D();
+template <typename T, template <typename U> class Descriptor>
+OnLatticeBoundaryCondition2D<T, Descriptor>
+    *createDynamicsBasedGeneralizedMassConservingBoundaryCondition2D();
 
 }  // namespace plb
 

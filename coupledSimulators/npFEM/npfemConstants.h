@@ -6,7 +6,7 @@
  * own the IP rights for most of the code base. Since October 2019, the
  * Palabos project is maintained by the University of Geneva and accepts
  * source code contributions from the community.
- * 
+ *
  * Contact for Palabos:
  * Jonas Latt
  * Computer Science Department
@@ -14,14 +14,14 @@
  * 7 Route de Drize
  * 1227 Carouge, Switzerland
  * jonas.latt@unige.ch
- * 
+ *
  * Contact for npFEM:
  * Christos Kotsalos
  * kotsaloscv@gmail.com
  * Computer Science Department
  * University of Geneva
  *
- * The most recent release of Palabos can be downloaded at 
+ * The most recent release of Palabos can be downloaded at
  * <https://palabos.unige.ch/>
  *
  * The library Palabos is free software: you can redistribute it and/or
@@ -36,7 +36,7 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 ///////////////////////////////////////////////////////////////////////////////
 #pragma once
 
@@ -64,5 +64,5 @@ const int shapeOpMPItagVelocities = 2730;
 
 const pluint IDforWall = std::numeric_limits<pluint>::max();
 
-}
-}
+}  // namespace npfem
+}  // namespace plb

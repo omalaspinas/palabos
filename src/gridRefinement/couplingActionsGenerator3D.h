@@ -5,7 +5,7 @@
  * own the IP rights for most of the code base. Since October 2019, the
  * Palabos project is maintained by the University of Geneva and accepts
  * source code contributions from the community.
- * 
+ *
  * Contact:
  * Jonas Latt
  * Computer Science Department
@@ -14,7 +14,7 @@
  * 1227 Carouge, Switzerland
  * jonas.latt@unige.ch
  *
- * The most recent release of Palabos can be downloaded at 
+ * The most recent release of Palabos can be downloaded at
  * <https://palabos.unige.ch/>
  *
  * The library Palabos is free software: you can redistribute it and/or
@@ -29,7 +29,7 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 /** \file
  * Coupling between grids of different refinement level -- header file.
@@ -38,62 +38,70 @@
 #ifndef COUPLING_ACTIONS_GENERATOR_3D_H
 #define COUPLING_ACTIONS_GENERATOR_3D_H
 
-#include "core/globalDefs.h"
+#include <vector>
 
+#include "core/globalDefs.h"
 #include "gridRefinement/couplingInterfaceGenerator3D.h"
 #include "multiBlock/coupling3D.h"
 #include "multiBlock/group3D.h"
 
-#include <vector>
-
 namespace plb {
 
 // Contains all the necessary information for a complete grid refined lattice.
-template<typename T, template <typename U> class Descriptor, 
-    template<typename T2, template<typename U2> class Descriptor2> class Engine>
+template <
+    typename T, template <typename U> class Descriptor,
+    template <typename T2, template <typename U2> class Descriptor2> class Engine>
 class MultiLevelActions3D : public MultiLevel3D {
 public:
     // The dynamics dyn must be right for the coarsest instantiated level.
-    //MultiLevelActions3D(OctreeGridStructure& ogs_, Dynamics<T,Descriptor> *dyn_, plint order_,
+    // MultiLevelActions3D(OctreeGridStructure& ogs_, Dynamics<T,Descriptor> *dyn_, plint order_,
     //                    plint overlapWidth_ = 1, bool filterAll = true);
-    MultiLevelActions3D(OctreeGridStructure& ogs_, Dynamics<T,Descriptor> *dyn_, plint order_,
-                        std::vector<Group3D*>& groups_, plint overlapWidth_ = 1, bool filterAll = true);
-    MultiLevelActions3D(MultiLevelActions3D<T,Descriptor,Engine> const& rhs);
-    MultiLevelActions3D<T,Descriptor,Engine>& operator=(MultiLevelActions3D<T,Descriptor,Engine> const& rhs);
-    void swap(MultiLevelActions3D<T,Descriptor,Engine>& rhs);
+    MultiLevelActions3D(
+        OctreeGridStructure &ogs_, Dynamics<T, Descriptor> *dyn_, plint order_,
+        std::vector<Group3D *> &groups_, plint overlapWidth_ = 1, bool filterAll = true);
+    MultiLevelActions3D(MultiLevelActions3D<T, Descriptor, Engine> const &rhs);
+    MultiLevelActions3D<T, Descriptor, Engine> &operator=(
+        MultiLevelActions3D<T, Descriptor, Engine> const &rhs);
+    void swap(MultiLevelActions3D<T, Descriptor, Engine> &rhs);
     ~MultiLevelActions3D();
-    void registerBlocks(Actions3D& actions, plint level);
+    void registerBlocks(Actions3D &actions, plint level);
 
     void initialize();
 
-    void writeInterfaces(double dx, const Array<double,3> &pos) const {
+    void writeInterfaces(double dx, const Array<double, 3> &pos) const
+    {
         for (plint iL = 0; iL < (plint)interfaces.size(); ++iL) {
-            interfaces[iL]->writeInterfaces(dx,pos);
+            interfaces[iL]->writeInterfaces(dx, pos);
         }
     }
 
-    virtual MultiBlockLattice3D<T,Descriptor> const &getLevel(plint iL) const {
+    virtual MultiBlockLattice3D<T, Descriptor> const &getLevel(plint iL) const
+    {
         PLB_ASSERT(iL <= getNumLevels() && iL >= 0);
-        return groups[iL]->template getLattice<T,Descriptor>("lattice");
-    }
-    
-    virtual MultiBlockLattice3D<T,Descriptor> &getLevel(plint iL) {
-        PLB_ASSERT(iL <= getNumLevels() && iL >= 0);
-        return groups[iL]->template getLattice<T,Descriptor>("lattice");
+        return groups[iL]->template getLattice<T, Descriptor>("lattice");
     }
 
-    plint getNumLevels() const { 
+    virtual MultiBlockLattice3D<T, Descriptor> &getLevel(plint iL)
+    {
+        PLB_ASSERT(iL <= getNumLevels() && iL >= 0);
+        return groups[iL]->template getLattice<T, Descriptor>("lattice");
+    }
+
+    plint getNumLevels() const
+    {
         return ogs.getNumLevels();
     }
-    
-    plint const &getOrder() const { 
+
+    plint const &getOrder() const
+    {
         return order;
     }
-    
-    OctreeGridStructure const& getOgs() const {
+
+    OctreeGridStructure const &getOgs() const
+    {
         return ogs;
     }
-    
+
     void initializeTensorFields();
     /* std::vector<Actions3D*> actions = generateActions();
      * Actions3D* actions_iL = actions[iL] holds the actions for level iL.
@@ -109,54 +117,63 @@ public:
      * You can add actions to any step. If you add them to a recursion step,
      * your actions will always be executed BEFORE recursion.
      */
-    std::vector<Actions3D*> generateActions();
-    void addDefaultCouplings(std::vector<Actions3D*>& actions);
-    void addCollideAndStream(std::vector<Actions3D*>& actions);
-    void addInternalProcessors(std::vector<Actions3D*>& actions);
+    std::vector<Actions3D *> generateActions();
+    void addDefaultCouplings(std::vector<Actions3D *> &actions);
+    void addCollideAndStream(std::vector<Actions3D *> &actions);
+    void addInternalProcessors(std::vector<Actions3D *> &actions);
+
 private:
     void integrateCopyAndSpatialInterpolation(
-            MultiNTensorField3D<T> &cTensor, MultiNTensorField3D<T> &fTensor, 
-                                              CouplingInterfaces3D &coupling, plint numExec);
-    Actions3D* createCopyAndSpatialInterpolation (
-                MultiNTensorField3D<T> &cTensor, MultiNTensorField3D<T> &fTensor, 
-                CouplingInterfaces3D &coupling );
+        MultiNTensorField3D<T> &cTensor, MultiNTensorField3D<T> &fTensor,
+        CouplingInterfaces3D &coupling, plint numExec);
+    Actions3D *createCopyAndSpatialInterpolation(
+        MultiNTensorField3D<T> &cTensor, MultiNTensorField3D<T> &fTensor,
+        CouplingInterfaces3D &coupling);
+
 private:
     OctreeGridStructure ogs;
-    Dynamics<T,Descriptor> *dyn;
+    Dynamics<T, Descriptor> *dyn;
     plint order;
     plint overlapWidth;
+
 private:
-    std::vector<Group3D*> groups;
-    std::vector<CouplingInterfaces3D*> interfaces;
+    std::vector<Group3D *> groups;
+    std::vector<CouplingInterfaces3D *> interfaces;
     bool filterAll;
 };
-    
 
 class MultiGridIterator3D {
 public:
-    MultiGridIterator3D(int numLevels_, std::vector<Actions3D*>& actions_);
+    MultiGridIterator3D(int numLevels_, std::vector<Actions3D *> &actions_);
     int step();
-    void iterate(int whichLevel=0);
+    void iterate(int whichLevel = 0);
+
 private:
     int numLevels;
-    std::vector<Actions3D*>& actions;
+    std::vector<Actions3D *> &actions;
     std::vector<int> position;
     int level;
 };
 
-template<typename T, template <typename U> class Descriptor,
-    template<typename T2, template<typename U2> class Descriptor2> class Engine>
-std::vector<Group3D*> generateLattices(Dynamics<T,Descriptor>* dyn, OctreeGridStructure const& ogs, plint envelopeWidth=1);
+template <
+    typename T, template <typename U> class Descriptor,
+    template <typename T2, template <typename U2> class Descriptor2> class Engine>
+std::vector<Group3D *> generateLattices(
+    Dynamics<T, Descriptor> *dyn, OctreeGridStructure const &ogs, plint envelopeWidth = 1);
 
-template<typename T, template <typename U> class Descriptor>
-void generateHelperBlocks(std::vector<Group3D*>& groups, OctreeGridStructure const& ogs, plint order);
+template <typename T, template <typename U> class Descriptor>
+void generateHelperBlocks(
+    std::vector<Group3D *> &groups, OctreeGridStructure const &ogs, plint order);
 
-template<typename T, template <typename U> class Descriptor>
-void generateHelperBlocks(std::vector<Group3D*>& groups, plint level, OctreeGridStructure const& ogs, plint order);
+template <typename T, template <typename U> class Descriptor>
+void generateHelperBlocks(
+    std::vector<Group3D *> &groups, plint level, OctreeGridStructure const &ogs, plint order);
 
-std::vector<Box3D> optimizeCoarseBoxes(std::vector<boxLogic::DirectedPlane> coarseExt, OctreeGridStructure const& ogs, plint level);
+std::vector<Box3D> optimizeCoarseBoxes(
+    std::vector<boxLogic::DirectedPlane> coarseExt, OctreeGridStructure const &ogs, plint level);
 
-std::vector<Box3D> optimizeFineBoxes(std::vector<Box3D> fineBoxes, OctreeGridStructure const& ogs, plint fineLevel);
+std::vector<Box3D> optimizeFineBoxes(
+    std::vector<Box3D> fineBoxes, OctreeGridStructure const &ogs, plint fineLevel);
 
 }  // namespace plb
 

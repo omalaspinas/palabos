@@ -5,7 +5,7 @@
  * own the IP rights for most of the code base. Since October 2019, the
  * Palabos project is maintained by the University of Geneva and accepts
  * source code contributions from the community.
- * 
+ *
  * Contact:
  * Jonas Latt
  * Computer Science Department
@@ -14,7 +14,7 @@
  * 1227 Carouge, Switzerland
  * jonas.latt@unige.ch
  *
- * The most recent release of Palabos can be downloaded at 
+ * The most recent release of Palabos can be downloaded at
  * <https://palabos.unige.ch/>
  *
  * The library Palabos is free software: you can redistribute it and/or
@@ -29,17 +29,16 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 /** \file
  * Groups all the include files for the 2D particles directory.
  */
 
-#include "particles/particle2D.h"
-#include "particles/particleIdentifiers2D.h"
-#include "particles/particleField2D.h"
 #include "particles/multiParticleField2D.h"
-#include "particles/particleProcessingFunctional2D.h"
+#include "particles/particle2D.h"
+#include "particles/particleField2D.h"
+#include "particles/particleIdentifiers2D.h"
 #include "particles/particleNonLocalTransfer2D.h"
+#include "particles/particleProcessingFunctional2D.h"
 #include "particles/visualParticle2D.h"
-

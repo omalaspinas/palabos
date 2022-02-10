@@ -5,7 +5,7 @@
  * own the IP rights for most of the code base. Since October 2019, the
  * Palabos project is maintained by the University of Geneva and accepts
  * source code contributions from the community.
- * 
+ *
  * Contact:
  * Jonas Latt
  * Computer Science Department
@@ -14,7 +14,7 @@
  * 1227 Carouge, Switzerland
  * jonas.latt@unige.ch
  *
- * The most recent release of Palabos can be downloaded at 
+ * The most recent release of Palabos can be downloaded at
  * <https://palabos.unige.ch/>
  *
  * The library Palabos is free software: you can redistribute it and/or
@@ -29,92 +29,89 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 /** \file
  * Operations on the 2D multiblock -- implementation.
  */
 
 #include "atomicBlock/atomicBlockOperations2D.h"
+
 #include "core/plbDebug.h"
 
 namespace plb {
 
-void executeDataProcessor( DataProcessorGenerator2D const& generator,
-                           std::vector<AtomicBlock2D*> objects )
+void executeDataProcessor(
+    DataProcessorGenerator2D const &generator, std::vector<AtomicBlock2D *> objects)
 {
-    DataProcessor2D* processor = generator.generate(objects);
-    processor -> process();
+    DataProcessor2D *processor = generator.generate(objects);
+    processor->process();
     delete processor;
 }
 
-void executeDataProcessor( DataProcessorGenerator2D const& generator,
-                           AtomicBlock2D& object )
+void executeDataProcessor(DataProcessorGenerator2D const &generator, AtomicBlock2D &object)
 {
-    std::vector<AtomicBlock2D*> objects(1);
+    std::vector<AtomicBlock2D *> objects(1);
     objects[0] = &object;
     executeDataProcessor(generator, objects);
 }
 
-void executeDataProcessor( DataProcessorGenerator2D const& generator,
-                           AtomicBlock2D& object1, AtomicBlock2D& object2 )
+void executeDataProcessor(
+    DataProcessorGenerator2D const &generator, AtomicBlock2D &object1, AtomicBlock2D &object2)
 {
-    std::vector<AtomicBlock2D*> objects(2);
+    std::vector<AtomicBlock2D *> objects(2);
     objects[0] = &object1;
     objects[1] = &object2;
     executeDataProcessor(generator, objects);
 }
 
-
-void executeDataProcessor( ReductiveDataProcessorGenerator2D& generator,
-                           std::vector<AtomicBlock2D*> objects )
+void executeDataProcessor(
+    ReductiveDataProcessorGenerator2D &generator, std::vector<AtomicBlock2D *> objects)
 {
-    DataProcessor2D* processor = generator.generate(objects);
-    processor -> process();
+    DataProcessor2D *processor = generator.generate(objects);
+    processor->process();
     delete processor;
 }
 
-void executeDataProcessor( ReductiveDataProcessorGenerator2D& generator,
-                           AtomicBlock2D& object )
+void executeDataProcessor(ReductiveDataProcessorGenerator2D &generator, AtomicBlock2D &object)
 {
-    std::vector<AtomicBlock2D*> objects(1);
+    std::vector<AtomicBlock2D *> objects(1);
     objects[0] = &object;
     executeDataProcessor(generator, objects);
 }
 
-void executeDataProcessor( ReductiveDataProcessorGenerator2D& generator,
-                           AtomicBlock2D& object1, AtomicBlock2D& object2 )
+void executeDataProcessor(
+    ReductiveDataProcessorGenerator2D &generator, AtomicBlock2D &object1, AtomicBlock2D &object2)
 {
-    std::vector<AtomicBlock2D*> objects(2);
+    std::vector<AtomicBlock2D *> objects(2);
     objects[0] = &object1;
     objects[1] = &object2;
     executeDataProcessor(generator, objects);
 }
 
-
-void addInternalProcessor( DataProcessorGenerator2D const& generator,
-                           std::vector<AtomicBlock2D*> objects, plint level )
+void addInternalProcessor(
+    DataProcessorGenerator2D const &generator, std::vector<AtomicBlock2D *> objects, plint level)
 {
-    PLB_PRECONDITION( !objects.empty() );
-    objects[0] -> integrateDataProcessor(generator.generate(objects), level);
+    PLB_PRECONDITION(!objects.empty());
+    objects[0]->integrateDataProcessor(generator.generate(objects), level);
 }
 
-void addInternalProcessor( DataProcessorGenerator2D const& generator,
-                           AtomicBlock2D& object, plint level )
+void addInternalProcessor(
+    DataProcessorGenerator2D const &generator, AtomicBlock2D &object, plint level)
 {
-    std::vector<AtomicBlock2D*> objects(1);
+    std::vector<AtomicBlock2D *> objects(1);
     objects[0] = &object;
     addInternalProcessor(generator, objects, level);
 }
 
-void addInternalProcessor( DataProcessorGenerator2D const& generator,
-                           AtomicBlock2D& object1, AtomicBlock2D& object2,
-                           plint level )
+void addInternalProcessor(
+    DataProcessorGenerator2D const &generator, AtomicBlock2D &object1, AtomicBlock2D &object2,
+    plint level)
 {
-    std::vector<AtomicBlock2D*> objects(2);
+    std::vector<AtomicBlock2D *> objects(2);
     objects[0] = &object1;
     objects[1] = &object2;
     addInternalProcessor(generator, objects, level);
 }
 
-} // namespace plb
+}  // namespace plb

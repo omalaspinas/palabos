@@ -5,7 +5,7 @@
  * own the IP rights for most of the code base. Since October 2019, the
  * Palabos project is maintained by the University of Geneva and accepts
  * source code contributions from the community.
- * 
+ *
  * Contact:
  * Jonas Latt
  * Computer Science Department
@@ -14,7 +14,7 @@
  * 1227 Carouge, Switzerland
  * jonas.latt@unige.ch
  *
- * The most recent release of Palabos can be downloaded at 
+ * The most recent release of Palabos can be downloaded at
  * <https://palabos.unige.ch/>
  *
  * The library Palabos is free software: you can redistribute it and/or
@@ -29,7 +29,7 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 #include "palabos3D.h"
 #include "palabos3D.hh"
@@ -38,16 +38,17 @@ using namespace plb;
 
 typedef double T;
 
-int main(int argc, char* argv[])
+int main(int argc, char *argv[])
 {
     plbInit(&argc, &argv);
     global::directories().setOutputDir("./");
     global::IOpolicy().activateParallelIO(false);
 
-    if (argc <4) {
+    if (argc < 4) {
         pcout << "Wrong parameters; the syntax is:" << std::endl
               << (std::string)global::argv(0)
-              << " [FLT | DBL | LDBL | INF] outputSTL.stl inputSTL1.stl inputSTL2.stl ..." << std::endl;
+              << " [FLT | DBL | LDBL | INF] outputSTL.stl inputSTL1.stl inputSTL2.stl ..."
+              << std::endl;
         exit(-1);
     }
 
@@ -57,13 +58,12 @@ int main(int argc, char* argv[])
     try {
         global::argv(1).read(precisionStr);
         global::argv(2).read(outFileName);
-        for (plint i=3; i<global::argc(); ++i) {
+        for (plint i = 3; i < global::argc(); ++i) {
             std::string fileName;
             global::argv(i).read(fileName);
             inFileNames.push_back(fileName);
         }
-    }
-    catch (PlbIOException& exception) {
+    } catch (PlbIOException &exception) {
         pcout << "Wrong parameters." << std::endl;
         exit(-1);
     }
@@ -82,14 +82,13 @@ int main(int argc, char* argv[])
         exit(-1);
     }
 
-    std::vector<TriangleSet<T>*> inSets(inFileNames.size());
-    for (pluint i=0; i<inFileNames.size(); ++i) {
+    std::vector<TriangleSet<T> *> inSets(inFileNames.size());
+    for (pluint i = 0; i < inFileNames.size(); ++i) {
         try {
             inSets[i] = new TriangleSet<T>(inFileNames[i], precision);
-        }
-        catch (PlbIOException& exception) {
-            pcout << "ERROR, could not read STL file " << inFileNames[i]
-                  << ": " << exception.what() << std::endl;
+        } catch (PlbIOException &exception) {
+            pcout << "ERROR, could not read STL file " << inFileNames[i] << ": " << exception.what()
+                  << std::endl;
             exit(-1);
         }
     }
@@ -97,10 +96,9 @@ int main(int argc, char* argv[])
     outSet.merge(inSets);
     outSet.writeBinarySTL(outFileName);
 
-    for (pluint i=0; i<inSets.size(); ++i) {
+    for (pluint i = 0; i < inSets.size(); ++i) {
         delete inSets[i];
     }
 
     return 0;
 }
-

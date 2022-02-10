@@ -5,7 +5,7 @@
  * own the IP rights for most of the code base. Since October 2019, the
  * Palabos project is maintained by the University of Geneva and accepts
  * source code contributions from the community.
- * 
+ *
  * Contact:
  * Jonas Latt
  * Computer Science Department
@@ -14,7 +14,7 @@
  * 1227 Carouge, Switzerland
  * jonas.latt@unige.ch
  *
- * The most recent release of Palabos can be downloaded at 
+ * The most recent release of Palabos can be downloaded at
  * <https://palabos.unige.ch/>
  *
  * The library Palabos is free software: you can redistribute it and/or
@@ -29,43 +29,44 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 #ifndef SERIALIZER_IO_2D_HH
 #define SERIALIZER_IO_2D_HH
 
-#include "io/serializerIO_2D.h"
-#include "core/plbDebug.h"
-#include "core/runTimeDiagnostics.h"
-#include "parallelism/mpiManager.h"
-#include "multiBlock/multiBlockSerializer2D.h"
+#include <fstream>
 #include <istream>
 #include <ostream>
-#include <fstream>
+
+#include "core/plbDebug.h"
+#include "core/runTimeDiagnostics.h"
+#include "io/serializerIO_2D.h"
+#include "multiBlock/multiBlockSerializer2D.h"
+#include "parallelism/mpiManager.h"
 
 namespace plb {
 
-template<typename T>
-std::ostream& block2ostream(std::ostream& ostr, Block2D const& block) {
-    plint numDigits = 0; // Number of digits is handled by iostream manipulators,
-                        // as opposed to being imposed here.
-    serializerToAsciiStream<T>( block.getBlockSerializer (
-                                    block.getBoundingBox(),
-                                    global::IOpolicy().getIndexOrderingForStreams() ),
-                                &ostr, numDigits );
+template <typename T>
+std::ostream &block2ostream(std::ostream &ostr, Block2D const &block)
+{
+    plint numDigits = 0;  // Number of digits is handled by iostream manipulators,
+                          // as opposed to being imposed here.
+    serializerToAsciiStream<T>(
+        block.getBlockSerializer(
+            block.getBoundingBox(), global::IOpolicy().getIndexOrderingForStreams()),
+        &ostr, numDigits);
     return ostr;
 }
 
-template<typename T>
-std::istream& istream2block(std::istream& istr, Block2D& block) {
-    asciiStreamToUnSerializer<T>( &istr,
-                                  block.getBlockUnSerializer (
-                                      block.getBoundingBox(),
-                                          global::IOpolicy().getIndexOrderingForStreams()
-                                  ) );
+template <typename T>
+std::istream &istream2block(std::istream &istr, Block2D &block)
+{
+    asciiStreamToUnSerializer<T>(
+        &istr, block.getBlockUnSerializer(
+                   block.getBoundingBox(), global::IOpolicy().getIndexOrderingForStreams()));
     return istr;
 }
 
-} // namespace plb
+}  // namespace plb
 
 #endif  // SERIALIZER_IO_2D_HH

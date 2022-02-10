@@ -5,7 +5,7 @@
  * own the IP rights for most of the code base. Since October 2019, the
  * Palabos project is maintained by the University of Geneva and accepts
  * source code contributions from the community.
- * 
+ *
  * Contact:
  * Jonas Latt
  * Computer Science Department
@@ -14,7 +14,7 @@
  * 1227 Carouge, Switzerland
  * jonas.latt@unige.ch
  *
- * The most recent release of Palabos can be downloaded at 
+ * The most recent release of Palabos can be downloaded at
  * <https://palabos.unige.ch/>
  *
  * The library Palabos is free software: you can redistribute it and/or
@@ -29,7 +29,7 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 /** \file
  * Definition of external fields for a lattice descriptor -- header file
@@ -47,7 +47,7 @@ struct NoExternalField {
     static const int numScalars = 0;
     static const int numSpecies = 0;
     static const int forceBeginsAt = 0;
-    static const int sizeOfForce   = 0;
+    static const int sizeOfForce = 0;
 };
 
 struct NoExternalFieldBase {
@@ -58,7 +58,7 @@ struct Force2dDescriptor {
     static const int numScalars = 2;
     static const int numSpecies = 1;
     static const int forceBeginsAt = 0;
-    static const int sizeOfForce   = 2;
+    static const int sizeOfForce = 2;
 };
 
 struct Force2dDescriptorBase {
@@ -69,8 +69,8 @@ struct Velocity2dDescriptor {
     static const int numScalars = 2;
     static const int numSpecies = 1;
     static const int velocityBeginsAt = 0;
-    static const int sizeOfVelocity   = 2;
-    static const int sizeOfForce    = 0;
+    static const int sizeOfVelocity = 2;
+    static const int sizeOfForce = 0;
 };
 
 struct Velocity2dDescriptorBase {
@@ -81,10 +81,10 @@ struct VelocityAndScalar2dDescriptor {
     static const int numScalars = 3;
     static const int numSpecies = 2;
     static const int velocityBeginsAt = 0;
-    static const int sizeOfVelocity   = 2;
-    static const int scalarBeginsAt   = 2;
-    static const int sizeOfScalar     = 1;
-    static const int sizeOfForce      = 0;
+    static const int sizeOfVelocity = 2;
+    static const int scalarBeginsAt = 2;
+    static const int sizeOfScalar = 1;
+    static const int sizeOfForce = 0;
 };
 
 struct VelocityAndScalar2dBase {
@@ -92,13 +92,13 @@ struct VelocityAndScalar2dBase {
 };
 
 struct RhoBarJdescriptor2D {
-    static const int numScalars     = 3;
-    static const int numSpecies     = 2;
+    static const int numScalars = 3;
+    static const int numSpecies = 2;
     static const int rhoBarBeginsAt = 0;
-    static const int sizeOfRhoBar   = 1;
-    static const int jBeginsAt      = 1;
-    static const int sizeOfJ        = 2;
-    static const int sizeOfForce    = 0;
+    static const int sizeOfRhoBar = 1;
+    static const int jBeginsAt = 1;
+    static const int sizeOfJ = 2;
+    static const int sizeOfForce = 0;
 };
 
 struct RhoBarJdescriptorBase2D {
@@ -106,33 +106,32 @@ struct RhoBarJdescriptorBase2D {
 };
 
 struct RhoBarVelocityPiNeqOmegaDescriptor2D {
-    static const int numScalars       = 7;
-    static const int numSpecies       = 4;
-    static const int rhoBarBeginsAt   = 0;
-    static const int sizeOfRhoBar     = 1;
-    static const int velocityBeginsAt = 1; 
-    static const int sizeOfVelocity   = 2;
-    static const int piNeqBeginsAt    = 3;
-    static const int sizeOfPiNeq      = 3;
-    static const int omegaBeginsAt    = 6;
-    static const int sizeOfOmega      = 1;
-    static const int sizeOfForce      = 0;
+    static const int numScalars = 7;
+    static const int numSpecies = 4;
+    static const int rhoBarBeginsAt = 0;
+    static const int sizeOfRhoBar = 1;
+    static const int velocityBeginsAt = 1;
+    static const int sizeOfVelocity = 2;
+    static const int piNeqBeginsAt = 3;
+    static const int sizeOfPiNeq = 3;
+    static const int omegaBeginsAt = 6;
+    static const int sizeOfOmega = 1;
+    static const int sizeOfForce = 0;
 };
 
 struct RhoBarVelocityPiNeqOmegaDescriptorBase2D {
     typedef RhoBarVelocityPiNeqOmegaDescriptor2D ExternalField;
 };
 
-
 struct ForcedRhoBarJdescriptor2D {
-    static const int numScalars     = 5;
-    static const int numSpecies     = 3;
+    static const int numScalars = 5;
+    static const int numSpecies = 3;
     static const int rhoBarBeginsAt = 0;
-    static const int sizeOfRhoBar   = 1;
-    static const int jBeginsAt      = 1;
-    static const int sizeOfJ        = 2;
-    static const int forceBeginsAt  = 3;
-    static const int sizeOfForce    = 2;
+    static const int sizeOfRhoBar = 1;
+    static const int jBeginsAt = 1;
+    static const int sizeOfJ = 2;
+    static const int forceBeginsAt = 3;
+    static const int sizeOfForce = 2;
 };
 
 struct ForcedRhoBarJdescriptorBase2D {
@@ -143,8 +142,8 @@ struct SymTensor2dDescriptor {
     static const int numScalars = 3;
     static const int numSpecies = 1;
     static const int tensorBeginsAt = 0;
-    static const int sizeOfTensor   = 3;
-    static const int sizeOfForce    = 0;
+    static const int sizeOfTensor = 3;
+    static const int sizeOfForce = 0;
 };
 
 struct SymTensorDescriptorBase2D {
@@ -152,17 +151,17 @@ struct SymTensorDescriptorBase2D {
 };
 
 struct AbsorbingWaveDescriptor2D {
-    static const int numScalars             = 5;
-    static const int numSpecies             = 4;
-    static const int sigmaBeginsAt          = 0;
-    static const int sizeOfSigma            = 1;
+    static const int numScalars = 5;
+    static const int numSpecies = 4;
+    static const int sigmaBeginsAt = 0;
+    static const int sizeOfSigma = 1;
     static const int invDenominatorBeginsAt = 1;
-    static const int sizeOfInvDenominator   = 1;
-    static const int rhoBarBeginsAt         = 2;
-    static const int sizeOfRhoBar           = 1;
-    static const int uBeginsAt              = 3; 
-    static const int sizeOfU                = 2;
-    static const int sizeOfForce            = 0;
+    static const int sizeOfInvDenominator = 1;
+    static const int rhoBarBeginsAt = 2;
+    static const int sizeOfRhoBar = 1;
+    static const int uBeginsAt = 3;
+    static const int sizeOfU = 2;
+    static const int sizeOfForce = 0;
 };
 
 struct AbsorbingWaveExternalField2dBase {
@@ -173,7 +172,7 @@ struct Force3dDescriptor {
     static const int numScalars = 3;
     static const int numSpecies = 1;
     static const int forceBeginsAt = 0;
-    static const int sizeOfForce   = 3;
+    static const int sizeOfForce = 3;
 };
 
 struct Force3dDescriptorBase {
@@ -181,13 +180,13 @@ struct Force3dDescriptorBase {
 };
 
 struct RhoBarJdescriptor3D {
-    static const int numScalars     = 4;
-    static const int numSpecies     = 2;
+    static const int numScalars = 4;
+    static const int numSpecies = 2;
     static const int rhoBarBeginsAt = 0;
-    static const int sizeOfRhoBar   = 1;
-    static const int jBeginsAt      = 1;
-    static const int sizeOfJ        = 3;
-    static const int sizeOfForce    = 0;
+    static const int sizeOfRhoBar = 1;
+    static const int jBeginsAt = 1;
+    static const int sizeOfJ = 3;
+    static const int sizeOfForce = 0;
 };
 
 struct RhoBarJdescriptorBase3D {
@@ -195,17 +194,17 @@ struct RhoBarJdescriptorBase3D {
 };
 
 struct RhoBarVelocityPiNeqOmegaDescriptor3D {
-    static const int numScalars       = 11;
-    static const int numSpecies       = 4;
-    static const int rhoBarBeginsAt   = 0;
-    static const int sizeOfRhoBar     = 1;
-    static const int velocityBeginsAt = 1; 
-    static const int sizeOfVelocity   = 3;
-    static const int piNeqBeginsAt    = 4;
-    static const int sizeOfPiNeq      = 6;
-    static const int omegaBeginsAt    = 10;
-    static const int sizeOfOmega      = 1;
-    static const int sizeOfForce      = 0;
+    static const int numScalars = 11;
+    static const int numSpecies = 4;
+    static const int rhoBarBeginsAt = 0;
+    static const int sizeOfRhoBar = 1;
+    static const int velocityBeginsAt = 1;
+    static const int sizeOfVelocity = 3;
+    static const int piNeqBeginsAt = 4;
+    static const int sizeOfPiNeq = 6;
+    static const int omegaBeginsAt = 10;
+    static const int sizeOfOmega = 1;
+    static const int sizeOfForce = 0;
 };
 
 struct RhoBarVelocityPiNeqOmegaDescriptorBase3D {
@@ -213,48 +212,46 @@ struct RhoBarVelocityPiNeqOmegaDescriptorBase3D {
 };
 
 struct RhoBarVelocityPiNeqOmegaWithSourceDescriptor3D {
-    static const int numScalars       = 11;
-    static const int numSpecies       = 4;
-    static const int rhoBarBeginsAt   = 0;
-    static const int sizeOfRhoBar     = 1;
-    static const int velocityBeginsAt = 1; 
-    static const int sizeOfVelocity   = 3;
-    static const int piNeqBeginsAt    = 4;
-    static const int sizeOfPiNeq      = 6;
-    static const int omegaBeginsAt    = 10;
-    static const int sizeOfOmega      = 1;
-    static const int sourceBeginsAt   = 11;
-    static const int sizeOfSource     = 1;
-    static const int sizeOfForce      = 0;
+    static const int numScalars = 11;
+    static const int numSpecies = 4;
+    static const int rhoBarBeginsAt = 0;
+    static const int sizeOfRhoBar = 1;
+    static const int velocityBeginsAt = 1;
+    static const int sizeOfVelocity = 3;
+    static const int piNeqBeginsAt = 4;
+    static const int sizeOfPiNeq = 6;
+    static const int omegaBeginsAt = 10;
+    static const int sizeOfOmega = 1;
+    static const int sourceBeginsAt = 11;
+    static const int sizeOfSource = 1;
+    static const int sizeOfForce = 0;
 };
 
 struct RhoBarVelocityPiNeqOmegaWithSourceDescriptorBase3D {
     typedef RhoBarVelocityPiNeqOmegaWithSourceDescriptor3D ExternalField;
 };
 
-
 struct ForcedRhoBarJdescriptor3D {
-    static const int numScalars     = 7;
-    static const int numSpecies     = 3;
+    static const int numScalars = 7;
+    static const int numSpecies = 3;
     static const int rhoBarBeginsAt = 0;
-    static const int sizeOfRhoBar   = 1;
-    static const int jBeginsAt      = 1;
-    static const int sizeOfJ        = 3;
-    static const int forceBeginsAt  = 4;
-    static const int sizeOfForce    = 3;
+    static const int sizeOfRhoBar = 1;
+    static const int jBeginsAt = 1;
+    static const int sizeOfJ = 3;
+    static const int forceBeginsAt = 4;
+    static const int sizeOfForce = 3;
 };
 
 struct ForcedRhoBarJdescriptorBase3D {
     typedef ForcedRhoBarJdescriptor3D ExternalField;
 };
 
-
 struct Velocity3dDescriptor {
     static const int numScalars = 3;
     static const int numSpecies = 1;
     static const int velocityBeginsAt = 0;
-    static const int sizeOfVelocity   = 3;
-    static const int sizeOfForce    = 0;
+    static const int sizeOfVelocity = 3;
+    static const int sizeOfForce = 0;
 };
 
 struct Velocity3dBase {
@@ -265,18 +262,18 @@ struct VelocityAndScalar3dDescriptor {
     static const int numScalars = 4;
     static const int numSpecies = 2;
     static const int velocityBeginsAt = 0;
-    static const int sizeOfVelocity   = 3;
-    static const int scalarBeginsAt   = 3;
-    static const int sizeOfScalar     = 1;
-    static const int sizeOfForce      = 0;
+    static const int sizeOfVelocity = 3;
+    static const int scalarBeginsAt = 3;
+    static const int sizeOfScalar = 1;
+    static const int sizeOfForce = 0;
 };
 
 struct SymTensor3dDescriptor {
     static const int numScalars = 6;
     static const int numSpecies = 1;
     static const int tensorBeginsAt = 0;
-    static const int sizeOfTensor   = 6;
-    static const int sizeOfForce    = 0;
+    static const int sizeOfTensor = 6;
+    static const int sizeOfForce = 0;
 };
 
 struct SymTensor3dBase {
@@ -288,17 +285,17 @@ struct VelocityAndScalar3dBase {
 };
 
 struct AbsorbingWaveDescriptor3D {
-    static const int numScalars             = 6;
-    static const int numSpecies             = 4;
-    static const int sigmaBeginsAt          = 0;
-    static const int sizeOfSigma            = 1;
+    static const int numScalars = 6;
+    static const int numSpecies = 4;
+    static const int sigmaBeginsAt = 0;
+    static const int sizeOfSigma = 1;
     static const int invDenominatorBeginsAt = 1;
-    static const int sizeOfInvDenominator   = 1;
-    static const int rhoBarBeginsAt         = 2;
-    static const int sizeOfRhoBar           = 1;
-    static const int uBeginsAt              = 3; 
-    static const int sizeOfU                = 3;
-    static const int sizeOfForce            = 0;
+    static const int sizeOfInvDenominator = 1;
+    static const int rhoBarBeginsAt = 2;
+    static const int sizeOfRhoBar = 1;
+    static const int uBeginsAt = 3;
+    static const int sizeOfU = 3;
+    static const int sizeOfForce = 0;
 };
 
 struct AbsorbingWaveExternalField3dBase {

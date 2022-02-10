@@ -5,7 +5,7 @@
  * own the IP rights for most of the code base. Since October 2019, the
  * Palabos project is maintained by the University of Geneva and accepts
  * source code contributions from the community.
- * 
+ *
  * Contact:
  * Jonas Latt
  * Computer Science Department
@@ -14,7 +14,7 @@
  * 1227 Carouge, Switzerland
  * jonas.latt@unige.ch
  *
- * The most recent release of Palabos can be downloaded at 
+ * The most recent release of Palabos can be downloaded at
  * <https://palabos.unige.ch/>
  *
  * The library Palabos is free software: you can redistribute it and/or
@@ -29,7 +29,7 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 /** \file
  * Base class for scalar, vector and tensor fields for 2D data analysis -- header file.
@@ -38,33 +38,35 @@
 #ifndef DATA_FIELD_BASE_2D_H
 #define DATA_FIELD_BASE_2D_H
 
-#include "core/globalDefs.h"
+#include "core/array.h"
 #include "core/block2D.h"
 #include "core/geometry2D.h"
-#include "core/array.h"
+#include "core/globalDefs.h"
 
 namespace plb {
 
 /// Interface for the variants of 2D scalar fields.
-template<typename T>
+template <typename T>
 class ScalarFieldBase2D {
 public:
     virtual ~ScalarFieldBase2D() { }
+
 public:
-    virtual void reset() =0;
-    virtual T& get(plint iX, plint iY) =0;
-    virtual T const& get(plint iX, plint iY) const =0;
+    virtual void reset() = 0;
+    virtual T &get(plint iX, plint iY) = 0;
+    virtual T const &get(plint iX, plint iY) const = 0;
 };
 
 /// Interface for the variants of 2D vector and tensor fields.
-template<typename T, int nDim>
+template <typename T, int nDim>
 class TensorFieldBase2D {
 public:
     virtual ~TensorFieldBase2D() { }
+
 public:
-    virtual void reset() =0;
-    virtual Array<T,nDim>& get(plint iX, plint iY) =0;
-    virtual Array<T,nDim> const& get(plint iX, plint iY) const =0;
+    virtual void reset() = 0;
+    virtual Array<T, nDim> &get(plint iX, plint iY) = 0;
+    virtual Array<T, nDim> const &get(plint iX, plint iY) const = 0;
 };
 
 /// Interface for the variants of generic-sized 2D vector and tensor fields.
@@ -72,18 +74,26 @@ public:
  *  like Python. In C++ it's most often better to use the static-sized
  *  TensorField to guarantee type safety.
  */
-template<typename T>
+template <typename T>
 class NTensorFieldBase2D {
 public:
     NTensorFieldBase2D(int ndim_) : ndim(ndim_) { }
-    NTensorFieldBase2D(NTensorFieldBase2D<T> const& rhs) : ndim(rhs.ndim) { }
-    void swap(NTensorFieldBase2D& rhs) { std::swap(ndim, rhs.ndim); }
+    NTensorFieldBase2D(NTensorFieldBase2D<T> const &rhs) : ndim(rhs.ndim) { }
+    void swap(NTensorFieldBase2D &rhs)
+    {
+        std::swap(ndim, rhs.ndim);
+    }
     virtual ~NTensorFieldBase2D() { }
+
 public:
-    virtual void reset() =0;
-    virtual T* get(plint iX, plint iY) =0;
-    virtual T const* get(plint iX, plint iY) const =0;
-    plint getNdim() const { return ndim; }
+    virtual void reset() = 0;
+    virtual T *get(plint iX, plint iY) = 0;
+    virtual T const *get(plint iX, plint iY) const = 0;
+    plint getNdim() const
+    {
+        return ndim;
+    }
+
 private:
     plint ndim;
 };

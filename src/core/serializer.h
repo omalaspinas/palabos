@@ -5,7 +5,7 @@
  * own the IP rights for most of the code base. Since October 2019, the
  * Palabos project is maintained by the University of Geneva and accepts
  * source code contributions from the community.
- * 
+ *
  * Contact:
  * Jonas Latt
  * Computer Science Department
@@ -14,7 +14,7 @@
  * 1227 Carouge, Switzerland
  * jonas.latt@unige.ch
  *
- * The most recent release of Palabos can be downloaded at 
+ * The most recent release of Palabos can be downloaded at
  * <https://palabos.unige.ch/>
  *
  * The library Palabos is free software: you can redistribute it and/or
@@ -29,8 +29,7 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-
+ */
 
 #ifndef SERIALIZER_H
 #define SERIALIZER_H
@@ -42,74 +41,76 @@ namespace plb {
 
 struct DataSerializer {
     virtual ~DataSerializer() { }
-    virtual DataSerializer* clone() const =0;
-    virtual pluint getSize() const =0;
-    virtual const char* getNextDataBuffer(pluint& bufferSize) const =0;
-    virtual bool isEmpty() const =0;
+    virtual DataSerializer *clone() const = 0;
+    virtual pluint getSize() const = 0;
+    virtual const char *getNextDataBuffer(pluint &bufferSize) const = 0;
+    virtual bool isEmpty() const = 0;
 };
 
 struct DataUnSerializer {
     virtual ~DataUnSerializer() { }
-    virtual DataUnSerializer* clone() const =0;
-    virtual pluint getSize() const =0;
-    virtual char* getNextDataBuffer(pluint& bufferSize) =0;
-    virtual void commitData() =0;
-    virtual bool isFull() const =0;
+    virtual DataUnSerializer *clone() const = 0;
+    virtual pluint getSize() const = 0;
+    virtual char *getNextDataBuffer(pluint &bufferSize) = 0;
+    virtual void commitData() = 0;
+    virtual bool isFull() const = 0;
 };
 
 struct SerializedWriter {
     virtual ~SerializedWriter() { }
-    virtual SerializedWriter* clone() const =0;
-    virtual void writeHeader(pluint dataSize) =0;
-    virtual void writeData(char const* dataBuffer, pluint bufferSize) =0;
+    virtual SerializedWriter *clone() const = 0;
+    virtual void writeHeader(pluint dataSize) = 0;
+    virtual void writeData(char const *dataBuffer, pluint bufferSize) = 0;
 };
-
 
 struct SerializedReader {
     virtual ~SerializedReader() { }
-    virtual SerializedReader* clone() const =0;
-    virtual void readHeader(pluint dataSize) const =0;
-    virtual void readData(char* dataBuffer, pluint bufferSize) const =0;
+    virtual SerializedReader *clone() const = 0;
+    virtual void readHeader(pluint dataSize) const = 0;
+    virtual void readData(char *dataBuffer, pluint bufferSize) const = 0;
 };
 
 /// A serializer-sink for flushing data from a Block into a non-parallel
 ///   C-array.
-template<typename T>
+template <typename T>
 class WriteToSerialArray : public SerializedWriter {
 public:
-    WriteToSerialArray(T* array_, plint typedSize_);
-    virtual WriteToSerialArray* clone() const;
+    WriteToSerialArray(T *array_, plint typedSize_);
+    virtual WriteToSerialArray *clone() const;
     virtual void writeHeader(pluint dataSize);
-    virtual void writeData(char const* dataBuffer, pluint bufferSize);
+    virtual void writeData(char const *dataBuffer, pluint bufferSize);
+
 private:
-    char* array;
+    char *array;
     plint typedSize;
     plint pos;
 };
 
 /// A serializer-source for reading data from a non-parallel
 ///   C-array into a Block.
-template<typename T>
+template <typename T>
 class ReadFromSerialArray : public SerializedReader {
 public:
-    ReadFromSerialArray(T const* array_, plint typedSize_);
-    virtual ReadFromSerialArray<T>* clone() const;
+    ReadFromSerialArray(T const *array_, plint typedSize_);
+    virtual ReadFromSerialArray<T> *clone() const;
     virtual void readHeader(pluint dataSize) const;
-    virtual void readData(char* dataBuffer, pluint bufferSize) const;
+    virtual void readData(char *dataBuffer, pluint bufferSize) const;
+
 private:
-    char const* array;
+    char const *array;
     plint typedSize;
     mutable plint pos;
 };
 
+void serializerToUnSerializer(
+    DataSerializer const *serializer, DataUnSerializer *unSerializer, bool mainProcOnly = true);
 
-void serializerToUnSerializer(DataSerializer const* serializer, DataUnSerializer* unSerializer, bool mainProcOnly=true);
+void serializerToSink(
+    DataSerializer const *serializer, SerializedWriter *sink, bool mainProcOnly = true);
 
-void serializerToSink(DataSerializer const* serializer, SerializedWriter* sink, bool mainProcOnly=true);
+void sourceToUnSerializer(
+    SerializedReader const *source, DataUnSerializer *unSerializer, bool mainProcOnly = true);
 
-void sourceToUnSerializer(SerializedReader const* source, DataUnSerializer* unSerializer, bool mainProcOnly=true);
-
-
-} // namespace plb
+}  // namespace plb
 
 #endif  // SERIALIZER_H

@@ -5,7 +5,7 @@
  * own the IP rights for most of the code base. Since October 2019, the
  * Palabos project is maintained by the University of Geneva and accepts
  * source code contributions from the community.
- * 
+ *
  * Contact:
  * Jonas Latt
  * Computer Science Department
@@ -14,7 +14,7 @@
  * 1227 Carouge, Switzerland
  * jonas.latt@unige.ch
  *
- * The most recent release of Palabos can be downloaded at 
+ * The most recent release of Palabos can be downloaded at
  * <https://palabos.unige.ch/>
  *
  * The library Palabos is free software: you can redistribute it and/or
@@ -29,19 +29,21 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 #include "core/plbProfiler.h"
-#include "parallelism/mpiManager.h"
-#include "core/runTimeDiagnostics.h"
+
 #include "algorithm/statistics.h"
+#include "core/runTimeDiagnostics.h"
 #include "libraryInterfaces/TINYXML_xmlIO.hh"
+#include "parallelism/mpiManager.h"
 
 namespace plb {
 
 namespace global {
 
-Profiler::Profiler() {
+Profiler::Profiler()
+{
     turnOff();
     automaticCycling();
     setReportFile("plbProfile");
@@ -50,7 +52,7 @@ Profiler::Profiler() {
     validCounters.insert("iterations");
     validCounters.insert("mpiSendChar");
     validCounters.insert("mpiReceiveChar");
-    
+
     validTimers.insert("collStream");
     validTimers.insert("cycle");
     validTimers.insert("dataProcessor");
@@ -59,43 +61,48 @@ Profiler::Profiler() {
     validTimers.insert("totalTime");
 }
 
-void Profiler::turnOn() {
+void Profiler::turnOn()
+{
     profilingFlag = true;
     start("totalTime");
 }
 
-void Profiler::turnOff() {
+void Profiler::turnOff()
+{
     profilingFlag = false;
 }
 
-void Profiler::automaticCycling() {
+void Profiler::automaticCycling()
+{
     manualCycleFlag = false;
 }
 
-void Profiler::manualCycling() {
+void Profiler::manualCycling()
+{
     manualCycleFlag = true;
 }
 
-void Profiler::cycle() {
+void Profiler::cycle()
+{
     increment("iterations");
 }
 
-
-void Profiler::writeReport() {
+void Profiler::writeReport()
+{
     plint collStreamCells = getCounter("collStreamCells");
     plint iterations = getCounter("iterations");
-    //plint mpiSendChar = getCounter("mpiSendChar");
-    //plint mpiReceiveChar = getCounter("mpiReceiveChar");
+    // plint mpiSendChar = getCounter("mpiSendChar");
+    // plint mpiReceiveChar = getCounter("mpiReceiveChar");
 
     double t_collStream = getTimer("collStream");
     double t_cycle = getTimer("cycle");
-    //double t_dataProcessor = getTimer("dataProcessor");
+    // double t_dataProcessor = getTimer("dataProcessor");
     double t_mpiCommunication = getTimer("mpiCommunication");
     double t_io = getTimer("io");
-    //double t_totalTime = getTimer("totalTime");
+    // double t_totalTime = getTimer("totalTime");
 
     XMLwriter writer;
-    XMLwriter& globalSection(writer["Global"]);
+    XMLwriter &globalSection(writer["Global"]);
 
     addMainProcValue(globalSection, "NumProcesses", global::mpi().getSize());
     addMainProcValue(globalSection, "NumIterations", iterations);
@@ -105,12 +112,13 @@ void Profiler::writeReport() {
     addStatisticalValue(globalSection, "Time_per_cycle", t_cycle / (double)iterations);
     addStatisticalValue(globalSection, "Relative_communication_time", t_mpiCommunication / t_cycle);
     addStatisticalValue(globalSection, "Total_io_time", t_io);
-    addStatisticalValue(globalSection, "Relative_io_time", t_io / (t_cycle+t_io));
+    addStatisticalValue(globalSection, "Relative_io_time", t_io / (t_cycle + t_io));
 
     writer.print(reportFile);
 }
 
-void Profiler::addStatisticalValue(XMLwriter& writer, std::string name, double value) {
+void Profiler::addStatisticalValue(XMLwriter &writer, std::string name, double value)
+{
     std::vector<double> allValues(global::mpi().getSize());
     std::fill(allValues.begin(), allValues.end(), 0.);
     allValues[global::mpi().getRank()] = value;
@@ -125,24 +133,27 @@ void Profiler::addStatisticalValue(XMLwriter& writer, std::string name, double v
     writer[name]["Values"].set(allValues);
 }
 
-void Profiler::addMainProcValue(XMLwriter& writer, std::string name, plint value) {
+void Profiler::addMainProcValue(XMLwriter &writer, std::string name, plint value)
+{
     writer[name].set(value);
 }
 
-
-void Profiler::verifyTimer(std::string const& timer) {
-    if (validTimers.find(timer)==validTimers.end()) {
-        plbLogicError("Invalid timer for profiling: "+timer);
+void Profiler::verifyTimer(std::string const &timer)
+{
+    if (validTimers.find(timer) == validTimers.end()) {
+        plbLogicError("Invalid timer for profiling: " + timer);
     }
 }
 
-void Profiler::verifyCounter(std::string const& counter) {
-    if (validCounters.find(counter)==validCounters.end()) {
-        plbLogicError("Invalid counter for profiling: "+counter);
+void Profiler::verifyCounter(std::string const &counter)
+{
+    if (validCounters.find(counter) == validCounters.end()) {
+        plbLogicError("Invalid counter for profiling: " + counter);
     }
 }
 
-void Profiler::setReportFile(FileName const& reportFile_) {
+void Profiler::setReportFile(FileName const &reportFile_)
+{
     reportFile = reportFile_;
     reportFile.defaultPath(directories().getOutputDir());
     reportFile.defaultExt("xml");

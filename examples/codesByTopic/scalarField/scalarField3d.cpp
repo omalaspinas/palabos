@@ -5,7 +5,7 @@
  * own the IP rights for most of the code base. Since October 2019, the
  * Palabos project is maintained by the University of Geneva and accepts
  * source code contributions from the community.
- * 
+ *
  * Contact:
  * Jonas Latt
  * Computer Science Department
@@ -14,7 +14,7 @@
  * 1227 Carouge, Switzerland
  * jonas.latt@unige.ch
  *
- * The most recent release of Palabos can be downloaded at 
+ * The most recent release of Palabos can be downloaded at
  * <https://palabos.unige.ch/>
  *
  * The library Palabos is free software: you can redistribute it and/or
@@ -29,22 +29,23 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
+
+#include <cmath>
+#include <fstream>
+#include <iomanip>
+#include <iostream>
+#include <vector>
 
 #include "palabos3D.h"
 #include "palabos3D.hh"
-#include <vector>
-#include <cmath>
-#include <iostream>
-#include <fstream>
-#include <iomanip>
 
 using namespace plb;
 using namespace std;
 typedef double T;
 
-
-int main(int argc, char* argv[]) {
+int main(int argc, char *argv[])
+{
     plbInit(&argc, &argv);
 
     global::directories().setOutputDir("./tmp/");
@@ -52,20 +53,27 @@ int main(int argc, char* argv[]) {
     const int N = 300;
     ImageWriter<T> imageWriter("leeloo");
 
-    MultiScalarField3D<T> xCoord(N+1,N+1,N+1);
-    MultiScalarField3D<T> yCoord(N+1,N+1,N+1);
-    MultiScalarField3D<T> zCoord(N+1,N+1,N+1);
+    MultiScalarField3D<T> xCoord(N + 1, N + 1, N + 1);
+    MultiScalarField3D<T> yCoord(N + 1, N + 1, N + 1);
+    MultiScalarField3D<T> zCoord(N + 1, N + 1, N + 1);
 
-    const T pi = (T)4.*std::atan((T)1.);
-    setToCoordinate(xCoord, xCoord.getBoundingBox(), 0); multiplyInPlace(xCoord, (T)2.*pi/(T)N);
-    setToCoordinate(yCoord, yCoord.getBoundingBox(), 1); multiplyInPlace(yCoord, (T)2.*pi/(T)N);
-    setToCoordinate(zCoord, zCoord.getBoundingBox(), 2); multiplyInPlace(zCoord, (T)2.*pi/(T)N);
+    const T pi = (T)4. * std::atan((T)1.);
+    setToCoordinate(xCoord, xCoord.getBoundingBox(), 0);
+    multiplyInPlace(xCoord, (T)2. * pi / (T)N);
+    setToCoordinate(yCoord, yCoord.getBoundingBox(), 1);
+    multiplyInPlace(yCoord, (T)2. * pi / (T)N);
+    setToCoordinate(zCoord, zCoord.getBoundingBox(), 2);
+    multiplyInPlace(zCoord, (T)2. * pi / (T)N);
 
-    MultiScalarField3D<T> wave(N+1,N+1,N+1);
+    MultiScalarField3D<T> wave(N + 1, N + 1, N + 1);
 
-    T(*Tsin)(T) = std::sin;  // Explicit reference to the overloaded "sin" is required for automatic template instantiation.
-    T(*Tcos)(T) = std::cos;  // Explicit reference to the overloaded "cos" is required for automatic template instantiation.
+    T(*Tsin)
+    (T) = std::sin;  // Explicit reference to the overloaded "sin" is required for automatic
+                     // template instantiation.
+    T(*Tcos)
+    (T) = std::cos;  // Explicit reference to the overloaded "cos" is required for automatic
+                     // template instantiation.
     multiply(*evaluate(Tsin, xCoord), *evaluate(Tcos, yCoord), wave, wave.getBoundingBox());
 
-    imageWriter.writeScaledGif("wave", *extractSubDomain(wave, Box3D(0,N, 0,N, N/2,N/2)));
+    imageWriter.writeScaledGif("wave", *extractSubDomain(wave, Box3D(0, N, 0, N, N / 2, N / 2)));
 }

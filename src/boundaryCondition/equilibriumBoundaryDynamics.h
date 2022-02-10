@@ -5,7 +5,7 @@
  * own the IP rights for most of the code base. Since October 2019, the
  * Palabos project is maintained by the University of Geneva and accepts
  * source code contributions from the community.
- * 
+ *
  * Contact:
  * Jonas Latt
  * Computer Science Department
@@ -14,7 +14,7 @@
  * 1227 Carouge, Switzerland
  * jonas.latt@unige.ch
  *
- * The most recent release of Palabos can be downloaded at 
+ * The most recent release of Palabos can be downloaded at
  * <https://palabos.unige.ch/>
  *
  * The library Palabos is free software: you can redistribute it and/or
@@ -29,7 +29,7 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 /** \file
  * Dirichlet boundary condition which imposes equilibrium (but computes
@@ -38,73 +38,76 @@
 #ifndef EQUILIBRIUM_BOUNDARY_DYNAMICS_H
 #define EQUILIBRIUM_BOUNDARY_DYNAMICS_H
 
-#include "core/globalDefs.h"
 #include "boundaryCondition/boundaryDynamics.h"
+#include "core/globalDefs.h"
 
 namespace plb {
 
 /// Equilibrium velocity boundary dynamics for a straight wall.
-template<typename T, template<typename U> class Descriptor,
-         int direction, int orientation>
+template <typename T, template <typename U> class Descriptor, int direction, int orientation>
 class EquilibriumVelocityBoundaryDynamics :
-    public VelocityDirichletBoundaryDynamics<T,Descriptor,direction,orientation>
-{
+    public VelocityDirichletBoundaryDynamics<T, Descriptor, direction, orientation> {
 public:
-    EquilibriumVelocityBoundaryDynamics(Dynamics<T,Descriptor>* baseDynamics_, bool automaticPrepareCollision=true);
+    EquilibriumVelocityBoundaryDynamics(
+        Dynamics<T, Descriptor> *baseDynamics_, bool automaticPrepareCollision = true);
 
     /// Clone the object, based on its dynamic type
-    virtual EquilibriumVelocityBoundaryDynamics<T,Descriptor,direction,orientation>* clone() const;
+    virtual EquilibriumVelocityBoundaryDynamics<T, Descriptor, direction, orientation> *clone()
+        const;
 
     /// Return a unique ID for this class.
     virtual int getId() const;
 
     /// Execute completion scheme before base collision
-    virtual void completePopulations(Cell<T,Descriptor>& cell) const;
+    virtual void completePopulations(Cell<T, Descriptor> &cell) const;
+
 private:
     static int id;
 };
 
 /// Equilibrium density Dirichlet boundary dynamics for a straight wall.
-template<typename T, template<typename U> class Descriptor,
-         int direction, int orientation>
+template <typename T, template <typename U> class Descriptor, int direction, int orientation>
 class EquilibriumDensityBoundaryDynamics :
-     public DensityDirichletBoundaryDynamics<T,Descriptor,direction,orientation>
-{
+    public DensityDirichletBoundaryDynamics<T, Descriptor, direction, orientation> {
 public:
-    EquilibriumDensityBoundaryDynamics(Dynamics<T,Descriptor>* baseDynamics_, bool automaticPrepareCollision=true);
+    EquilibriumDensityBoundaryDynamics(
+        Dynamics<T, Descriptor> *baseDynamics_, bool automaticPrepareCollision = true);
 
     /// Clone the object, based on its dynamic type
-    virtual EquilibriumDensityBoundaryDynamics<T,Descriptor,direction,orientation>* clone() const;
+    virtual EquilibriumDensityBoundaryDynamics<T, Descriptor, direction, orientation> *clone()
+        const;
 
     /// Return a unique ID for this class.
     virtual int getId() const;
 
     /// Execute completion scheme before base collision
-    virtual void completePopulations(Cell<T,Descriptor>& cell) const;
+    virtual void completePopulations(Cell<T, Descriptor> &cell) const;
+
 private:
     static int id;
 };
-
 
 /// Equilibrium boundary dynamics, on which both density and velocity are imposed.
-template<typename T, template<typename U> class Descriptor>
-class EquilibriumDensityAndVelocityBoundaryDynamics : public StoreDensityAndVelocityDynamics<T,Descriptor>
-{
+template <typename T, template <typename U> class Descriptor>
+class EquilibriumDensityAndVelocityBoundaryDynamics :
+    public StoreDensityAndVelocityDynamics<T, Descriptor> {
 public:
-    EquilibriumDensityAndVelocityBoundaryDynamics(Dynamics<T,Descriptor>* baseDynamics_, bool automaticPrepareCollision);
+    EquilibriumDensityAndVelocityBoundaryDynamics(
+        Dynamics<T, Descriptor> *baseDynamics_, bool automaticPrepareCollision);
 
     /// Clone the object, based on its dynamic type
-    virtual EquilibriumDensityAndVelocityBoundaryDynamics<T,Descriptor>* clone() const;
+    virtual EquilibriumDensityAndVelocityBoundaryDynamics<T, Descriptor> *clone() const;
 
     /// Return a unique ID for this class.
     virtual int getId() const;
 
     /// Execute completion scheme before base collision
-    virtual void completePopulations(Cell<T,Descriptor>& cell) const;
+    virtual void completePopulations(Cell<T, Descriptor> &cell) const;
+
 private:
     static int id;
 };
 
-} // namespace plb
+}  // namespace plb
 
 #endif  // EQUILIBRIUM_BOUNDARY_DYNAMICS_H

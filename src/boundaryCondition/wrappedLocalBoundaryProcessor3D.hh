@@ -5,7 +5,7 @@
  * own the IP rights for most of the code base. Since October 2019, the
  * Palabos project is maintained by the University of Geneva and accepts
  * source code contributions from the community.
- * 
+ *
  * Contact:
  * Jonas Latt
  * Computer Science Department
@@ -14,7 +14,7 @@
  * 1227 Carouge, Switzerland
  * jonas.latt@unige.ch
  *
- * The most recent release of Palabos can be downloaded at 
+ * The most recent release of Palabos can be downloaded at
  * <https://palabos.unige.ch/>
  *
  * The library Palabos is free software: you can redistribute it and/or
@@ -29,53 +29,54 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 #ifndef WRAPPED_LOCAL_BOUNDARY_PROCESSOR_3D_HH
 #define WRAPPED_LOCAL_BOUNDARY_PROCESSOR_3D_HH
 
-#include "boundaryCondition/wrappedLocalBoundaryProcessor3D.h"
-#include "atomicBlock/blockLattice3D.h"
-#include "core/processorIdentifiers3D.h"
 #include <typeinfo>
+
+#include "atomicBlock/blockLattice3D.h"
+#include "boundaryCondition/wrappedLocalBoundaryProcessor3D.h"
+#include "core/processorIdentifiers3D.h"
 
 namespace plb {
 
 ///////////  WrappedLocalBoundaryFunctional3D ///////////////////////////////////
 
-template<typename T, template<typename U> class Descriptor>
-const int WrappedLocalBoundaryFunctional3D<T,Descriptor>::staticId =
-    meta::registerProcessor3D < WrappedLocalBoundaryFunctional3D<T,Descriptor>, T, Descriptor> (std::string("WrappedLocalBoundary3D"));
+template <typename T, template <typename U> class Descriptor>
+const int WrappedLocalBoundaryFunctional3D<T, Descriptor>::staticId =
+    meta::registerProcessor3D<WrappedLocalBoundaryFunctional3D<T, Descriptor>, T, Descriptor>(
+        std::string("WrappedLocalBoundary3D"));
 
-template<typename T, template<typename U> class Descriptor>
-void WrappedLocalBoundaryFunctional3D<T,Descriptor>::process (
-        Box3D domain, BlockLattice3D<T,Descriptor>& lattice  )
+template <typename T, template <typename U> class Descriptor>
+void WrappedLocalBoundaryFunctional3D<T, Descriptor>::process(
+    Box3D domain, BlockLattice3D<T, Descriptor> &lattice)
 {
-    PLB_ASSERT(domain.x0==domain.x1 || domain.y0==domain.y1 ||
-               domain.z0==domain.z1);
-    for (plint iX=domain.x0; iX<=domain.x1; ++iX) {
-        for (plint iY=domain.y0; iY<=domain.y1; ++iY) {
-            for (plint iZ=domain.z0; iZ<=domain.z1; ++iZ) {
-                Cell<T,Descriptor>& cell = lattice.get(iX,iY,iZ);
-                Dynamics<T,Descriptor>& dynamics = cell.getDynamics();
+    PLB_ASSERT(domain.x0 == domain.x1 || domain.y0 == domain.y1 || domain.z0 == domain.z1);
+    for (plint iX = domain.x0; iX <= domain.x1; ++iX) {
+        for (plint iY = domain.y0; iY <= domain.y1; ++iY) {
+            for (plint iZ = domain.z0; iZ <= domain.z1; ++iZ) {
+                Cell<T, Descriptor> &cell = lattice.get(iX, iY, iZ);
+                Dynamics<T, Descriptor> &dynamics = cell.getDynamics();
                 // Make a safety check to avoid errors in case the user replaces
                 //   the original composite dynamics by something else; for
                 //   example, when bounce-back is used as an "eraser tool" at
                 //   inlets/outlets.
                 if (dynamics.isComposite()) {
-                    dynamic_cast<CompositeDynamics<T,Descriptor>&>(dynamics)
-                        .prepareCollision(cell);
+                    dynamic_cast<CompositeDynamics<T, Descriptor> &>(dynamics).prepareCollision(
+                        cell);
                 }
             }
         }
     }
 }
 
-template<typename T, template<typename U> class Descriptor>
-WrappedLocalBoundaryFunctional3D<T,Descriptor>*
-    WrappedLocalBoundaryFunctional3D<T,Descriptor>::clone() const
+template <typename T, template <typename U> class Descriptor>
+WrappedLocalBoundaryFunctional3D<T, Descriptor>
+    *WrappedLocalBoundaryFunctional3D<T, Descriptor>::clone() const
 {
-    return new WrappedLocalBoundaryFunctional3D<T,Descriptor>(*this);
+    return new WrappedLocalBoundaryFunctional3D<T, Descriptor>(*this);
 }
 
 }  // namespace plb

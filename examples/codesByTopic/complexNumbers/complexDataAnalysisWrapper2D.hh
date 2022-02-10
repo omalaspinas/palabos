@@ -5,7 +5,7 @@
  * own the IP rights for most of the code base. Since October 2019, the
  * Palabos project is maintained by the University of Geneva and accepts
  * source code contributions from the community.
- * 
+ *
  * Contact:
  * Jonas Latt
  * Computer Science Department
@@ -14,7 +14,7 @@
  * 1227 Carouge, Switzerland
  * jonas.latt@unige.ch
  *
- * The most recent release of Palabos can be downloaded at 
+ * The most recent release of Palabos can be downloaded at
  * <https://palabos.unige.ch/>
  *
  * The library Palabos is free software: you can redistribute it and/or
@@ -29,7 +29,7 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 /** \file
  * Helper functions for domain initialization -- header file.
@@ -41,140 +41,159 @@
 #include "multiBlock/multiDataProcessorWrapper2D.h"
 #include "typeConverterFunctional2D.hh"
 
-
 namespace plb {
 
 /* ******************************************************************* */
 /* *************** PART I. Atomic-block wrappers: Block-Lattice ****** */
 /* ******************************************************************* */
 
-/* *************** From Complex to real MultiScalar and MultiTensor Fields ******************************* */
+/* *************** From Complex to real MultiScalar and MultiTensor Fields
+ * ******************************* */
 
-template<typename T, typename U>
-void realPart( ScalarField2D<T>& complexField,
-               ScalarField2D<U>& realField,
-               Box2D domain) {
-    applyProcessingFunctional(new FromComplexToRealScalarFieldFunctional2D<T,U> , domain, complexField, realField);
+template <typename T, typename U>
+void realPart(ScalarField2D<T> &complexField, ScalarField2D<U> &realField, Box2D domain)
+{
+    applyProcessingFunctional(
+        new FromComplexToRealScalarFieldFunctional2D<T, U>, domain, complexField, realField);
 }
 
-template<typename T, typename U>
-std::unique_ptr<ScalarField2D<U> > realPart(ScalarField2D<T>& complexField, Box2D domain) {
-    ScalarField2D<U> *realField = new ScalarField2D<U>(complexField.getNx(),complexField.getNy());
+template <typename T, typename U>
+std::unique_ptr<ScalarField2D<U> > realPart(ScalarField2D<T> &complexField, Box2D domain)
+{
+    ScalarField2D<U> *realField = new ScalarField2D<U>(complexField.getNx(), complexField.getNy());
     realPart(complexField, *realField, domain);
     return std::unique_ptr<ScalarField2D<U> >(realField);
 }
 
-template<typename T, typename U>
-void imaginaryPart( ScalarField2D<T>& complexField,
-                    ScalarField2D<U>& realField,
-                    Box2D domain) {
-    applyProcessingFunctional(new FromComplexToImaginaryScalarFieldFunctional2D<T,U> , domain, complexField, realField);
+template <typename T, typename U>
+void imaginaryPart(ScalarField2D<T> &complexField, ScalarField2D<U> &realField, Box2D domain)
+{
+    applyProcessingFunctional(
+        new FromComplexToImaginaryScalarFieldFunctional2D<T, U>, domain, complexField, realField);
 }
 
-template<typename T, typename U>
-std::unique_ptr<ScalarField2D<U> > imaginaryPart(ScalarField2D<T>& complexField, Box2D domain) {
-    ScalarField2D<U> *realField = new ScalarField2D<U>(complexField.getNx(),complexField.getNy());
+template <typename T, typename U>
+std::unique_ptr<ScalarField2D<U> > imaginaryPart(ScalarField2D<T> &complexField, Box2D domain)
+{
+    ScalarField2D<U> *realField = new ScalarField2D<U>(complexField.getNx(), complexField.getNy());
     imaginaryPart(complexField, *realField, domain);
     return std::unique_ptr<ScalarField2D<U> >(realField);
 }
 
-/* ***** For TensorFields ****/    
+/* ***** For TensorFields ****/
 
-
-template<typename T, typename R, int d>
-void realPart( TensorField2D<T,d>& complexField,
-               TensorField2D<R,d>& realField,
-               Box2D domain) {
-    applyProcessingFunctional(new FromComplexToRealTensorFieldFunctional2D<T,R,d> , domain, complexField, realField);
+template <typename T, typename R, int d>
+void realPart(TensorField2D<T, d> &complexField, TensorField2D<R, d> &realField, Box2D domain)
+{
+    applyProcessingFunctional(
+        new FromComplexToRealTensorFieldFunctional2D<T, R, d>, domain, complexField, realField);
 }
 
-template<typename T, typename R, int d>
-std::unique_ptr<TensorField2D<R,d> > realPart(TensorField2D<T,d>& complexField, Box2D domain) {
-    TensorField2D<R,d> *realField = new TensorField2D<R,d>(complexField.getNx(),complexField.getNy());
+template <typename T, typename R, int d>
+std::unique_ptr<TensorField2D<R, d> > realPart(TensorField2D<T, d> &complexField, Box2D domain)
+{
+    TensorField2D<R, d> *realField =
+        new TensorField2D<R, d>(complexField.getNx(), complexField.getNy());
     realPart(complexField, *realField, domain);
-    return std::unique_ptr<TensorField2D<R,d> >(realField);
+    return std::unique_ptr<TensorField2D<R, d> >(realField);
 }
 
-
-template<typename T, typename R, int d>
-void imaginaryPart(TensorField2D<T,d>& complexField,
-                   TensorField2D<R,d>& realField,
-                   Box2D domain) {
-    applyProcessingFunctional(new FromComplexToImaginaryTensorFieldFunctional2D<T,R,d> , domain, complexField, realField);
+template <typename T, typename R, int d>
+void imaginaryPart(TensorField2D<T, d> &complexField, TensorField2D<R, d> &realField, Box2D domain)
+{
+    applyProcessingFunctional(
+        new FromComplexToImaginaryTensorFieldFunctional2D<T, R, d>, domain, complexField,
+        realField);
 }
 
-template<typename T, typename R, int d>
-std::unique_ptr<TensorField2D<R,d> > imaginaryPart(TensorField2D<T,d>& complexField, Box2D domain) {
-    TensorField2D<R,d> *realField = new TensorField2D<R,d>(complexField.getNx(),complexField.getNy());
+template <typename T, typename R, int d>
+std::unique_ptr<TensorField2D<R, d> > imaginaryPart(TensorField2D<T, d> &complexField, Box2D domain)
+{
+    TensorField2D<R, d> *realField =
+        new TensorField2D<R, d>(complexField.getNx(), complexField.getNy());
     imaginaryPart(complexField, *realField, domain);
-    return std::unique_ptr<TensorField2D<R,d> >(realField);
-}   
+    return std::unique_ptr<TensorField2D<R, d> >(realField);
+}
 
 /* ************************************************************************* */
 /* *************** PART IV. Multi-block wrappers: Multi-Block-Lattice ****** */
 /* ************************************************************************* */
 
-/* *************** From Complex to real MultiScalar and MultiTensor Fields ******************************* */
+/* *************** From Complex to real MultiScalar and MultiTensor Fields
+ * ******************************* */
 
-template<typename T, typename U>
-void realPart( MultiScalarField2D<T>& complexField,
-               MultiScalarField2D<U>& realField,
-               Box2D domain) {
-    applyProcessingFunctional(new FromComplexToRealScalarFieldFunctional2D<T,U> , domain, complexField, realField);
+template <typename T, typename U>
+void realPart(MultiScalarField2D<T> &complexField, MultiScalarField2D<U> &realField, Box2D domain)
+{
+    applyProcessingFunctional(
+        new FromComplexToRealScalarFieldFunctional2D<T, U>, domain, complexField, realField);
 }
 
-template<typename T, typename U>
-std::unique_ptr<MultiScalarField2D<U> > realPart(MultiScalarField2D<T>& complexField, Box2D domain) {
-    MultiScalarField2D<U> *realField = new MultiScalarField2D<U>(complexField.getNx(),complexField.getNy());
+template <typename T, typename U>
+std::unique_ptr<MultiScalarField2D<U> > realPart(MultiScalarField2D<T> &complexField, Box2D domain)
+{
+    MultiScalarField2D<U> *realField =
+        new MultiScalarField2D<U>(complexField.getNx(), complexField.getNy());
     realPart(complexField, *realField, domain);
     return std::unique_ptr<MultiScalarField2D<U> >(realField);
 }
 
-template<typename T, typename U>
-void imaginaryPart( MultiScalarField2D<T>& complexField,
-                    MultiScalarField2D<U>& realField,
-                    Box2D domain) {
-    applyProcessingFunctional(new FromComplexToImaginaryScalarFieldFunctional2D<T,U> , domain, complexField, realField);
+template <typename T, typename U>
+void imaginaryPart(
+    MultiScalarField2D<T> &complexField, MultiScalarField2D<U> &realField, Box2D domain)
+{
+    applyProcessingFunctional(
+        new FromComplexToImaginaryScalarFieldFunctional2D<T, U>, domain, complexField, realField);
 }
 
-template<typename T, typename U>
-std::unique_ptr<MultiScalarField2D<U> > imaginaryPart(MultiScalarField2D<T>& complexField, Box2D domain) {
-    MultiScalarField2D<U> *realField = new MultiScalarField2D<U>(complexField.getNx(),complexField.getNy());
+template <typename T, typename U>
+std::unique_ptr<MultiScalarField2D<U> > imaginaryPart(
+    MultiScalarField2D<T> &complexField, Box2D domain)
+{
+    MultiScalarField2D<U> *realField =
+        new MultiScalarField2D<U>(complexField.getNx(), complexField.getNy());
     imaginaryPart(complexField, *realField, domain);
     return std::unique_ptr<MultiScalarField2D<U> >(realField);
 }
 
-/* ***** For MultiTensorFields ****/    
+/* ***** For MultiTensorFields ****/
 
-
-template<typename T, typename R, int d>
-void realPart( MultiTensorField2D<T,d>& complexField,
-               MultiTensorField2D<R,d>& realField,
-               Box2D domain) {
-    applyProcessingFunctional(new FromComplexToRealTensorFieldFunctional2D<T,R,d> , domain, complexField, realField);
+template <typename T, typename R, int d>
+void realPart(
+    MultiTensorField2D<T, d> &complexField, MultiTensorField2D<R, d> &realField, Box2D domain)
+{
+    applyProcessingFunctional(
+        new FromComplexToRealTensorFieldFunctional2D<T, R, d>, domain, complexField, realField);
 }
 
-template<typename T, typename R, int d>
-std::unique_ptr<MultiTensorField2D<R,d> > realPart(MultiTensorField2D<T,d>& complexField, Box2D domain) {
-    MultiTensorField2D<R,d> *realField = new MultiTensorField2D<R,d>(complexField.getNx(),complexField.getNy());
+template <typename T, typename R, int d>
+std::unique_ptr<MultiTensorField2D<R, d> > realPart(
+    MultiTensorField2D<T, d> &complexField, Box2D domain)
+{
+    MultiTensorField2D<R, d> *realField =
+        new MultiTensorField2D<R, d>(complexField.getNx(), complexField.getNy());
     realPart(complexField, *realField, domain);
-    return std::unique_ptr<MultiTensorField2D<R,d> >(realField);
+    return std::unique_ptr<MultiTensorField2D<R, d> >(realField);
 }
 
-
-template<typename T, typename R, int d>
-void imaginaryPart(MultiTensorField2D<T,d>& complexField,
-                   MultiTensorField2D<R,d>& realField,
-                   Box2D domain) {
-    applyProcessingFunctional(new FromComplexToImaginaryTensorFieldFunctional2D<T,R,d> , domain, complexField, realField);
+template <typename T, typename R, int d>
+void imaginaryPart(
+    MultiTensorField2D<T, d> &complexField, MultiTensorField2D<R, d> &realField, Box2D domain)
+{
+    applyProcessingFunctional(
+        new FromComplexToImaginaryTensorFieldFunctional2D<T, R, d>, domain, complexField,
+        realField);
 }
 
-template<typename T, typename R, int d>
-std::unique_ptr<MultiTensorField2D<R,d> > imaginaryPart(MultiTensorField2D<T,d>& complexField, Box2D domain) {
-    MultiTensorField2D<R,d> *realField = new MultiTensorField2D<R,d>(complexField.getNx(),complexField.getNy());
+template <typename T, typename R, int d>
+std::unique_ptr<MultiTensorField2D<R, d> > imaginaryPart(
+    MultiTensorField2D<T, d> &complexField, Box2D domain)
+{
+    MultiTensorField2D<R, d> *realField =
+        new MultiTensorField2D<R, d>(complexField.getNx(), complexField.getNy());
     imaginaryPart(complexField, *realField, domain);
-    return std::unique_ptr<MultiTensorField2D<R,d> >(realField);
-}   
+    return std::unique_ptr<MultiTensorField2D<R, d> >(realField);
+}
 
 }  // namespace plb
 

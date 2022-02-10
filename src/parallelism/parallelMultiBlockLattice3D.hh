@@ -5,7 +5,7 @@
  * own the IP rights for most of the code base. Since October 2019, the
  * Palabos project is maintained by the University of Geneva and accepts
  * source code contributions from the community.
- * 
+ *
  * Contact:
  * Jonas Latt
  * Computer Science Department
@@ -14,7 +14,7 @@
  * 1227 Carouge, Switzerland
  * jonas.latt@unige.ch
  *
- * The most recent release of Palabos can be downloaded at 
+ * The most recent release of Palabos can be downloaded at
  * <https://palabos.unige.ch/>
  *
  * The library Palabos is free software: you can redistribute it and/or
@@ -29,7 +29,7 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 /** \file
  * Helper classes for parallel 3D multiblock lattice -- generic implementation.
@@ -37,11 +37,10 @@
 #ifndef PARALLEL_MULTI_BLOCK_LATTICE_3D_HH
 #define PARALLEL_MULTI_BLOCK_LATTICE_3D_HH
 
-#include "parallelism/parallelMultiBlockLattice3D.h"
-#include "parallelism/parallelDynamics.h"
-#include "multiBlock/staticRepartitions3D.h"
 #include "atomicBlock/blockLattice3D.h"
-
+#include "multiBlock/staticRepartitions3D.h"
+#include "parallelism/parallelDynamics.h"
+#include "parallelism/parallelMultiBlockLattice3D.h"
 
 #ifdef PLB_MPI_PARALLEL
 
@@ -49,77 +48,79 @@ namespace plb {
 
 ////////////////////// Class ParallelCellAccess3D /////////////////////
 
-template<typename T, template<typename U> class Descriptor>
-ParallelCellAccess3D<T,Descriptor>::ParallelCellAccess3D()
-    : parallelDynamics( 0 )
+template <typename T, template <typename U> class Descriptor>
+ParallelCellAccess3D<T, Descriptor>::ParallelCellAccess3D() : parallelDynamics(0)
 { }
 
-template<typename T, template<typename U> class Descriptor>
-ParallelCellAccess3D<T,Descriptor>::~ParallelCellAccess3D() {
+template <typename T, template <typename U> class Descriptor>
+ParallelCellAccess3D<T, Descriptor>::~ParallelCellAccess3D()
+{
     delete parallelDynamics;
 }
 
-template<typename T, template<typename U> class Descriptor>
-void ParallelCellAccess3D<T,Descriptor>::broadCastCell(Cell<T,Descriptor>& cell, plint fromBlock,
-                                                       MultiBlockManagement3D const& multiBlockManagement) const
+template <typename T, template <typename U> class Descriptor>
+void ParallelCellAccess3D<T, Descriptor>::broadCastCell(
+    Cell<T, Descriptor> &cell, plint fromBlock,
+    MultiBlockManagement3D const &multiBlockManagement) const
 {
     const plint sizeOfCell = Descriptor<T>::q + Descriptor<T>::ExternalField::numScalars;
-    char* cellData = new char[sizeOfCell*sizeof(T)];
+    char *cellData = new char[sizeOfCell * sizeof(T)];
     plint fromProc = multiBlockManagement.getThreadAttribution().getMpiProcess(fromBlock);
-    if (global::mpi().getRank()==fromProc) {
+    if (global::mpi().getRank() == fromProc) {
         cell.serialize(cellData);
     }
     global::mpi().bCast(cellData, sizeOfCell, fromProc);
     cell.unSerialize(cellData);
-    delete [] cellData;
+    delete[] cellData;
 }
 
-template<typename T, template<typename U> class Descriptor>
-Cell<T,Descriptor>& ParallelCellAccess3D<T,Descriptor>::getDistributedCell (
-        plint iX, plint iY, plint iZ,
-        MultiBlockManagement3D const& multiBlockManagement,
-        std::map<plint,BlockLattice3D<T,Descriptor>*>& lattices )
+template <typename T, template <typename U> class Descriptor>
+Cell<T, Descriptor> &ParallelCellAccess3D<T, Descriptor>::getDistributedCell(
+    plint iX, plint iY, plint iZ, MultiBlockManagement3D const &multiBlockManagement,
+    std::map<plint, BlockLattice3D<T, Descriptor> *> &lattices)
 {
     std::vector<plint> foundId;
     std::vector<plint> foundX, foundY, foundZ;
-    bool hasBulkCell =
-        multiBlockManagement.findAllLocalRepresentations(iX,iY,iZ, foundId, foundX, foundY, foundZ);
+    bool hasBulkCell = multiBlockManagement.findAllLocalRepresentations(
+        iX, iY, iZ, foundId, foundX, foundY, foundZ);
     baseCells.clear();
-    for (pluint iBlock=0; iBlock<foundId.size(); ++iBlock) {
+    for (pluint iBlock = 0; iBlock < foundId.size(); ++iBlock) {
         plint foundBlock = foundId[iBlock];
-        baseCells.push_back ( &lattices[foundBlock] -> get ( foundX[iBlock], foundY[iBlock], foundZ[iBlock] ) );
+        baseCells.push_back(
+            &lattices[foundBlock]->get(foundX[iBlock], foundY[iBlock], foundZ[iBlock]));
     }
     delete parallelDynamics;
-    parallelDynamics = new ParallelDynamics<T,Descriptor>(baseCells, hasBulkCell);
+    parallelDynamics = new ParallelDynamics<T, Descriptor>(baseCells, hasBulkCell);
     distributedCell.attributeDynamics(parallelDynamics);
     return distributedCell;
 }
 
-template<typename T, template<typename U> class Descriptor>
-Cell<T,Descriptor> const& ParallelCellAccess3D<T,Descriptor>::getDistributedCell (
-        plint iX, plint iY, plint iZ,
-        MultiBlockManagement3D const& multiBlockManagement,
-        std::map<plint,BlockLattice3D<T,Descriptor>*> const& lattices ) const
+template <typename T, template <typename U> class Descriptor>
+Cell<T, Descriptor> const &ParallelCellAccess3D<T, Descriptor>::getDistributedCell(
+    plint iX, plint iY, plint iZ, MultiBlockManagement3D const &multiBlockManagement,
+    std::map<plint, BlockLattice3D<T, Descriptor> *> const &lattices) const
 {
     std::vector<plint> foundId;
     std::vector<plint> foundX, foundY, foundZ;
-    bool hasBulkCell =
-        multiBlockManagement.findAllLocalRepresentations(iX,iY,iZ, foundId, foundX, foundY, foundZ);
+    bool hasBulkCell = multiBlockManagement.findAllLocalRepresentations(
+        iX, iY, iZ, foundId, foundX, foundY, foundZ);
     constBaseCells.clear();
-    for (pluint iBlock=0; iBlock<foundId.size(); ++iBlock) {
+    for (pluint iBlock = 0; iBlock < foundId.size(); ++iBlock) {
         plint foundBlock = foundId[iBlock];
-        typename std::map<plint,BlockLattice3D<T,Descriptor>*>::const_iterator it = lattices.find(foundBlock);
-        constBaseCells.push_back ( &it->second -> get ( foundX[iBlock], foundY[iBlock], foundZ[iBlock] ) );
+        typename std::map<plint, BlockLattice3D<T, Descriptor> *>::const_iterator it =
+            lattices.find(foundBlock);
+        constBaseCells.push_back(&it->second->get(foundX[iBlock], foundY[iBlock], foundZ[iBlock]));
     }
     delete parallelDynamics;
-    parallelDynamics = new ConstParallelDynamics<T,Descriptor>(constBaseCells, hasBulkCell);
+    parallelDynamics = new ConstParallelDynamics<T, Descriptor>(constBaseCells, hasBulkCell);
     distributedCell.attributeDynamics(parallelDynamics);
     return distributedCell;
 }
 
-template<typename T, template<typename U> class Descriptor>
-ParallelCellAccess3D<T,Descriptor>* ParallelCellAccess3D<T,Descriptor>::clone() const {
-    return new ParallelCellAccess3D<T,Descriptor>;
+template <typename T, template <typename U> class Descriptor>
+ParallelCellAccess3D<T, Descriptor> *ParallelCellAccess3D<T, Descriptor>::clone() const
+{
+    return new ParallelCellAccess3D<T, Descriptor>;
 }
 
 }  // namespace plb

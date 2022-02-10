@@ -5,7 +5,7 @@
  * own the IP rights for most of the code base. Since October 2019, the
  * Palabos project is maintained by the University of Geneva and accepts
  * source code contributions from the community.
- * 
+ *
  * Contact:
  * Jonas Latt
  * Computer Science Department
@@ -14,7 +14,7 @@
  * 1227 Carouge, Switzerland
  * jonas.latt@unige.ch
  *
- * The most recent release of Palabos can be downloaded at 
+ * The most recent release of Palabos can be downloaded at
  * <https://palabos.unige.ch/>
  *
  * The library Palabos is free software: you can redistribute it and/or
@@ -29,19 +29,19 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 #ifndef CONNECTED_TRIANGLE_SET_H
 #define CONNECTED_TRIANGLE_SET_H
 
-#include "core/array.h"
-#include "core/globalDefs.h"
-#include "core/geometry3D.h"
-#include "offLattice/triangleSet.h"
-
-#include <vector>
 #include <set>
 #include <string>
+#include <vector>
+
+#include "core/array.h"
+#include "core/geometry3D.h"
+#include "core/globalDefs.h"
+#include "offLattice/triangleSet.h"
 
 namespace plb {
 
@@ -55,16 +55,31 @@ namespace plb {
  * is that the ConnectedTriangleSet represents a triangular mesh which does
  * not need to be well formed or even manifold.
  */
-template<typename T>
+template <typename T>
 class ConnectedTriangleSet {
 public:
-    ConnectedTriangleSet(TriangleSet<T> const& triangleSet);
+    ConnectedTriangleSet(TriangleSet<T> const &triangleSet);
 
-    plint getNumVertices() const { return numVertices; }
-    plint getNumTriangles() const { return numTriangles; }
-    Array<T,3> getVertex(plint iVertex) const { return vertices[iVertex]; }
-    Array<plint,3> getTriangle(plint iTriangle) const { return triangles[iTriangle]; }
-    std::vector<plint> getTrianglesOnVertex(plint iVertex) const { return trianglesOnVertex[iVertex]; }
+    plint getNumVertices() const
+    {
+        return numVertices;
+    }
+    plint getNumTriangles() const
+    {
+        return numTriangles;
+    }
+    Array<T, 3> getVertex(plint iVertex) const
+    {
+        return vertices[iVertex];
+    }
+    Array<plint, 3> getTriangle(plint iTriangle) const
+    {
+        return triangles[iTriangle];
+    }
+    std::vector<plint> getTrianglesOnVertex(plint iVertex) const
+    {
+        return trianglesOnVertex[iVertex];
+    }
     /*
      * This class contains geometrical and topological information in its data.
      * The only piece of geometrical information is the vector "vertices" which holds
@@ -78,7 +93,7 @@ public:
      * topology must be retained). This function will swap the vertex vectors, as its name
      * suggests.
      */
-    void swapGeometry(std::vector<Array<T,3> >& newVertices);
+    void swapGeometry(std::vector<Array<T, 3> > &newVertices);
     /*
      * Relative to the comment above, quantities like the area and the unit normal can
      * be computed for any set of vertices that have the same topology. The next functions
@@ -98,46 +113,49 @@ public:
      * Needless to say that "iVertex" and "iTriangle" are the local ids of the current
      * ConnectedTriangleSet object.
      */
-    void computeVertexAreaAndUnitNormal(plint iVertex, T& area, Array<T,3>& unitNormal,
-            std::vector<Array<T,3> > *newVertices = 0, plint indexOffset = 0) const;
-    void computeTriangleAreaAndUnitNormal(plint iTriangle, T& area, Array<T,3>& unitNormal,
-            std::vector<Array<T,3> > *newVertices = 0, plint indexOffset = 0) const;
-    void writeOFF(std::string fname, std::vector<Array<T,3> > *newVertices = 0,
-            plint indexOffset = 0, int numDecimalDigits = 10) const;
-    TriangleSet<T>* toTriangleSet(Precision precision, std::vector<Array<T,3> > const* newVertices = 0,
-            plint indexOffset = 0) const;
-    TriangleSet<T>* toTriangleSet(T eps, std::vector<Array<T,3> > const* newVertices = 0,
-            plint indexOffset = 0) const;
+    void computeVertexAreaAndUnitNormal(
+        plint iVertex, T &area, Array<T, 3> &unitNormal, std::vector<Array<T, 3> > *newVertices = 0,
+        plint indexOffset = 0) const;
+    void computeTriangleAreaAndUnitNormal(
+        plint iTriangle, T &area, Array<T, 3> &unitNormal,
+        std::vector<Array<T, 3> > *newVertices = 0, plint indexOffset = 0) const;
+    void writeOFF(
+        std::string fname, std::vector<Array<T, 3> > *newVertices = 0, plint indexOffset = 0,
+        int numDecimalDigits = 10) const;
+    TriangleSet<T> *toTriangleSet(
+        Precision precision, std::vector<Array<T, 3> > const *newVertices = 0,
+        plint indexOffset = 0) const;
+    TriangleSet<T> *toTriangleSet(
+        T eps, std::vector<Array<T, 3> > const *newVertices = 0, plint indexOffset = 0) const;
+
 private:
     // To unify duplicated vertices they need to be inserted in a std::set container.
     struct VertexSetNode {
-        VertexSetNode(plint i_, Array<T,3> const* vertex_)
-            : i(i_), vertex(vertex_)
-        { }
-        Array<T,3> const& getPosition() const
+        VertexSetNode(plint i_, Array<T, 3> const *vertex_) : i(i_), vertex(vertex_) { }
+        Array<T, 3> const &getPosition() const
         {
             return *vertex;
         }
-        plint i;                  // Global index of the vertex
-        Array<T,3> const* vertex; // Pointer to vertex coordinates
+        plint i;                    // Global index of the vertex
+        Array<T, 3> const *vertex;  // Pointer to vertex coordinates
     };
 
-    typedef std::set<VertexSetNode,PositionLessThan3D<T,VertexSetNode> > VertexSet;
+    typedef std::set<VertexSetNode, PositionLessThan3D<T, VertexSetNode> > VertexSet;
     typedef typename VertexSet::iterator VertexSetIterator;
     typedef typename VertexSet::const_iterator VertexSetConstIterator;
+
 private:
-    plint numVertices, numTriangles;                    // Total number of unique vertices,
-                                                        // and total number of triangles.
-    std::vector<Array<T,3> > vertices;                  // Positions of vertices. The vector
-                                                        // index is the global vertex index.
-    std::vector<Array<plint,3> > triangles;             // Global indices of the vertices that
-                                                        // constitute the triangle. The vector
-                                                        // index is the global triangle index.
-    std::vector<std::vector<plint> > trianglesOnVertex; // List of the triangle global indices
-                                                        // that meet on a vertex.
+    plint numVertices, numTriangles;                     // Total number of unique vertices,
+                                                         // and total number of triangles.
+    std::vector<Array<T, 3> > vertices;                  // Positions of vertices. The vector
+                                                         // index is the global vertex index.
+    std::vector<Array<plint, 3> > triangles;             // Global indices of the vertices that
+                                                         // constitute the triangle. The vector
+                                                         // index is the global triangle index.
+    std::vector<std::vector<plint> > trianglesOnVertex;  // List of the triangle global indices
+                                                         // that meet on a vertex.
 };
 
-} // namespace plb
+}  // namespace plb
 
 #endif  // CONNECTED_TRIANGLE_SET_H
-

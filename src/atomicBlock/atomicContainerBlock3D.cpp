@@ -5,7 +5,7 @@
  * own the IP rights for most of the code base. Since October 2019, the
  * Palabos project is maintained by the University of Geneva and accepts
  * source code contributions from the community.
- * 
+ *
  * Contact:
  * Jonas Latt
  * Computer Science Department
@@ -14,7 +14,7 @@
  * 1227 Carouge, Switzerland
  * jonas.latt@unige.ch
  *
- * The most recent release of Palabos can be downloaded at 
+ * The most recent release of Palabos can be downloaded at
  * <https://palabos.unige.ch/>
  *
  * The library Palabos is free software: you can redistribute it and/or
@@ -29,51 +29,56 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 #include "atomicBlock/atomicContainerBlock3D.h"
 
 namespace plb {
 
-AtomicContainerBlock3D::AtomicContainerBlock3D(plint nx_, plint ny_, plint nz_)
-    : AtomicBlock3D(nx_,ny_,nz_, new AtomicContainerDataTransfer3D() ),
-      data(0)
+AtomicContainerBlock3D::AtomicContainerBlock3D(plint nx_, plint ny_, plint nz_) :
+    AtomicBlock3D(nx_, ny_, nz_, new AtomicContainerDataTransfer3D()), data(0)
 { }
 
-AtomicContainerBlock3D::~AtomicContainerBlock3D() {
+AtomicContainerBlock3D::~AtomicContainerBlock3D()
+{
     delete data;
 }
 
-AtomicContainerBlock3D& AtomicContainerBlock3D::operator=(AtomicContainerBlock3D const& rhs) {
+AtomicContainerBlock3D &AtomicContainerBlock3D::operator=(AtomicContainerBlock3D const &rhs)
+{
     AtomicContainerBlock3D tmp(rhs);
     swap(tmp);
     return *this;
 }
 
-AtomicContainerBlock3D::AtomicContainerBlock3D(AtomicContainerBlock3D const& rhs)
-    : AtomicBlock3D(rhs),
-      data(rhs.data ? rhs.data->clone() : 0)
+AtomicContainerBlock3D::AtomicContainerBlock3D(AtomicContainerBlock3D const &rhs) :
+    AtomicBlock3D(rhs), data(rhs.data ? rhs.data->clone() : 0)
 { }
 
-void AtomicContainerBlock3D::swap(AtomicContainerBlock3D& rhs) {
+void AtomicContainerBlock3D::swap(AtomicContainerBlock3D &rhs)
+{
     std::swap(data, rhs.data);
     AtomicBlock3D::swap(rhs);
 }
 
-void AtomicContainerBlock3D::setData(ContainerBlockData* data_) {
+void AtomicContainerBlock3D::setData(ContainerBlockData *data_)
+{
     delete data;
     data = data_;
 }
 
-ContainerBlockData* AtomicContainerBlock3D::getData() {
+ContainerBlockData *AtomicContainerBlock3D::getData()
+{
     return data;
 }
 
-ContainerBlockData const* AtomicContainerBlock3D::getData() const {
+ContainerBlockData const *AtomicContainerBlock3D::getData() const
+{
     return data;
 }
 
-identifiers::BlockId AtomicContainerBlock3D::getBlockId() const {
+identifiers::BlockId AtomicContainerBlock3D::getBlockId() const
+{
     return identifiers::getContainerId();
 }
 

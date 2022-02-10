@@ -5,7 +5,7 @@
  * own the IP rights for most of the code base. Since October 2019, the
  * Palabos project is maintained by the University of Geneva and accepts
  * source code contributions from the community.
- * 
+ *
  * Contact:
  * Jonas Latt
  * Computer Science Department
@@ -14,7 +14,7 @@
  * 1227 Carouge, Switzerland
  * jonas.latt@unige.ch
  *
- * The most recent release of Palabos can be downloaded at 
+ * The most recent release of Palabos can be downloaded at
  * <https://palabos.unige.ch/>
  *
  * The library Palabos is free software: you can redistribute it and/or
@@ -29,46 +29,57 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 #ifndef TRIANGLE_SET_H
 #define TRIANGLE_SET_H
 
-#include "core/globalDefs.h"
-#include "core/geometry3D.h"
-#include "core/array.h"
-#include "offLattice/triangleSelector.h"
-
+#include <cstdio>
 #include <string>
 #include <vector>
-#include <cstdio>
+
+#include "core/array.h"
+#include "core/geometry3D.h"
+#include "core/globalDefs.h"
+#include "offLattice/triangleSelector.h"
 
 namespace plb {
 
-template<typename T>
+template <typename T>
 class TriangleSet {
 public:
-    typedef Array<Array<T,3>,3> Triangle;
+    typedef Array<Array<T, 3>, 3> Triangle;
+
 public:
     TriangleSet(Precision precision_ = DBL);
     TriangleSet(T eps_);
-    TriangleSet(std::vector<Triangle> const& triangles_, Precision precision_ = DBL, TriangleSelector<T>* selector = 0);
-    TriangleSet(std::vector<Triangle> const& triangles_, T eps_, TriangleSelector<T>* selector = 0);
+    TriangleSet(
+        std::vector<Triangle> const &triangles_, Precision precision_ = DBL,
+        TriangleSelector<T> *selector = 0);
+    TriangleSet(std::vector<Triangle> const &triangles_, T eps_, TriangleSelector<T> *selector = 0);
     // Currently only STL and OFF files are supported by this class.
-    TriangleSet(std::string fname, Precision precision_ = DBL, SurfaceGeometryFileFormat fformat = STL,
-            TriangleSelector<T>* selector = 0);
-    TriangleSet(std::string fname, T eps_, SurfaceGeometryFileFormat fformat = STL,
-            TriangleSelector<T>* selector = 0);
+    TriangleSet(
+        std::string fname, Precision precision_ = DBL, SurfaceGeometryFileFormat fformat = STL,
+        TriangleSelector<T> *selector = 0);
+    TriangleSet(
+        std::string fname, T eps_, SurfaceGeometryFileFormat fformat = STL,
+        TriangleSelector<T> *selector = 0);
 
-    TriangleSet<T>* clone() const { return new TriangleSet<T>(*this); }
+    TriangleSet<T> *clone() const
+    {
+        return new TriangleSet<T>(*this);
+    }
 
-    std::vector<Triangle> const& getTriangles() const;
-    T getEpsilon() const { return eps; }
+    std::vector<Triangle> const &getTriangles() const;
+    T getEpsilon() const
+    {
+        return eps;
+    }
     void setPrecision(Precision precision_);
     void setEpsilon(T eps_);
 
     /// Translate the triangle set surface mesh.
-    void translate(Array<T,3> const& vector);
+    void translate(Array<T, 3> const &vector);
     /// Scale the triangle set surface mesh uniformly in all directions.
     void scale(T alpha);
     /// Scale the triangle set surface mesh differently in each direction.
@@ -85,15 +96,15 @@ public:
     /// Rotate the triangle set by an angle theta around an axis that
     ///   traverses the origin and points in the direction normedAxis
     ///   (which must be normalized).
-    void rotateAtOrigin(Array<T,3> const& normedAxis, T theta);
+    void rotateAtOrigin(Array<T, 3> const &normedAxis, T theta);
     /// Executes a rotation to the obstacle which, if applied to the
     ///   x- and y- axes, would apply them to the new x- and y- axes
     ///   as provided.
-    void rotateAxesTo(Array<T,3> const& ex, Array<T,3> const& ey);
+    void rotateAxesTo(Array<T, 3> const &ex, Array<T, 3> const &ey);
     /// Executes a rotation to the obstacle which, if applied to the
     ///   provided new x- and y- axes, would rotate them back to the
     ///   x- and y-axes of the origin.
-    void rotateAxesFrom(Array<T,3> const& ex, Array<T,3> const& ey);
+    void rotateAxesFrom(Array<T, 3> const &ex, Array<T, 3> const &ey);
 
     /// Clear the triangle mesh (free all the associated memory as well).
     void clear();
@@ -106,7 +117,7 @@ public:
     ///   make sure that the resulting mesh is well defined.
     ///   Practically, this can be achieved if the new triangle set
     ///   meshes given as arguments are mutually disjoint.
-    void merge(std::vector<TriangleSet<T>*> meshes);
+    void merge(std::vector<TriangleSet<T> *> meshes);
 
     /// Append to the current triangle mesh, the mesh that is passed as an argument.
     ///   This function currently does not check for duplicate
@@ -116,7 +127,7 @@ public:
     ///   make sure that the resulting mesh is well defined.
     ///   Practically, this can be achieved if the two triangle set
     ///   meshes are mutually disjoint.
-    void append(TriangleSet<T> const& mesh);
+    void append(TriangleSet<T> const &mesh);
 
     /// Refine the current triangle set surface mesh by splitting each
     ///   original triangle into four smaller triangles constructed by
@@ -160,10 +171,10 @@ public:
 
     /// Select a subset of all triangles by using a TriangleSelector.
     ///   The TriangleSet contains only the selected triangles after this operation.
-    void select(TriangleSelector<T> const& selector);
+    void select(TriangleSelector<T> const &selector);
 
     /// Remove all triangles with a normal n that verifies n*normal >= tolerance.
-    void removeTrianglesWithOrientation(Array<T,3> const& normal, T tolerance);
+    void removeTrianglesWithOrientation(Array<T, 3> const &normal, T tolerance);
 
     /// A very simple orientation reversing function.
     void reverseOrientation();
@@ -184,21 +195,27 @@ public:
     /// Export the mesh as an ASCII STL file.
     /// If mainProcOnly = false, then all processes will write, a fact which the
     /// caller must take under consideration when constructing the fname.
-    void writeAsciiSTL(std::string fname, int numDecimalDigits = 10, bool mainProcOnly = true,
-            TriangleSelector<T>* selector = 0) const;
-    void writeAsciiSTL(std::string fname, T scale, Array<T,3> const& offset, int numDecimalDigits = 10,
-            bool mainProcOnly = true, TriangleSelector<T>* selector = 0) const;
-    void writeAsciiContentSTL(FILE* fp, std::string solidName, T scale, Array<T,3> const& offset,
-            int numDecimalDigits, TriangleSelector<T>* selector) const;
+    void writeAsciiSTL(
+        std::string fname, int numDecimalDigits = 10, bool mainProcOnly = true,
+        TriangleSelector<T> *selector = 0) const;
+    void writeAsciiSTL(
+        std::string fname, T scale, Array<T, 3> const &offset, int numDecimalDigits = 10,
+        bool mainProcOnly = true, TriangleSelector<T> *selector = 0) const;
+    void writeAsciiContentSTL(
+        FILE *fp, std::string solidName, T scale, Array<T, 3> const &offset, int numDecimalDigits,
+        TriangleSelector<T> *selector) const;
 
     /// Export the mesh as an binary STL file.
     /// If mainProcOnly = false, then all processes will write, a fact which the
     /// caller must take under consideration when constructing the fname.
-    void writeBinarySTL(std::string fname, bool mainProcOnly = true, TriangleSelector<T>* selector = 0) const;
-    void writeBinarySTL(std::string fname, T scale, Array<T,3> const& offset, bool mainProcOnly = true,
-            TriangleSelector<T>* selector = 0) const;
-    void writeBinaryContentSTL(FILE* fp, std::string solidName, T scale, Array<T,3> const& offset,
-            TriangleSelector<T>* selector) const;
+    void writeBinarySTL(
+        std::string fname, bool mainProcOnly = true, TriangleSelector<T> *selector = 0) const;
+    void writeBinarySTL(
+        std::string fname, T scale, Array<T, 3> const &offset, bool mainProcOnly = true,
+        TriangleSelector<T> *selector = 0) const;
+    void writeBinaryContentSTL(
+        FILE *fp, std::string solidName, T scale, Array<T, 3> const &offset,
+        TriangleSelector<T> *selector) const;
 
     /// Cut the current triangle set mesh by a plane "plane" which is
     ///   defined by a point and a normal. This cutting operation will
@@ -208,7 +225,7 @@ public:
     ///   the cut was successful, 0 if there was no intersection between
     ///   the original triangle set and the plane provided, and -1 if an
     ///   error occurred.
-    int cutWithPlane(Plane<T> const& plane, TriangleSet<T>& newTriangleSet) const;
+    int cutWithPlane(Plane<T> const &plane, TriangleSet<T> &newTriangleSet) const;
 
     /// Cut the current triangle set mesh by a plane "plane" which is
     ///   defined by a point and a normal and a cuboid "cuboid" which is
@@ -224,32 +241,48 @@ public:
     ///   broken STL files. The function returns 1 if the cut was successful,
     ///   0 if there was no intersection between the original triangle set
     ///   the plane and the cuboid provided, and -1 if an error occurred.
-    int cutWithPlane(Plane<T> const& plane, Cuboid<T> const& cuboid,
-            TriangleSet<T>& newTriangleSet) const;
+    int cutWithPlane(
+        Plane<T> const &plane, Cuboid<T> const &cuboid, TriangleSet<T> &newTriangleSet) const;
 
-    T getMinEdgeLength() const { return minEdgeLength; }
-    T getMaxEdgeLength() const { return maxEdgeLength; }
+    T getMinEdgeLength() const
+    {
+        return minEdgeLength;
+    }
+    T getMaxEdgeLength() const
+    {
+        return maxEdgeLength;
+    }
 
-    T getMinTriangleArea() const { return minTriangleArea; }
-    T getMaxTriangleArea() const { return maxTriangleArea; }
+    T getMinTriangleArea() const
+    {
+        return minTriangleArea;
+    }
+    T getMaxTriangleArea() const
+    {
+        return maxTriangleArea;
+    }
 
-    Cuboid<T> getBoundingCuboid() const { return boundingCuboid; }
-    Array<T,3> getCentroid() const;
-    Array<T,3> getCenterOfMass() const;
+    Cuboid<T> getBoundingCuboid() const
+    {
+        return boundingCuboid;
+    }
+    Array<T, 3> getCentroid() const;
+    Array<T, 3> getCenterOfMass() const;
 
 private:
-    void readSTL(std::string fname, TriangleSelector<T>* selector);
-    bool isAsciiSTL(FILE* fp);
-    void readAsciiSTL(FILE* fp, TriangleSelector<T>* selector);
-    void readBinarySTL(FILE* fp, TriangleSelector<T>* selector);
-    void readOFF(std::string fname, TriangleSelector<T>* selector);
-    void readAsciiOFF(FILE* fp, TriangleSelector<T>* selector);
-    bool triangleHasZeroArea(Triangle const& triangle, T epsilon) const;
-    bool triangleHasZeroLengthEdges(Triangle const& triangle, T epsilon) const;
-    void fixOrientation(Triangle& triangle, Array<T,3> const& n) const;
-    bool areTheSameTriangle(Triangle const& t1, Triangle const& t2, T epsilon) const;
-    bool containedAndErase(Triangle const& triangle, std::vector<Triangle>& triangles, T epsilon) const;
-    void computeMinMaxEdge(pluint iTriangle, T& minEdge, T& maxEdge) const;
+    void readSTL(std::string fname, TriangleSelector<T> *selector);
+    bool isAsciiSTL(FILE *fp);
+    void readAsciiSTL(FILE *fp, TriangleSelector<T> *selector);
+    void readBinarySTL(FILE *fp, TriangleSelector<T> *selector);
+    void readOFF(std::string fname, TriangleSelector<T> *selector);
+    void readAsciiOFF(FILE *fp, TriangleSelector<T> *selector);
+    bool triangleHasZeroArea(Triangle const &triangle, T epsilon) const;
+    bool triangleHasZeroLengthEdges(Triangle const &triangle, T epsilon) const;
+    void fixOrientation(Triangle &triangle, Array<T, 3> const &n) const;
+    bool areTheSameTriangle(Triangle const &t1, Triangle const &t2, T epsilon) const;
+    bool containedAndErase(
+        Triangle const &triangle, std::vector<Triangle> &triangles, T epsilon) const;
+    void computeMinMaxEdge(pluint iTriangle, T &minEdge, T &maxEdge) const;
     void computeMinMaxEdges();
     T computeArea(pluint iTriangle) const;
     void computeMinMaxAreas();
@@ -261,17 +294,18 @@ private:
     ///   the plane given points outside of. The function returns 1 if the
     ///   cut was successful, 0 if there was no intersection between the
     ///   original triangle set and the plane and -1 if an error occurred.
-    int cutTriangleWithPlane(Plane<T> const& plane, Triangle const& triangle,
-            std::vector<Triangle>& newTriangles, std::vector<Triangle>& newZeroAreaTriangles) const;
+    int cutTriangleWithPlane(
+        Plane<T> const &plane, Triangle const &triangle, std::vector<Triangle> &newTriangles,
+        std::vector<Triangle> &newZeroAreaTriangles) const;
     /// Skip nLines number of lines in the file.
-    void skipLines(plint nLines, FILE* fp) const;
+    void skipLines(plint nLines, FILE *fp) const;
     /// Read the file character-by-character. This function returns 0 if a non-white-space
     /// character is found, or EOF if the end-of-file is found. It "consumes" the
     /// rest of the line if the "commentCharacter" is found. Obviously, it works only
     /// with text files.
     int readAhead(FILE *fp, char commentCharacter) const;
     /// Check if the buffer which holds an input line of text is full.
-    bool checkForBufferOverflow(char* buf) const;
+    bool checkForBufferOverflow(char *buf) const;
 
 private:
     std::vector<Triangle> triangles;
@@ -281,6 +315,6 @@ private:
     T eps;  // Tolerance for floating point comparisons.
 };
 
-} // namespace plb
+}  // namespace plb
 
 #endif  // TRIANGLE_SET_H

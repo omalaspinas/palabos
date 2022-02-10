@@ -5,7 +5,7 @@
  * own the IP rights for most of the code base. Since October 2019, the
  * Palabos project is maintained by the University of Geneva and accepts
  * source code contributions from the community.
- * 
+ *
  * Contact:
  * Jonas Latt
  * Computer Science Department
@@ -14,7 +14,7 @@
  * 1227 Carouge, Switzerland
  * jonas.latt@unige.ch
  *
- * The most recent release of Palabos can be downloaded at 
+ * The most recent release of Palabos can be downloaded at
  * <https://palabos.unige.ch/>
  *
  * The library Palabos is free software: you can redistribute it and/or
@@ -29,11 +29,11 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 /** \file
  * Helper functions for the implementation of non-Newtonian Carreau
- * dynamics. 
+ * dynamics.
  */
 #ifndef CARREAU_DYNAMICS_TEMPLATES_H
 #define CARREAU_DYNAMICS_TEMPLATES_H
@@ -42,39 +42,42 @@
 
 namespace plb {
 
-template<typename T,int N>
-struct ImplicitOmega
-{
+template <typename T, int N>
+struct ImplicitOmega {
     T operator()(T alpha, T nu0_nuInfOverCs2, T nuInfOverCs2, T nMinusOneOverTwo, T omega0)
     {
-        ImplicitOmega<T,N-1> omega;
-        T omSqr = omega(alpha,nu0_nuInfOverCs2,nuInfOverCs2,nMinusOneOverTwo,omega0);
+        ImplicitOmega<T, N - 1> omega;
+        T omSqr = omega(alpha, nu0_nuInfOverCs2, nuInfOverCs2, nMinusOneOverTwo, omega0);
         omSqr *= omSqr;
-        
-        return (T)2/((T)1+(T)2*nu0_nuInfOverCs2*
-            std::pow((T)1+alpha*omSqr,nMinusOneOverTwo)+(T)2*nuInfOverCs2);
+
+        return (T)2
+               / ((T)1 + (T)2 * nu0_nuInfOverCs2 * std::pow((T)1 + alpha * omSqr, nMinusOneOverTwo)
+                  + (T)2 * nuInfOverCs2);
     }
 };
 
-template<typename T>
-struct ImplicitOmega<T,0>
-{
+template <typename T>
+struct ImplicitOmega<T, 0> {
     T operator()(T alpha, T nu0_nuInfOverCs2, T nuInfOverCs2, T nMinusOneOverTwo, T omega0)
     {
-        return (T)2/((T)1+(T)2*nu0_nuInfOverCs2*std::pow((T)1+
-            alpha*omega0*omega0,nMinusOneOverTwo)+(T)2*nuInfOverCs2);
+        return (T)2
+               / ((T)1
+                  + (T)2 * nu0_nuInfOverCs2
+                        * std::pow((T)1 + alpha * omega0 * omega0, nMinusOneOverTwo)
+                  + (T)2 * nuInfOverCs2);
     }
 };
 
 /// This structure forwards the calls to the appropriate helper class
-template<typename T, int N>
+template <typename T, int N>
 struct carreauDynamicsTemplates {
-    static T fromPiAndRhoToOmega(T alpha, T nu0_nuInfOverCs2, T nuInfOverCs2, T nMinusOneOverTwo, T omega0) 
-{
-    ImplicitOmega<T,N> omega;
-    
-    return omega(alpha,nu0_nuInfOverCs2,nuInfOverCs2,nMinusOneOverTwo,omega0);
-}
+    static T fromPiAndRhoToOmega(
+        T alpha, T nu0_nuInfOverCs2, T nuInfOverCs2, T nMinusOneOverTwo, T omega0)
+    {
+        ImplicitOmega<T, N> omega;
+
+        return omega(alpha, nu0_nuInfOverCs2, nuInfOverCs2, nMinusOneOverTwo, omega0);
+    }
 
 };  // struct carreauDynamicsTemplates
 

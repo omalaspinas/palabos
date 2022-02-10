@@ -5,7 +5,7 @@
  * own the IP rights for most of the code base. Since October 2019, the
  * Palabos project is maintained by the University of Geneva and accepts
  * source code contributions from the community.
- * 
+ *
  * Contact:
  * Jonas Latt
  * Computer Science Department
@@ -14,7 +14,7 @@
  * 1227 Carouge, Switzerland
  * jonas.latt@unige.ch
  *
- * The most recent release of Palabos can be downloaded at 
+ * The most recent release of Palabos can be downloaded at
  * <https://palabos.unige.ch/>
  *
  * The library Palabos is free software: you can redistribute it and/or
@@ -29,13 +29,14 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 #ifndef BENCHMARK_UTIL_H
 #define BENCHMARK_UTIL_H
 
-#include "core/globalDefs.h"
 #include <deque>
+
+#include "core/globalDefs.h"
 
 namespace plb {
 
@@ -49,7 +50,7 @@ namespace util {
  * The statistics are taken over a macroscopic time scale of the
  * system.
  */
-template<typename T>
+template <typename T>
 class ValueTracer {
 public:
     /// The only constructor.
@@ -67,7 +68,7 @@ public:
     /// Get characteristic time scale.
     plint getDeltaT() const;
     /// Feed the object with a new measured scalar.
-    void takeValue(T val, bool doPrint=false);
+    void takeValue(T val, bool doPrint = false);
     /// Test for convergence, with respect to stdDev.
     bool hasConverged() const;
     /// Test for convergence, with respect to difference between min and max value;
@@ -75,11 +76,12 @@ public:
     T computeAverage() const;
     T computeStdDev(T average) const;
     void setEpsilon(T epsilon_);
+
 private:
-    plint    deltaT;
-    T      epsilon;
-    plint    t;
-    bool   converged;
+    plint deltaT;
+    T epsilon;
+    plint t;
+    bool converged;
     std::deque<T> values;
 };
 
@@ -88,27 +90,28 @@ private:
  * increments/decrements of the scalar, and then, by successive
  * bisection.
  */
-template<typename T>
+template <typename T>
 class BisectStepper {
 public:
-   /// The only constructor.
-   /** \param _iniVal Initial guess for the stability limit.
-    * \param _step   Step size at which the value is initially
-    *                incremented/decremented.
-    */
-    BisectStepper(T _iniVal, T _step=0.);
+    /// The only constructor.
+    /** \param _iniVal Initial guess for the stability limit.
+     * \param _step   Step size at which the value is initially
+     *                incremented/decremented.
+     */
+    BisectStepper(T _iniVal, T _step = 0.);
     /// Get new value, and indicate if the previous value yielded a stable system or not.
-    T getVal(bool stable, bool doPrint=false);
+    T getVal(bool stable, bool doPrint = false);
     /// Test for convergence.
     bool hasConverged(T epsilon) const;
+
 private:
     T iniVal, currentVal, lowerVal, upperVal;
     T step;
-    enum {first, up, down, bisect} state;
+    enum { first, up, down, bisect } state;
 };
 
-} // namespace util
+}  // namespace util
 
-} // namespace plb
+}  // namespace plb
 
 #endif

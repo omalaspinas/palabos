@@ -5,7 +5,7 @@
  * own the IP rights for most of the code base. Since October 2019, the
  * Palabos project is maintained by the University of Geneva and accepts
  * source code contributions from the community.
- * 
+ *
  * Contact:
  * Jonas Latt
  * Computer Science Department
@@ -14,7 +14,7 @@
  * 1227 Carouge, Switzerland
  * jonas.latt@unige.ch
  *
- * The most recent release of Palabos can be downloaded at 
+ * The most recent release of Palabos can be downloaded at
  * <https://palabos.unige.ch/>
  *
  * The library Palabos is free software: you can redistribute it and/or
@@ -29,120 +29,121 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 #ifndef KBCDYNAMICS_HH
 #define KBCDYNAMICS_HH
 
-#include "latticeBoltzmann/dynamicsTemplates.h"
-#include "latticeBoltzmann/momentTemplates.h"
-#include "latticeBoltzmann/externalForceTemplates.h"
-#include "latticeBoltzmann/kbcTemplates.h"
-
-#include "complexDynamics/kbcDynamics.h"
-#include "core/latticeStatistics.h"
-#include "core/dynamicsIdentifiers.h"
 #include <algorithm>
 #include <limits>
+
+#include "complexDynamics/kbcDynamics.h"
+#include "core/dynamicsIdentifiers.h"
+#include "core/latticeStatistics.h"
+#include "latticeBoltzmann/dynamicsTemplates.h"
+#include "latticeBoltzmann/externalForceTemplates.h"
+#include "latticeBoltzmann/kbcTemplates.h"
+#include "latticeBoltzmann/momentTemplates.h"
 
 namespace plb {
 
 //============================================================================//
 /////////////////////////// Class KBCDynamics ////////////////////////////////
 //============================================================================//
-template<typename T, template<typename U> class Descriptor>
-int KBCDynamics<T,Descriptor>::id =
-    meta::registerGeneralDynamics<T,Descriptor,KBCDynamics<T,Descriptor> >("KBCDynamics");
+template <typename T, template <typename U> class Descriptor>
+int KBCDynamics<T, Descriptor>::id =
+    meta::registerGeneralDynamics<T, Descriptor, KBCDynamics<T, Descriptor> >("KBCDynamics");
 
 /** \param omega_ relaxation parameter, related to the dynamic viscosity
  */
-template<typename T, template<typename U> class Descriptor>
-KBCDynamics<T,Descriptor>::KBCDynamics(T omega_)
-    : IsoThermalBulkDynamics<T,Descriptor>(omega_)
+template <typename T, template <typename U> class Descriptor>
+KBCDynamics<T, Descriptor>::KBCDynamics(T omega_) : IsoThermalBulkDynamics<T, Descriptor>(omega_)
 { }
 
-template<typename T, template<typename U> class Descriptor>
-KBCDynamics<T,Descriptor>::KBCDynamics(HierarchicUnserializer& unserializer)
-    : IsoThermalBulkDynamics<T,Descriptor>(T())
+template <typename T, template <typename U> class Descriptor>
+KBCDynamics<T, Descriptor>::KBCDynamics(HierarchicUnserializer &unserializer) :
+    IsoThermalBulkDynamics<T, Descriptor>(T())
 {
     this->unserialize(unserializer);
 }
 
-template<typename T, template<typename U> class Descriptor>
-KBCDynamics<T,Descriptor>* KBCDynamics<T,Descriptor>::clone() const {
-    return new KBCDynamics<T,Descriptor>(*this);
+template <typename T, template <typename U> class Descriptor>
+KBCDynamics<T, Descriptor> *KBCDynamics<T, Descriptor>::clone() const
+{
+    return new KBCDynamics<T, Descriptor>(*this);
 }
 
-template<typename T, template<typename U> class Descriptor>
-int KBCDynamics<T,Descriptor>::getId() const {
+template <typename T, template <typename U> class Descriptor>
+int KBCDynamics<T, Descriptor>::getId() const
+{
     return id;
 }
 
-template<typename T, template<typename U> class Descriptor>
-T KBCDynamics<T,Descriptor>::computeEquilibrium (
-        plint iPop, T rhoBar, Array<T,Descriptor<T>::d> const& j, T jSqr, T thetaBar ) const
+template <typename T, template <typename U> class Descriptor>
+T KBCDynamics<T, Descriptor>::computeEquilibrium(
+    plint iPop, T rhoBar, Array<T, Descriptor<T>::d> const &j, T jSqr, T thetaBar) const
 {
     typedef Descriptor<T> L;
-//    typedef kbcTemplates<T,Descriptor> kbc;
-//    Array<T, L::q > sEq, hEq, kEq, moments;
+    //    typedef kbcTemplates<T,Descriptor> kbc;
+    //    Array<T, L::q > sEq, hEq, kEq, moments;
 
-//    moments[0] = L::fullRho(rhoBar);
+    //    moments[0] = L::fullRho(rhoBar);
     T invRho = L::invRho(rhoBar);
-//    moments[1] = j[0]*invRho;
-//    moments[2] = j[1]*invRho;
-//    moments[3] = 2*L::cs2;
-//    moments[4] = (T)0.;
-//    moments[5] = (T)0.;
-//    moments[6] = (T)0.;
-//    moments[7] = (T)0.;
-//    moments[8] = L::cs2*L::cs2;
+    //    moments[1] = j[0]*invRho;
+    //    moments[2] = j[1]*invRho;
+    //    moments[3] = 2*L::cs2;
+    //    moments[4] = (T)0.;
+    //    moments[5] = (T)0.;
+    //    moments[6] = (T)0.;
+    //    moments[7] = (T)0.;
+    //    moments[8] = L::cs2*L::cs2;
 
-//    kbc::computeKEq(kEq, moments);
-//    kbc::computeSEq(sEq, moments);
-//    kbc::computeHEq(hEq, moments);
+    //    kbc::computeKEq(kEq, moments);
+    //    kbc::computeSEq(sEq, moments);
+    //    kbc::computeHEq(hEq, moments);
 
-//    return kEq[iPop] + sEq[iPop] + hEq[iPop] - L::SkordosFactor()*L::t[iPop];
-    return dynamicsTemplatesImpl<T,Descriptor<T> >::bgk_ma2_equilibrium(iPop, rhoBar, invRho, j, jSqr);
+    //    return kEq[iPop] + sEq[iPop] + hEq[iPop] - L::SkordosFactor()*L::t[iPop];
+    return dynamicsTemplatesImpl<T, Descriptor<T> >::bgk_ma2_equilibrium(
+        iPop, rhoBar, invRho, j, jSqr);
 }
 
-template<typename T, template<typename U> class Descriptor>
-void KBCDynamics<T,Descriptor>::collide (
-        Cell<T,Descriptor>& cell,
-        BlockStatistics& statistics )
+template <typename T, template <typename U> class Descriptor>
+void KBCDynamics<T, Descriptor>::collide(Cell<T, Descriptor> &cell, BlockStatistics &statistics)
 {
     typedef Descriptor<T> L;
-    typedef kbcTemplates<T,Descriptor> kbc;
+    typedef kbcTemplates<T, Descriptor> kbc;
 
     T rho;
-    Array<T,Descriptor<T>::d> u;
-    momentTemplates<T,Descriptor>::compute_rho_uLb(cell, rho, u);
-    T uSqr = VectorTemplate<T,Descriptor>::normSqr(u);
+    Array<T, Descriptor<T>::d> u;
+    momentTemplates<T, Descriptor>::compute_rho_uLb(cell, rho, u);
+    T uSqr = VectorTemplate<T, Descriptor>::normSqr(u);
     T rhoBar;
-    Array<T,Descriptor<T>::d> j;
-    momentTemplates<T,Descriptor>::get_rhoBar_j(cell, rhoBar, j);
-    T jSqr = VectorTemplate<T,Descriptor>::normSqr(j);
+    Array<T, Descriptor<T>::d> j;
+    momentTemplates<T, Descriptor>::get_rhoBar_j(cell, rhoBar, j);
+    T jSqr = VectorTemplate<T, Descriptor>::normSqr(j);
     T invRho = L::invRho(rhoBar);
 
-    Array<T, L::q > deltaS, deltaH, fEq, sEq, sFull, moments;
+    Array<T, L::q> deltaS, deltaH, fEq, sEq, sFull, moments;
 
     kbc::computeMomentsForS(moments, cell.getRawPopulations());
 
     kbc::computeSEq(sEq, moments);
     kbc::computeS(sFull, moments);
 
-    for(plint iPop=0; iPop<L::q; ++iPop){
-        //fEq[iPop] = kEq[iPop] + sEq[iPop] + hEq[iPop];
-        fEq[iPop] = dynamicsTemplatesImpl<T,Descriptor<T> >::bgk_ma2_equilibrium(iPop, rhoBar, invRho, j, jSqr);
-        fEq[iPop] += L::SkordosFactor()*L::t[iPop];
+    for (plint iPop = 0; iPop < L::q; ++iPop) {
+        // fEq[iPop] = kEq[iPop] + sEq[iPop] + hEq[iPop];
+        fEq[iPop] = dynamicsTemplatesImpl<T, Descriptor<T> >::bgk_ma2_equilibrium(
+            iPop, rhoBar, invRho, j, jSqr);
+        fEq[iPop] += L::SkordosFactor() * L::t[iPop];
 
         deltaS[iPop] = sFull[iPop] - sEq[iPop];
-        deltaH[iPop] = (cell[iPop] + L::SkordosFactor()*L::t[iPop]) - fEq[iPop] - deltaS[iPop];
+        deltaH[iPop] = (cell[iPop] + L::SkordosFactor() * L::t[iPop]) - fEq[iPop] - deltaS[iPop];
     }
 
     T gamma = computeGamma(deltaS, deltaH, fEq);
 
-    for(plint iPop=0; iPop<L::q; ++iPop){
-        cell[iPop] -= this->getOmega()*0.5*(2*deltaS[iPop] + gamma*deltaH[iPop]);
+    for (plint iPop = 0; iPop < L::q; ++iPop) {
+        cell[iPop] -= this->getOmega() * 0.5 * (2 * deltaS[iPop] + gamma * deltaH[iPop]);
     }
 
     if (cell.takesStatistics()) {
@@ -150,26 +151,27 @@ void KBCDynamics<T,Descriptor>::collide (
     }
 }
 
-template<typename T, template<typename U> class Descriptor>
-T KBCDynamics<T,Descriptor>::computeGamma(Array<T,Descriptor<T>::q> const& deltaS,
-                                            Array<T,Descriptor<T>::q> const& deltaH,
-                                            Array<T,Descriptor<T>::q> const& fEq)
+template <typename T, template <typename U> class Descriptor>
+T KBCDynamics<T, Descriptor>::computeGamma(
+    Array<T, Descriptor<T>::q> const &deltaS, Array<T, Descriptor<T>::q> const &deltaH,
+    Array<T, Descriptor<T>::q> const &fEq)
 {
     typedef Descriptor<T> L;
 
-    T invBeta = 2./this->getOmega();
+    T invBeta = 2. / this->getOmega();
 
     T deltaS_deltaH = T(0.);
     T deltaH_deltaH = T(0.);
-    for(plint iPop=0; iPop<L::q; ++iPop){
-        deltaS_deltaH += deltaS[iPop]*deltaH[iPop]/fEq[iPop];
-        deltaH_deltaH += deltaH[iPop]*deltaH[iPop]/fEq[iPop];
+    for (plint iPop = 0; iPop < L::q; ++iPop) {
+        deltaS_deltaH += deltaS[iPop] * deltaH[iPop] / fEq[iPop];
+        deltaH_deltaH += deltaH[iPop] * deltaH[iPop] / fEq[iPop];
     }
-    if(deltaS_deltaH == (T)0.) return 1.;
-    else return invBeta - (2 - invBeta) * deltaS_deltaH / deltaH_deltaH;
-
+    if (deltaS_deltaH == (T)0.)
+        return 1.;
+    else
+        return invBeta - (2 - invBeta) * deltaS_deltaH / deltaH_deltaH;
 }
 
-}
+}  // namespace plb
 
-#endif // KBCDYNAMICS_HH
+#endif  // KBCDYNAMICS_HH
