@@ -249,8 +249,10 @@ void buildConeGeometry()
     pcout << std::endl << "Voxelizing the domain." << std::endl;
     voxelizedDomain = new VoxelizedDomain3D<T>(
         *triangleBd, flowType, extraLayer, borderWidth, extendedEnvelopeWidth, blockSize);
+#ifndef PLB_REGRESSION
     pcout << getMultiBlockInfo(voxelizedDomain->getVoxelMatrix()) << std::endl;
     // At this point, the MultiScalarField voxelizedDomain->getVoxelMatrix() contains the cell tags.
+#endif
 }
 
 // Compute the dimensions of the cone in lattice units, and the relaxation parameter omega for the
