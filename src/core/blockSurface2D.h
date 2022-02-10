@@ -5,7 +5,7 @@
  * own the IP rights for most of the code base. Since October 2019, the
  * Palabos project is maintained by the University of Geneva and accepts
  * source code contributions from the community.
- * 
+ *
  * Contact:
  * Jonas Latt
  * Computer Science Department
@@ -14,7 +14,7 @@
  * 1227 Carouge, Switzerland
  * jonas.latt@unige.ch
  *
- * The most recent release of Palabos can be downloaded at 
+ * The most recent release of Palabos can be downloaded at
  * <https://palabos.unige.ch/>
  *
  * The library Palabos is free software: you can redistribute it and/or
@@ -29,7 +29,7 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 /** \file
  * Handling the surface area of a block -- header file.
@@ -37,16 +37,16 @@
 #ifndef BLOCK_SURFACE_2D_H
 #define BLOCK_SURFACE_2D_H
 
+#include "core/geometry2D.h"
 #include "core/globalDefs.h"
 #include "core/plbDebug.h"
-#include "core/geometry2D.h"
 
 namespace plb {
 
 /// Fragmentation of the surface of a block into bulk, edges, and corners.
 class BlockSurface2D {
 public:
-    BlockSurface2D(Box2D const& domain_, plint boundaryWidth);
+    BlockSurface2D(Box2D const &domain_, plint boundaryWidth);
     Box2D bulk() const;
     Box2D edge0N() const;
     Box2D edge0P() const;
@@ -56,6 +56,7 @@ public:
     Box2D cornerPN() const;
     Box2D cornerNP() const;
     Box2D cornerPP() const;
+
 private:
     Box2D domain;
     plint bw;
@@ -63,4 +64,4 @@ private:
 
 }  // namespace plb
 
-#endif //  BLOCK_SURFACE_2D_H
+#endif  //  BLOCK_SURFACE_2D_H

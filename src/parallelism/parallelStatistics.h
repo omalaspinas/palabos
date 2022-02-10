@@ -5,7 +5,7 @@
  * own the IP rights for most of the code base. Since October 2019, the
  * Palabos project is maintained by the University of Geneva and accepts
  * source code contributions from the community.
- * 
+ *
  * Contact:
  * Jonas Latt
  * Computer Science Department
@@ -14,7 +14,7 @@
  * 1227 Carouge, Switzerland
  * jonas.latt@unige.ch
  *
- * The most recent release of Palabos can be downloaded at 
+ * The most recent release of Palabos can be downloaded at
  * <https://palabos.unige.ch/>
  *
  * The library Palabos is free software: you can redistribute it and/or
@@ -29,7 +29,7 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 /** \file
  * The CombinedStatistics class -- header file.
@@ -37,9 +37,10 @@
 #ifndef PARALLEL_STATISTICS_H
 #define PARALLEL_STATISTICS_H
 
+#include <vector>
+
 #include "core/globalDefs.h"
 #include "multiBlock/combinedStatistics.h"
-#include <vector>
 
 namespace plb {
 
@@ -47,16 +48,15 @@ namespace plb {
 
 class ParallelCombinedStatistics : public CombinedStatistics {
 public:
-    virtual ParallelCombinedStatistics* clone() const;
+    virtual ParallelCombinedStatistics *clone() const;
+
 protected:
-    virtual void reduceStatistics (
-            std::vector<double>& averageObservables,
-            std::vector<double>& sumWeights,
-            std::vector<double>& sumObservables,
-            std::vector<double>& maxObservables,
-            std::vector<plint>& intSumObservables ) const;
+    virtual void reduceStatistics(
+        std::vector<double> &averageObservables, std::vector<double> &sumWeights,
+        std::vector<double> &sumObservables, std::vector<double> &maxObservables,
+        std::vector<plint> &intSumObservables) const;
 };
- 
+
 #endif  // PLB_MPI_PARALLEL
 
 }  // namespace plb

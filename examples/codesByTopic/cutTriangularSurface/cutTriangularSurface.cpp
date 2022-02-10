@@ -5,7 +5,7 @@
  * own the IP rights for most of the code base. Since October 2019, the
  * Palabos project is maintained by the University of Geneva and accepts
  * source code contributions from the community.
- * 
+ *
  * Contact:
  * Jonas Latt
  * Computer Science Department
@@ -14,7 +14,7 @@
  * 1227 Carouge, Switzerland
  * jonas.latt@unige.ch
  *
- * The most recent release of Palabos can be downloaded at 
+ * The most recent release of Palabos can be downloaded at
  * <https://palabos.unige.ch/>
  *
  * The library Palabos is free software: you can redistribute it and/or
@@ -29,12 +29,12 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 /** \file
-  * This program demonstrates how to cut surfaces represented as
-  * sets of triangles by using cutting planes and cuboids.
-  **/
+ * This program demonstrates how to cut surfaces represented as
+ * sets of triangles by using cutting planes and cuboids.
+ **/
 
 #include "palabos3D.h"
 #include "palabos3D.hh"
@@ -43,18 +43,18 @@ using namespace plb;
 
 typedef double T;
 
-
-int main(int argc, char* argv[])
+int main(int argc, char *argv[])
 {
     plbInit(&argc, &argv);
     global::directories().setOutputDir("./");
 
-    plint n = 80; // Resolution (cylinder diameter).
-    T radius = (T) n / 2.; // Cylinder radius.
-    Array<T,3> center(0.0, 0.0, 0.0); // Cylinder center.
-    T length = (T) (4 * n); // Cylinder length.
-    plint nAxial = n / 2; // Two parameters needed for the creation of the triangularized cylinder surface.
-    plint nCirc  = 3 * n / 2;
+    plint n = 80;                       // Resolution (cylinder diameter).
+    T radius = (T)n / 2.;               // Cylinder radius.
+    Array<T, 3> center(0.0, 0.0, 0.0);  // Cylinder center.
+    T length = (T)(4 * n);              // Cylinder length.
+    plint nAxial =
+        n / 2;  // Two parameters needed for the creation of the triangularized cylinder surface.
+    plint nCirc = 3 * n / 2;
 
     // Create a cylinder surface as a set of triangles.
     TriangleSet<T> cylinder;
@@ -62,8 +62,8 @@ int main(int argc, char* argv[])
     cylinder.writeAsciiSTL("cylinder.stl");
 
     // Define the cut plane by a point and a normal vector.
-    Array<T,3> cutPlanePoint(length / 3.3, 0.0, 0.0);
-    Array<T,3> cutPlaneNormal(-1.0, -0.1, -0.5);
+    Array<T, 3> cutPlanePoint(length / 3.3, 0.0, 0.0);
+    Array<T, 3> cutPlaneNormal(-1.0, -0.1, -0.5);
 
     Plane<T> cutPlane;
     cutPlane.point = cutPlanePoint;
@@ -90,8 +90,10 @@ int main(int argc, char* argv[])
     leftCylinderPart.writeAsciiSTL("leftCylinderPart.stl");
 
     // Use a cuboid to cut the cylinder (correct usage).
-    Array<T,3> lowerLeftCorner = cutPlanePoint - Array<T,3>(length, 5.0 * radius / 4.0, 5.0 * radius / 4.0);
-    Array<T,3> upperRightCorner = cutPlanePoint + Array<T,3>(length / 4.0, 5.0 * radius / 4.0, 5.0 * radius / 4.0);
+    Array<T, 3> lowerLeftCorner =
+        cutPlanePoint - Array<T, 3>(length, 5.0 * radius / 4.0, 5.0 * radius / 4.0);
+    Array<T, 3> upperRightCorner =
+        cutPlanePoint + Array<T, 3>(length / 4.0, 5.0 * radius / 4.0, 5.0 * radius / 4.0);
 
     Cuboid<T> cutCuboid;
     cutCuboid.lowerLeftCorner = lowerLeftCorner;
@@ -108,7 +110,7 @@ int main(int argc, char* argv[])
     newRightCylinderPart.writeAsciiSTL("newRightCylinderPart.stl");
 
     // Use a cuboid to cut the cylinder (wrong usage).
-    upperRightCorner = cutPlanePoint + Array<T,3>(0.0, radius, radius);
+    upperRightCorner = cutPlanePoint + Array<T, 3>(0.0, radius, radius);
 
     cutCuboid.upperRightCorner = upperRightCorner;
 
@@ -123,4 +125,3 @@ int main(int argc, char* argv[])
 
     return 0;
 }
-

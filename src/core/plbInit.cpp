@@ -5,7 +5,7 @@
  * own the IP rights for most of the code base. Since October 2019, the
  * Palabos project is maintained by the University of Geneva and accepts
  * source code contributions from the community.
- * 
+ *
  * Contact:
  * Jonas Latt
  * Computer Science Department
@@ -14,7 +14,7 @@
  * 1227 Carouge, Switzerland
  * jonas.latt@unige.ch
  *
- * The most recent release of Palabos can be downloaded at 
+ * The most recent release of Palabos can be downloaded at
  * <https://palabos.unige.ch/>
  *
  * The library Palabos is free software: you can redistribute it and/or
@@ -29,22 +29,25 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 /** \file
  * LB initialisation routine -- implementation file.
  */
 
 #include "core/plbInit.h"
+
+#include <sstream>
+
 #include "core/plbInit.hh"
 #include "core/plbProfiler.h"
 #include "core/plbRandom.h"
 #include "core/runTimeDiagnostics.h"
-#include <sstream>
 
 namespace plb {
 
-void plbInit(int *argc, char ***argv, bool verbous) {
+void plbInit(int *argc, char ***argv, bool verbous)
+{
     global::mpi().init(argc, argv, verbous);
     global::mainArguments().setArgs(*argc, argv);
     global::plbRandom<float>().seed(10);
@@ -53,7 +56,8 @@ void plbInit(int *argc, char ***argv, bool verbous) {
 }
 
 #ifdef PLB_MPI_PARALLEL
-void plbInit(MPI_Comm communicator) {
+void plbInit(MPI_Comm communicator)
+{
     global::mpi().init(communicator);
     global::plbRandom<float>().seed(10);
     global::plbRandom<double>().seed(10);
@@ -61,7 +65,8 @@ void plbInit(MPI_Comm communicator) {
 }
 #endif
 
-void plbInit() {
+void plbInit()
+{
     global::mpi().init();
     global::plbRandom<float>().seed(10);
     global::plbRandom<double>().seed(10);
@@ -70,73 +75,76 @@ void plbInit() {
 
 namespace global {
 
-    MainArgv::MainArgv(std::string argument_, int whichArg_)
-        : argument(argument_),
-          whichArg(whichArg_)
-    { }
+MainArgv::MainArgv(std::string argument_, int whichArg_) : argument(argument_), whichArg(whichArg_)
+{ }
 
-    MainArgv:: operator std::string() const {
-        return argument;
+MainArgv::operator std::string() const
+{
+    return argument;
+}
+
+int MainArgs::argc() const
+{
+    if (arguments.empty()) {
+        plbLogicError("Can't access command-line arguments: they have not yet been initialized.");
     }
+    return (int)arguments.size();
+}
 
-    int MainArgs::argc() const {
-        if (arguments.empty()) {
-            plbLogicError("Can't access command-line arguments: they have not yet been initialized.");
+MainArgv MainArgs::argv(int whichArg) const
+{
+    if (arguments.empty()) {
+        plbLogicError("Can't access command-line arguments: they have not yet been initialized.");
+    }
+    if (whichArg >= argc()) {
+        std::stringstream errMessage;
+        errMessage << "Can\'t read command-line argument " << whichArg << ": ";
+        if (argc() == 1) {
+            errMessage << "there are no command-line arguments";
+        } else if (argc() == 2) {
+            errMessage << "there is only one command-line argument";
+        } else {
+            errMessage << "there are only " << argc() - 1 << " arguments";
         }
-        return (int) arguments.size();
+        plbIOError(errMessage.str());
     }
+    return MainArgv(arguments[whichArg], whichArg);
+}
 
-    MainArgv MainArgs::argv(int whichArg) const {
-        if (arguments.empty()) {
-            plbLogicError("Can't access command-line arguments: they have not yet been initialized.");
-        }
-        if (whichArg >= argc()) {
-            std::stringstream errMessage;
-            errMessage << "Can\'t read command-line argument " << whichArg << ": ";
-            if (argc()==1) {
-                errMessage << "there are no command-line arguments";
-            }
-            else if (argc()==2) {
-                errMessage << "there is only one command-line argument";
-            }
-            else {
-                errMessage << "there are only " << argc()-1 << " arguments";
-            }
-            plbIOError(errMessage.str());
-        }
-        return MainArgv(arguments[whichArg], whichArg);
+MainArgs::MainArgs() { }
+
+void MainArgs::setArgs(int argcValue, char ***argvPointer)
+{
+    arguments.resize(argcValue);
+    for (plint iArg = 0; iArg < argcValue; ++iArg) {
+        arguments[iArg] = std::string((*argvPointer)[iArg]);
     }
+}
 
-    MainArgs::MainArgs()
-    { }
+void MainArgs::setArgs(std::vector<std::string> arguments_)
+{
+    arguments = arguments_;
+}
 
-    void MainArgs::setArgs(int argcValue, char*** argvPointer) {
-        arguments.resize(argcValue);
-        for (plint iArg=0; iArg<argcValue; ++iArg) {
-            arguments[iArg] = std::string((*argvPointer)[iArg]);
-        }
-    }
+MainArgs &mainArguments()
+{
+    static MainArgs instance;
+    return instance;
+}
 
-    void MainArgs::setArgs(std::vector<std::string> arguments_) {
-        arguments = arguments_;
-    }
+int argc()
+{
+    return mainArguments().argc();
+}
 
-    MainArgs& mainArguments() {
-        static MainArgs instance;
-        return instance;
-    }
+MainArgv argv(int whichArg)
+{
+    return mainArguments().argv(whichArg);
+}
 
-    int argc() {
-        return mainArguments().argc();
-    }
-
-    MainArgv argv(int whichArg) {
-        return mainArguments().argv(whichArg);
-    }
-
-    template void MainArgv::read<int>(int& variable);
-    template void MainArgv::read<double>(double& variable);
-    template void MainArgv::read<std::string>(std::string& variable);
+template void MainArgv::read<int>(int &variable);
+template void MainArgv::read<double>(double &variable);
+template void MainArgv::read<std::string>(std::string &variable);
 
 }  // namespace global
 

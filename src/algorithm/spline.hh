@@ -5,7 +5,7 @@
  * own the IP rights for most of the code base. Since October 2019, the
  * Palabos project is maintained by the University of Geneva and accepts
  * source code contributions from the community.
- * 
+ *
  * Contact:
  * Jonas Latt
  * Computer Science Department
@@ -14,7 +14,7 @@
  * 1227 Carouge, Switzerland
  * jonas.latt@unige.ch
  *
- * The most recent release of Palabos can be downloaded at 
+ * The most recent release of Palabos can be downloaded at
  * <https://palabos.unige.ch/>
  *
  * The library Palabos is free software: you can redistribute it and/or
@@ -29,33 +29,33 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 #ifndef SPLINE_HH
 #define SPLINE_HH
 
-#include "core/util.h"
-#include "core/globalDefs.h"
-#include "algorithm/spline.h"
-
 #include <cstdio>
 #include <limits>
+
+#include "algorithm/spline.h"
+#include "core/globalDefs.h"
+#include "core/util.h"
 
 namespace plb {
 
 /* ***************** class Spline ***************************************** */
 
-template<typename T>
+template <typename T>
 Spline<T>::Spline(std::string fname)
-{ 
+{
     FILE *fp = fopen(fname.c_str(), "r");
     PLB_ASSERT(fp != 0);
 
     long double tmp0, tmp1;
     while (!feof(fp))
         if (fscanf(fp, "%Lf%Lf", &tmp0, &tmp1) != EOF) {
-            x.push_back((T) tmp0);
-            y.push_back((T) tmp1);
+            x.push_back((T)tmp0);
+            y.push_back((T)tmp1);
         }
 
     fclose(fp);
@@ -63,21 +63,19 @@ Spline<T>::Spline(std::string fname)
     PLB_ASSERT(x.size() >= 2);
     PLB_ASSERT(x.size() == y.size());
 #ifdef PLB_DEBUG
-    for (plint i = 1; i < (plint) x.size(); i++) {
+    for (plint i = 1; i < (plint)x.size(); i++) {
         PLB_ASSERT(util::greaterThan(x[i], x[i - 1]));
     }
 #endif
 }
 
-template<typename T>
-Spline<T>::Spline(std::vector<T> const& x_, std::vector<T> const& y_)
-    : x(x_),
-      y(y_)
-{ 
+template <typename T>
+Spline<T>::Spline(std::vector<T> const &x_, std::vector<T> const &y_) : x(x_), y(y_)
+{
     PLB_ASSERT(x.size() >= 2);
     PLB_ASSERT(x.size() == y.size());
 #ifdef PLB_DEBUG
-    for (plint i = 1; i < (plint) x.size(); i++) {
+    for (plint i = 1; i < (plint)x.size(); i++) {
         PLB_ASSERT(util::greaterThan(x[i], x[i - 1]));
     }
 #endif
@@ -85,42 +83,41 @@ Spline<T>::Spline(std::vector<T> const& x_, std::vector<T> const& y_)
 
 /* ***************** class NaturalCubicSpline ***************************************** */
 
-template<typename T>
-NaturalCubicSpline<T>::NaturalCubicSpline(std::string fname)
-    : CubicSpline<T>(fname)
-{ 
+template <typename T>
+NaturalCubicSpline<T>::NaturalCubicSpline(std::string fname) : CubicSpline<T>(fname)
+{
     icache = 0;
     constructSpline();
 }
 
-template<typename T>
-NaturalCubicSpline<T>::NaturalCubicSpline(std::vector<T> const& x_, std::vector<T> const& y_)
-    : CubicSpline<T>(x_, y_)
-{ 
+template <typename T>
+NaturalCubicSpline<T>::NaturalCubicSpline(std::vector<T> const &x_, std::vector<T> const &y_) :
+    CubicSpline<T>(x_, y_)
+{
     icache = 0;
     constructSpline();
 }
 
-template<typename T>
-NaturalCubicSpline<T>* NaturalCubicSpline<T>::clone() const
+template <typename T>
+NaturalCubicSpline<T> *NaturalCubicSpline<T>::clone() const
 {
     return new NaturalCubicSpline<T>(*this);
 }
 
-template<typename T>
+template <typename T>
 void NaturalCubicSpline<T>::constructSpline()
 {
-    std::vector<T> const& x = this->getAbscissae();
-    std::vector<T> const& y = this->getOrdinates();
-    plint n = (plint) x.size();
-    std::vector<T> a1(n-1), a2(n-1), a3(n), a4(n), a5(n);
+    std::vector<T> const &x = this->getAbscissae();
+    std::vector<T> const &y = this->getOrdinates();
+    plint n = (plint)x.size();
+    std::vector<T> a1(n - 1), a2(n - 1), a3(n), a4(n), a5(n);
 
-    y1.resize(n-1);
+    y1.resize(n - 1);
     y2.resize(n);
-    y3.resize(n-1);
+    y3.resize(n - 1);
 
     // Calculate the spline coefficients for polynomials of the form:
-    // S_j(x) = y_j + y1_j * (x - x_j) + y2_j * (x - x_j)^2 + y3_j * (x - x_j)^3 
+    // S_j(x) = y_j + y1_j * (x - x_j) + y2_j * (x - x_j)^2 + y3_j * (x - x_j)^3
 
     for (plint i = 0; i < n - 1; i++)
         a1[i] = x[i + 1] - x[i];
@@ -148,14 +145,14 @@ void NaturalCubicSpline<T>::constructSpline()
         y3[i] = (y2[i + 1] - y2[i]) / (3.0 * a1[i]);
     }
 
-    y2.resize(n-1);
+    y2.resize(n - 1);
 }
 
 // Return an index i in the range from il to ih for which x[i] <= t < x[i + 1]
-template<typename T>
+template <typename T>
 plint NaturalCubicSpline<T>::bsrch(T t, plint il, plint ih) const
 {
-    std::vector<T> const& x = this->getAbscissae();
+    std::vector<T> const &x = this->getAbscissae();
     plint ilo = il;
     plint ihi = ih;
 
@@ -172,11 +169,11 @@ plint NaturalCubicSpline<T>::bsrch(T t, plint il, plint ih) const
     return ilo;
 }
 
-template<typename T>
-void NaturalCubicSpline<T>::locate(T& t) const
+template <typename T>
+void NaturalCubicSpline<T>::locate(T &t) const
 {
-    std::vector<T> const& x = this->getAbscissae();
-    plint n = (plint) x.size();
+    std::vector<T> const &x = this->getAbscissae();
+    plint n = (plint)x.size();
     if (util::lessEqual(t, x[0])) {
         t = x[0];
         icache = 0;
@@ -192,11 +189,11 @@ void NaturalCubicSpline<T>::locate(T& t) const
     }
 }
 
-template<typename T>
+template <typename T>
 T NaturalCubicSpline<T>::getFunctionValue(T t) const
 {
-    std::vector<T> const& x = this->getAbscissae();
-    std::vector<T> const& y = this->getOrdinates();
+    std::vector<T> const &x = this->getAbscissae();
+    std::vector<T> const &y = this->getOrdinates();
 
     locate(t);
 
@@ -205,10 +202,10 @@ T NaturalCubicSpline<T>::getFunctionValue(T t) const
     return ytmp;
 }
 
-template<typename T>
+template <typename T>
 T NaturalCubicSpline<T>::getDerivativeValue(T t) const
 {
-    std::vector<T> const& x = this->getAbscissae();
+    std::vector<T> const &x = this->getAbscissae();
 
     locate(t);
 
@@ -217,10 +214,10 @@ T NaturalCubicSpline<T>::getDerivativeValue(T t) const
     return ydtmp;
 }
 
-template<typename T>
+template <typename T>
 T NaturalCubicSpline<T>::getSecondDerivativeValue(T t) const
 {
-    std::vector<T> const& x = this->getAbscissae();
+    std::vector<T> const &x = this->getAbscissae();
 
     locate(t);
 
@@ -229,7 +226,7 @@ T NaturalCubicSpline<T>::getSecondDerivativeValue(T t) const
     return yd2tmp;
 }
 
-template<typename T>
+template <typename T>
 T NaturalCubicSpline<T>::getThirdDerivativeValue(T t) const
 {
     locate(t);
@@ -238,40 +235,40 @@ T NaturalCubicSpline<T>::getThirdDerivativeValue(T t) const
     return yd3tmp;
 }
 
-template<typename T>
+template <typename T>
 T NaturalCubicSpline<T>::getIntegralValue() const
 {
-    std::vector<T> const& x = this->getAbscissae();
-    std::vector<T> const& y = this->getOrdinates();
-    plint n = (plint) x.size();
+    std::vector<T> const &x = this->getAbscissae();
+    std::vector<T> const &y = this->getOrdinates();
+    plint n = (plint)x.size();
 
-    T integral = (T) 0;
-    for (plint i = 0; i < n-1; i++) {
+    T integral = (T)0;
+    for (plint i = 0; i < n - 1; i++) {
         T dx = x[i + 1] - x[i];
         integral += dx * (y[i] + dx * (y1[i] / 2.0 + dx * (y2[i] / 3.0 + dx * (y3[i] / 4.0))));
-    } 
+    }
 
     return integral;
 }
 
-template<typename T>
+template <typename T>
 T NaturalCubicSpline<T>::getIntegralValue(T t1, T t2) const
 {
     if (util::fpequal(t1, t2)) {
-        return ((T) 0);
+        return ((T)0);
     }
 
-    std::vector<T> const& x = this->getAbscissae();
-    std::vector<T> const& y = this->getOrdinates();
-    plint n = (plint) x.size();
+    std::vector<T> const &x = this->getAbscissae();
+    std::vector<T> const &y = this->getOrdinates();
+    plint n = (plint)x.size();
 
-    T sign = (T) 1;
+    T sign = (T)1;
     if (util::lessThan(t2, t1)) {
         std::swap(t1, t2);
-        sign = (T) -1;
+        sign = (T)-1;
     }
 
-    T leftIntegral = (T) 0;
+    T leftIntegral = (T)0;
     if (util::lessEqual(t1, x[0])) {
         if (util::lessEqual(t2, x[0])) {
             return sign * (t2 - t1) * y[0];
@@ -280,12 +277,12 @@ T NaturalCubicSpline<T>::getIntegralValue(T t1, T t2) const
         }
     }
 
-    T rightIntegral = (T) 0;
-    if (util::greaterEqual(t2, x[n-1])) {
-        if (util::greaterEqual(t1, x[n-1])) {
-            return sign * (t2 - t1) * y[n-1];
+    T rightIntegral = (T)0;
+    if (util::greaterEqual(t2, x[n - 1])) {
+        if (util::greaterEqual(t1, x[n - 1])) {
+            return sign * (t2 - t1) * y[n - 1];
         } else {
-            rightIntegral = (t2 - x[n-1]) * y[n-1];
+            rightIntegral = (t2 - x[n - 1]) * y[n - 1];
         }
     }
 
@@ -295,34 +292,36 @@ T NaturalCubicSpline<T>::getIntegralValue(T t1, T t2) const
     locate(t2);
     plint imax = icache;
 
-    T middleIntegral = (T) 0;
+    T middleIntegral = (T)0;
 
     if (imin == imax) {
         plint i = imin;
         T dxmin = t1 - x[i];
         T dxmax = t2 - x[i];
-        middleIntegral = y[i] * (t2 - t1) +
-            (y1[i]/2.0) * (dxmax*dxmax - dxmin*dxmin) +
-            (y2[i]/3.0) * (dxmax*dxmax*dxmax - dxmin*dxmin*dxmin) +
-            (y3[i]/4.0) * (dxmax*dxmax*dxmax*dxmax - dxmin*dxmin*dxmin*dxmin);
+        middleIntegral =
+            y[i] * (t2 - t1) + (y1[i] / 2.0) * (dxmax * dxmax - dxmin * dxmin)
+            + (y2[i] / 3.0) * (dxmax * dxmax * dxmax - dxmin * dxmin * dxmin)
+            + (y3[i] / 4.0) * (dxmax * dxmax * dxmax * dxmax - dxmin * dxmin * dxmin * dxmin);
     } else {
         plint i = imin;
         T dxmin = t1 - x[i];
         T dxmax = x[i + 1] - x[i];
-        middleIntegral = y[i] * (x[i + 1] - t1) +
-            (y1[i]/2.0) * (dxmax*dxmax - dxmin*dxmin) +
-            (y2[i]/3.0) * (dxmax*dxmax*dxmax - dxmin*dxmin*dxmin) +
-            (y3[i]/4.0) * (dxmax*dxmax*dxmax*dxmax - dxmin*dxmin*dxmin*dxmin);
+        middleIntegral =
+            y[i] * (x[i + 1] - t1) + (y1[i] / 2.0) * (dxmax * dxmax - dxmin * dxmin)
+            + (y2[i] / 3.0) * (dxmax * dxmax * dxmax - dxmin * dxmin * dxmin)
+            + (y3[i] / 4.0) * (dxmax * dxmax * dxmax * dxmax - dxmin * dxmin * dxmin * dxmin);
 
         T dx;
         for (i = imin + 1; i < imax; i++) {
             dx = x[i + 1] - x[i];
-            middleIntegral += dx * (y[i] + dx * (y1[i] / 2.0 + dx * (y2[i] / 3.0 + dx * (y3[i] / 4.0))));
-        } 
+            middleIntegral +=
+                dx * (y[i] + dx * (y1[i] / 2.0 + dx * (y2[i] / 3.0 + dx * (y3[i] / 4.0))));
+        }
 
         i = imax;
         dx = t2 - x[i];
-        middleIntegral += dx * (y[i] + dx * (y1[i] / 2.0 + dx * (y2[i] / 3.0 + dx * (y3[i] / 4.0))));
+        middleIntegral +=
+            dx * (y[i] + dx * (y1[i] / 2.0 + dx * (y2[i] / 3.0 + dx * (y3[i] / 4.0))));
     }
 
     return sign * (leftIntegral + middleIntegral + rightIntegral);

@@ -5,7 +5,7 @@
  * own the IP rights for most of the code base. Since October 2019, the
  * Palabos project is maintained by the University of Geneva and accepts
  * source code contributions from the community.
- * 
+ *
  * Contact:
  * Jonas Latt
  * Computer Science Department
@@ -14,7 +14,7 @@
  * 1227 Carouge, Switzerland
  * jonas.latt@unige.ch
  *
- * The most recent release of Palabos can be downloaded at 
+ * The most recent release of Palabos can be downloaded at
  * <https://palabos.unige.ch/>
  *
  * The library Palabos is free software: you can redistribute it and/or
@@ -29,21 +29,23 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 #include "io/serializerIO.h"
+
+#include <fstream>
+#include <iomanip>
+#include <istream>
+#include <limits>
+#include <ostream>
+#include <vector>
+
+#include "core/globalDefs.h"
+#include "core/plbDebug.h"
+#include "core/plbProfiler.h"
 #include "io/base64.h"
 #include "io/base64.hh"
 #include "io/endianness.h"
-#include "core/plbDebug.h"
-#include "core/plbProfiler.h"
-#include "core/globalDefs.h"
-#include <vector>
-#include <limits>
-#include <iomanip>
-#include <istream>
-#include <ostream>
-#include <fstream>
 
 namespace plb {
 
@@ -51,46 +53,45 @@ namespace plb {
 
 class Base64Writer : public SerializedWriter {
 public:
-    Base64Writer(std::ostream* ostr_, bool enforceUint_, bool switchEndianness_);
-    Base64Writer(Base64Writer const& rhs);
-    virtual Base64Writer* clone() const;
+    Base64Writer(std::ostream *ostr_, bool enforceUint_, bool switchEndianness_);
+    Base64Writer(Base64Writer const &rhs);
+    virtual Base64Writer *clone() const;
     ~Base64Writer();
     virtual void writeHeader(pluint dataSize);
-    virtual void writeData(char const* dataBuffer, pluint bufferSize);
+    virtual void writeData(char const *dataBuffer, pluint bufferSize);
+
 private:
-    std::ostream* ostr;
+    std::ostream *ostr;
     bool enforceUint;
     bool switchEndianness;
-    Base64Encoder<char>* dataEncoder;
+    Base64Encoder<char> *dataEncoder;
 };
 
-Base64Writer::Base64Writer(std::ostream* ostr_, bool enforceUint_, bool switchEndianness_)
-    : ostr(ostr_),
-      enforceUint(enforceUint_),
-      switchEndianness(switchEndianness_),
-      dataEncoder(0)
+Base64Writer::Base64Writer(std::ostream *ostr_, bool enforceUint_, bool switchEndianness_) :
+    ostr(ostr_), enforceUint(enforceUint_), switchEndianness(switchEndianness_), dataEncoder(0)
 { }
 
-Base64Writer::Base64Writer(Base64Writer const& rhs)
-    : ostr(rhs.ostr),
-      enforceUint(rhs.enforceUint),
-      dataEncoder(0)
+Base64Writer::Base64Writer(Base64Writer const &rhs) :
+    ostr(rhs.ostr), enforceUint(rhs.enforceUint), dataEncoder(0)
 {
     if (rhs.dataEncoder) {
         dataEncoder = new Base64Encoder<char>(*rhs.dataEncoder);
     }
 }
 
-Base64Writer* Base64Writer::clone() const {
+Base64Writer *Base64Writer::clone() const
+{
     return new Base64Writer(*this);
 }
 
-Base64Writer::~Base64Writer() {
+Base64Writer::~Base64Writer()
+{
     delete dataEncoder;
 }
 
-void Base64Writer::writeHeader(pluint dataSize) {
-    PLB_PRECONDITION( ostr && (bool)(*ostr) );
+void Base64Writer::writeHeader(pluint dataSize)
+{
+    PLB_PRECONDITION(ostr && (bool)(*ostr));
     if (enforceUint) {
         Base64Encoder<unsigned int> sizeEncoder(*ostr, 1);
         PLB_PRECONDITION(dataSize <= std::numeric_limits<unsigned int>::max());
@@ -99,8 +100,7 @@ void Base64Writer::writeHeader(pluint dataSize) {
             endianByteSwap(uintBinarySize);
         }
         sizeEncoder.encode(&uintBinarySize, 1);
-    }
-    else {
+    } else {
         Base64Encoder<pluint> sizeEncoder(*ostr, 1);
         if (switchEndianness) {
             endianByteSwap(dataSize);
@@ -110,98 +110,94 @@ void Base64Writer::writeHeader(pluint dataSize) {
     dataEncoder = new Base64Encoder<char>(*ostr, dataSize);
 }
 
-void Base64Writer::writeData(char const* dataBuffer, pluint bufferSize)
+void Base64Writer::writeData(char const *dataBuffer, pluint bufferSize)
 {
     global::profiler().start("io");
     dataEncoder->encode(dataBuffer, bufferSize);
     global::profiler().stop("io");
 }
 
-
 /* *************** Class RawBinaryWriter ******************************** */
 
 class RawBinaryWriter : public SerializedWriter {
 public:
-    RawBinaryWriter(std::ostream* ostr_);
-    RawBinaryWriter(RawBinaryWriter const& rhs);
-    virtual RawBinaryWriter* clone() const;
+    RawBinaryWriter(std::ostream *ostr_);
+    RawBinaryWriter(RawBinaryWriter const &rhs);
+    virtual RawBinaryWriter *clone() const;
     ~RawBinaryWriter();
     virtual void writeHeader(pluint dataSize);
-    virtual void writeData(char const* dataBuffer, pluint bufferSize);
+    virtual void writeData(char const *dataBuffer, pluint bufferSize);
+
 private:
-    std::ostream* ostr;
+    std::ostream *ostr;
 };
 
-RawBinaryWriter::RawBinaryWriter(std::ostream* ostr_)
-    : ostr(ostr_)
-{ }
+RawBinaryWriter::RawBinaryWriter(std::ostream *ostr_) : ostr(ostr_) { }
 
-RawBinaryWriter::RawBinaryWriter(RawBinaryWriter const& rhs)
-    : ostr(rhs.ostr)
-{ }
+RawBinaryWriter::RawBinaryWriter(RawBinaryWriter const &rhs) : ostr(rhs.ostr) { }
 
-RawBinaryWriter* RawBinaryWriter::clone() const {
+RawBinaryWriter *RawBinaryWriter::clone() const
+{
     return new RawBinaryWriter(*this);
 }
 
 RawBinaryWriter::~RawBinaryWriter() { }
 
-void RawBinaryWriter::writeHeader(pluint dataSize) {
-    ostr->write((char const*)&dataSize, sizeof(dataSize));
+void RawBinaryWriter::writeHeader(pluint dataSize)
+{
+    ostr->write((char const *)&dataSize, sizeof(dataSize));
 }
 
-void RawBinaryWriter::writeData(char const* dataBuffer, pluint bufferSize)
+void RawBinaryWriter::writeData(char const *dataBuffer, pluint bufferSize)
 {
     global::profiler().start("io");
     ostr->write(dataBuffer, (int)bufferSize);
     global::profiler().stop("io");
 }
 
-
 /* *************** Class Base64Reader ******************************** */
 
 class Base64Reader : public SerializedReader {
 public:
-    Base64Reader(std::istream* istr_, bool enforceUint_, bool switchEndianness_);
-    Base64Reader(Base64Reader const& rhs);
-    virtual Base64Reader* clone() const;
+    Base64Reader(std::istream *istr_, bool enforceUint_, bool switchEndianness_);
+    Base64Reader(Base64Reader const &rhs);
+    virtual Base64Reader *clone() const;
     ~Base64Reader();
     virtual void readHeader(pluint dataSize) const;
-    virtual void readData(char* dataBuffer, pluint bufferSize) const;
+    virtual void readData(char *dataBuffer, pluint bufferSize) const;
+
 private:
-    std::istream* istr;
+    std::istream *istr;
     bool enforceUint;
     bool switchEndianness;
-    mutable Base64Decoder<char>* dataDecoder;
+    mutable Base64Decoder<char> *dataDecoder;
 };
 
-Base64Reader::Base64Reader(std::istream* istr_, bool enforceUint_, bool switchEndianness_)
-    : istr(istr_),
-      enforceUint(enforceUint_),
-      switchEndianness(switchEndianness_),
-      dataDecoder(0)
+Base64Reader::Base64Reader(std::istream *istr_, bool enforceUint_, bool switchEndianness_) :
+    istr(istr_), enforceUint(enforceUint_), switchEndianness(switchEndianness_), dataDecoder(0)
 { }
 
-Base64Reader::Base64Reader(Base64Reader const& rhs)
-    : istr(rhs.istr),
-      enforceUint(rhs.enforceUint),
-      dataDecoder(0)
+Base64Reader::Base64Reader(Base64Reader const &rhs) :
+    istr(rhs.istr), enforceUint(rhs.enforceUint), dataDecoder(0)
 {
     if (rhs.dataDecoder) {
         dataDecoder = new Base64Decoder<char>(*rhs.dataDecoder);
     }
 }
 
-Base64Reader* Base64Reader::clone() const {
+Base64Reader *Base64Reader::clone() const
+{
     return new Base64Reader(*this);
 }
 
-Base64Reader::~Base64Reader() {
+Base64Reader::~Base64Reader()
+{
     delete dataDecoder;
 }
 
-void Base64Reader::readHeader(pluint dataSize) const {
-    PLB_PRECONDITION( istr && (bool)(*istr) );
+void Base64Reader::readHeader(pluint dataSize) const
+{
+    PLB_PRECONDITION(istr && (bool)(*istr));
     pluint binarySize = 0;
     if (enforceUint) {
         unsigned int uintBinarySize;
@@ -211,8 +207,7 @@ void Base64Reader::readHeader(pluint dataSize) const {
             endianByteSwap(uintBinarySize);
         }
         binarySize = uintBinarySize;
-    }
-    else {
+    } else {
         Base64Decoder<pluint> sizeDecoder(*istr, 1);
         sizeDecoder.decode(&binarySize, 1);
         if (switchEndianness) {
@@ -224,41 +219,36 @@ void Base64Reader::readHeader(pluint dataSize) const {
     dataDecoder = new Base64Decoder<char>(*istr, dataSize);
 }
 
-void Base64Reader::readData(char* dataBuffer, pluint bufferSize) const
+void Base64Reader::readData(char *dataBuffer, pluint bufferSize) const
 {
     global::profiler().start("io");
     dataDecoder->decode(dataBuffer, bufferSize);
     global::profiler().stop("io");
 }
 
-
 /* *************** Free functions ************************************ */
 
-void serializerToBase64Stream(DataSerializer const* serializer, std::ostream* ostr, bool enforceUint, bool mainProcOnly)
+void serializerToBase64Stream(
+    DataSerializer const *serializer, std::ostream *ostr, bool enforceUint, bool mainProcOnly)
 {
-    serializerToSink (
-            serializer,
-            new Base64Writer(ostr, enforceUint,
-                                global::IOpolicy().getEndianSwitchOnBase64out()),
-            mainProcOnly );
+    serializerToSink(
+        serializer,
+        new Base64Writer(ostr, enforceUint, global::IOpolicy().getEndianSwitchOnBase64out()),
+        mainProcOnly);
 }
 
-void serializerToRawBinaryStream(DataSerializer const* serializer, std::ostream* ostr, bool mainProcOnly)
+void serializerToRawBinaryStream(
+    DataSerializer const *serializer, std::ostream *ostr, bool mainProcOnly)
 {
-    serializerToSink (
-            serializer,
-            new RawBinaryWriter(ostr),
-            mainProcOnly );
+    serializerToSink(serializer, new RawBinaryWriter(ostr), mainProcOnly);
 }
 
-void base64StreamToUnSerializer( std::istream* istr, DataUnSerializer* unSerializer,
-                                 bool enforceUint, bool mainProcOnly )
+void base64StreamToUnSerializer(
+    std::istream *istr, DataUnSerializer *unSerializer, bool enforceUint, bool mainProcOnly)
 {
-    sourceToUnSerializer (
-            new Base64Reader(istr, enforceUint,
-                             global::IOpolicy().getEndianSwitchOnBase64in()),
-            unSerializer,
-            mainProcOnly );
+    sourceToUnSerializer(
+        new Base64Reader(istr, enforceUint, global::IOpolicy().getEndianSwitchOnBase64in()),
+        unSerializer, mainProcOnly);
 }
 
-} // namespace plb
+}  // namespace plb

@@ -5,7 +5,7 @@
  * own the IP rights for most of the code base. Since October 2019, the
  * Palabos project is maintained by the University of Geneva and accepts
  * source code contributions from the community.
- * 
+ *
  * Contact:
  * Jonas Latt
  * Computer Science Department
@@ -14,7 +14,7 @@
  * 1227 Carouge, Switzerland
  * jonas.latt@unige.ch
  *
- * The most recent release of Palabos can be downloaded at 
+ * The most recent release of Palabos can be downloaded at
  * <https://palabos.unige.ch/>
  *
  * The library Palabos is free software: you can redistribute it and/or
@@ -29,54 +29,58 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 #ifndef OCTREE_HH
 #define OCTREE_HH
 
-#include "gridRefinement/octree.h"
-
 #include <cstring>
 #include <vector>
 
+#include "gridRefinement/octree.h"
+
 namespace plb {
 
-template<typename DataT>
-OctreeNode<DataT>::OctreeNode(OctreeNode<DataT>* parent_, DataT* data_)
-    : data(data_), parent(parent_)
+template <typename DataT>
+OctreeNode<DataT>::OctreeNode(OctreeNode<DataT> *parent_, DataT *data_) :
+    data(data_), parent(parent_)
 {
-    level = (parent != 0 ? parent->level + 1 : 0);  // The level must be >= 0 for normal octrees. Negative levels are reserved.
+    level =
+        (parent != 0
+             ? parent->level + 1
+             : 0);  // The level must be >= 0 for normal octrees. Negative levels are reserved.
     isLeaf = true;
     memset(child, 0, sizeof child);
 }
 
-template<typename DataT>
-int octreeChildType(OctreeNode<DataT>* node)
+template <typename DataT>
+int octreeChildType(OctreeNode<DataT> *node)
 {
     int o = -1;
     if (node->parent != 0) {
-        if (node->parent->level >= 0) {     // Normal octree.
+        if (node->parent->level >= 0) {  // Normal octree.
             for (int i = 0; i < 8; i++) {
                 if (node->parent->child[i] == node) {
                     o = i;
                     break;
                 }
             }
-        } else if (node->parent->level == -1) {     // The levels -1 and -2 are reserved for the octree periodic extensions.
+        } else if (node->parent->level == -1)
+        {  // The levels -1 and -2 are reserved for the octree periodic extensions.
             o = 7;
         } else if (node->parent->level == -2) {
             o = 0;
         }
     }
-    return(o);
+    return (o);
 }
 
-template<typename DataT>
-void freeOctree(OctreeNode<DataT>* root)
+template <typename DataT>
+void freeOctree(OctreeNode<DataT> *root)
 {
     // Bottom-Up deallocation: Start deallocating at the leaves.
     for (int i = 0; i < 8; i++) {
-        OctreeNode<DataT>* child = root->child[i];
+        OctreeNode<DataT> *child = root->child[i];
         if (child != 0) {
             if (child->isLeaf) {
                 delete child->data;
@@ -90,21 +94,23 @@ void freeOctree(OctreeNode<DataT>* root)
     delete root;
 }
 
-template<typename DataT, class AssignData>
-void splitOctreeNode(OctreeNode<DataT>* node, AssignData& assignData)
+template <typename DataT, class AssignData>
+void splitOctreeNode(OctreeNode<DataT> *node, AssignData &assignData)
 {
     if (node->isLeaf) {
         for (int i = 0; i < 8; i++) {
-            OctreeNode<DataT>* child = new OctreeNode<DataT>(node, 0);   // Do not know how to split the data at this point.
+            OctreeNode<DataT> *child =
+                new OctreeNode<DataT>(node, 0);  // Do not know how to split the data at this point.
             node->child[i] = child;
-            assignData(node->child[i]); // Here the user-defined data is assigned to the child node.
+            assignData(
+                node->child[i]);  // Here the user-defined data is assigned to the child node.
         }
         node->isLeaf = false;
     }
 }
 
-template<typename DataT>
-void getMinMaxOctreeLeafNodeLevels(OctreeNode<DataT>* root, int& minLevel, int& maxLevel)
+template <typename DataT>
+void getMinMaxOctreeLeafNodeLevels(OctreeNode<DataT> *root, int &minLevel, int &maxLevel)
 {
     // minLevel and maxLevel must be properly initialized before calling this function.
     if (root == 0) {
@@ -116,7 +122,7 @@ void getMinMaxOctreeLeafNodeLevels(OctreeNode<DataT>* root, int& minLevel, int& 
         maxLevel = std::max(maxLevel, root->level);
     } else {
         for (int i = 0; i < 8; i++) {
-            OctreeNode<DataT>* child = root->child[i];
+            OctreeNode<DataT> *child = root->child[i];
             if (child != 0) {
                 getMinMaxOctreeLeafNodeLevels(child, minLevel, maxLevel);
             }
@@ -124,25 +130,25 @@ void getMinMaxOctreeLeafNodeLevels(OctreeNode<DataT>* root, int& minLevel, int& 
     }
 }
 
-template<typename DataT, class Process>
-void processOctreePreOrder(OctreeNode<DataT>* root, Process& process)
+template <typename DataT, class Process>
+void processOctreePreOrder(OctreeNode<DataT> *root, Process &process)
 {
     // Top-Down processing: Start processing at the root.
     process(root);
     for (int i = 0; i < 8; i++) {
-        OctreeNode<DataT>* child = root->child[i];
+        OctreeNode<DataT> *child = root->child[i];
         if (child != 0) {
             processOctreePreOrder(child, process);
         }
     }
 }
 
-template<typename DataT, class Process>
-void processOctreePostOrder(OctreeNode<DataT>* root, Process& process)
+template <typename DataT, class Process>
+void processOctreePostOrder(OctreeNode<DataT> *root, Process &process)
 {
     // Bottom-Up processing: Start processing at the leaves.
     for (int i = 0; i < 8; i++) {
-        OctreeNode<DataT>* child = root->child[i];
+        OctreeNode<DataT> *child = root->child[i];
         if (child != 0) {
             processOctreePostOrder(child, process);
         }
@@ -150,79 +156,82 @@ void processOctreePostOrder(OctreeNode<DataT>* root, Process& process)
     process(root);
 }
 
-template<typename DataT>
-OctreeNode<DataT>* getOctreeEqualFaceNeighbor(OctreeNode<DataT>* node, int face)
+template <typename DataT>
+OctreeNode<DataT> *getOctreeEqualFaceNeighbor(OctreeNode<DataT> *node, int face)
 {
     typedef OctreeTables OT;
 
     if (node == 0 || node->parent == 0) {
-        return(0);
+        return (0);
     }
 
-    OctreeNode<DataT>* ancestor = 0;
+    OctreeNode<DataT> *ancestor = 0;
     if (OT::adj(face, octreeChildType(node))) {
         ancestor = getOctreeEqualFaceNeighbor(node->parent, face);
     } else {
         ancestor = node->parent;
     }
 
-    return(ancestor != 0 ? ancestor->child[OT::reflect(face, octreeChildType(node))] : 0);
+    return (ancestor != 0 ? ancestor->child[OT::reflect(face, octreeChildType(node))] : 0);
 }
 
-template<typename DataT>
-OctreeNode<DataT>* getOctreeEqualEdgeNeighbor(OctreeNode<DataT>* node, int edge)
+template <typename DataT>
+OctreeNode<DataT> *getOctreeEqualEdgeNeighbor(OctreeNode<DataT> *node, int edge)
 {
     typedef OctreeTables OT;
 
     if (node == 0 || node->parent == 0) {
-        return(0);
+        return (0);
     }
 
-    OctreeNode<DataT>* ancestor = 0;
+    OctreeNode<DataT> *ancestor = 0;
     if (OT::adj(edge, octreeChildType(node))) {
         ancestor = getOctreeEqualEdgeNeighbor(node->parent, edge);
     } else if (OT::commonFace(edge, octreeChildType(node)) != OT::undef()) {
-        ancestor = getOctreeEqualFaceNeighbor(node->parent, OT::commonFace(edge, octreeChildType(node)));
+        ancestor =
+            getOctreeEqualFaceNeighbor(node->parent, OT::commonFace(edge, octreeChildType(node)));
     } else {
         ancestor = node->parent;
     }
 
-    return(ancestor != 0 ? ancestor->child[OT::reflect(edge, octreeChildType(node))] : 0);
+    return (ancestor != 0 ? ancestor->child[OT::reflect(edge, octreeChildType(node))] : 0);
 }
 
-template<typename DataT>
-OctreeNode<DataT>* getOctreeEqualVertexNeighbor(OctreeNode<DataT>* node, int vertex)
+template <typename DataT>
+OctreeNode<DataT> *getOctreeEqualVertexNeighbor(OctreeNode<DataT> *node, int vertex)
 {
     typedef OctreeTables OT;
 
     if (node == 0 || node->parent == 0) {
-        return(0);
+        return (0);
     }
 
-    OctreeNode<DataT>* ancestor = 0;
+    OctreeNode<DataT> *ancestor = 0;
     if (OT::adj(vertex, octreeChildType(node))) {
         ancestor = getOctreeEqualVertexNeighbor(node->parent, vertex);
     } else if (OT::commonEdge(vertex, octreeChildType(node)) != OT::undef()) {
-        ancestor = getOctreeEqualEdgeNeighbor(node->parent, OT::commonEdge(vertex, octreeChildType(node)));
+        ancestor =
+            getOctreeEqualEdgeNeighbor(node->parent, OT::commonEdge(vertex, octreeChildType(node)));
     } else if (OT::commonFace(vertex, octreeChildType(node)) != OT::undef()) {
-        ancestor = getOctreeEqualFaceNeighbor(node->parent, OT::commonFace(vertex, octreeChildType(node)));
+        ancestor =
+            getOctreeEqualFaceNeighbor(node->parent, OT::commonFace(vertex, octreeChildType(node)));
     } else {
         ancestor = node->parent;
     }
 
-    return(ancestor != 0 ? ancestor->child[OT::reflect(vertex, octreeChildType(node))] : 0);
+    return (ancestor != 0 ? ancestor->child[OT::reflect(vertex, octreeChildType(node))] : 0);
 }
 
-template<typename DataT>
-std::vector<OctreeNode<DataT>*> gatherOctreeEqualNeighbors(OctreeNode<DataT>* node)
+template <typename DataT>
+std::vector<OctreeNode<DataT> *> gatherOctreeEqualNeighbors(OctreeNode<DataT> *node)
 {
     typedef OctreeTables OT;
 
     int numNeighbors = 26;
-    std::vector<OctreeNode<DataT>*> neighbors(numNeighbors, (OctreeNode<DataT>*) 0);
+    std::vector<OctreeNode<DataT> *> neighbors(numNeighbors, (OctreeNode<DataT> *)0);
 
     if (node == 0 || node->parent == 0) {
-        return(neighbors);
+        return (neighbors);
     }
 
     neighbors[OT::surface0N()] = getOctreeEqualFaceNeighbor(node, OT::surface0N());
@@ -254,86 +263,98 @@ std::vector<OctreeNode<DataT>*> gatherOctreeEqualNeighbors(OctreeNode<DataT>* no
     neighbors[OT::cornerPPN()] = getOctreeEqualVertexNeighbor(node, OT::cornerPPN());
     neighbors[OT::cornerPPP()] = getOctreeEqualVertexNeighbor(node, OT::cornerPPP());
 
-    return(neighbors);
+    return (neighbors);
 }
 
-template<typename DataT>
-OctreeNode<DataT>* getOctreeGreaterEqualFaceNeighbor(OctreeNode<DataT>* node, int face)
+template <typename DataT>
+OctreeNode<DataT> *getOctreeGreaterEqualFaceNeighbor(OctreeNode<DataT> *node, int face)
 {
     typedef OctreeTables OT;
 
     if (node == 0) {
-        return(0);
+        return (0);
     }
 
-    OctreeNode<DataT>* ancestor = 0;
+    OctreeNode<DataT> *ancestor = 0;
     if (node->parent != 0 && OT::adj(face, octreeChildType(node))) {
         ancestor = getOctreeGreaterEqualFaceNeighbor(node->parent, face);
     } else {
         ancestor = node->parent;
     }
 
-    return(ancestor != 0 && !ancestor->isLeaf ? ancestor->child[OT::reflect(face, octreeChildType(node))] : ancestor);
+    return (
+        ancestor != 0 && !ancestor->isLeaf
+            ? ancestor->child[OT::reflect(face, octreeChildType(node))]
+            : ancestor);
 }
 
-template<typename DataT>
-OctreeNode<DataT>* getOctreeGreaterEqualEdgeNeighbor(OctreeNode<DataT>* node, int edge)
+template <typename DataT>
+OctreeNode<DataT> *getOctreeGreaterEqualEdgeNeighbor(OctreeNode<DataT> *node, int edge)
 {
     typedef OctreeTables OT;
 
     if (node == 0) {
-        return(0);
+        return (0);
     }
 
-    OctreeNode<DataT>* ancestor = 0;
+    OctreeNode<DataT> *ancestor = 0;
     if (node->parent == 0) {
         ancestor = 0;
     } else if (OT::adj(edge, octreeChildType(node))) {
         ancestor = getOctreeGreaterEqualEdgeNeighbor(node->parent, edge);
     } else if (OT::commonFace(edge, octreeChildType(node)) != OT::undef()) {
-        ancestor = getOctreeGreaterEqualFaceNeighbor(node->parent, OT::commonFace(edge, octreeChildType(node)));
+        ancestor = getOctreeGreaterEqualFaceNeighbor(
+            node->parent, OT::commonFace(edge, octreeChildType(node)));
     } else {
         ancestor = node->parent;
     }
 
-    return(ancestor != 0 && !ancestor->isLeaf ? ancestor->child[OT::reflect(edge, octreeChildType(node))] : ancestor);
+    return (
+        ancestor != 0 && !ancestor->isLeaf
+            ? ancestor->child[OT::reflect(edge, octreeChildType(node))]
+            : ancestor);
 }
 
-template<typename DataT>
-OctreeNode<DataT>* getOctreeGreaterEqualVertexNeighbor(OctreeNode<DataT>* node, int vertex)
+template <typename DataT>
+OctreeNode<DataT> *getOctreeGreaterEqualVertexNeighbor(OctreeNode<DataT> *node, int vertex)
 {
     typedef OctreeTables OT;
 
     if (node == 0) {
-        return(0);
+        return (0);
     }
 
-    OctreeNode<DataT>* ancestor = 0;
+    OctreeNode<DataT> *ancestor = 0;
     if (node->parent == 0) {
         ancestor = 0;
     } else if (OT::adj(vertex, octreeChildType(node))) {
         ancestor = getOctreeGreaterEqualVertexNeighbor(node->parent, vertex);
     } else if (OT::commonEdge(vertex, octreeChildType(node)) != OT::undef()) {
-        ancestor = getOctreeGreaterEqualEdgeNeighbor(node->parent, OT::commonEdge(vertex, octreeChildType(node)));
+        ancestor = getOctreeGreaterEqualEdgeNeighbor(
+            node->parent, OT::commonEdge(vertex, octreeChildType(node)));
     } else if (OT::commonFace(vertex, octreeChildType(node)) != OT::undef()) {
-        ancestor = getOctreeGreaterEqualFaceNeighbor(node->parent, OT::commonFace(vertex, octreeChildType(node)));
+        ancestor = getOctreeGreaterEqualFaceNeighbor(
+            node->parent, OT::commonFace(vertex, octreeChildType(node)));
     } else {
         ancestor = node->parent;
     }
 
-    return(ancestor != 0 && !ancestor->isLeaf ? ancestor->child[OT::reflect(vertex, octreeChildType(node))] : ancestor);
+    return (
+        ancestor != 0 && !ancestor->isLeaf
+            ? ancestor->child[OT::reflect(vertex, octreeChildType(node))]
+            : ancestor);
 }
 
-template<typename DataT>
-std::vector<OctreeNode<DataT>*> gatherOctreeGreaterEqualNeighbors(OctreeNode<DataT>* node)
+template <typename DataT>
+std::vector<OctreeNode<DataT> *> gatherOctreeGreaterEqualNeighbors(OctreeNode<DataT> *node)
 {
     typedef OctreeTables OT;
 
     int numNeighbors = 26;
-    std::vector<OctreeNode<DataT>*> neighbors(numNeighbors, (OctreeNode<DataT>*) 0);
+    std::vector<OctreeNode<DataT> *> neighbors(numNeighbors, (OctreeNode<DataT> *)0);
 
     if (node == 0 || node->parent == 0) {
-        return(neighbors);
+        return (neighbors);
     }
 
     neighbors[OT::surface0N()] = getOctreeGreaterEqualFaceNeighbor(node, OT::surface0N());
@@ -365,16 +386,16 @@ std::vector<OctreeNode<DataT>*> gatherOctreeGreaterEqualNeighbors(OctreeNode<Dat
     neighbors[OT::cornerPPN()] = getOctreeGreaterEqualVertexNeighbor(node, OT::cornerPPN());
     neighbors[OT::cornerPPP()] = getOctreeGreaterEqualVertexNeighbor(node, OT::cornerPPP());
 
-    return(neighbors);
+    return (neighbors);
 }
 
-template<typename DataT>
-OctreePeriodicExtension<DataT>::OctreePeriodicExtension(OctreeNode<DataT>* originalRoot_,
-        bool xPeriodic_, bool yPeriodic_, bool zPeriodic_)
-    : originalRoot(originalRoot_),
-      periodicExtensionRoot(0),
-      parentOfOriginalRoot(0),
-      levelOfOriginalRoot(0)
+template <typename DataT>
+OctreePeriodicExtension<DataT>::OctreePeriodicExtension(
+    OctreeNode<DataT> *originalRoot_, bool xPeriodic_, bool yPeriodic_, bool zPeriodic_) :
+    originalRoot(originalRoot_),
+    periodicExtensionRoot(0),
+    parentOfOriginalRoot(0),
+    levelOfOriginalRoot(0)
 {
     if (originalRoot && (xPeriodic_ || yPeriodic_ || zPeriodic_)) {
         parentOfOriginalRoot = originalRoot->parent;
@@ -382,9 +403,9 @@ OctreePeriodicExtension<DataT>::OctreePeriodicExtension(OctreeNode<DataT>* origi
         recalibrateOriginalRootLevels(0);
 
         // Levels -1 and -2 are reserved for the octree periodic extensions only!
-        // At level -2, only the child 0 is allocated, and at level -1 only the child 7 is allocated.
-        // If any of these conventions is changed, the implementation of the octreeChildType() function
-        // must also be updated.
+        // At level -2, only the child 0 is allocated, and at level -1 only the child 7 is
+        // allocated. If any of these conventions is changed, the implementation of the
+        // octreeChildType() function must also be updated.
 
         periodicExtensionRoot = new OctreeNode<DataT>(0, 0);
         periodicExtensionRoot->level = -2;
@@ -419,26 +440,26 @@ OctreePeriodicExtension<DataT>::OctreePeriodicExtension(OctreeNode<DataT>* origi
     }
 }
 
-template<typename DataT>
+template <typename DataT>
 OctreePeriodicExtension<DataT>::~OctreePeriodicExtension()
 {
     restoreOriginalRootAndDestroyPeriodicExtension();
 }
 
-template<typename DataT>
-OctreeNode<DataT>* OctreePeriodicExtension<DataT>::get() const
+template <typename DataT>
+OctreeNode<DataT> *OctreePeriodicExtension<DataT>::get() const
 {
-    return(originalRoot);
+    return (originalRoot);
 }
 
-template<typename DataT>
-OctreeNode<DataT>* OctreePeriodicExtension<DataT>::release()
+template <typename DataT>
+OctreeNode<DataT> *OctreePeriodicExtension<DataT>::release()
 {
     restoreOriginalRootAndDestroyPeriodicExtension();
-    return(originalRoot);
+    return (originalRoot);
 }
 
-template<typename DataT>
+template <typename DataT>
 void OctreePeriodicExtension<DataT>::recalibrateOriginalRootLevels(int newRootLevel) const
 {
     if (originalRoot->level == newRootLevel) {
@@ -448,10 +469,8 @@ void OctreePeriodicExtension<DataT>::recalibrateOriginalRootLevels(int newRootLe
     originalRoot->parent = 0;
 
     struct RecalibrateLevels {
-        RecalibrateLevels(int rootLevel_)
-            : rootLevel(rootLevel_)
-        { }
-        void operator()(OctreeNode<DataT>* node)
+        RecalibrateLevels(int rootLevel_) : rootLevel(rootLevel_) { }
+        void operator()(OctreeNode<DataT> *node)
         {
             if (node->parent) {
                 node->level = node->parent->level + 1;
@@ -466,7 +485,7 @@ void OctreePeriodicExtension<DataT>::recalibrateOriginalRootLevels(int newRootLe
     processOctreePreOrder(originalRoot, recalibrateLevels);
 }
 
-template<typename DataT>
+template <typename DataT>
 void OctreePeriodicExtension<DataT>::restoreOriginalRootAndDestroyPeriodicExtension()
 {
     if (periodicExtensionRoot) {
@@ -485,6 +504,6 @@ void OctreePeriodicExtension<DataT>::restoreOriginalRootAndDestroyPeriodicExtens
     }
 }
 
-} // namespace plb
+}  // namespace plb
 
-#endif // OCTREE_HH
+#endif  // OCTREE_HH

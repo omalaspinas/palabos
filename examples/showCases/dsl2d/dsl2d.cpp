@@ -109,7 +109,7 @@ public:
 
         T kappa = 80.;
         T delta = 0.05;
-        T u0    = param.u0;
+        T u0 = param.u0;
 
         T x = (T)iX / T(nx);
         T y = (T)iY / T(ny);
@@ -239,7 +239,7 @@ int main(int argc, char *argv[])
 #ifndef PLB_REGRESSION
     plint vtkTout = param.vtkT * param.tc;
 #endif
-    plint tMax    = param.tAdim * param.tc;
+    plint tMax = param.tAdim * param.tc;
 
     ///// Output the evolution of the kinetic energy
     plb_ofstream statsOut((param.outDirName + "/stats_" + param.fnameBase + ".dat").c_str());
@@ -260,7 +260,7 @@ int main(int argc, char *argv[])
 #endif
 
         ///// Compute kinetic energy for stats and stability criterion
-        T kinEnergy     = computeAverageEnergy(lattice);
+        T kinEnergy = computeAverageEnergy(lattice);
         T kinEnergyAdim = kinEnergy / (0.5 * param.u0 * param.u0);
 #ifndef PLB_REGRESSION
         statsOut << iT / param.tc << " " << kinEnergyAdim << std::endl;

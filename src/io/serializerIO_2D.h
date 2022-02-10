@@ -5,7 +5,7 @@
  * own the IP rights for most of the code base. Since October 2019, the
  * Palabos project is maintained by the University of Geneva and accepts
  * source code contributions from the community.
- * 
+ *
  * Contact:
  * Jonas Latt
  * Computer Science Department
@@ -14,7 +14,7 @@
  * 1227 Carouge, Switzerland
  * jonas.latt@unige.ch
  *
- * The most recent release of Palabos can be downloaded at 
+ * The most recent release of Palabos can be downloaded at
  * <https://palabos.unige.ch/>
  *
  * The library Palabos is free software: you can redistribute it and/or
@@ -29,20 +29,20 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 #ifndef SERIALIZER_IO_2D_H
 #define SERIALIZER_IO_2D_H
 
-#include "core/globalDefs.h"
-#include "core/block2D.h"
-#include "multiBlock/multiBlock2D.h"
-#include "multiBlock/multiDataField2D.h"
-#include "multiBlock/multiBlockLattice2D.h"
-#include "atomicBlock/dataField2D.h"
 #include "atomicBlock/blockLattice2D.h"
-#include "io/serializerIO.h"
+#include "atomicBlock/dataField2D.h"
+#include "core/block2D.h"
+#include "core/globalDefs.h"
 #include "io/parallelIO.h"
+#include "io/serializerIO.h"
+#include "multiBlock/multiBlock2D.h"
+#include "multiBlock/multiBlockLattice2D.h"
+#include "multiBlock/multiDataField2D.h"
 
 namespace plb {
 
@@ -54,7 +54,7 @@ namespace plb {
  *  Index-ordering for this operation can be chosen through a call to
  *  global::IOpolicy().setIndexOrderingForStreams(IndexOrdering::OrderingT).
  */
-void saveBinaryBlock(Block2D const& block, std::string fName, bool enforceUint=false);
+void saveBinaryBlock(Block2D const &block, std::string fName, bool enforceUint = false);
 
 /// Load the content of a Block2D from a Base64 encoded binary file.
 /** The content includes external scalars in the case of a BlockLattice2D. Only raw
@@ -64,7 +64,7 @@ void saveBinaryBlock(Block2D const& block, std::string fName, bool enforceUint=f
  *  Index-ordering for this operation can be chosen through a call to
  *  global::IOpolicy().setIndexOrderingForStreams(IndexOrdering::OrderingT).
  */
-void loadBinaryBlock(Block2D& block, std::string fName, bool enforceUint=false);
+void loadBinaryBlock(Block2D &block, std::string fName, bool enforceUint = false);
 
 /// Flush the content of a Block2D into a generic C++ stream with space-separated ASCII words.
 /** The content includes external scalars in the case of a BlockLattice2D. Only raw
@@ -77,51 +77,56 @@ void loadBinaryBlock(Block2D& block, std::string fName, bool enforceUint=false);
  *  This file format is not exact and should be used for data post-processing only,
  *  and not for checkpointing.
  */
-template<typename T>
-std::ostream& block2ostream(std::ostream& ostr, Block2D const& block);
+template <typename T>
+std::ostream &block2ostream(std::ostream &ostr, Block2D const &block);
 
-template<typename T>
-std::ostream& operator<<(std::ostream& ostr, MultiScalarField2D<T> const& block) {
+template <typename T>
+std::ostream &operator<<(std::ostream &ostr, MultiScalarField2D<T> const &block)
+{
     return block2ostream<T>(ostr, block);
 }
 
-template<typename T>
-std::ostream& operator<<(std::ostream& ostr, MultiNTensorField2D<T> const& block) {
+template <typename T>
+std::ostream &operator<<(std::ostream &ostr, MultiNTensorField2D<T> const &block)
+{
     return block2ostream<T>(ostr, block);
 }
 
-template<typename T, int nDim>
-std::ostream& operator<<(std::ostream& ostr, MultiTensorField2D<T,nDim> const& block) {
+template <typename T, int nDim>
+std::ostream &operator<<(std::ostream &ostr, MultiTensorField2D<T, nDim> const &block)
+{
     return block2ostream<T>(ostr, block);
 }
 
-template<typename T, template<typename U> class Descriptor>
-std::ostream& operator<<(std::ostream& ostr, MultiBlockLattice2D<T,Descriptor> const& block) {
+template <typename T, template <typename U> class Descriptor>
+std::ostream &operator<<(std::ostream &ostr, MultiBlockLattice2D<T, Descriptor> const &block)
+{
     return block2ostream<T>(ostr, block);
 }
 
-
-
-template<typename T>
-std::ostream& operator<<(std::ostream& ostr, ScalarField2D<T> const& block) {
+template <typename T>
+std::ostream &operator<<(std::ostream &ostr, ScalarField2D<T> const &block)
+{
     return block2ostream<T>(ostr, block);
 }
 
-template<typename T>
-std::ostream& operator<<(std::ostream& ostr, NTensorField2D<T> const& block) {
+template <typename T>
+std::ostream &operator<<(std::ostream &ostr, NTensorField2D<T> const &block)
+{
     return block2ostream<T>(ostr, block);
 }
 
-template<typename T, int nDim>
-std::ostream& operator<<(std::ostream& ostr, TensorField2D<T,nDim> const& block) {
+template <typename T, int nDim>
+std::ostream &operator<<(std::ostream &ostr, TensorField2D<T, nDim> const &block)
+{
     return block2ostream<T>(ostr, block);
 }
 
-template<typename T, template<typename U> class Descriptor>
-std::ostream& operator<<(std::ostream& ostr, BlockLattice2D<T,Descriptor> const& block) {
+template <typename T, template <typename U> class Descriptor>
+std::ostream &operator<<(std::ostream &ostr, BlockLattice2D<T, Descriptor> const &block)
+{
     return block2ostream<T>(ostr, block);
 }
-
 
 /// Flush the content of a generic C++ stream with ASCII content into a Block2D.
 /** The content includes external scalars in the case of a BlockLattice2D.
@@ -132,50 +137,57 @@ std::ostream& operator<<(std::ostream& ostr, BlockLattice2D<T,Descriptor> const&
  *  This file format is not exact and should be used for data post-processing only,
  *  and not for checkpointing.
  */
-template<typename T>
-std::istream& istream2block(std::istream& istr, Block2D& block);
+template <typename T>
+std::istream &istream2block(std::istream &istr, Block2D &block);
 
-template<typename T>
-std::istream& operator>>(std::istream& istr, MultiScalarField2D<T>& block) {
+template <typename T>
+std::istream &operator>>(std::istream &istr, MultiScalarField2D<T> &block)
+{
     return istream2block<T>(istr, block);
 }
 
-template<typename T>
-std::istream& operator>>(std::istream& istr, MultiNTensorField2D<T>& block) {
+template <typename T>
+std::istream &operator>>(std::istream &istr, MultiNTensorField2D<T> &block)
+{
     return istream2block<T>(istr, block);
 }
 
-template<typename T,int nDim>
-std::istream& operator>>(std::istream& istr, MultiTensorField2D<T,nDim>& block) {
+template <typename T, int nDim>
+std::istream &operator>>(std::istream &istr, MultiTensorField2D<T, nDim> &block)
+{
     return istream2block<T>(istr, block);
 }
 
-template<typename T, template<typename U> class Descriptor>
-std::istream& operator>>(std::istream& istr, MultiBlockLattice2D<T,Descriptor>& block) {
+template <typename T, template <typename U> class Descriptor>
+std::istream &operator>>(std::istream &istr, MultiBlockLattice2D<T, Descriptor> &block)
+{
     return istream2block<T>(istr, block);
 }
 
-
-template<typename T>
-std::istream& operator>>(std::istream& istr, ScalarField2D<T>& block) {
+template <typename T>
+std::istream &operator>>(std::istream &istr, ScalarField2D<T> &block)
+{
     return istream2block<T>(istr, block);
 }
 
-template<typename T>
-std::istream& operator>>(std::istream& istr, NTensorField2D<T>& block) {
+template <typename T>
+std::istream &operator>>(std::istream &istr, NTensorField2D<T> &block)
+{
     return istream2block<T>(istr, block);
 }
 
-template<typename T,int nDim>
-std::istream& operator>>(std::istream& istr, TensorField2D<T,nDim>& block) {
+template <typename T, int nDim>
+std::istream &operator>>(std::istream &istr, TensorField2D<T, nDim> &block)
+{
     return istream2block<T>(istr, block);
 }
 
-template<typename T, template<typename U> class Descriptor>
-std::istream& operator>>(std::istream& istr, BlockLattice2D<T,Descriptor>& block) {
+template <typename T, template <typename U> class Descriptor>
+std::istream &operator>>(std::istream &istr, BlockLattice2D<T, Descriptor> &block)
+{
     return istream2block<T>(istr, block);
 }
 
-} // namespace plb
+}  // namespace plb
 
 #endif  // SERIALIZER_IO_2D_H

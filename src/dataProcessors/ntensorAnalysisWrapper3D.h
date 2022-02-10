@@ -5,7 +5,7 @@
  * own the IP rights for most of the code base. Since October 2019, the
  * Palabos project is maintained by the University of Geneva and accepts
  * source code contributions from the community.
- * 
+ *
  * Contact:
  * Jonas Latt
  * Computer Science Department
@@ -14,7 +14,7 @@
  * 1227 Carouge, Switzerland
  * jonas.latt@unige.ch
  *
- * The most recent release of Palabos can be downloaded at 
+ * The most recent release of Palabos can be downloaded at
  * <https://palabos.unige.ch/>
  *
  * The library Palabos is free software: you can redistribute it and/or
@@ -29,7 +29,7 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 /** \file
  * Helper functions for domain initialization -- header file.
@@ -37,36 +37,33 @@
 #ifndef NTENSOR_ANALYSIS_WRAPPER_3D_H
 #define NTENSOR_ANALYSIS_WRAPPER_3D_H
 
-#include "core/globalDefs.h"
-#include "atomicBlock/dataField3D.h"
-#include "multiBlock/multiDataField3D.h"
-#include "dataProcessors/dataAnalysisFunctional3D.h"
 #include <memory>
 
+#include "atomicBlock/dataField3D.h"
+#include "core/globalDefs.h"
+#include "dataProcessors/dataAnalysisFunctional3D.h"
+#include "multiBlock/multiDataField3D.h"
 
 namespace plb {
 
-template<typename T1, typename T2>
-void copy( MultiNTensorField3D<T1>& field,
-           MultiNTensorField3D<T2>& convertedField, Box3D domain );
+template <typename T1, typename T2>
+void copy(MultiNTensorField3D<T1> &field, MultiNTensorField3D<T2> &convertedField, Box3D domain);
 
-template<typename T1, typename T2>
-MultiNTensorField3D<T2>* copyConvert( MultiNTensorField3D<T1>& field,
-                                      Box3D domain );
+template <typename T1, typename T2>
+MultiNTensorField3D<T2> *copyConvert(MultiNTensorField3D<T1> &field, Box3D domain);
 
-template<typename T>
-void nTensorToScalar(MultiNTensorField3D<T>& nTensor, MultiScalarField3D<T>& scalar);
+template <typename T>
+void nTensorToScalar(MultiNTensorField3D<T> &nTensor, MultiScalarField3D<T> &scalar);
 
-template<typename T>
-void scalarToNTensor(MultiScalarField3D<T>& scalar, MultiNTensorField3D<T>& nTensor);
+template <typename T>
+void scalarToNTensor(MultiScalarField3D<T> &scalar, MultiNTensorField3D<T> &nTensor);
 
-template<typename T>
-std::unique_ptr<MultiNTensorField3D<T> > scalarToNTensor(MultiScalarField3D<T>& scalar);
+template <typename T>
+std::unique_ptr<MultiNTensorField3D<T> > scalarToNTensor(MultiScalarField3D<T> &scalar);
 
-template<typename T>
-std::unique_ptr<MultiScalarField3D<T> > nTensorToScalar(MultiNTensorField3D<T>& nTensor);
+template <typename T>
+std::unique_ptr<MultiScalarField3D<T> > nTensorToScalar(MultiNTensorField3D<T> &nTensor);
 
 }  // namespace plb
 
 #endif  // NTENSOR_ANALYSIS_WRAPPER_3D_H
-

@@ -5,7 +5,7 @@
  * own the IP rights for most of the code base. Since October 2019, the
  * Palabos project is maintained by the University of Geneva and accepts
  * source code contributions from the community.
- * 
+ *
  * Contact:
  * Jonas Latt
  * Computer Science Department
@@ -14,7 +14,7 @@
  * 1227 Carouge, Switzerland
  * jonas.latt@unige.ch
  *
- * The most recent release of Palabos can be downloaded at 
+ * The most recent release of Palabos can be downloaded at
  * <https://palabos.unige.ch/>
  *
  * The library Palabos is free software: you can redistribute it and/or
@@ -29,7 +29,7 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 /** \file
  * A timer class for benchmarking program parts -- header file.
@@ -38,6 +38,9 @@
 #define PLB_TIMER_H
 
 #include <ctime>
+#include <string>
+
+#include "globalDefs.h"
 
 #ifdef PLB_USE_POSIX
 #include <unistd.h>
@@ -66,9 +69,10 @@ public:
     void reset();
     /// Get current cumulative time.
     double getTime() const;
+
 private:
     double cumulativeTime;
-    bool   isOn;
+    bool isOn;
 #ifdef PLB_MPI_PARALLEL
     double startTime;
 #else
@@ -78,15 +82,15 @@ private:
     clock_t startClock;
 #endif
 #endif
-friend PlbTimer& timer(std::string nameOfTimer);
-friend PlbTimer& plbTimer(std::string nameOfTimer);
+    friend PlbTimer &timer(std::string nameOfTimer);
+    friend PlbTimer &plbTimer(std::string nameOfTimer);
 };
 
 // Global instance of timer objects, for public use.
-PlbTimer& timer(std::string nameOfTimer);
+PlbTimer &timer(std::string nameOfTimer);
 
 // Global instance of timer objects, for internal use.
-PlbTimer& plbTimer(std::string nameOfTimer);
+PlbTimer &plbTimer(std::string nameOfTimer);
 
 /// A cumulative counter for benchmarking program parts and summing up occurrences
 ///   of events.
@@ -94,22 +98,23 @@ class PlbCounter {
 public:
     PlbCounter();
     /// Increment the counter.
-    plint increment(plint value=1);
+    plint increment(plint value = 1);
     /// Reset counter to zero.
     void reset();
     /// Return current count.
     plint getCount() const;
+
 private:
     plint count;
-friend PlbCounter& counter(std::string nameOfCounter);
-friend PlbCounter& plbCounter(std::string nameOfCounter);
+    friend PlbCounter &counter(std::string nameOfCounter);
+    friend PlbCounter &plbCounter(std::string nameOfCounter);
 };
 
 // Global instance of counter objects, for public use.
-PlbCounter& counter(std::string nameOfCounter);
+PlbCounter &counter(std::string nameOfCounter);
 
 // Global instance of counter objects, for internal use.
-PlbCounter& plbCounter(std::string nameOfCounter);
+PlbCounter &plbCounter(std::string nameOfCounter);
 
 }  // namespace global
 

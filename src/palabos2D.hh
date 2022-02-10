@@ -5,7 +5,7 @@
  * own the IP rights for most of the code base. Since October 2019, the
  * Palabos project is maintained by the University of Geneva and accepts
  * source code contributions from the community.
- * 
+ *
  * Contact:
  * Jonas Latt
  * Computer Science Department
@@ -14,7 +14,7 @@
  * 1227 Carouge, Switzerland
  * jonas.latt@unige.ch
  *
- * The most recent release of Palabos can be downloaded at 
+ * The most recent release of Palabos can be downloaded at
  * <https://palabos.unige.ch/>
  *
  * The library Palabos is free software: you can redistribute it and/or
@@ -29,22 +29,22 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
-#include <parallelism/headers2D.hh>
-#include <latticeBoltzmann/headers2D.hh>
-#include <core/headers2D.hh>
+#include <algorithm/headers2D.hh>
+#include <atomicBlock/headers2D.hh>
 #include <basicDynamics/headers2D.hh>
 #include <boundaryCondition/headers2D.hh>
 #include <complexDynamics/headers2D.hh>
-#include <multiPhysics/headers2D.hh>
+#include <core/headers2D.hh>
+#include <dataProcessors/headers2D.hh>
+#include <finiteDifference/headers2D.hh>
 #include <io/headers2D.hh>
-#include <algorithm/headers2D.hh>
-#include <atomicBlock/headers2D.hh>
+#include <latticeBoltzmann/headers2D.hh>
+#include <libraryInterfaces/headers2D.hh>
 #include <multiBlock/headers2D.hh>
 #include <multiGrid/headers2D.hh>
-#include <dataProcessors/headers2D.hh>
-#include <particles/headers2D.hh>
-#include <finiteDifference/headers2D.hh>
+#include <multiPhysics/headers2D.hh>
 #include <offLattice/headers2D.hh>
-#include <libraryInterfaces/headers2D.hh>
+#include <parallelism/headers2D.hh>
+#include <particles/headers2D.hh>

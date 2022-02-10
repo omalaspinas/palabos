@@ -5,7 +5,7 @@
  * own the IP rights for most of the code base. Since October 2019, the
  * Palabos project is maintained by the University of Geneva and accepts
  * source code contributions from the community.
- * 
+ *
  * Contact:
  * Jonas Latt
  * Computer Science Department
@@ -14,7 +14,7 @@
  * 1227 Carouge, Switzerland
  * jonas.latt@unige.ch
  *
- * The most recent release of Palabos can be downloaded at 
+ * The most recent release of Palabos can be downloaded at
  * <https://palabos.unige.ch/>
  *
  * The library Palabos is free software: you can redistribute it and/or
@@ -29,7 +29,7 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 /** \file
  * Utilities for 3D multi data distributions -- header file.
@@ -38,21 +38,22 @@
 #ifndef REDISTRIBUTION_3D_H
 #define REDISTRIBUTION_3D_H
 
-#include "parallelism/mpiManager.h"
 #include "core/globalDefs.h"
 #include "multiBlock/multiBlockManagement3D.h"
+#include "parallelism/mpiManager.h"
 
 namespace plb {
 
 struct MultiBlockRedistribute3D {
     virtual ~MultiBlockRedistribute3D() { }
-    virtual MultiBlockManagement3D redistribute(MultiBlockManagement3D const& original) const=0;
+    virtual MultiBlockManagement3D redistribute(MultiBlockManagement3D const &original) const = 0;
 };
 
 class RandomRedistribute3D : public MultiBlockRedistribute3D {
 public:
-    RandomRedistribute3D(pluint rseed_=10);
-    virtual MultiBlockManagement3D redistribute(MultiBlockManagement3D const& original) const;
+    RandomRedistribute3D(pluint rseed_ = 10);
+    virtual MultiBlockManagement3D redistribute(MultiBlockManagement3D const &original) const;
+
 private:
     pluint rseed;
 };

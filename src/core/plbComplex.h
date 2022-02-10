@@ -5,7 +5,7 @@
  * own the IP rights for most of the code base. Since October 2019, the
  * Palabos project is maintained by the University of Geneva and accepts
  * source code contributions from the community.
- * 
+ *
  * Contact:
  * Jonas Latt
  * Computer Science Department
@@ -14,7 +14,7 @@
  * 1227 Carouge, Switzerland
  * jonas.latt@unige.ch
  *
- * The most recent release of Palabos can be downloaded at 
+ * The most recent release of Palabos can be downloaded at
  * <https://palabos.unige.ch/>
  *
  * The library Palabos is free software: you can redistribute it and/or
@@ -29,7 +29,7 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 #ifndef PLB_COMPLEX_H
 #define PLB_COMPLEX_H
@@ -38,13 +38,14 @@
 
 namespace plb {
 
-template<typename T>
+template <typename T>
 class Complex {
 public:
     Complex();
     Complex(T Re_);
     Complex(T Re_, T Imag_);
-    template<typename U> operator U() const;
+    template <typename U>
+    operator U() const;
     T real() const;
     T imaginary() const;
     T modulus() const;
@@ -52,15 +53,20 @@ public:
     Complex<T> conjugate() const;
     T argument() const;
     Complex<T> intpow(int n) const;
-    Complex<T>& operator+=(Complex<T> const& rhs);
-    template<typename U> Complex<T>& operator+=(U rhs);
-    Complex<T>& operator-=(Complex<T> const& rhs);
-    template<typename U> Complex<T>& operator-=(U rhs);
+    Complex<T> &operator+=(Complex<T> const &rhs);
+    template <typename U>
+    Complex<T> &operator+=(U rhs);
+    Complex<T> &operator-=(Complex<T> const &rhs);
+    template <typename U>
+    Complex<T> &operator-=(U rhs);
     Complex<T> operator-() const;
-    Complex<T>& operator*=(Complex<T> const& rhs);
-    template<typename U> Complex<T>& operator*=(U rhs);
-    Complex<T>& operator/=(Complex<T> const& rhs);
-    template<typename U> Complex<T>& operator/=(U rhs);
+    Complex<T> &operator*=(Complex<T> const &rhs);
+    template <typename U>
+    Complex<T> &operator*=(U rhs);
+    Complex<T> &operator/=(Complex<T> const &rhs);
+    template <typename U>
+    Complex<T> &operator/=(U rhs);
+
 private:
     // If at any point someone adds more data here, he should go
     // also to the file mpiManager.cpp and change the implementation
@@ -73,50 +79,46 @@ private:
 // necessary to cast type Complex<U> (i.e. the type of arg) to U, while
 // in all other cases, T is cast to T. That's why we overload
 // PlbTraits from globalDefs.h for the Complex type.
-template<typename U>
-struct PlbTraits<Complex<U> >
-{
+template <typename U>
+struct PlbTraits<Complex<U> > {
     typedef U BaseType;
 };
 
-template<typename T>
-Complex<T> operator+(Complex<T> const& arg1, Complex<T> const& arg2);
+template <typename T>
+Complex<T> operator+(Complex<T> const &arg1, Complex<T> const &arg2);
 
-template<typename T, typename U>
-Complex<T> operator+(Complex<T> const& arg1, U arg2);
+template <typename T, typename U>
+Complex<T> operator+(Complex<T> const &arg1, U arg2);
 
-template<typename T, typename U>
-Complex<U> operator+(T arg1, Complex<U> const& arg2);
+template <typename T, typename U>
+Complex<U> operator+(T arg1, Complex<U> const &arg2);
 
+template <typename T>
+Complex<T> operator-(Complex<T> const &arg1, Complex<T> const &arg2);
 
-template<typename T>
-Complex<T> operator-(Complex<T> const& arg1, Complex<T> const& arg2);
+template <typename T, typename U>
+Complex<T> operator-(Complex<T> const &arg1, U arg2);
 
-template<typename T, typename U>
-Complex<T> operator-(Complex<T> const& arg1, U arg2);
+template <typename T, typename U>
+Complex<U> operator-(T arg1, Complex<U> const &arg2);
 
-template<typename T, typename U>
-Complex<U> operator-(T arg1, Complex<U> const& arg2);
+template <typename T>
+Complex<T> operator*(Complex<T> const &arg1, Complex<T> const &arg2);
 
+template <typename T, typename U>
+Complex<T> operator*(Complex<T> const &arg1, U arg2);
 
-template<typename T>
-Complex<T> operator*(Complex<T> const& arg1, Complex<T> const& arg2);
+template <typename T, typename U>
+Complex<U> operator*(T arg1, Complex<U> const &arg2);
 
-template<typename T, typename U>
-Complex<T> operator*(Complex<T> const& arg1, U arg2);
+template <typename T>
+Complex<T> operator/(Complex<T> const &arg1, Complex<T> const &arg2);
 
-template<typename T, typename U>
-Complex<U> operator*(T arg1, Complex<U> const& arg2);
+template <typename T, typename U>
+Complex<T> operator/(Complex<T> const &arg1, U arg2);
 
-
-template<typename T>
-Complex<T> operator/(Complex<T> const& arg1, Complex<T> const& arg2);
-
-template<typename T, typename U>
-Complex<T> operator/(Complex<T> const& arg1, U arg2);
-
-template<typename T, typename U>
-Complex<U> operator/(T arg1, Complex<U> const& arg2);
+template <typename T, typename U>
+Complex<U> operator/(T arg1, Complex<U> const &arg2);
 
 }  // namespace plb
 

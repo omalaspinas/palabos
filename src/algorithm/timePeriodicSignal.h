@@ -5,7 +5,7 @@
  * own the IP rights for most of the code base. Since October 2019, the
  * Palabos project is maintained by the University of Geneva and accepts
  * source code contributions from the community.
- * 
+ *
  * Contact:
  * Jonas Latt
  * Computer Science Department
@@ -14,7 +14,7 @@
  * 1227 Carouge, Switzerland
  * jonas.latt@unige.ch
  *
- * The most recent release of Palabos can be downloaded at 
+ * The most recent release of Palabos can be downloaded at
  * <https://palabos.unige.ch/>
  *
  * The library Palabos is free software: you can redistribute it and/or
@@ -29,34 +29,48 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 #ifndef TIME_PERIODIC_SIGNAL_H
 #define TIME_PERIODIC_SIGNAL_H
 
 #include <string>
+
 #include "algorithm/spline.h"
 
 namespace plb {
 
-template<typename T>
+template <typename T>
 class TimePeriodicSignal {
 public:
     TimePeriodicSignal() : period() { }
     TimePeriodicSignal(std::string fname);
-    TimePeriodicSignal(std::vector<T> const& t, std::vector<T> const& x);
+    TimePeriodicSignal(std::vector<T> const &t, std::vector<T> const &x);
     ~TimePeriodicSignal() { }
-    TimePeriodicSignal<T>* clone() const;
-    std::vector<T> const& getTimeValues() const { return signal.getAbscissae(); }
-    std::vector<T>& getTimeValues() { return signal.getAbscissae(); }
-    std::vector<T> const& getSignalValues() const { return signal.getOrdinates(); }
-    std::vector<T>& getSignalValues() { return signal.getOrdinates(); }
+    TimePeriodicSignal<T> *clone() const;
+    std::vector<T> const &getTimeValues() const
+    {
+        return signal.getAbscissae();
+    }
+    std::vector<T> &getTimeValues()
+    {
+        return signal.getAbscissae();
+    }
+    std::vector<T> const &getSignalValues() const
+    {
+        return signal.getOrdinates();
+    }
+    std::vector<T> &getSignalValues()
+    {
+        return signal.getOrdinates();
+    }
     T getSignalValue(T t) const;
     T getDerivativeValue(T t) const;
     T getSecondDerivativeValue(T t) const;
     T getThirdDerivativeValue(T t) const;
     T getIntegralValue() const;
     T getIntegralValue(T tmin, T tmax) const;
+
 private:
     NaturalCubicSpline<T> signal;
     T period;
@@ -65,4 +79,3 @@ private:
 }  // namespace plb
 
 #endif  // TIME_PERIODIC_SIGNAL_H
-

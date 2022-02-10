@@ -5,7 +5,7 @@
  * own the IP rights for most of the code base. Since October 2019, the
  * Palabos project is maintained by the University of Geneva and accepts
  * source code contributions from the community.
- * 
+ *
  * Contact:
  * Jonas Latt
  * Computer Science Department
@@ -14,7 +14,7 @@
  * 1227 Carouge, Switzerland
  * jonas.latt@unige.ch
  *
- * The most recent release of Palabos can be downloaded at 
+ * The most recent release of Palabos can be downloaded at
  * <https://palabos.unige.ch/>
  *
  * The library Palabos is free software: you can redistribute it and/or
@@ -29,14 +29,14 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-
-#include "palabos3D.h"
-#include "palabos3D.hh"
+ */
 
 #include <algorithm>
 #include <string>
 #include <vector>
+
+#include "palabos3D.h"
+#include "palabos3D.hh"
 
 using namespace plb;
 using namespace std;
@@ -48,16 +48,16 @@ const plint extraLayer = 0;
 const plint blockSize = 20;
 const plint extendedEnvelopeWidth = 2;
 const plint borderWidth = 1;
-const plint margin = 4; // Extra margin of allocated cells around the obstacle. 
+const plint margin = 4;  // Extra margin of allocated cells around the obstacle.
 
-int main(int argc, char* argv[])
+int main(int argc, char *argv[])
 {
     plbInit(&argc, &argv);
     global::directories().setOutputDir("./");
     global::IOpolicy().activateParallelIO(false);
-    plint resolution=0;
-    plint referenceDirection=0;
-    T inflation=0.0;
+    plint resolution = 0;
+    plint referenceDirection = 0;
+    T inflation = 0.0;
 
     string stlFileName, outFileName, precisionStr;
     try {
@@ -66,10 +66,11 @@ int main(int argc, char* argv[])
         global::argv(3).read(precisionStr);
         global::argv(4).read(resolution);
         global::argv(5).read(referenceDirection);
-    }
-    catch (PlbIOException& exception) {
-        pcout << "Usage: " 
-              << (std::string)global::argv(0) << " inputSTL.stl outputSTL.stl precision (FLT|DBL|LDBL|INF) resolution referenceDirection (0|1|2) [inflation (>= 0)]" << std::endl;
+    } catch (PlbIOException &exception) {
+        pcout << "Usage: " << (std::string)global::argv(0)
+              << " inputSTL.stl outputSTL.stl precision (FLT|DBL|LDBL|INF) resolution "
+                 "referenceDirection (0|1|2) [inflation (>= 0)]"
+              << std::endl;
         exit(-1);
     }
 
@@ -91,46 +92,46 @@ int main(int argc, char* argv[])
 
     try {
         global::argv(6).read(inflation);
-        if (util::lessThan(inflation, (T) 0)) {
+        if (util::lessThan(inflation, (T)0)) {
             pcout << "Wrong inflation command-line argument." << std::endl;
             exit(-1);
         }
-    }
-    catch (PlbIOException& exception) {
+    } catch (PlbIOException &exception) {
         inflation = -1.0;
     }
 
-    TriangleSet<T>* triangleSet = 0;
+    TriangleSet<T> *triangleSet = 0;
     try {
         triangleSet = new TriangleSet<T>(stlFileName, precision);
-    }
-    catch (PlbIOException& exception) {
-        pcout << "Error, could not read STL file " << stlFileName
-              << ": " << exception.what() << std::endl;
+    } catch (PlbIOException &exception) {
+        pcout << "Error, could not read STL file " << stlFileName << ": " << exception.what()
+              << std::endl;
         exit(-1);
     }
     DEFscaledMesh<T> mesh(*triangleSet, resolution, referenceDirection, margin, extraLayer);
     TriangleBoundary3D<T> boundary(mesh);
-    if (inflation < (T) 0) {
+    if (inflation < (T)0) {
         boundary.getMesh().inflate();
     } else {
         boundary.getMesh().inflate(inflation);
     }
     T dx = boundary.getDx();
-    Array<T,3> location(boundary.getPhysicalLocation());
-    VoxelizedDomain3D<T> voxelizedDomain (
-            boundary, typeOfVoxelization, extraLayer, borderWidth, extendedEnvelopeWidth, blockSize );
+    Array<T, 3> location(boundary.getPhysicalLocation());
+    VoxelizedDomain3D<T> voxelizedDomain(
+        boundary, typeOfVoxelization, extraLayer, borderWidth, extendedEnvelopeWidth, blockSize);
 
-    MultiScalarField3D<T> flagMatrix((MultiBlock3D&)voxelizedDomain.getVoxelMatrix());
-    setToConstant(flagMatrix, voxelizedDomain.getVoxelMatrix(),
-                  voxelFlag::inside, flagMatrix.getBoundingBox(), (T) 1.0);
-    setToConstant(flagMatrix, voxelizedDomain.getVoxelMatrix(),
-                  voxelFlag::innerBorder, flagMatrix.getBoundingBox(), (T) 1.0);
+    MultiScalarField3D<T> flagMatrix((MultiBlock3D &)voxelizedDomain.getVoxelMatrix());
+    setToConstant(
+        flagMatrix, voxelizedDomain.getVoxelMatrix(), voxelFlag::inside,
+        flagMatrix.getBoundingBox(), (T)1.0);
+    setToConstant(
+        flagMatrix, voxelizedDomain.getVoxelMatrix(), voxelFlag::innerBorder,
+        flagMatrix.getBoundingBox(), (T)1.0);
     pcout << "Number of inside cells: " << computeSum(flagMatrix) << std::endl;
 
-   //TriangleSet<T> triangles (
-           //vofToTriangles<T,descriptors::D3Q19Descriptor>( 
-               //flagMatrix, (T) 0.5, flagMatrix.getBoundingBox().enlarge(-2) ) );
+    // TriangleSet<T> triangles (
+    // vofToTriangles<T,descriptors::D3Q19Descriptor>(
+    // flagMatrix, (T) 0.5, flagMatrix.getBoundingBox().enlarge(-2) ) );
 
     std::vector<TriangleSet<T>::Triangle> triangles;
     isoSurfaceMarchingCube(triangles, voxelizedDomain, flagMatrix.getBoundingBox());
@@ -145,4 +146,3 @@ int main(int argc, char* argv[])
 
     return 0;
 }
-

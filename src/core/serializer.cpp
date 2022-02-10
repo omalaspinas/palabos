@@ -5,7 +5,7 @@
  * own the IP rights for most of the code base. Since October 2019, the
  * Palabos project is maintained by the University of Geneva and accepts
  * source code contributions from the community.
- * 
+ *
  * Contact:
  * Jonas Latt
  * Computer Science Department
@@ -14,7 +14,7 @@
  * 1227 Carouge, Switzerland
  * jonas.latt@unige.ch
  *
- * The most recent release of Palabos can be downloaded at 
+ * The most recent release of Palabos can be downloaded at
  * <https://palabos.unige.ch/>
  *
  * The library Palabos is free software: you can redistribute it and/or
@@ -29,32 +29,33 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
-
-#include "parallelism/mpiManager.h"
 #include "core/serializer.h"
-#include "core/plbDebug.h"
+
 #include <algorithm>
+
+#include "core/plbDebug.h"
+#include "parallelism/mpiManager.h"
 
 namespace plb {
 
 ////////// Free functions ////////////////////////////
 
-void serializerToUnSerializer (
-        DataSerializer const* serializer, DataUnSerializer* unSerializer, bool mainProcOnly )
+void serializerToUnSerializer(
+    DataSerializer const *serializer, DataUnSerializer *unSerializer, bool mainProcOnly)
 {
-    PLB_PRECONDITION( serializer->getSize() == unSerializer->getSize() );
+    PLB_PRECONDITION(serializer->getSize() == unSerializer->getSize());
     pluint writePos = 0, readPos = 0;
-    pluint serializerBufferSize =0, unSerializerBufferSize =0;
-    const char* serializerBuffer =0;
-    char* unSerializerBuffer =0;
+    pluint serializerBufferSize = 0, unSerializerBufferSize = 0;
+    const char *serializerBuffer = 0;
+    char *unSerializerBuffer = 0;
     while (!unSerializer->isFull()) {
-        if (readPos==serializerBufferSize) {
+        if (readPos == serializerBufferSize) {
             serializerBuffer = serializer->getNextDataBuffer(serializerBufferSize);
             readPos = 0;
         }
-        if (writePos==unSerializerBufferSize) {
+        if (writePos == unSerializerBufferSize) {
             unSerializerBuffer = unSerializer->getNextDataBuffer(unSerializerBufferSize);
             writePos = 0;
         }
@@ -62,12 +63,12 @@ void serializerToUnSerializer (
         pluint remainToRead = (plint)serializerBufferSize - (plint)readPos;
         pluint remainToWrite = (plint)unSerializerBufferSize - (plint)writePos;
         pluint nextChunk = std::min(remainToRead, remainToWrite);
-        for (pluint iChunk=0; iChunk<nextChunk; ++iChunk, ++readPos, ++writePos) {
+        for (pluint iChunk = 0; iChunk < nextChunk; ++iChunk, ++readPos, ++writePos) {
             if (!mainProcOnly || global::mpi().isMainProcessor()) {
                 unSerializerBuffer[writePos] = serializerBuffer[readPos];
             }
         }
-        if (writePos==unSerializerBufferSize) {
+        if (writePos == unSerializerBufferSize) {
             unSerializer->commitData();
         }
     }
@@ -75,14 +76,15 @@ void serializerToUnSerializer (
     delete unSerializer;
 }
 
-void serializerToSink(DataSerializer const* serializer, SerializedWriter* sink, bool mainProcOnly) {
+void serializerToSink(DataSerializer const *serializer, SerializedWriter *sink, bool mainProcOnly)
+{
     if (!mainProcOnly || global::mpi().isMainProcessor()) {
         pluint dataSize = serializer->getSize();
         sink->writeHeader(dataSize);
     }
     while (!serializer->isEmpty()) {
         pluint bufferSize;
-        const char* dataBuffer = serializer->getNextDataBuffer(bufferSize);
+        const char *dataBuffer = serializer->getNextDataBuffer(bufferSize);
         if (!mainProcOnly || global::mpi().isMainProcessor()) {
             sink->writeData(dataBuffer, bufferSize);
         }
@@ -91,7 +93,8 @@ void serializerToSink(DataSerializer const* serializer, SerializedWriter* sink, 
     delete serializer;
 }
 
-void sourceToUnSerializer(SerializedReader const* source, DataUnSerializer* unSerializer, bool mainProcOnly)
+void sourceToUnSerializer(
+    SerializedReader const *source, DataUnSerializer *unSerializer, bool mainProcOnly)
 {
     if (!mainProcOnly || global::mpi().isMainProcessor()) {
         pluint dataSize = unSerializer->getSize();
@@ -99,7 +102,7 @@ void sourceToUnSerializer(SerializedReader const* source, DataUnSerializer* unSe
     }
     while (!unSerializer->isFull()) {
         pluint bufferSize = 0;
-        char* dataBuffer = unSerializer->getNextDataBuffer(bufferSize);
+        char *dataBuffer = unSerializer->getNextDataBuffer(bufferSize);
         if (!mainProcOnly || global::mpi().isMainProcessor()) {
             source->readData(dataBuffer, bufferSize);
         }

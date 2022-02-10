@@ -5,7 +5,7 @@
  * own the IP rights for most of the code base. Since October 2019, the
  * Palabos project is maintained by the University of Geneva and accepts
  * source code contributions from the community.
- * 
+ *
  * Contact:
  * Jonas Latt
  * Computer Science Department
@@ -14,7 +14,7 @@
  * 1227 Carouge, Switzerland
  * jonas.latt@unige.ch
  *
- * The most recent release of Palabos can be downloaded at 
+ * The most recent release of Palabos can be downloaded at
  * <https://palabos.unige.ch/>
  *
  * The library Palabos is free software: you can redistribute it and/or
@@ -29,51 +29,51 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 #ifndef CO_PROCESSOR_INSTANTIATION_3D_HH
 #define CO_PROCESSOR_INSTANTIATION_3D_HH
 
-#include "core/globalDefs.h"
 #include "coProcessors/coProcessorInstantiation3D.h"
+#include "core/globalDefs.h"
 
 namespace plb {
 
-template<typename T, template<typename U> class Descriptor>
-std::map<plint,PureDynamics<T> > identifyBlocksWithPureDynamics (
-        MultiBlockLattice3D<T,Descriptor>& lattice, plint dynamicsId )
+template <typename T, template <typename U> class Descriptor>
+std::map<plint, PureDynamics<T> > identifyBlocksWithPureDynamics(
+    MultiBlockLattice3D<T, Descriptor> &lattice, plint dynamicsId)
 {
     MultiContainerBlock3D container(lattice);
-    std::vector<MultiBlock3D*> latticeAndContainer;
+    std::vector<MultiBlock3D *> latticeAndContainer;
     latticeAndContainer.push_back(&lattice);
     latticeAndContainer.push_back(&container);
 
-    applyProcessingFunctional( new IdentifyPureDynamics3D<T,Descriptor>(dynamicsId),
-                               lattice.getBoundingBox(), latticeAndContainer );
+    applyProcessingFunctional(
+        new IdentifyPureDynamics3D<T, Descriptor>(dynamicsId), lattice.getBoundingBox(),
+        latticeAndContainer);
 
-    MultiBlockManagement3D const& management = container.getMultiBlockManagement();
-    SparseBlockStructure3D const& sparseBlock = management.getSparseBlockStructure();
-    ThreadAttribution const& threadAttribution = management.getThreadAttribution();
-    std::map<plint,Box3D> const& domains = sparseBlock.getBulks();
+    MultiBlockManagement3D const &management = container.getMultiBlockManagement();
+    SparseBlockStructure3D const &sparseBlock = management.getSparseBlockStructure();
+    ThreadAttribution const &threadAttribution = management.getThreadAttribution();
+    std::map<plint, Box3D> const &domains = sparseBlock.getBulks();
 
     std::vector<plint> domainIds(domains.size());
     std::vector<int> isPure(domains.size());
     std::vector<T> omega(domains.size());
 
-    std::map<plint,Box3D>::const_iterator it = domains.begin();
+    std::map<plint, Box3D>::const_iterator it = domains.begin();
     plint pos = 0;
     for (; it != domains.end(); ++it) {
         plint id = it->first;
         domainIds[pos] = id;
         if (threadAttribution.isLocal(id)) {
-            AtomicContainerBlock3D const& component = container.getComponent(id);
-            PureDynamics<T> const* data =
-                dynamic_cast<PureDynamics<T> const*>(component.getData());
-            PLB_ASSERT( data );
-            isPure[pos] = data->isPure ? 1:0;
+            AtomicContainerBlock3D const &component = container.getComponent(id);
+            PureDynamics<T> const *data =
+                dynamic_cast<PureDynamics<T> const *>(component.getData());
+            PLB_ASSERT(data);
+            isPure[pos] = data->isPure ? 1 : 0;
             omega[pos] = data->omega;
-        }
-        else {
+        } else {
             isPure[pos] = 0;
             omega[pos] = T();
         }
@@ -92,13 +92,13 @@ std::map<plint,PureDynamics<T> > identifyBlocksWithPureDynamics (
     omegaTmp.swap(omega);
 #endif
 
-   std::map<plint,PureDynamics<T> > pureDynamicsMap;
-   for (pluint i=0; i<isPure.size(); ++i) {
-       pureDynamicsMap.insert(std::pair<plint,PureDynamics<T> > (
-                   domainIds[i], PureDynamics<T>(isPure[i], omega[i] ) ) );
-   }
+    std::map<plint, PureDynamics<T> > pureDynamicsMap;
+    for (pluint i = 0; i < isPure.size(); ++i) {
+        pureDynamicsMap.insert(
+            std::pair<plint, PureDynamics<T> >(domainIds[i], PureDynamics<T>(isPure[i], omega[i])));
+    }
 
-   return pureDynamicsMap;
+    return pureDynamicsMap;
 }
 
 }  // namespace plb

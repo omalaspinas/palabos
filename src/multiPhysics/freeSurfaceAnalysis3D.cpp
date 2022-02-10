@@ -5,7 +5,7 @@
  * own the IP rights for most of the code base. Since October 2019, the
  * Palabos project is maintained by the University of Geneva and accepts
  * source code contributions from the community.
- * 
+ *
  * Contact:
  * Jonas Latt
  * Computer Science Department
@@ -14,7 +14,7 @@
  * 1227 Carouge, Switzerland
  * jonas.latt@unige.ch
  *
- * The most recent release of Palabos can be downloaded at 
+ * The most recent release of Palabos can be downloaded at
  * <https://palabos.unige.ch/>
  *
  * The library Palabos is free software: you can redistribute it and/or
@@ -29,38 +29,39 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
+
+#include "multiPhysics/freeSurfaceAnalysis3D.h"
 
 #include "atomicBlock/reductiveDataProcessingFunctional3D.h"
 #include "atomicBlock/reductiveDataProcessingFunctional3D.hh"
 #include "multiBlock/reductiveMultiDataProcessorWrapper3D.h"
 #include "multiBlock/reductiveMultiDataProcessorWrapper3D.hh"
 #include "multiPhysics/freeSurfaceUtil3D.h"
-#include "multiPhysics/freeSurfaceAnalysis3D.h"
 
 namespace plb {
 
 /* ************** class FreeSurfaceCountWallCells3D ********************************** */
 
-FreeSurfaceCountWallCells3D::FreeSurfaceCountWallCells3D()
-    : sumScalarId(this->getStatistics().subscribeIntSum())
+FreeSurfaceCountWallCells3D::FreeSurfaceCountWallCells3D() :
+    sumScalarId(this->getStatistics().subscribeIntSum())
 { }
 
-void FreeSurfaceCountWallCells3D::process(Box3D domain, ScalarField3D<int>& flag)
+void FreeSurfaceCountWallCells3D::process(Box3D domain, ScalarField3D<int> &flag)
 {
-    BlockStatistics& statistics = this->getStatistics();
-    for (plint iX=domain.x0; iX<=domain.x1; ++iX) {
-        for (plint iY=domain.y0; iY<=domain.y1; ++iY) {
-            for (plint iZ=domain.z0; iZ<=domain.z1; ++iZ) {
+    BlockStatistics &statistics = this->getStatistics();
+    for (plint iX = domain.x0; iX <= domain.x1; ++iX) {
+        for (plint iY = domain.y0; iY <= domain.y1; ++iY) {
+            for (plint iZ = domain.z0; iZ <= domain.z1; ++iZ) {
                 if (freeSurfaceFlag::isAnyWall(flag.get(iX, iY, iZ))) {
-                    statistics.gatherIntSum(sumScalarId, (plint) 1);
+                    statistics.gatherIntSum(sumScalarId, (plint)1);
                 }
             }
         }
     }
 }
 
-FreeSurfaceCountWallCells3D* FreeSurfaceCountWallCells3D::clone() const
+FreeSurfaceCountWallCells3D *FreeSurfaceCountWallCells3D::clone() const
 {
     return new FreeSurfaceCountWallCells3D(*this);
 }
@@ -70,7 +71,7 @@ plint FreeSurfaceCountWallCells3D::getNumWallCells() const
     return this->getStatistics().getIntSum(sumScalarId);
 }
 
-plint freeSurfaceCountWallCells(MultiScalarField3D<int>& flag, Box3D domain)
+plint freeSurfaceCountWallCells(MultiScalarField3D<int> &flag, Box3D domain)
 {
     FreeSurfaceCountWallCells3D functional;
     applyProcessingFunctional(functional, domain, flag);
@@ -79,41 +80,41 @@ plint freeSurfaceCountWallCells(MultiScalarField3D<int>& flag, Box3D domain)
 
 /* ************** class FreeSurfaceComputeFluidBoundingBox3D ********************************** */
 
-FreeSurfaceComputeFluidBoundingBox3D::FreeSurfaceComputeFluidBoundingBox3D()
-    : minIdX(this->getStatistics().subscribeMax()),
-      minIdY(this->getStatistics().subscribeMax()),
-      minIdZ(this->getStatistics().subscribeMax()),
-      maxIdX(this->getStatistics().subscribeMax()),
-      maxIdY(this->getStatistics().subscribeMax()),
-      maxIdZ(this->getStatistics().subscribeMax())
+FreeSurfaceComputeFluidBoundingBox3D::FreeSurfaceComputeFluidBoundingBox3D() :
+    minIdX(this->getStatistics().subscribeMax()),
+    minIdY(this->getStatistics().subscribeMax()),
+    minIdZ(this->getStatistics().subscribeMax()),
+    maxIdX(this->getStatistics().subscribeMax()),
+    maxIdY(this->getStatistics().subscribeMax()),
+    maxIdZ(this->getStatistics().subscribeMax())
 { }
 
-void FreeSurfaceComputeFluidBoundingBox3D::process(Box3D domain, ScalarField3D<int>& flag)
+void FreeSurfaceComputeFluidBoundingBox3D::process(Box3D domain, ScalarField3D<int> &flag)
 {
     Dot3D absOfs = flag.getLocation();
-    BlockStatistics& statistics = this->getStatistics();
-    for (plint iX=domain.x0; iX<=domain.x1; ++iX) {
+    BlockStatistics &statistics = this->getStatistics();
+    for (plint iX = domain.x0; iX <= domain.x1; ++iX) {
         plint x = iX + absOfs.x;
-        for (plint iY=domain.y0; iY<=domain.y1; ++iY) {
+        for (plint iY = domain.y0; iY <= domain.y1; ++iY) {
             plint y = iY + absOfs.y;
-            for (plint iZ=domain.z0; iZ<=domain.z1; ++iZ) {
+            for (plint iZ = domain.z0; iZ <= domain.z1; ++iZ) {
                 plint z = iZ + absOfs.z;
                 if (freeSurfaceFlag::isWet(flag.get(iX, iY, iZ))) {
                     // BlockStatistics computes only maximum, no minimum. Therefore,
                     //   the relation min(x) = -max(-x) is used.
-                    statistics.gatherMax(minIdX, (double) -x);
-                    statistics.gatherMax(minIdY, (double) -y);
-                    statistics.gatherMax(minIdZ, (double) -z);
-                    statistics.gatherMax(maxIdX, (double)  x);
-                    statistics.gatherMax(maxIdY, (double)  y);
-                    statistics.gatherMax(maxIdZ, (double)  z);
+                    statistics.gatherMax(minIdX, (double)-x);
+                    statistics.gatherMax(minIdY, (double)-y);
+                    statistics.gatherMax(minIdZ, (double)-z);
+                    statistics.gatherMax(maxIdX, (double)x);
+                    statistics.gatherMax(maxIdY, (double)y);
+                    statistics.gatherMax(maxIdZ, (double)z);
                 }
             }
         }
     }
 }
 
-FreeSurfaceComputeFluidBoundingBox3D* FreeSurfaceComputeFluidBoundingBox3D::clone() const
+FreeSurfaceComputeFluidBoundingBox3D *FreeSurfaceComputeFluidBoundingBox3D::clone() const
 {
     return new FreeSurfaceComputeFluidBoundingBox3D(*this);
 }
@@ -121,12 +122,12 @@ FreeSurfaceComputeFluidBoundingBox3D* FreeSurfaceComputeFluidBoundingBox3D::clon
 Box3D FreeSurfaceComputeFluidBoundingBox3D::getFluidBoundingBox() const
 {
     // The minus sign accounts for the relation min(x) = -max(-x).
-    double doubleMinX = - this->getStatistics().getMax(minIdX);
-    double doubleMinY = - this->getStatistics().getMax(minIdY);
-    double doubleMinZ = - this->getStatistics().getMax(minIdZ);
-    double doubleMaxX =   this->getStatistics().getMax(maxIdX);
-    double doubleMaxY =   this->getStatistics().getMax(maxIdY);
-    double doubleMaxZ =   this->getStatistics().getMax(maxIdZ);
+    double doubleMinX = -this->getStatistics().getMax(minIdX);
+    double doubleMinY = -this->getStatistics().getMax(minIdY);
+    double doubleMinZ = -this->getStatistics().getMax(minIdZ);
+    double doubleMaxX = this->getStatistics().getMax(maxIdX);
+    double doubleMaxY = this->getStatistics().getMax(maxIdY);
+    double doubleMaxZ = this->getStatistics().getMax(maxIdZ);
 
     plint minX = util::roundToInt(doubleMinX);
     plint minY = util::roundToInt(doubleMinY);
@@ -138,17 +139,16 @@ Box3D FreeSurfaceComputeFluidBoundingBox3D::getFluidBoundingBox() const
     return Box3D(minX, maxX, minY, maxY, minZ, maxZ);
 }
 
-Box3D freeSurfaceComputeFluidBoundingBox(MultiScalarField3D<int>& flag, Box3D domain)
+Box3D freeSurfaceComputeFluidBoundingBox(MultiScalarField3D<int> &flag, Box3D domain)
 {
     FreeSurfaceComputeFluidBoundingBox3D functional;
     applyProcessingFunctional(functional, domain, flag);
     return functional.getFluidBoundingBox();
 }
 
-Box3D freeSurfaceComputeFluidBoundingBox(MultiScalarField3D<int>& flag)
+Box3D freeSurfaceComputeFluidBoundingBox(MultiScalarField3D<int> &flag)
 {
     return freeSurfaceComputeFluidBoundingBox(flag, flag.getBoundingBox());
 }
 
 }  // namespace plb
-

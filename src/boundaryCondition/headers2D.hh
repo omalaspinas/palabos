@@ -5,7 +5,7 @@
  * own the IP rights for most of the code base. Since October 2019, the
  * Palabos project is maintained by the University of Geneva and accepts
  * source code contributions from the community.
- * 
+ *
  * Contact:
  * Jonas Latt
  * Computer Science Department
@@ -14,7 +14,7 @@
  * 1227 Carouge, Switzerland
  * jonas.latt@unige.ch
  *
- * The most recent release of Palabos can be downloaded at 
+ * The most recent release of Palabos can be downloaded at
  * <https://palabos.unige.ch/>
  *
  * The library Palabos is free software: you can redistribute it and/or
@@ -29,32 +29,31 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 /** \file
  * Groups all the generic 2D template files in the boundaryConditions directory.
  */
 
-#include "boundaryCondition/boundaryDynamics.hh"
-#include "boundaryCondition/regularizedBoundaryDynamics.hh"
-#include "boundaryCondition/regularizedBoundaryDynamics2D.hh"
-#include "boundaryCondition/equilibriumBoundaryDynamics.hh"
-#include "boundaryCondition/inamuroAnalyticalDynamics.hh"
-#include "boundaryCondition/inamuroBoundary2D.hh"
-#include "boundaryCondition/zouHeBoundary2D.hh"
-#include "boundaryCondition/zouHeDynamics.hh"
-#include "boundaryCondition/boundaryCondition2D.hh"
-#include "boundaryCondition/finiteDifferenceBoundaryProcessor2D.hh"
-#include "boundaryCondition/wrappedLocalBoundaryProcessor2D.hh"
-#include "boundaryCondition/neumannCondition2D.hh"
 #include "boundaryCondition/bounceBackModels.hh"
 #include "boundaryCondition/bounceBackModels2D.hh"
+#include "boundaryCondition/boundaryCondition2D.hh"
+#include "boundaryCondition/boundaryDynamics.hh"
+#include "boundaryCondition/equilibriumBoundaryDynamics.hh"
+#include "boundaryCondition/finiteDifferenceBoundaryProcessor2D.hh"
+#include "boundaryCondition/inamuroAnalyticalDynamics.hh"
+#include "boundaryCondition/inamuroBoundary2D.hh"
+#include "boundaryCondition/neumannCondition2D.hh"
+#include "boundaryCondition/regularizedBoundaryDynamics.hh"
+#include "boundaryCondition/regularizedBoundaryDynamics2D.hh"
 #include "boundaryCondition/spongeZones2D.hh"
+#include "boundaryCondition/wrappedLocalBoundaryProcessor2D.hh"
+#include "boundaryCondition/zouHeBoundary2D.hh"
+#include "boundaryCondition/zouHeDynamics.hh"
 
 #ifndef PLB_BGP
 #ifdef PLB_USE_EIGEN
-#include "boundaryCondition/generalizedBoundaryDynamics.hh"
 #include "boundaryCondition/generalizedBoundaryCondition2D.hh"
+#include "boundaryCondition/generalizedBoundaryDynamics.hh"
 #endif
 #endif
-

@@ -5,7 +5,7 @@
  * own the IP rights for most of the code base. Since October 2019, the
  * Palabos project is maintained by the University of Geneva and accepts
  * source code contributions from the community.
- * 
+ *
  * Contact:
  * Jonas Latt
  * Computer Science Department
@@ -14,7 +14,7 @@
  * 1227 Carouge, Switzerland
  * jonas.latt@unige.ch
  *
- * The most recent release of Palabos can be downloaded at 
+ * The most recent release of Palabos can be downloaded at
  * <https://palabos.unige.ch/>
  *
  * The library Palabos is free software: you can redistribute it and/or
@@ -29,7 +29,7 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 /** \file
  * BounceBack dynamics models in 2D -- generic implementation.
@@ -38,106 +38,110 @@
 #ifndef BOUNCE_BACK_MODELS_2D_HH
 #define BOUNCE_BACK_MODELS_2D_HH
 
-#include "boundaryCondition/bounceBackModels2D.h"
 #include "atomicBlock/blockLattice2D.h"
-#include "core/cell.h"
 #include "atomicBlock/dataProcessorWrapper2D.h"
+#include "boundaryCondition/bounceBackModels2D.h"
+#include "core/cell.h"
 
 namespace plb {
 
 /* *************** Class InitializeMomentumExchangeFunctional2D ************* */
 
-template<typename T, template<typename U> class Descriptor>
-class InitializeMomentumExchangeFunctional2D : public BoxProcessingFunctional2D_L<T,Descriptor> {
+template <typename T, template <typename U> class Descriptor>
+class InitializeMomentumExchangeFunctional2D : public BoxProcessingFunctional2D_L<T, Descriptor> {
 public:
-    virtual void process(Box2D domain, BlockLattice2D<T,Descriptor>& lattice)
+    virtual void process(Box2D domain, BlockLattice2D<T, Descriptor> &lattice)
     {
-        static const int mEBounceBackId = MomentumExchangeBounceBack<T,Descriptor>(Array<plint,2>::zero()).getId();
+        static const int mEBounceBackId =
+            MomentumExchangeBounceBack<T, Descriptor>(Array<plint, 2>::zero()).getId();
 
-        for (plint iX=domain.x0; iX<=domain.x1; ++iX) {
-            for (plint iY=domain.y0; iY<=domain.y1; ++iY) {
-                Dynamics<T,Descriptor>& dynamics = lattice.get(iX,iY).getDynamics();
+        for (plint iX = domain.x0; iX <= domain.x1; ++iX) {
+            for (plint iY = domain.y0; iY <= domain.y1; ++iY) {
+                Dynamics<T, Descriptor> &dynamics = lattice.get(iX, iY).getDynamics();
                 if (dynamics.getId() == mEBounceBackId) {
                     std::vector<plint> fluidDirections;
-                    for (plint iPop=1; iPop<Descriptor<T>::q; ++iPop) {
+                    for (plint iPop = 1; iPop < Descriptor<T>::q; ++iPop) {
                         plint nextX = iX + Descriptor<T>::c[iPop][0];
                         plint nextY = iY + Descriptor<T>::c[iPop][1];
-                        Dynamics<T,Descriptor>& partner = lattice.get(nextX,nextY).getDynamics();
+                        Dynamics<T, Descriptor> &partner = lattice.get(nextX, nextY).getDynamics();
                         if (partner.hasMoments()) {
                             fluidDirections.push_back(iPop);
                         }
                     }
 
                     if (!fluidDirections.empty()) {
-                        MomentumExchangeBounceBack<T,Descriptor>& bounceBackDynamics =
-                            dynamic_cast<MomentumExchangeBounceBack<T,Descriptor>&>(dynamics);
+                        MomentumExchangeBounceBack<T, Descriptor> &bounceBackDynamics =
+                            dynamic_cast<MomentumExchangeBounceBack<T, Descriptor> &>(dynamics);
                         bounceBackDynamics.setFluidDirections(fluidDirections);
                     }
                 }
             }
         }
     }
-    virtual BlockDomain::DomainT appliesTo() const {
+    virtual BlockDomain::DomainT appliesTo() const
+    {
         // Apply only to bulk, because envelopes should not contribute
         //   to the statistics.
         return BlockDomain::bulk;
     }
-    virtual void getTypeOfModification(std::vector<modif::ModifT>& modified) const {
+    virtual void getTypeOfModification(std::vector<modif::ModifT> &modified) const
+    {
         modified[0] = modif::dynamicVariables;
     }
-    virtual InitializeMomentumExchangeFunctional2D<T,Descriptor>* clone() const
+    virtual InitializeMomentumExchangeFunctional2D<T, Descriptor> *clone() const
     {
-        return new InitializeMomentumExchangeFunctional2D<T,Descriptor>(*this);
+        return new InitializeMomentumExchangeFunctional2D<T, Descriptor>(*this);
     }
 };
 
 /* ************* Class MomentumExchangeComplexDomainFunctional2D ** */
 
-template<typename T, template<typename U> class Descriptor>
-class MomentumExchangeComplexDomainFunctional2D
-    : public BoxProcessingFunctional2D_L<T,Descriptor>
-{
+template <typename T, template <typename U> class Descriptor>
+class MomentumExchangeComplexDomainFunctional2D :
+    public BoxProcessingFunctional2D_L<T, Descriptor> {
 public:
-    MomentumExchangeComplexDomainFunctional2D( DomainFunctional2D* domain_ )
-        : domain(domain_)
+    MomentumExchangeComplexDomainFunctional2D(DomainFunctional2D *domain_) : domain(domain_) { }
+    MomentumExchangeComplexDomainFunctional2D(
+        MomentumExchangeComplexDomainFunctional2D<T, Descriptor> const &rhs) :
+        domain(rhs.domain->clone())
     { }
-    MomentumExchangeComplexDomainFunctional2D (
-            MomentumExchangeComplexDomainFunctional2D<T,Descriptor> const& rhs )
-        : domain(rhs.domain->clone())
-    { }
-    MomentumExchangeComplexDomainFunctional2D<T,Descriptor>& operator= (
-            MomentumExchangeComplexDomainFunctional2D<T,Descriptor> const& rhs )
+    MomentumExchangeComplexDomainFunctional2D<T, Descriptor> &operator=(
+        MomentumExchangeComplexDomainFunctional2D<T, Descriptor> const &rhs)
     {
-        delete domain; domain = rhs.domain->clone();
+        delete domain;
+        domain = rhs.domain->clone();
         return *this;
     }
 
-    virtual ~MomentumExchangeComplexDomainFunctional2D() {
+    virtual ~MomentumExchangeComplexDomainFunctional2D()
+    {
         delete domain;
     }
-    virtual void process(Box2D boundingBox, BlockLattice2D<T,Descriptor>& lattice)
+    virtual void process(Box2D boundingBox, BlockLattice2D<T, Descriptor> &lattice)
     {
-        static const int mEBounceBackId = MomentumExchangeBounceBack<T,Descriptor>(Array<plint,2>::zero()).getId();
+        static const int mEBounceBackId =
+            MomentumExchangeBounceBack<T, Descriptor>(Array<plint, 2>::zero()).getId();
 
         Dot2D relativeOffset = lattice.getLocation();
-        for (plint iX=boundingBox.x0; iX<=boundingBox.x1; ++iX) {
-            for (plint iY=boundingBox.y0; iY<=boundingBox.y1; ++iY) {
-                if ((*domain)(iX+relativeOffset.x,iY+relativeOffset.y)) {
-                    Dynamics<T,Descriptor>& dynamics = lattice.get(iX,iY).getDynamics();
+        for (plint iX = boundingBox.x0; iX <= boundingBox.x1; ++iX) {
+            for (plint iY = boundingBox.y0; iY <= boundingBox.y1; ++iY) {
+                if ((*domain)(iX + relativeOffset.x, iY + relativeOffset.y)) {
+                    Dynamics<T, Descriptor> &dynamics = lattice.get(iX, iY).getDynamics();
                     if (dynamics.getId() == mEBounceBackId) {
                         std::vector<plint> fluidDirections;
-                        for (plint iPop=1; iPop<Descriptor<T>::q; ++iPop) {
+                        for (plint iPop = 1; iPop < Descriptor<T>::q; ++iPop) {
                             plint nextX = iX + Descriptor<T>::c[iPop][0];
                             plint nextY = iY + Descriptor<T>::c[iPop][1];
-                            Dynamics<T,Descriptor>& partner = lattice.get(nextX,nextY).getDynamics();
+                            Dynamics<T, Descriptor> &partner =
+                                lattice.get(nextX, nextY).getDynamics();
                             if (partner.hasMoments()) {
                                 fluidDirections.push_back(iPop);
                             }
                         }
 
                         if (!fluidDirections.empty()) {
-                            MomentumExchangeBounceBack<T,Descriptor>& bounceBackDynamics =
-                                dynamic_cast<MomentumExchangeBounceBack<T,Descriptor>&>(dynamics);
+                            MomentumExchangeBounceBack<T, Descriptor> &bounceBackDynamics =
+                                dynamic_cast<MomentumExchangeBounceBack<T, Descriptor> &>(dynamics);
                             bounceBackDynamics.setFluidDirections(fluidDirections);
                         }
                     }
@@ -145,138 +149,140 @@ public:
             }
         }
     }
-    virtual BlockDomain::DomainT appliesTo() const {
+    virtual BlockDomain::DomainT appliesTo() const
+    {
         // Apply only to bulk, because envelopes should not contribute
         //   to the statistics.
         return BlockDomain::bulk;
     }
-    virtual void getTypeOfModification(std::vector<modif::ModifT>& modified) const {
+    virtual void getTypeOfModification(std::vector<modif::ModifT> &modified) const
+    {
         modified[0] = modif::dynamicVariables;
     }
-    virtual MomentumExchangeComplexDomainFunctional2D<T,Descriptor>* clone() const
+    virtual MomentumExchangeComplexDomainFunctional2D<T, Descriptor> *clone() const
     {
-        return new MomentumExchangeComplexDomainFunctional2D<T,Descriptor>(*this);
+        return new MomentumExchangeComplexDomainFunctional2D<T, Descriptor>(*this);
     }
+
 private:
-    DomainFunctional2D* domain;
+    DomainFunctional2D *domain;
 };
 
 /* ************* Class InitializeDotMomentumExchangeFunctional2D ** */
 
-template<typename T, template<typename U> class Descriptor>
-class InitializeDotMomentumExchangeFunctional2D : public DotProcessingFunctional2D_L<T,Descriptor> {
+template <typename T, template <typename U> class Descriptor>
+class InitializeDotMomentumExchangeFunctional2D :
+    public DotProcessingFunctional2D_L<T, Descriptor> {
 public:
-    virtual void process(DotList2D const& dotList, BlockLattice2D<T,Descriptor>& lattice)
+    virtual void process(DotList2D const &dotList, BlockLattice2D<T, Descriptor> &lattice)
     {
-        static const int mEBounceBackId = MomentumExchangeBounceBack<T,Descriptor>(Array<plint,2>::zero()).getId();
+        static const int mEBounceBackId =
+            MomentumExchangeBounceBack<T, Descriptor>(Array<plint, 2>::zero()).getId();
 
-        for (plint iDot=0; iDot<dotList.getN(); ++iDot) {
-            Dot2D const& dot = dotList.getDot(iDot);
+        for (plint iDot = 0; iDot < dotList.getN(); ++iDot) {
+            Dot2D const &dot = dotList.getDot(iDot);
             plint iX = dot.x;
             plint iY = dot.y;
-            Dynamics<T,Descriptor>& dynamics = lattice.get(iX,iY).getDynamics();
+            Dynamics<T, Descriptor> &dynamics = lattice.get(iX, iY).getDynamics();
             if (dynamics.getId() == mEBounceBackId) {
                 std::vector<plint> fluidDirections;
-                for (plint iPop=1; iPop<Descriptor<T>::q; ++iPop) {
+                for (plint iPop = 1; iPop < Descriptor<T>::q; ++iPop) {
                     plint nextX = iX + Descriptor<T>::c[iPop][0];
                     plint nextY = iY + Descriptor<T>::c[iPop][1];
-                    Dynamics<T,Descriptor>& partner = lattice.get(nextX,nextY).getDynamics();
+                    Dynamics<T, Descriptor> &partner = lattice.get(nextX, nextY).getDynamics();
                     if (partner.hasMoments()) {
                         fluidDirections.push_back(iPop);
                     }
                 }
 
                 if (!fluidDirections.empty()) {
-                    MomentumExchangeBounceBack<T,Descriptor>& bounceBackDynamics =
-                        dynamic_cast<MomentumExchangeBounceBack<T,Descriptor>&>(dynamics);
+                    MomentumExchangeBounceBack<T, Descriptor> &bounceBackDynamics =
+                        dynamic_cast<MomentumExchangeBounceBack<T, Descriptor> &>(dynamics);
                     bounceBackDynamics.setFluidDirections(fluidDirections);
                 }
             }
         }
     }
-    virtual BlockDomain::DomainT appliesTo() const {
+    virtual BlockDomain::DomainT appliesTo() const
+    {
         // Apply only to bulk, because envelopes should not contribute
         //   to the statistics.
         return BlockDomain::bulk;
     }
-    virtual void getTypeOfModification(std::vector<modif::ModifT>& modified) const {
+    virtual void getTypeOfModification(std::vector<modif::ModifT> &modified) const
+    {
         modified[0] = modif::dynamicVariables;
     }
-    virtual InitializeDotMomentumExchangeFunctional2D<T,Descriptor>* clone() const
+    virtual InitializeDotMomentumExchangeFunctional2D<T, Descriptor> *clone() const
     {
-        return new InitializeDotMomentumExchangeFunctional2D<T,Descriptor>(*this);
+        return new InitializeDotMomentumExchangeFunctional2D<T, Descriptor>(*this);
     }
 };
 
-template<typename T, template<class U> class Descriptor>
-void initializeMomentumExchange (
-        BlockLattice2D<T,Descriptor>& lattice, Box2D domain )
+template <typename T, template <class U> class Descriptor>
+void initializeMomentumExchange(BlockLattice2D<T, Descriptor> &lattice, Box2D domain)
 {
-    applyProcessingFunctional (
-        new InitializeMomentumExchangeFunctional2D<T,Descriptor>(), domain, lattice );
+    applyProcessingFunctional(
+        new InitializeMomentumExchangeFunctional2D<T, Descriptor>(), domain, lattice);
 }
 
-template<typename T, template<class U> class Descriptor>
-void initializeMomentumExchange (
-        BlockLattice2D<T,Descriptor>& lattice, Box2D boundingBox,
-        DomainFunctional2D* domain )
+template <typename T, template <class U> class Descriptor>
+void initializeMomentumExchange(
+    BlockLattice2D<T, Descriptor> &lattice, Box2D boundingBox, DomainFunctional2D *domain)
 {
-    applyProcessingFunctional (
-            new MomentumExchangeComplexDomainFunctional2D<T,Descriptor>(domain), boundingBox, lattice );
+    applyProcessingFunctional(
+        new MomentumExchangeComplexDomainFunctional2D<T, Descriptor>(domain), boundingBox, lattice);
 }
 
-template<typename T, template<class U> class Descriptor>
-void initializeMomentumExchange (
-        BlockLattice2D<T,Descriptor>& lattice, DotList2D const& dotList )
+template <typename T, template <class U> class Descriptor>
+void initializeMomentumExchange(BlockLattice2D<T, Descriptor> &lattice, DotList2D const &dotList)
 {
-    applyProcessingFunctional (
-        new InitializeDotMomentumExchangeFunctional2D<T,Descriptor>(), dotList, lattice );
+    applyProcessingFunctional(
+        new InitializeDotMomentumExchangeFunctional2D<T, Descriptor>(), dotList, lattice);
 }
 
-template<typename T, template<class U> class Descriptor>
-void initializeMomentumExchange (
-        MultiBlockLattice2D<T,Descriptor>& lattice, Box2D domain )
+template <typename T, template <class U> class Descriptor>
+void initializeMomentumExchange(MultiBlockLattice2D<T, Descriptor> &lattice, Box2D domain)
 {
-    applyProcessingFunctional (
-        new InitializeMomentumExchangeFunctional2D<T,Descriptor>(), domain, lattice );
+    applyProcessingFunctional(
+        new InitializeMomentumExchangeFunctional2D<T, Descriptor>(), domain, lattice);
 }
 
-template<typename T, template<class U> class Descriptor>
-void initializeMomentumExchange (
-        MultiBlockLattice2D<T,Descriptor>& lattice, Box2D boundingBox,
-        DomainFunctional2D* domain )
+template <typename T, template <class U> class Descriptor>
+void initializeMomentumExchange(
+    MultiBlockLattice2D<T, Descriptor> &lattice, Box2D boundingBox, DomainFunctional2D *domain)
 {
-    applyProcessingFunctional (
-            new MomentumExchangeComplexDomainFunctional2D<T,Descriptor>(domain), boundingBox, lattice );
+    applyProcessingFunctional(
+        new MomentumExchangeComplexDomainFunctional2D<T, Descriptor>(domain), boundingBox, lattice);
 }
 
-template<typename T, template<class U> class Descriptor>
-void initializeMomentumExchange (
-        MultiBlockLattice2D<T,Descriptor>& lattice, DotList2D const& dotList )
+template <typename T, template <class U> class Descriptor>
+void initializeMomentumExchange(
+    MultiBlockLattice2D<T, Descriptor> &lattice, DotList2D const &dotList)
 {
-    applyProcessingFunctional (
-        new InitializeDotMomentumExchangeFunctional2D<T,Descriptor>(), dotList, lattice );
+    applyProcessingFunctional(
+        new InitializeDotMomentumExchangeFunctional2D<T, Descriptor>(), dotList, lattice);
 }
 
-
-template<typename T, template<typename U> class Descriptor> 
-void SetAverageWallDensityOnVelocityBounceBack2D<T,Descriptor>::process (
-        Box2D domain, BlockLattice2D<T,Descriptor>& lattice )
+template <typename T, template <typename U> class Descriptor>
+void SetAverageWallDensityOnVelocityBounceBack2D<T, Descriptor>::process(
+    Box2D domain, BlockLattice2D<T, Descriptor> &lattice)
 {
-    static const int velocityBounceBackId = VelocityBounceBack<T,Descriptor>().getId();
-    for (plint iX=domain.x0; iX<=domain.x1; ++iX) {
-        for (plint iY=domain.y0; iY<=domain.y1; ++iY) {
-            Dynamics<T,Descriptor>& dynamics = lattice.get(iX, iY).getDynamics();
+    static const int velocityBounceBackId = VelocityBounceBack<T, Descriptor>().getId();
+    for (plint iX = domain.x0; iX <= domain.x1; ++iX) {
+        for (plint iY = domain.y0; iY <= domain.y1; ++iY) {
+            Dynamics<T, Descriptor> &dynamics = lattice.get(iX, iY).getDynamics();
             if (dynamics.getId() == velocityBounceBackId) {
-                VelocityBounceBack<T,Descriptor>* vbbDynamics = dynamic_cast<VelocityBounceBack<T,Descriptor>*>(&dynamics);
+                VelocityBounceBack<T, Descriptor> *vbbDynamics =
+                    dynamic_cast<VelocityBounceBack<T, Descriptor> *>(&dynamics);
                 PLB_ASSERT(vbbDynamics);
-                T sum = (T) 0;
-                T sumWeights = (T) 0;
+                T sum = (T)0;
+                T sumWeights = (T)0;
                 plint numValidNeighbours = 0;
-                for (plint iPop=1; iPop<Descriptor<T>::q; ++iPop) {
+                for (plint iPop = 1; iPop < Descriptor<T>::q; ++iPop) {
                     plint nextX = iX + Descriptor<T>::c[iPop][0];
                     plint nextY = iY + Descriptor<T>::c[iPop][1];
-                    Cell<T,Descriptor>& nextCell = lattice.get(nextX, nextY);
+                    Cell<T, Descriptor> &nextCell = lattice.get(nextX, nextY);
                     if (nextCell.getDynamics().hasMoments()) {
                         T weight = Descriptor<T>::t[iPop];
                         sum += weight * nextCell.computeDensity();
@@ -293,22 +299,22 @@ void SetAverageWallDensityOnVelocityBounceBack2D<T,Descriptor>::process (
     }
 }
 
-template<typename T, template<typename U> class Descriptor> 
-SetAverageWallDensityOnVelocityBounceBack2D<T,Descriptor>*
-SetAverageWallDensityOnVelocityBounceBack2D<T,Descriptor>::clone() const
+template <typename T, template <typename U> class Descriptor>
+SetAverageWallDensityOnVelocityBounceBack2D<T, Descriptor>
+    *SetAverageWallDensityOnVelocityBounceBack2D<T, Descriptor>::clone() const
 {
-    return new SetAverageWallDensityOnVelocityBounceBack2D<T,Descriptor>(*this);
+    return new SetAverageWallDensityOnVelocityBounceBack2D<T, Descriptor>(*this);
 }
 
-template<typename T, template<typename U> class Descriptor> 
-void SetAverageWallDensityOnVelocityBounceBack2D<T,Descriptor>::getTypeOfModification(
-        std::vector<modif::ModifT>& modified) const
+template <typename T, template <typename U> class Descriptor>
+void SetAverageWallDensityOnVelocityBounceBack2D<T, Descriptor>::getTypeOfModification(
+    std::vector<modif::ModifT> &modified) const
 {
     modified[0] = modif::dynamicVariables;
 }
 
-template<typename T, template<typename U> class Descriptor> 
-BlockDomain::DomainT SetAverageWallDensityOnVelocityBounceBack2D<T,Descriptor>::appliesTo() const
+template <typename T, template <typename U> class Descriptor>
+BlockDomain::DomainT SetAverageWallDensityOnVelocityBounceBack2D<T, Descriptor>::appliesTo() const
 {
     return BlockDomain::bulk;
 }

@@ -5,7 +5,7 @@
  * own the IP rights for most of the code base. Since October 2019, the
  * Palabos project is maintained by the University of Geneva and accepts
  * source code contributions from the community.
- * 
+ *
  * Contact:
  * Jonas Latt
  * Computer Science Department
@@ -14,7 +14,7 @@
  * 1227 Carouge, Switzerland
  * jonas.latt@unige.ch
  *
- * The most recent release of Palabos can be downloaded at 
+ * The most recent release of Palabos can be downloaded at
  * <https://palabos.unige.ch/>
  *
  * The library Palabos is free software: you can redistribute it and/or
@@ -29,45 +29,51 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 #ifndef VTK_FILE_IO_HH
 #define VTK_FILE_IO_HH
 
-#include <limits>
 #include <fstream>
-#include "offLattice/vtkFileIO.h"
+#include <limits>
+
 #include "io/imageWriter.h"
 #include "offLattice/connectedTriangleUtil.h"
+#include "offLattice/vtkFileIO.h"
 
 namespace plb {
 
-template<typename T>
-void writeMultiPartVTK(RawConnectedTriangleMesh<T>& mesh, FileName fname,
-        bool writeVertexNormals, std::string vertexNormalsName)
+template <typename T>
+void writeMultiPartVTK(
+    RawConnectedTriangleMesh<T> &mesh, FileName fname, bool writeVertexNormals,
+    std::string vertexNormalsName)
 {
-    if (!global::mpi().isMainProcessor()) return;
+    if (!global::mpi().isMainProcessor())
+        return;
     if (mesh.getNumTriangles() == 0) {
         pcout << "Warning: Trying to save a mesh with no triangles." << std::endl;
         return;
     }
 
-    for (plint iPart=0; iPart<mesh.numParts(); ++iPart) {
+    for (plint iPart = 0; iPart < mesh.numParts(); ++iPart) {
         FileName partFileName(fname);
         if (mesh.numParts() > 1) {
-            partFileName.setName(createFileName(partFileName.getName()+"_", iPart, 3));
+            partFileName.setName(createFileName(partFileName.getName() + "_", iPart, 3));
         }
         RawConnectedTriangleMesh<T> part = extractConnectedPart(mesh, iPart);
         writeVTK(part, partFileName, writeVertexNormals, vertexNormalsName);
     }
 }
 
-template<typename T>
-void writeVTK(RawConnectedTriangleMesh<T>& mesh, FileName fname,
-        bool writeVertexNormals, std::string vertexNormalsName)
+template <typename T>
+void writeVTK(
+    RawConnectedTriangleMesh<T> &mesh, FileName fname, bool writeVertexNormals,
+    std::string vertexNormalsName)
 {
-    if (!global::mpi().isMainProcessor()) return;
-    if (mesh.getNumTriangles() == 0) return;
+    if (!global::mpi().isMainProcessor())
+        return;
+    if (mesh.getNumTriangles() == 0)
+        return;
     typedef typename ConnectedTriangleMesh<T>::PTriangleIterator PTriangleIterator;
     typedef typename ConnectedTriangleMesh<T>::PVertexIterator PVertexIterator;
     typedef typename ConnectedTriangleMesh<T>::PTriangle PTriangle;
@@ -83,13 +89,12 @@ void writeVTK(RawConnectedTriangleMesh<T>& mesh, FileName fname,
     ofile << "DATASET UNSTRUCTURED_GRID\n";
 
     ofile << "POINTS " << mesh.getNumVertices()
-          << (sizeof(T)==sizeof(double) ? " double" : " float")
-          << "\n";
+          << (sizeof(T) == sizeof(double) ? " double" : " float") << "\n";
 
     plint vertexIDtagging = mesh.getVertexTag("UniqueID");
     PVertexIterator vertexIt = mesh.vertexIterator();
-    std::map<plint,plint> toNewVertexID;
-    plint newVertexID=0;
+    std::map<plint, plint> toNewVertexID;
+    plint newVertexID = 0;
     while (!vertexIt->end()) {
         PVertex vertex = vertexIt->next();
         ofile << (*vertex)[0] << " " << (*vertex)[1] << " " << (*vertex)[2] << "\n";
@@ -98,8 +103,7 @@ void writeVTK(RawConnectedTriangleMesh<T>& mesh, FileName fname,
     }
     ofile << "\n";
 
-    ofile << "CELLS " << mesh.getNumTriangles()
-          << " " << 4*mesh.getNumTriangles() << "\n";
+    ofile << "CELLS " << mesh.getNumTriangles() << " " << 4 * mesh.getNumTriangles() << "\n";
 
     PTriangleIterator triangleIt = mesh.triangleIterator();
     while (!triangleIt->end()) {
@@ -113,17 +117,16 @@ void writeVTK(RawConnectedTriangleMesh<T>& mesh, FileName fname,
 
     ofile << "CELL_TYPES " << mesh.getNumTriangles() << "\n";
 
-    for (plint i=0; i<mesh.getNumTriangles(); ++i) {
+    for (plint i = 0; i < mesh.getNumTriangles(); ++i) {
         ofile << "5\n";
     }
     ofile << "\n";
 
     ofile << "POINT_DATA " << mesh.getNumVertices() << "\n";
-    
-    for (plint property=0; property<mesh.numVertexProperties(); ++property) {
+
+    for (plint property = 0; property < mesh.numVertexProperties(); ++property) {
         ofile << "SCALARS " << mesh.getVertexPropertyName(property)
-              << (sizeof(T)==sizeof(double) ? " double" : " float")
-              << " 1\n"
+              << (sizeof(T) == sizeof(double) ? " double" : " float") << " 1\n"
               << "LOOKUP_TABLE default\n";
         vertexIt = mesh.vertexIterator();
         while (!vertexIt->end()) {
@@ -135,12 +138,11 @@ void writeVTK(RawConnectedTriangleMesh<T>& mesh, FileName fname,
 
     if (writeVertexNormals) {
         ofile << "VECTORS " << vertexNormalsName
-              << (sizeof(T)==sizeof(double) ? " double" : " float")
-              << "\n";
+              << (sizeof(T) == sizeof(double) ? " double" : " float") << "\n";
         vertexIt = mesh.vertexIterator();
         while (!vertexIt->end()) {
             PVertex vertex = vertexIt->next();
-            Array<T,3> n = vertex->normal();
+            Array<T, 3> n = vertex->normal();
             ofile << n[0] << " " << n[1] << " " << n[2] << "\n";
         }
         ofile << "\n";
@@ -149,6 +151,4 @@ void writeVTK(RawConnectedTriangleMesh<T>& mesh, FileName fname,
 
 }  // namespace plb
 
-
 #endif  // VTK_FILE_IO_HH
-

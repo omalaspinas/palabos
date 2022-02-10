@@ -5,7 +5,7 @@
  * own the IP rights for most of the code base. Since October 2019, the
  * Palabos project is maintained by the University of Geneva and accepts
  * source code contributions from the community.
- * 
+ *
  * Contact:
  * Jonas Latt
  * Computer Science Department
@@ -14,7 +14,7 @@
  * 1227 Carouge, Switzerland
  * jonas.latt@unige.ch
  *
- * The most recent release of Palabos can be downloaded at 
+ * The most recent release of Palabos can be downloaded at
  * <https://palabos.unige.ch/>
  *
  * The library Palabos is free software: you can redistribute it and/or
@@ -29,83 +29,85 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 #ifndef MULTI_PARTICLE_FIELD_2D_HH
 #define MULTI_PARTICLE_FIELD_2D_HH
 
+#include <memory>
+
 #include "core/globalDefs.h"
 #include "particles/multiParticleField2D.h"
 #include "particles/particleNonLocalTransfer2D.h"
-#include <memory>
 
 namespace plb {
 
-template<class ParticleFieldT>
-std::unique_ptr<MultiParticleField2D<ParticleFieldT> >
-    defaultGenerateParticleField2D(MultiBlockManagement2D const& management, plint unnamedDummyArg)
+template <class ParticleFieldT>
+std::unique_ptr<MultiParticleField2D<ParticleFieldT> > defaultGenerateParticleField2D(
+    MultiBlockManagement2D const &management, plint unnamedDummyArg)
 {
-    return std::unique_ptr<MultiParticleField2D<ParticleFieldT> > (
-               new MultiParticleField2D<ParticleFieldT> (
-                       management,
-                       defaultMultiBlockPolicy2D().getCombinedStatistics() ) );
+    return std::unique_ptr<MultiParticleField2D<ParticleFieldT> >(
+        new MultiParticleField2D<ParticleFieldT>(
+            management, defaultMultiBlockPolicy2D().getCombinedStatistics()));
 }
 
-template<class ParticleFieldT>
-const int MultiParticleField2D<ParticleFieldT>::staticId =
-meta::registerMultiBlock2D ( MultiParticleField2D<ParticleFieldT>::basicType(),
-                             MultiParticleField2D<ParticleFieldT>::descriptorType(),
-                             MultiParticleField2D<ParticleFieldT>::blockName(),
-                             defaultGenerateParticleField2D<ParticleFieldT> );
+template <class ParticleFieldT>
+const int MultiParticleField2D<ParticleFieldT>::staticId = meta::registerMultiBlock2D(
+    MultiParticleField2D<ParticleFieldT>::basicType(),
+    MultiParticleField2D<ParticleFieldT>::descriptorType(),
+    MultiParticleField2D<ParticleFieldT>::blockName(),
+    defaultGenerateParticleField2D<ParticleFieldT>);
 
-template<class ParticleFieldT>
-MultiParticleField2D<ParticleFieldT>::MultiParticleField2D (
-        MultiBlockManagement2D const& multiBlockManagement_,
-        CombinedStatistics* combinedStatistics_ )
+template <class ParticleFieldT>
+MultiParticleField2D<ParticleFieldT>::MultiParticleField2D(
+    MultiBlockManagement2D const &multiBlockManagement_, CombinedStatistics *combinedStatistics_)
 
-    : MultiBlock2D(multiBlockManagement_,
-                   defaultMultiBlockPolicy2D().getBlockCommunicator(),
-                   combinedStatistics_)
+    :
+    MultiBlock2D(
+        multiBlockManagement_, defaultMultiBlockPolicy2D().getBlockCommunicator(),
+        combinedStatistics_)
 {
     allocateBlocks();
 }
 
-template<class ParticleFieldT>
-MultiParticleField2D<ParticleFieldT>::~MultiParticleField2D() {
+template <class ParticleFieldT>
+MultiParticleField2D<ParticleFieldT>::~MultiParticleField2D()
+{
     deAllocateBlocks();
 }
 
-template<class ParticleFieldT>
-MultiParticleField2D<ParticleFieldT>::MultiParticleField2D(plint nx_, plint ny_)
-    : MultiBlock2D (
-            // Default envelope-width to 1
-            defaultMultiBlockPolicy2D().getMultiBlockManagement(nx_,ny_, 1),
-            defaultMultiBlockPolicy2D().getBlockCommunicator(),
-            defaultMultiBlockPolicy2D().getCombinedStatistics() )
+template <class ParticleFieldT>
+MultiParticleField2D<ParticleFieldT>::MultiParticleField2D(plint nx_, plint ny_) :
+    MultiBlock2D(
+        // Default envelope-width to 1
+        defaultMultiBlockPolicy2D().getMultiBlockManagement(nx_, ny_, 1),
+        defaultMultiBlockPolicy2D().getBlockCommunicator(),
+        defaultMultiBlockPolicy2D().getCombinedStatistics())
 {
     allocateBlocks();
 }
 
-template<class ParticleFieldT>
-MultiParticleField2D<ParticleFieldT>::MultiParticleField2D(MultiBlock2D const& rhs)
-    : MultiBlock2D(rhs)
+template <class ParticleFieldT>
+MultiParticleField2D<ParticleFieldT>::MultiParticleField2D(MultiBlock2D const &rhs) :
+    MultiBlock2D(rhs)
 {
     allocateBlocks();
 }
 
-template<class ParticleFieldT>
-MultiParticleField2D<ParticleFieldT>::MultiParticleField2D(MultiBlock2D const& rhs, Box2D subDomain, bool crop)
-    : MultiBlock2D (
-            intersect(rhs.getMultiBlockManagement(), subDomain, crop),
-            rhs.getBlockCommunicator().clone(),
-            rhs.getCombinedStatistics().clone() )
+template <class ParticleFieldT>
+MultiParticleField2D<ParticleFieldT>::MultiParticleField2D(
+    MultiBlock2D const &rhs, Box2D subDomain, bool crop) :
+    MultiBlock2D(
+        intersect(rhs.getMultiBlockManagement(), subDomain, crop),
+        rhs.getBlockCommunicator().clone(), rhs.getCombinedStatistics().clone())
 {
     allocateBlocks();
 }
 
-template<class ParticleFieldT>
-MultiParticleField2D<ParticleFieldT>::MultiParticleField2D(MultiParticleField2D<ParticleFieldT> const& rhs)
-    : MultiBlock2D(rhs)
+template <class ParticleFieldT>
+MultiParticleField2D<ParticleFieldT>::MultiParticleField2D(
+    MultiParticleField2D<ParticleFieldT> const &rhs) :
+    MultiBlock2D(rhs)
 {
     allocateBlocks();
     typename BlockMap::iterator it = blocks.begin();
@@ -116,145 +118,149 @@ MultiParticleField2D<ParticleFieldT>::MultiParticleField2D(MultiParticleField2D<
     }
 }
 
-template<class ParticleFieldT>
-MultiParticleField2D<ParticleFieldT>& MultiParticleField2D<ParticleFieldT>::operator= (
-        MultiParticleField2D<ParticleFieldT> const& rhs )
+template <class ParticleFieldT>
+MultiParticleField2D<ParticleFieldT> &MultiParticleField2D<ParticleFieldT>::operator=(
+    MultiParticleField2D<ParticleFieldT> const &rhs)
 {
     MultiParticleField2D<ParticleFieldT> tmp(rhs);
     swap(tmp);
     return *this;
 }
 
-template<class ParticleFieldT>
-void MultiParticleField2D<ParticleFieldT>::swap(MultiParticleField2D<ParticleFieldT>& rhs) {
+template <class ParticleFieldT>
+void MultiParticleField2D<ParticleFieldT>::swap(MultiParticleField2D<ParticleFieldT> &rhs)
+{
     blocks.swap(rhs.blocks);
     MultiBlock2D::swap(rhs);
 }
 
-template<class ParticleFieldT>
-MultiParticleField2D<ParticleFieldT>* MultiParticleField2D<ParticleFieldT>::clone() const {
+template <class ParticleFieldT>
+MultiParticleField2D<ParticleFieldT> *MultiParticleField2D<ParticleFieldT>::clone() const
+{
     return new MultiParticleField2D<ParticleFieldT>(*this);
 }
 
-template<class ParticleFieldT>
-MultiParticleField2D<ParticleFieldT>* MultiParticleField2D<ParticleFieldT>::clone (
-        MultiBlockManagement2D const& newManagement ) const
+template <class ParticleFieldT>
+MultiParticleField2D<ParticleFieldT> *MultiParticleField2D<ParticleFieldT>::clone(
+    MultiBlockManagement2D const &newManagement) const
 {
-    MultiParticleField2D<ParticleFieldT>* newField =
-        new MultiParticleField2D<ParticleFieldT> (
-                newManagement,
-                this->getCombinedStatistics().clone() );
+    MultiParticleField2D<ParticleFieldT> *newField = new MultiParticleField2D<ParticleFieldT>(
+        newManagement, this->getCombinedStatistics().clone());
     copy(*this, this->getBoundingBox(), *newField, newField->getBoundingBox());
     return newField;
 }
 
-template<class ParticleFieldT>
-void MultiParticleField2D<ParticleFieldT>::allocateBlocks() 
+template <class ParticleFieldT>
+void MultiParticleField2D<ParticleFieldT>::allocateBlocks()
 {
-    for (pluint iBlock=0; iBlock<this->getLocalInfo().getBlocks().size(); ++iBlock)
-    {
+    for (pluint iBlock = 0; iBlock < this->getLocalInfo().getBlocks().size(); ++iBlock) {
         plint blockId = this->getLocalInfo().getBlocks()[iBlock];
         SmartBulk2D bulk(this->getMultiBlockManagement(), blockId);
         Box2D envelope = bulk.computeEnvelope();
-        ParticleFieldT* newBlock =
-            new ParticleFieldT (
-                    envelope.getNx(), envelope.getNy() );
-        newBlock -> setLocation(Dot2D(envelope.x0, envelope.y0));
+        ParticleFieldT *newBlock = new ParticleFieldT(envelope.getNx(), envelope.getNy());
+        newBlock->setLocation(Dot2D(envelope.x0, envelope.y0));
         blocks[blockId] = newBlock;
     }
 }
 
-template<class ParticleFieldT>
-void MultiParticleField2D<ParticleFieldT>::deAllocateBlocks() 
+template <class ParticleFieldT>
+void MultiParticleField2D<ParticleFieldT>::deAllocateBlocks()
 {
-    for ( typename BlockMap::iterator it = blocks.begin();
-          it != blocks.end(); ++it )
-    {
+    for (typename BlockMap::iterator it = blocks.begin(); it != blocks.end(); ++it) {
         delete it->second;
     }
 }
 
-template<class ParticleFieldT>
-ParticleFieldT& MultiParticleField2D<ParticleFieldT>::getComponent(plint blockId)
+template <class ParticleFieldT>
+ParticleFieldT &MultiParticleField2D<ParticleFieldT>::getComponent(plint blockId)
 {
     typename BlockMap::iterator it = blocks.find(blockId);
-    PLB_ASSERT (it != blocks.end());
+    PLB_ASSERT(it != blocks.end());
     return *it->second;
 }
 
-template<class ParticleFieldT>
-ParticleFieldT const& MultiParticleField2D<ParticleFieldT>::
-    getComponent(plint blockId) const
+template <class ParticleFieldT>
+ParticleFieldT const &MultiParticleField2D<ParticleFieldT>::getComponent(plint blockId) const
 {
     typename BlockMap::const_iterator it = blocks.find(blockId);
-    PLB_ASSERT (it != blocks.end());
+    PLB_ASSERT(it != blocks.end());
     return *it->second;
 }
 
-template<class ParticleFieldT>
-plint MultiParticleField2D<ParticleFieldT>::sizeOfCell() const {
+template <class ParticleFieldT>
+plint MultiParticleField2D<ParticleFieldT>::sizeOfCell() const
+{
     /// Particles are dynamic objects and have no static cell size.
     return 0;
 }
 
-template<class ParticleFieldT>
-plint MultiParticleField2D<ParticleFieldT>::getCellDim() const {
+template <class ParticleFieldT>
+plint MultiParticleField2D<ParticleFieldT>::getCellDim() const
+{
     /// Particles are dynamic objects and have no well-defined dimensionality.
     return 0;
 }
 
-template<class ParticleFieldT>
-int MultiParticleField2D<ParticleFieldT>::getStaticId() const {
+template <class ParticleFieldT>
+int MultiParticleField2D<ParticleFieldT>::getStaticId() const
+{
     return staticId;
 }
 
 // TODO: whichData is not used. Should we remove it?
-template<class ParticleFieldT>
-void MultiParticleField2D<ParticleFieldT>::copyReceive (
-                MultiBlock2D const& fromBlock, Box2D const& fromDomain,
-                Box2D const& toDomain, modif::ModifT whichData )
+template <class ParticleFieldT>
+void MultiParticleField2D<ParticleFieldT>::copyReceive(
+    MultiBlock2D const &fromBlock, Box2D const &fromDomain, Box2D const &toDomain,
+    modif::ModifT whichData)
 {
-    MultiParticleField2D<ParticleFieldT> const* fromField =
-        dynamic_cast<MultiParticleField2D<ParticleFieldT> const* >(&fromBlock);
-    PLB_ASSERT( fromField );
+    MultiParticleField2D<ParticleFieldT> const *fromField =
+        dynamic_cast<MultiParticleField2D<ParticleFieldT> const *>(&fromBlock);
+    PLB_ASSERT(fromField);
     copy(*fromField, fromDomain, *this, toDomain);
 }
 
-template<class ParticleFieldT>
-std::string MultiParticleField2D<ParticleFieldT>::getBlockName() const {
+template <class ParticleFieldT>
+std::string MultiParticleField2D<ParticleFieldT>::getBlockName() const
+{
     return blockName();
 }
 
-template<class ParticleFieldT>
-std::vector<std::string> MultiParticleField2D<ParticleFieldT>::getTypeInfo() const {
+template <class ParticleFieldT>
+std::vector<std::string> MultiParticleField2D<ParticleFieldT>::getTypeInfo() const
+{
     std::vector<std::string> answer;
-    answer.push_back( basicType() );
-    answer.push_back( descriptorType() );
+    answer.push_back(basicType());
+    answer.push_back(descriptorType());
     return answer;
 }
 
-template<class ParticleFieldT>
-std::string MultiParticleField2D<ParticleFieldT>::blockName() {
+template <class ParticleFieldT>
+std::string MultiParticleField2D<ParticleFieldT>::blockName()
+{
     return ParticleFieldT::getBlockName();
 }
 
-template<class ParticleFieldT>
-std::string MultiParticleField2D<ParticleFieldT>::basicType() {
+template <class ParticleFieldT>
+std::string MultiParticleField2D<ParticleFieldT>::basicType()
+{
     return ParticleFieldT::basicType();
 }
 
-template<class ParticleFieldT>
-std::string MultiParticleField2D<ParticleFieldT>::descriptorType() {
+template <class ParticleFieldT>
+std::string MultiParticleField2D<ParticleFieldT>::descriptorType()
+{
     return ParticleFieldT::descriptorType();
 }
 
-template<class ParticleFieldT>
-MultiParticleField2D<ParticleFieldT>& findMultiParticleField2D(id_t id) {
-    MultiBlock2D* multiBlock = multiBlockRegistration2D().find(id);
-    if (!multiBlock || multiBlock->getStaticId() != MultiParticleField2D<ParticleFieldT>::staticId) {
+template <class ParticleFieldT>
+MultiParticleField2D<ParticleFieldT> &findMultiParticleField2D(id_t id)
+{
+    MultiBlock2D *multiBlock = multiBlockRegistration2D().find(id);
+    if (!multiBlock || multiBlock->getStaticId() != MultiParticleField2D<ParticleFieldT>::staticId)
+    {
         throw PlbLogicException("Trying to access a multi block lattice that is not registered.");
     }
-    return (MultiParticleField2D<ParticleFieldT>&)(*multiBlock);
+    return (MultiParticleField2D<ParticleFieldT> &)(*multiBlock);
 }
 
 }  // namespace plb

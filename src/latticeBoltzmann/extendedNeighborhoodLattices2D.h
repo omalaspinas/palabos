@@ -5,7 +5,7 @@
  * own the IP rights for most of the code base. Since October 2019, the
  * Palabos project is maintained by the University of Geneva and accepts
  * source code contributions from the community.
- * 
+ *
  * Contact:
  * Jonas Latt
  * Computer Science Department
@@ -14,7 +14,7 @@
  * 1227 Carouge, Switzerland
  * jonas.latt@unige.ch
  *
- * The most recent release of Palabos can be downloaded at 
+ * The most recent release of Palabos can be downloaded at
  * <https://palabos.unige.ch/>
  *
  * The library Palabos is free software: you can redistribute it and/or
@@ -29,7 +29,7 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 /** \file
  * Descriptor for nearest-neighbor 2D lattices. In principle, thanks
@@ -45,11 +45,12 @@
 #ifndef EXTENDED_NEIGHBORHOOD_LATTICES_2D_H
 #define EXTENDED_NEIGHBORHOOD_LATTICES_2D_H
 
+#include <vector>
+
 #include "core/globalDefs.h"
 #include "core/plbDebug.h"
 #include "latticeBoltzmann/externalFields.h"
 #include "latticeBoltzmann/roundOffPolicy.h"
-#include <vector>
 
 namespace plb {
 
@@ -64,44 +65,40 @@ namespace plb {
  * Otherwise some of the code will work erroneously, because the
  * aformentioned relations are utilized in the code to enable a few
  * optimizations.
-*/
+ */
 namespace descriptors {
 
-    /// D2Q37 lattice constants
-    template <typename T> struct D2Q37Constants
-    {
-        enum { d = 2, q = 37 };        ///< number of dimensions/distr. functions
-        static const T invD;          ///< 1 / (number of dimensions)
-        static const int vicinity;    ///< size of neighborhood
-        static const int c[q][d];     ///< lattice directions
-        static const int cNormSqr[q]; ///< norm-square of the vector c
-        static const T t[q];          ///< lattice weights
-        static const T cs2;           ///< lattice constant cs2 (in BGK, this is the square-speed-of-sound)
-        static const T invCs2;        ///< 1 / cs2
-    };
+/// D2Q37 lattice constants
+template <typename T>
+struct D2Q37Constants {
+    enum { d = 2, q = 37 };        ///< number of dimensions/distr. functions
+    static const T invD;           ///< 1 / (number of dimensions)
+    static const int vicinity;     ///< size of neighborhood
+    static const int c[q][d];      ///< lattice directions
+    static const int cNormSqr[q];  ///< norm-square of the vector c
+    static const T t[q];           ///< lattice weights
+    static const T cs2;     ///< lattice constant cs2 (in BGK, this is the square-speed-of-sound)
+    static const T invCs2;  ///< 1 / cs2
+};
 
-    template <typename T> struct D2Q37DescriptorBase
-        : public D2Q37Constants<T>, public DefaultRoundOffPolicy<T>
-    {
-        typedef D2Q37DescriptorBase<T> BaseDescriptor;
-        enum { numPop=D2Q37Constants<T>::q };
-    };
+template <typename T>
+struct D2Q37DescriptorBase : public D2Q37Constants<T>, public DefaultRoundOffPolicy<T> {
+    typedef D2Q37DescriptorBase<T> BaseDescriptor;
+    enum { numPop = D2Q37Constants<T>::q };
+};
 
-    template <typename T> struct D2Q37Descriptor
-        : public D2Q37DescriptorBase<T>, public NoExternalFieldBase
-    {
-        static const char name[];
-    };
+template <typename T>
+struct D2Q37Descriptor : public D2Q37DescriptorBase<T>, public NoExternalFieldBase {
+    static const char name[];
+};
 
-    template <typename T> struct ForcedD2Q37Descriptor
-        : public D2Q37DescriptorBase<T>, public Force2dDescriptorBase
-    {
-        static const char name[];
-    };
+template <typename T>
+struct ForcedD2Q37Descriptor : public D2Q37DescriptorBase<T>, public Force2dDescriptorBase {
+    static const char name[];
+};
 
 }  // namespace descriptors
 
 }  // namespace plb
 
 #endif
-

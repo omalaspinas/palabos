@@ -5,7 +5,7 @@
  * own the IP rights for most of the code base. Since October 2019, the
  * Palabos project is maintained by the University of Geneva and accepts
  * source code contributions from the community.
- * 
+ *
  * Contact:
  * Jonas Latt
  * Computer Science Department
@@ -14,7 +14,7 @@
  * 1227 Carouge, Switzerland
  * jonas.latt@unige.ch
  *
- * The most recent release of Palabos can be downloaded at 
+ * The most recent release of Palabos can be downloaded at
  * <https://palabos.unige.ch/>
  *
  * The library Palabos is free software: you can redistribute it and/or
@@ -29,7 +29,7 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 #ifndef OCTREE_H
 #define OCTREE_H
@@ -38,15 +38,15 @@
 
 namespace plb {
 
-template<typename DataT>
+template <typename DataT>
 struct OctreeNode {
-    OctreeNode(OctreeNode<DataT>* parent_, DataT* data_);
+    OctreeNode(OctreeNode<DataT> *parent_, DataT *data_);
 
-    DataT* data;
+    DataT *data;
     int level;
     bool isLeaf;
-    OctreeNode<DataT>* parent;
-    OctreeNode<DataT>* child[8];
+    OctreeNode<DataT> *parent;
+    OctreeNode<DataT> *child[8];
 };
 
 struct OctreeTables {
@@ -94,49 +94,49 @@ struct OctreeTables {
     static const int comEdgeTab[26][8];
 };
 
-template<typename DataT>
-int octreeChildType(OctreeNode<DataT>* node);
+template <typename DataT>
+int octreeChildType(OctreeNode<DataT> *node);
 
-template<typename DataT>
-void freeOctree(OctreeNode<DataT>* root);
+template <typename DataT>
+void freeOctree(OctreeNode<DataT> *root);
 
-template<typename DataT, class AssignData>
-void splitOctreeNode(OctreeNode<DataT>* node, AssignData& assignData);
+template <typename DataT, class AssignData>
+void splitOctreeNode(OctreeNode<DataT> *node, AssignData &assignData);
 
-template<typename DataT>
-void getMinMaxOctreeLeafNodeLevels(OctreeNode<DataT>* root, int& minLevel, int& maxLevel);
+template <typename DataT>
+void getMinMaxOctreeLeafNodeLevels(OctreeNode<DataT> *root, int &minLevel, int &maxLevel);
 
-template<typename DataT, class Process>
-void processOctreePreOrder(OctreeNode<DataT>* root, Process& process);
+template <typename DataT, class Process>
+void processOctreePreOrder(OctreeNode<DataT> *root, Process &process);
 
-template<typename DataT, class Process>
-void processOctreePostOrder(OctreeNode<DataT>* root, Process& process);
+template <typename DataT, class Process>
+void processOctreePostOrder(OctreeNode<DataT> *root, Process &process);
 
-template<typename DataT>
-OctreeNode<DataT>* getOctreeEqualFaceNeighbor(OctreeNode<DataT>* node, int face);
+template <typename DataT>
+OctreeNode<DataT> *getOctreeEqualFaceNeighbor(OctreeNode<DataT> *node, int face);
 
-template<typename DataT>
-OctreeNode<DataT>* getOctreeEqualEdgeNeighbor(OctreeNode<DataT>* node, int edge);
+template <typename DataT>
+OctreeNode<DataT> *getOctreeEqualEdgeNeighbor(OctreeNode<DataT> *node, int edge);
 
-template<typename DataT>
-OctreeNode<DataT>* getOctreeEqualVertexNeighbor(OctreeNode<DataT>* node, int vertex);
+template <typename DataT>
+OctreeNode<DataT> *getOctreeEqualVertexNeighbor(OctreeNode<DataT> *node, int vertex);
 
-template<typename DataT>
-std::vector<OctreeNode<DataT>*> gatherOctreeEqualNeighbors(OctreeNode<DataT>* node);
+template <typename DataT>
+std::vector<OctreeNode<DataT> *> gatherOctreeEqualNeighbors(OctreeNode<DataT> *node);
 
-template<typename DataT>
-OctreeNode<DataT>* getOctreeGreaterEqualFaceNeighbor(OctreeNode<DataT>* node, int face);
+template <typename DataT>
+OctreeNode<DataT> *getOctreeGreaterEqualFaceNeighbor(OctreeNode<DataT> *node, int face);
 
-template<typename DataT>
-OctreeNode<DataT>* getOctreeGreaterEqualEdgeNeighbor(OctreeNode<DataT>* node, int edge);
+template <typename DataT>
+OctreeNode<DataT> *getOctreeGreaterEqualEdgeNeighbor(OctreeNode<DataT> *node, int edge);
 
-template<typename DataT>
-OctreeNode<DataT>* getOctreeGreaterEqualVertexNeighbor(OctreeNode<DataT>* node, int vertex);
+template <typename DataT>
+OctreeNode<DataT> *getOctreeGreaterEqualVertexNeighbor(OctreeNode<DataT> *node, int vertex);
 
-template<typename DataT>
-std::vector<OctreeNode<DataT>*> gatherOctreeGreaterEqualNeighbors(OctreeNode<DataT>* node);
+template <typename DataT>
+std::vector<OctreeNode<DataT> *> gatherOctreeGreaterEqualNeighbors(OctreeNode<DataT> *node);
 
-template<typename DataT>
+template <typename DataT>
 class OctreePeriodicExtension {
 public:
     // The OctreePeriodicExtension takes full charge of the originalRoot_ and all its subtrees.
@@ -144,22 +144,23 @@ public:
     // released from the OctreePeriodicExtension. However, the OctreePeriodicExtension does not
     // take over the memory management of the originalRoot_ tree. The user needs to resume
     // its memory management after it is released from the OctreePeriodicExtension.
-    OctreePeriodicExtension(OctreeNode<DataT>* originalRoot_, bool xPeriodic_, bool yPeriodic_, bool zPeriodic_);
+    OctreePeriodicExtension(
+        OctreeNode<DataT> *originalRoot_, bool xPeriodic_, bool yPeriodic_, bool zPeriodic_);
     ~OctreePeriodicExtension();
-    OctreeNode<DataT>* get() const;
-    OctreeNode<DataT>* release();
+    OctreeNode<DataT> *get() const;
+    OctreeNode<DataT> *release();
 
 private:
     void recalibrateOriginalRootLevels(int newRootLevel) const;
     void restoreOriginalRootAndDestroyPeriodicExtension();
 
 private:
-    OctreeNode<DataT>* originalRoot;
-    OctreeNode<DataT>* periodicExtensionRoot;
-    OctreeNode<DataT>* parentOfOriginalRoot;
+    OctreeNode<DataT> *originalRoot;
+    OctreeNode<DataT> *periodicExtensionRoot;
+    OctreeNode<DataT> *parentOfOriginalRoot;
     int levelOfOriginalRoot;
 };
 
-} // namespace plb
+}  // namespace plb
 
-#endif // OCTREE_H
+#endif  // OCTREE_H

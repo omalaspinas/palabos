@@ -5,7 +5,7 @@
  * own the IP rights for most of the code base. Since October 2019, the
  * Palabos project is maintained by the University of Geneva and accepts
  * source code contributions from the community.
- * 
+ *
  * Contact:
  * Jonas Latt
  * Computer Science Department
@@ -14,7 +14,7 @@
  * 1227 Carouge, Switzerland
  * jonas.latt@unige.ch
  *
- * The most recent release of Palabos can be downloaded at 
+ * The most recent release of Palabos can be downloaded at
  * <https://palabos.unige.ch/>
  *
  * The library Palabos is free software: you can redistribute it and/or
@@ -29,24 +29,23 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 /** \file
  * Groups all the generic 2D template files in the complexDynamics directory.
  */
 
+#include "complexDynamics/adiabaticBoundaryProcessor2D.hh"
 #include "complexDynamics/advectionDiffusionBoundaries.hh"
 #include "complexDynamics/advectionDiffusionBoundaryCondition2D.hh"
-#include "complexDynamics/adiabaticBoundaryProcessor2D.hh"
 #include "complexDynamics/advectionDiffusionDynamics.hh"
-#include "complexDynamics/entropicDynamics.hh"
-#include "complexDynamics/trtDynamics.hh"
-#include "complexDynamics/mrtDynamics.hh"
-#include "complexDynamics/externalForceMrtDynamics.hh"
-#include "complexDynamics/variableOmegaDynamics.hh"
-#include "complexDynamics/smagorinskyDynamics.hh"
-#include "complexDynamics/carreauDynamics.hh"
 #include "complexDynamics/asinariModel.hh"
-#include "complexDynamics/wavePropagation.hh"
+#include "complexDynamics/carreauDynamics.hh"
+#include "complexDynamics/entropicDynamics.hh"
+#include "complexDynamics/externalForceMrtDynamics.hh"
 #include "complexDynamics/kbcDynamics.hh"
-
+#include "complexDynamics/mrtDynamics.hh"
+#include "complexDynamics/smagorinskyDynamics.hh"
+#include "complexDynamics/trtDynamics.hh"
+#include "complexDynamics/variableOmegaDynamics.hh"
+#include "complexDynamics/wavePropagation.hh"

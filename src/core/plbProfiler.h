@@ -5,7 +5,7 @@
  * own the IP rights for most of the code base. Since October 2019, the
  * Palabos project is maintained by the University of Geneva and accepts
  * source code contributions from the community.
- * 
+ *
  * Contact:
  * Jonas Latt
  * Computer Science Department
@@ -14,7 +14,7 @@
  * 1227 Carouge, Switzerland
  * jonas.latt@unige.ch
  *
- * The most recent release of Palabos can be downloaded at 
+ * The most recent release of Palabos can be downloaded at
  * <https://palabos.unige.ch/>
  *
  * The library Palabos is free software: you can redistribute it and/or
@@ -29,17 +29,18 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 #ifndef PLB_PROFILER_H
 #define PLB_PROFILER_H
+
+#include <set>
+#include <string>
 
 #include "core/globalDefs.h"
 #include "core/plbTimer.h"
 #include "io/plbFiles.h"
 #include "libraryInterfaces/TINYXML_xmlIO.h"
-#include <string>
-#include <set>
 
 namespace plb {
 
@@ -56,13 +57,12 @@ namespace global {
  * Timers:
  * =======
  * "collStream":                     Time for raw execution of collision-streaming.
- * "cycle":                          Time for full cycles, including communication + data processors.
- * "dataProcessor":                  Time for data processor calls.
- * "envelope-update":                Time for update of envelopes, including MPI communication.
- * "mpiCommunication":               Total Time for MPI communication.
- * "io":                             Time spent for I/O operations.
+ * "cycle":                          Time for full cycles, including communication + data
+ *processors. "dataProcessor":                  Time for data processor calls. "envelope-update":
+ *Time for update of envelopes, including MPI communication. "mpiCommunication":               Total
+ *Time for MPI communication. "io":                             Time spent for I/O operations.
  * "totalTime":                      Total time.
-**/
+ **/
 class Profiler {
 public:
     void turnOn();
@@ -70,63 +70,74 @@ public:
     void automaticCycling();
     void manualCycling();
     void cycle();
-    bool cyclingIsAutomatic() const {
+    bool cyclingIsAutomatic() const
+    {
         return !manualCycleFlag;
     }
-    bool doProfiling() const {
+    bool doProfiling() const
+    {
         return profilingFlag;
     }
-    void start(char const* timer) {
+    void start(char const *timer)
+    {
         if (doProfiling()) {
             verifyTimer(timer);
             plbTimer(timer).start();
         }
     }
-    void stop(char const* timer) {
+    void stop(char const *timer)
+    {
         if (doProfiling()) {
             verifyTimer(timer);
             plbTimer(timer).stop();
         }
     }
-    void increment(char const* counter) {
+    void increment(char const *counter)
+    {
         if (doProfiling()) {
             verifyCounter(counter);
             plbCounter(counter).increment();
         }
     }
-    void increment(char const* counter, plint value) {
+    void increment(char const *counter, plint value)
+    {
         if (doProfiling()) {
             verifyCounter(counter);
             plbCounter(counter).increment(value);
         }
     }
-    plint getCounter(char const* counter) {
+    plint getCounter(char const *counter)
+    {
         verifyCounter(counter);
         return plbCounter(counter).getCount();
     }
-    double getTimer(char const* timer) {
+    double getTimer(char const *timer)
+    {
         verifyTimer(timer);
         return plbTimer(timer).getTime();
     }
-    void setReportFile(FileName const& reportFile_);
+    void setReportFile(FileName const &reportFile_);
     void writeReport();
+
 private:
-    void verifyTimer(std::string const& timer);
-    void verifyCounter(std::string const& counter);
-    void addStatisticalValue(XMLwriter& writer, std::string name, double value);
-    void addMainProcValue(XMLwriter& writer, std::string name, plint value);
+    void verifyTimer(std::string const &timer);
+    void verifyCounter(std::string const &counter);
+    void addStatisticalValue(XMLwriter &writer, std::string name, double value);
+    void addMainProcValue(XMLwriter &writer, std::string name, plint value);
 
     Profiler();
+
 private:
     bool profilingFlag;
     bool manualCycleFlag;
     FileName reportFile;
     std::set<std::string> validTimers;
     std::set<std::string> validCounters;
-friend Profiler& profiler();
+    friend Profiler &profiler();
 };
 
-inline Profiler& profiler() {
+inline Profiler &profiler()
+{
     static Profiler instance;
     return instance;
 }

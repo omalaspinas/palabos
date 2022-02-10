@@ -5,7 +5,7 @@
  * own the IP rights for most of the code base. Since October 2019, the
  * Palabos project is maintained by the University of Geneva and accepts
  * source code contributions from the community.
- * 
+ *
  * Contact:
  * Jonas Latt
  * Computer Science Department
@@ -14,7 +14,7 @@
  * 1227 Carouge, Switzerland
  * jonas.latt@unige.ch
  *
- * The most recent release of Palabos can be downloaded at 
+ * The most recent release of Palabos can be downloaded at
  * <https://palabos.unige.ch/>
  *
  * The library Palabos is free software: you can redistribute it and/or
@@ -29,7 +29,7 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 /** \file
  * Operations on the 3D multiblock -- header file.
@@ -43,46 +43,45 @@
 #ifndef ATOMIC_BLOCK_OPERATIONS_3D_H
 #define ATOMIC_BLOCK_OPERATIONS_3D_H
 
-#include "core/globalDefs.h"
-#include "atomicBlock/dataProcessor3D.h"
-#include "atomicBlock/atomicBlock3D.h"
 #include <vector>
+
+#include "atomicBlock/atomicBlock3D.h"
+#include "atomicBlock/dataProcessor3D.h"
+#include "core/globalDefs.h"
 
 namespace plb {
 
-void executeDataProcessor( DataProcessorGenerator3D const& generator,
-                           std::vector<AtomicBlock3D*> objects );
+void executeDataProcessor(
+    DataProcessorGenerator3D const &generator, std::vector<AtomicBlock3D *> objects);
 
-void executeDataProcessor( DataProcessorGenerator3D const& generator,
-                           AtomicBlock3D& object );
+void executeDataProcessor(DataProcessorGenerator3D const &generator, AtomicBlock3D &object);
 
-void executeDataProcessor( DataProcessorGenerator3D const& generator,
-                           AtomicBlock3D& object1, AtomicBlock3D& object2 );
+void executeDataProcessor(
+    DataProcessorGenerator3D const &generator, AtomicBlock3D &object1, AtomicBlock3D &object2);
 
+void executeDataProcessor(
+    ReductiveDataProcessorGenerator3D &generator, std::vector<AtomicBlock3D *> objects);
 
-void executeDataProcessor( ReductiveDataProcessorGenerator3D& generator,
-                           std::vector<AtomicBlock3D*> objects );
+void executeDataProcessor(ReductiveDataProcessorGenerator3D &generator, AtomicBlock3D &object);
 
-void executeDataProcessor( ReductiveDataProcessorGenerator3D& generator,
-                           AtomicBlock3D& object );
+void executeDataProcessor(
+    ReductiveDataProcessorGenerator3D &generator, AtomicBlock3D &object1, AtomicBlock3D &object2);
 
-void executeDataProcessor( ReductiveDataProcessorGenerator3D& generator,
-                           AtomicBlock3D& object1, AtomicBlock3D& object2 );
+void addInternalProcessor(
+    DataProcessorGenerator3D const &generator, AtomicBlock3D &actor,
+    std::vector<AtomicBlock3D *> objects, plint level = 0);
 
+void addInternalProcessor(
+    DataProcessorGenerator3D const &generator, std::vector<AtomicBlock3D *> objects,
+    plint level = 0);
 
-void addInternalProcessor( DataProcessorGenerator3D const& generator, AtomicBlock3D& actor,
-                           std::vector<AtomicBlock3D*> objects, plint level=0 );
+void addInternalProcessor(
+    DataProcessorGenerator3D const &generator, AtomicBlock3D &object, plint level = 0);
 
-void addInternalProcessor( DataProcessorGenerator3D const& generator,
-                           std::vector<AtomicBlock3D*> objects, plint level=0 );
+void addInternalProcessor(
+    DataProcessorGenerator3D const &generator, AtomicBlock3D &object1, AtomicBlock3D &object2,
+    plint level = 0);
 
-void addInternalProcessor( DataProcessorGenerator3D const& generator,
-                           AtomicBlock3D& object, plint level=0 );
-
-void addInternalProcessor( DataProcessorGenerator3D const& generator,
-                           AtomicBlock3D& object1, AtomicBlock3D& object2,
-                           plint level=0 );
-
-} // namespace plb
+}  // namespace plb
 
 #endif  // ATOMIC_BLOCK_OPERATIONS_3D_H

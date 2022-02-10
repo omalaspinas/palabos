@@ -5,7 +5,7 @@
  * own the IP rights for most of the code base. Since October 2019, the
  * Palabos project is maintained by the University of Geneva and accepts
  * source code contributions from the community.
- * 
+ *
  * Contact:
  * Jonas Latt
  * Computer Science Department
@@ -14,7 +14,7 @@
  * 1227 Carouge, Switzerland
  * jonas.latt@unige.ch
  *
- * The most recent release of Palabos can be downloaded at 
+ * The most recent release of Palabos can be downloaded at
  * <https://palabos.unige.ch/>
  *
  * The library Palabos is free software: you can redistribute it and/or
@@ -29,27 +29,28 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 #ifndef META_STUFF_HELPER_H
 #define META_STUFF_HELPER_H
 
-#include "atomicBlock/atomicContainerBlock2D.h"
-#include <set>
 #include <map>
+#include <set>
+
+#include "atomicBlock/atomicContainerBlock2D.h"
 
 namespace plb {
 
 struct VectorIsLess {
-    bool operator()(std::vector<int> const& v1, std::vector<int> const& v2) const {
+    bool operator()(std::vector<int> const &v1, std::vector<int> const &v2) const
+    {
         pluint bound = std::max(v1.size(), v2.size());
-        for (pluint i=0; i<bound; ++i) {
-            int val1 = i<v1.size() ? v1[i] : -1;
-            int val2 = i<v2.size() ? v2[i] : -1;
-            if (val1<val2) {
+        for (pluint i = 0; i < bound; ++i) {
+            int val1 = i < v1.size() ? v1[i] : -1;
+            int val2 = i < v2.size() ? v2[i] : -1;
+            if (val1 < val2) {
                 return true;
-            }
-            else if (val1>val2) {
+            } else if (val1 > val2) {
                 return false;
             }
         }
@@ -57,46 +58,53 @@ struct VectorIsLess {
     }
 };
 
-inline bool vectorEquals(std::vector<int> const& v1, std::vector<int> const& v2)
+inline bool vectorEquals(std::vector<int> const &v1, std::vector<int> const &v2)
 {
-    return !(VectorIsLess()(v1,v2) || VectorIsLess()(v2,v1));
+    return !(VectorIsLess()(v1, v2) || VectorIsLess()(v2, v1));
 }
 
 /// Container object for StoreDynamicsFunctionalXD
-class StoreDynamicsID : public ContainerBlockData
-{
+class StoreDynamicsID : public ContainerBlockData {
 public:
     typedef std::set<std::vector<int>, VectorIsLess> ChainCollection;
+
 public:
-    virtual StoreDynamicsID* clone() const {
+    virtual StoreDynamicsID *clone() const
+    {
         return new StoreDynamicsID(*this);
     }
-    void addIdChain(std::vector<int> const& chain) {
+    void addIdChain(std::vector<int> const &chain)
+    {
         idChains.insert(chain);
     }
-    ChainCollection const& getIds() const {
+    ChainCollection const &getIds() const
+    {
         return idChains;
     }
-    void startIterations() {
+    void startIterations()
+    {
         pos = idChains.rbegin();
     }
-    std::vector<int> iterate() {
+    std::vector<int> iterate()
+    {
         ++pos;
         if (empty()) {
             std::vector<int> none;
             none.push_back(-1);
             return none;
-        }
-        else {
+        } else {
             return *pos;
         }
     }
-    bool empty() const {
+    bool empty() const
+    {
         return pos == idChains.rend();
     }
-    std::vector<int> const& getCurrent() const {
+    std::vector<int> const &getCurrent() const
+    {
         return *pos;
     }
+
 private:
     ChainCollection::const_reverse_iterator pos;
     ChainCollection idChains;
@@ -105,4 +113,3 @@ private:
 }  // namespace plb
 
 #endif  // META_STUFF_HELPER_H
-

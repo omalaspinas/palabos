@@ -5,7 +5,7 @@
  * own the IP rights for most of the code base. Since October 2019, the
  * Palabos project is maintained by the University of Geneva and accepts
  * source code contributions from the community.
- * 
+ *
  * Contact:
  * Jonas Latt
  * Computer Science Department
@@ -14,7 +14,7 @@
  * 1227 Carouge, Switzerland
  * jonas.latt@unige.ch
  *
- * The most recent release of Palabos can be downloaded at 
+ * The most recent release of Palabos can be downloaded at
  * <https://palabos.unige.ch/>
  *
  * The library Palabos is free software: you can redistribute it and/or
@@ -29,55 +29,50 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 #ifndef DYNAMICS_PROCESSOR_2D_H
 #define DYNAMICS_PROCESSOR_2D_H
 
-#include "core/globalDefs.h"
 #include "atomicBlock/dataProcessingFunctional2D.h"
 #include "core/dynamics.h"
+#include "core/globalDefs.h"
 
 namespace plb {
 
 /* *************** Class ExternalRhoJcollideAndStream2D ******************* */
 
-template<typename T, template<typename U> class Descriptor>
-class ExternalRhoJcollideAndStream2D : public BoxProcessingFunctional2D
-{
+template <typename T, template <typename U> class Descriptor>
+class ExternalRhoJcollideAndStream2D : public BoxProcessingFunctional2D {
 public:
     // Block 0: lattice; Block 1: rhoBar; Block 2: j.
-    virtual void processGenericBlocks( Box2D domain,
-                                       std::vector<AtomicBlock2D*> atomicBlocks );
-    virtual ExternalRhoJcollideAndStream2D<T,Descriptor>* clone() const;
-    virtual void getTypeOfModification(std::vector<modif::ModifT>& modified) const;
+    virtual void processGenericBlocks(Box2D domain, std::vector<AtomicBlock2D *> atomicBlocks);
+    virtual ExternalRhoJcollideAndStream2D<T, Descriptor> *clone() const;
+    virtual void getTypeOfModification(std::vector<modif::ModifT> &modified) const;
+
 private:
-    void collide (
-            BlockLattice2D<T,Descriptor>& lattice, Box2D const& domain,
-            ScalarField2D<T> const& rhoBarField, Dot2D const& offset1,
-            TensorField2D<T,2> const& jField, Dot2D const& offset2, BlockStatistics& stat );
-    void bulkCollideAndStream (
-            BlockLattice2D<T,Descriptor>& lattice, Box2D const& domain,
-            ScalarField2D<T> const& rhoBarField, Dot2D const& offset1,
-            TensorField2D<T,2> const& jField, Dot2D const& offset2, BlockStatistics& stat );
-    void boundaryStream (
-            BlockLattice2D<T,Descriptor>& lattice,
-            Box2D const& bound, Box2D const& domain );
+    void collide(
+        BlockLattice2D<T, Descriptor> &lattice, Box2D const &domain,
+        ScalarField2D<T> const &rhoBarField, Dot2D const &offset1,
+        TensorField2D<T, 2> const &jField, Dot2D const &offset2, BlockStatistics &stat);
+    void bulkCollideAndStream(
+        BlockLattice2D<T, Descriptor> &lattice, Box2D const &domain,
+        ScalarField2D<T> const &rhoBarField, Dot2D const &offset1,
+        TensorField2D<T, 2> const &jField, Dot2D const &offset2, BlockStatistics &stat);
+    void boundaryStream(
+        BlockLattice2D<T, Descriptor> &lattice, Box2D const &bound, Box2D const &domain);
 };
 
-
-template<typename T, template<typename U> class Descriptor>
-class Tau1CollideAndStream2D : public BoxProcessingFunctional2D_L<T,Descriptor>
-{
+template <typename T, template <typename U> class Descriptor>
+class Tau1CollideAndStream2D : public BoxProcessingFunctional2D_L<T, Descriptor> {
 public:
-    virtual void process( Box2D domain, BlockLattice2D<T,Descriptor>& lattice );
-    virtual Tau1CollideAndStream2D<T,Descriptor>* clone() const;
-    virtual void getTypeOfModification(std::vector<modif::ModifT>& modified) const;
+    virtual void process(Box2D domain, BlockLattice2D<T, Descriptor> &lattice);
+    virtual Tau1CollideAndStream2D<T, Descriptor> *clone() const;
+    virtual void getTypeOfModification(std::vector<modif::ModifT> &modified) const;
+
 private:
-    void bulkStream (
-            Array<T,Descriptor<T>::q> const& f, plint iX, plint iY );
-    void boundaryStream (
-            Array<T,Descriptor<T>::q> const& f, plint iX, plint iY );
+    void bulkStream(Array<T, Descriptor<T>::q> const &f, plint iX, plint iY);
+    void boundaryStream(Array<T, Descriptor<T>::q> const &f, plint iX, plint iY);
 };
 
 }  // namespace plb

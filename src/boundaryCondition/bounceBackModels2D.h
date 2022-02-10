@@ -5,7 +5,7 @@
  * own the IP rights for most of the code base. Since October 2019, the
  * Palabos project is maintained by the University of Geneva and accepts
  * source code contributions from the community.
- * 
+ *
  * Contact:
  * Jonas Latt
  * Computer Science Department
@@ -14,7 +14,7 @@
  * 1227 Carouge, Switzerland
  * jonas.latt@unige.ch
  *
- * The most recent release of Palabos can be downloaded at 
+ * The most recent release of Palabos can be downloaded at
  * <https://palabos.unige.ch/>
  *
  * The library Palabos is free software: you can redistribute it and/or
@@ -29,7 +29,7 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 /** \file
  * BounceBack dynamics models in 2D -- header file.
@@ -43,40 +43,34 @@
 
 namespace plb {
 
+template <typename T, template <class U> class Descriptor>
+void initializeMomentumExchange(BlockLattice2D<T, Descriptor> &lattice, Box2D domain);
 
-template<typename T, template<class U> class Descriptor>
-void initializeMomentumExchange (
-        BlockLattice2D<T,Descriptor>& lattice, Box2D domain );
+template <typename T, template <class U> class Descriptor>
+void initializeMomentumExchange(
+    BlockLattice2D<T, Descriptor> &lattice, Box2D boundingBox, DomainFunctional2D *domain);
 
-template<typename T, template<class U> class Descriptor>
-void initializeMomentumExchange (
-        BlockLattice2D<T,Descriptor>& lattice, Box2D boundingBox,
-        DomainFunctional2D* domain );
+template <typename T, template <class U> class Descriptor>
+void initializeMomentumExchange(BlockLattice2D<T, Descriptor> &lattice, DotList2D const &dotList);
 
-template<typename T, template<class U> class Descriptor>
-void initializeMomentumExchange (
-        BlockLattice2D<T,Descriptor>& lattice, DotList2D const& dotList );
+template <typename T, template <class U> class Descriptor>
+void initializeMomentumExchange(MultiBlockLattice2D<T, Descriptor> &lattice, Box2D domain);
 
+template <typename T, template <class U> class Descriptor>
+void initializeMomentumExchange(
+    MultiBlockLattice2D<T, Descriptor> &lattice, Box2D boundingBox, DomainFunctional2D *domain);
 
-template<typename T, template<class U> class Descriptor>
-void initializeMomentumExchange (
-        MultiBlockLattice2D<T,Descriptor>& lattice, Box2D domain );
+template <typename T, template <class U> class Descriptor>
+void initializeMomentumExchange(
+    MultiBlockLattice2D<T, Descriptor> &lattice, DotList2D const &dotList);
 
-template<typename T, template<class U> class Descriptor>
-void initializeMomentumExchange (
-        MultiBlockLattice2D<T,Descriptor>& lattice, Box2D boundingBox,
-        DomainFunctional2D* domain );
-
-template<typename T, template<class U> class Descriptor>
-void initializeMomentumExchange (
-        MultiBlockLattice2D<T,Descriptor>& lattice, DotList2D const& dotList );
-
-template<typename T, template<typename U> class Descriptor> 
-class SetAverageWallDensityOnVelocityBounceBack2D : public BoxProcessingFunctional2D_L<T,Descriptor> {
+template <typename T, template <typename U> class Descriptor>
+class SetAverageWallDensityOnVelocityBounceBack2D :
+    public BoxProcessingFunctional2D_L<T, Descriptor> {
 public:
-    virtual void process(Box2D domain, BlockLattice2D<T,Descriptor>& lattice);
-    virtual SetAverageWallDensityOnVelocityBounceBack2D<T,Descriptor>* clone() const;
-    virtual void getTypeOfModification(std::vector<modif::ModifT>& modified) const;
+    virtual void process(Box2D domain, BlockLattice2D<T, Descriptor> &lattice);
+    virtual SetAverageWallDensityOnVelocityBounceBack2D<T, Descriptor> *clone() const;
+    virtual void getTypeOfModification(std::vector<modif::ModifT> &modified) const;
     virtual BlockDomain::DomainT appliesTo() const;
 };
 

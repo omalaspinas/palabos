@@ -5,7 +5,7 @@
  * own the IP rights for most of the code base. Since October 2019, the
  * Palabos project is maintained by the University of Geneva and accepts
  * source code contributions from the community.
- * 
+ *
  * Contact:
  * Jonas Latt
  * Computer Science Department
@@ -14,7 +14,7 @@
  * 1227 Carouge, Switzerland
  * jonas.latt@unige.ch
  *
- * The most recent release of Palabos can be downloaded at 
+ * The most recent release of Palabos can be downloaded at
  * <https://palabos.unige.ch/>
  *
  * The library Palabos is free software: you can redistribute it and/or
@@ -29,7 +29,7 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 /** \file
  * A helper for initialising 3D boundaries -- generic implementation.
@@ -38,380 +38,361 @@
 #define GENERALIZED_BOUNDARY_CONDITION_3D_HH
 
 #include "boundaryCondition/boundaryCondition3D.h"
-#include "boundaryCondition/regularizedBoundaryDynamics3D.h"
-#include "boundaryCondition/equilibriumBoundaryDynamics.h"
 #include "boundaryCondition/boundaryInstantiator3D.h"
+#include "boundaryCondition/equilibriumBoundaryDynamics.h"
+#include "boundaryCondition/regularizedBoundaryDynamics3D.h"
 #include "core/blockSurface3D.h"
 #include "core/plbDebug.h"
 
 namespace plb {
 
-
-template<typename T, template<typename U> class Descriptor>
+template <typename T, template <typename U> class Descriptor>
 class GeneralizedBoundaryManager3D {
 public:
-    template<int direction, int orientation>
-        static BoundaryCompositeDynamics<T,Descriptor>*
-            getVelocityBoundaryDynamics(Dynamics<T,Descriptor>* baseDynamics);
+    template <int direction, int orientation>
+    static BoundaryCompositeDynamics<T, Descriptor> *getVelocityBoundaryDynamics(
+        Dynamics<T, Descriptor> *baseDynamics);
 
-    template<int direction, int orientation>
-        static BoxProcessingFunctional3D_L<T,Descriptor>*
-            getVelocityBoundaryFunctional();
+    template <int direction, int orientation>
+    static BoxProcessingFunctional3D_L<T, Descriptor> *getVelocityBoundaryFunctional();
 
-    template<int direction, int orientation>
-        static BoundaryCompositeDynamics<T,Descriptor>*
-            getPressureBoundaryDynamics(Dynamics<T,Descriptor>* baseDynamics);
+    template <int direction, int orientation>
+    static BoundaryCompositeDynamics<T, Descriptor> *getPressureBoundaryDynamics(
+        Dynamics<T, Descriptor> *baseDynamics);
 
-    template<int direction, int orientation>
-        static BoxProcessingFunctional3D_L<T,Descriptor>*
-            getPressureBoundaryFunctional();
+    template <int direction, int orientation>
+    static BoxProcessingFunctional3D_L<T, Descriptor> *getPressureBoundaryFunctional();
 
-    template<int plane, int normal1, int normal2>
-        static BoundaryCompositeDynamics<T,Descriptor>*
-            getExternalVelocityEdgeDynamics(Dynamics<T,Descriptor>* baseDynamics);
+    template <int plane, int normal1, int normal2>
+    static BoundaryCompositeDynamics<T, Descriptor> *getExternalVelocityEdgeDynamics(
+        Dynamics<T, Descriptor> *baseDynamics);
 
-    template<int plane, int normal1, int normal2>
-        static BoxProcessingFunctional3D_L<T,Descriptor>*
-            getExternalVelocityEdgeFunctional();
+    template <int plane, int normal1, int normal2>
+    static BoxProcessingFunctional3D_L<T, Descriptor> *getExternalVelocityEdgeFunctional();
 
-    template<int plane, int normal1, int normal2>
-        static BoundaryCompositeDynamics<T,Descriptor>*
-            getInternalVelocityEdgeDynamics(Dynamics<T,Descriptor>* baseDynamics);
-    template<int plane, int normal1, int normal2>
-        static BoxProcessingFunctional3D_L<T,Descriptor>*
-            getInternalVelocityEdgeFunctional();
+    template <int plane, int normal1, int normal2>
+    static BoundaryCompositeDynamics<T, Descriptor> *getInternalVelocityEdgeDynamics(
+        Dynamics<T, Descriptor> *baseDynamics);
+    template <int plane, int normal1, int normal2>
+    static BoxProcessingFunctional3D_L<T, Descriptor> *getInternalVelocityEdgeFunctional();
 
-    template<int xNormal, int yNormal, int zNormal>
-        static BoundaryCompositeDynamics<T,Descriptor>*
-            getExternalVelocityCornerDynamics(Dynamics<T,Descriptor>* baseDynamics);
-    template<int xNormal, int yNormal, int zNormal>
-        static BoxProcessingFunctional3D_L<T,Descriptor>*
-            getExternalVelocityCornerFunctional();
+    template <int xNormal, int yNormal, int zNormal>
+    static BoundaryCompositeDynamics<T, Descriptor> *getExternalVelocityCornerDynamics(
+        Dynamics<T, Descriptor> *baseDynamics);
+    template <int xNormal, int yNormal, int zNormal>
+    static BoxProcessingFunctional3D_L<T, Descriptor> *getExternalVelocityCornerFunctional();
 
-    template<int xNormal, int yNormal, int zNormal>
-        static BoundaryCompositeDynamics<T,Descriptor>*
-            getInternalVelocityCornerDynamics(Dynamics<T,Descriptor>* baseDynamics);
-    template<int xNormal, int yNormal, int zNormal>
-        static BoxProcessingFunctional3D_L<T,Descriptor>*
-            getInternalVelocityCornerFunctional();
+    template <int xNormal, int yNormal, int zNormal>
+    static BoundaryCompositeDynamics<T, Descriptor> *getInternalVelocityCornerDynamics(
+        Dynamics<T, Descriptor> *baseDynamics);
+    template <int xNormal, int yNormal, int zNormal>
+    static BoxProcessingFunctional3D_L<T, Descriptor> *getInternalVelocityCornerFunctional();
 };
 
-
-template<typename T, template<typename U> class Descriptor>
+template <typename T, template <typename U> class Descriptor>
 class WrappedGeneralizedBoundaryManager3D {
 public:
-    template<int direction, int orientation>
-        static BoundaryCompositeDynamics<T,Descriptor>*
-            getVelocityBoundaryDynamics(Dynamics<T,Descriptor>* baseDynamics);
+    template <int direction, int orientation>
+    static BoundaryCompositeDynamics<T, Descriptor> *getVelocityBoundaryDynamics(
+        Dynamics<T, Descriptor> *baseDynamics);
 
-    template<int direction, int orientation>
-        static BoxProcessingFunctional3D_L<T,Descriptor>*
-            getVelocityBoundaryFunctional();
+    template <int direction, int orientation>
+    static BoxProcessingFunctional3D_L<T, Descriptor> *getVelocityBoundaryFunctional();
 
-    template<int direction, int orientation>
-        static BoundaryCompositeDynamics<T,Descriptor>*
-            getPressureBoundaryDynamics(Dynamics<T,Descriptor>* baseDynamics);
+    template <int direction, int orientation>
+    static BoundaryCompositeDynamics<T, Descriptor> *getPressureBoundaryDynamics(
+        Dynamics<T, Descriptor> *baseDynamics);
 
-    template<int direction, int orientation>
-        static BoxProcessingFunctional3D_L<T,Descriptor>*
-            getPressureBoundaryFunctional();
+    template <int direction, int orientation>
+    static BoxProcessingFunctional3D_L<T, Descriptor> *getPressureBoundaryFunctional();
 
-    template<int plane, int normal1, int normal2>
-        static BoundaryCompositeDynamics<T,Descriptor>*
-            getExternalVelocityEdgeDynamics(Dynamics<T,Descriptor>* baseDynamics);
+    template <int plane, int normal1, int normal2>
+    static BoundaryCompositeDynamics<T, Descriptor> *getExternalVelocityEdgeDynamics(
+        Dynamics<T, Descriptor> *baseDynamics);
 
-    template<int plane, int normal1, int normal2>
-        static BoxProcessingFunctional3D_L<T,Descriptor>*
-            getExternalVelocityEdgeFunctional();
+    template <int plane, int normal1, int normal2>
+    static BoxProcessingFunctional3D_L<T, Descriptor> *getExternalVelocityEdgeFunctional();
 
-    template<int plane, int normal1, int normal2>
-        static BoundaryCompositeDynamics<T,Descriptor>*
-            getInternalVelocityEdgeDynamics(Dynamics<T,Descriptor>* baseDynamics);
-    template<int plane, int normal1, int normal2>
-        static BoxProcessingFunctional3D_L<T,Descriptor>*
-            getInternalVelocityEdgeFunctional();
+    template <int plane, int normal1, int normal2>
+    static BoundaryCompositeDynamics<T, Descriptor> *getInternalVelocityEdgeDynamics(
+        Dynamics<T, Descriptor> *baseDynamics);
+    template <int plane, int normal1, int normal2>
+    static BoxProcessingFunctional3D_L<T, Descriptor> *getInternalVelocityEdgeFunctional();
 
-    template<int xNormal, int yNormal, int zNormal>
-        static BoundaryCompositeDynamics<T,Descriptor>*
-            getExternalVelocityCornerDynamics(Dynamics<T,Descriptor>* baseDynamics);
-    template<int xNormal, int yNormal, int zNormal>
-        static BoxProcessingFunctional3D_L<T,Descriptor>*
-            getExternalVelocityCornerFunctional();
+    template <int xNormal, int yNormal, int zNormal>
+    static BoundaryCompositeDynamics<T, Descriptor> *getExternalVelocityCornerDynamics(
+        Dynamics<T, Descriptor> *baseDynamics);
+    template <int xNormal, int yNormal, int zNormal>
+    static BoxProcessingFunctional3D_L<T, Descriptor> *getExternalVelocityCornerFunctional();
 
-    template<int xNormal, int yNormal, int zNormal>
-        static BoundaryCompositeDynamics<T,Descriptor>*
-            getInternalVelocityCornerDynamics(Dynamics<T,Descriptor>* baseDynamics);
-    template<int xNormal, int yNormal, int zNormal>
-        static BoxProcessingFunctional3D_L<T,Descriptor>*
-            getInternalVelocityCornerFunctional();
+    template <int xNormal, int yNormal, int zNormal>
+    static BoundaryCompositeDynamics<T, Descriptor> *getInternalVelocityCornerDynamics(
+        Dynamics<T, Descriptor> *baseDynamics);
+    template <int xNormal, int yNormal, int zNormal>
+    static BoxProcessingFunctional3D_L<T, Descriptor> *getInternalVelocityCornerFunctional();
 };
-
 
 ////////// GeneralizedBoundaryManager3D /////////////////////////////////////////
 
-template<typename T, template<typename U> class Descriptor>
-template<int direction, int orientation>
-BoundaryCompositeDynamics<T,Descriptor>* GeneralizedBoundaryManager3D<T,Descriptor>::
-    getVelocityBoundaryDynamics(Dynamics<T,Descriptor>* baseDynamics)
+template <typename T, template <typename U> class Descriptor>
+template <int direction, int orientation>
+BoundaryCompositeDynamics<T, Descriptor>
+    *GeneralizedBoundaryManager3D<T, Descriptor>::getVelocityBoundaryDynamics(
+        Dynamics<T, Descriptor> *baseDynamics)
 {
-    std::vector<plint> const& missingIndices = 
-        indexTemplates::subIndexOutgoing<Descriptor<T>,direction,orientation>();
-        
-    return new GeneralizedVelocityBoundaryDynamics<T,Descriptor>(baseDynamics,missingIndices);
+    std::vector<plint> const &missingIndices =
+        indexTemplates::subIndexOutgoing<Descriptor<T>, direction, orientation>();
+
+    return new GeneralizedVelocityBoundaryDynamics<T, Descriptor>(baseDynamics, missingIndices);
 }
 
-template<typename T, template<typename U> class Descriptor>
-template<int direction, int orientation>
-BoxProcessingFunctional3D_L<T,Descriptor>*
-    GeneralizedBoundaryManager3D<T,Descriptor>::
-        getVelocityBoundaryFunctional()
+template <typename T, template <typename U> class Descriptor>
+template <int direction, int orientation>
+BoxProcessingFunctional3D_L<T, Descriptor>
+    *GeneralizedBoundaryManager3D<T, Descriptor>::getVelocityBoundaryFunctional()
 {
     return 0;
 }
 
-template<typename T, template<typename U> class Descriptor>
-template<int direction, int orientation>
-BoundaryCompositeDynamics<T,Descriptor>* GeneralizedBoundaryManager3D<T,Descriptor>::
-    getPressureBoundaryDynamics(Dynamics<T,Descriptor>* baseDynamics)
+template <typename T, template <typename U> class Descriptor>
+template <int direction, int orientation>
+BoundaryCompositeDynamics<T, Descriptor>
+    *GeneralizedBoundaryManager3D<T, Descriptor>::getPressureBoundaryDynamics(
+        Dynamics<T, Descriptor> *baseDynamics)
 {
-//     TODO implement pressure BC 
+    //     TODO implement pressure BC
     PLB_ASSERT(false);
     return 0;
 }
 
-template<typename T, template<typename U> class Descriptor>
-template<int direction, int orientation>
-BoxProcessingFunctional3D_L<T,Descriptor>*
-    GeneralizedBoundaryManager3D<T,Descriptor>::
-        getPressureBoundaryFunctional()
+template <typename T, template <typename U> class Descriptor>
+template <int direction, int orientation>
+BoxProcessingFunctional3D_L<T, Descriptor>
+    *GeneralizedBoundaryManager3D<T, Descriptor>::getPressureBoundaryFunctional()
 {
     return 0;
 }
 
-template<typename T, template<typename U> class Descriptor>
-template<int plane, int normal1, int normal2>
-BoundaryCompositeDynamics<T,Descriptor>*
-    GeneralizedBoundaryManager3D<T,Descriptor>::
-        getExternalVelocityEdgeDynamics(Dynamics<T,Descriptor>* baseDynamics)
+template <typename T, template <typename U> class Descriptor>
+template <int plane, int normal1, int normal2>
+BoundaryCompositeDynamics<T, Descriptor>
+    *GeneralizedBoundaryManager3D<T, Descriptor>::getExternalVelocityEdgeDynamics(
+        Dynamics<T, Descriptor> *baseDynamics)
 {
-    std::vector<plint> const& missingIndices = 
-        indexTemplates::subIndexOutgoingExternalEdge3D<Descriptor<T>,plane,normal1,normal2>();
-    return new GeneralizedVelocityBoundaryDynamics<T,Descriptor>(baseDynamics,missingIndices);;
+    std::vector<plint> const &missingIndices =
+        indexTemplates::subIndexOutgoingExternalEdge3D<Descriptor<T>, plane, normal1, normal2>();
+    return new GeneralizedVelocityBoundaryDynamics<T, Descriptor>(baseDynamics, missingIndices);
+    ;
 }
 
-template<typename T, template<typename U> class Descriptor>
-template<int plane, int normal1, int normal2>
-BoxProcessingFunctional3D_L<T,Descriptor>*
-    GeneralizedBoundaryManager3D<T,Descriptor>::
-        getExternalVelocityEdgeFunctional()
-{
-    return 0;
-}
-
-template<typename T, template<typename U> class Descriptor>
-template<int plane, int normal1, int normal2>
-BoundaryCompositeDynamics<T,Descriptor>*
-    GeneralizedBoundaryManager3D<T,Descriptor>::
-        getInternalVelocityEdgeDynamics(Dynamics<T,Descriptor>* baseDynamics)
-{
-    std::vector<plint> const& missingIndices = 
-        indexTemplates::subIndexOutgoingInternalEdge3D<Descriptor<T>,plane,normal1,normal2>();
-    return new GeneralizedVelocityBoundaryDynamics<T,Descriptor>(baseDynamics,missingIndices);
-}
-
-template<typename T, template<typename U> class Descriptor>
-template<int plane, int normal1, int normal2>
-BoxProcessingFunctional3D_L<T,Descriptor>*
-    GeneralizedBoundaryManager3D<T,Descriptor>::
-        getInternalVelocityEdgeFunctional()
+template <typename T, template <typename U> class Descriptor>
+template <int plane, int normal1, int normal2>
+BoxProcessingFunctional3D_L<T, Descriptor>
+    *GeneralizedBoundaryManager3D<T, Descriptor>::getExternalVelocityEdgeFunctional()
 {
     return 0;
 }
 
-template<typename T, template<typename U> class Descriptor>
-template<int xNormal, int yNormal, int zNormal>
-BoundaryCompositeDynamics<T,Descriptor>*
-    GeneralizedBoundaryManager3D<T,Descriptor>::
-        getExternalVelocityCornerDynamics(Dynamics<T,Descriptor>* baseDynamics)
+template <typename T, template <typename U> class Descriptor>
+template <int plane, int normal1, int normal2>
+BoundaryCompositeDynamics<T, Descriptor>
+    *GeneralizedBoundaryManager3D<T, Descriptor>::getInternalVelocityEdgeDynamics(
+        Dynamics<T, Descriptor> *baseDynamics)
 {
-    std::vector<plint> const& missingIndices = 
-        indexTemplates::subIndexOutgoingExternalCorner3D<Descriptor<T>,xNormal,yNormal,zNormal>();
-        
-    return new GeneralizedVelocityBoundaryDynamics<T,Descriptor>(baseDynamics,missingIndices);
+    std::vector<plint> const &missingIndices =
+        indexTemplates::subIndexOutgoingInternalEdge3D<Descriptor<T>, plane, normal1, normal2>();
+    return new GeneralizedVelocityBoundaryDynamics<T, Descriptor>(baseDynamics, missingIndices);
 }
 
-template<typename T, template<typename U> class Descriptor>
-template<int xNormal, int yNormal, int zNormal>
-BoxProcessingFunctional3D_L<T,Descriptor>*
-    GeneralizedBoundaryManager3D<T,Descriptor>::
-        getExternalVelocityCornerFunctional()
+template <typename T, template <typename U> class Descriptor>
+template <int plane, int normal1, int normal2>
+BoxProcessingFunctional3D_L<T, Descriptor>
+    *GeneralizedBoundaryManager3D<T, Descriptor>::getInternalVelocityEdgeFunctional()
 {
     return 0;
 }
 
-template<typename T, template<typename U> class Descriptor>
-template<int xNormal, int yNormal, int zNormal>
-BoundaryCompositeDynamics<T,Descriptor>*
-    GeneralizedBoundaryManager3D<T,Descriptor>::
-        getInternalVelocityCornerDynamics(Dynamics<T,Descriptor>* baseDynamics)
+template <typename T, template <typename U> class Descriptor>
+template <int xNormal, int yNormal, int zNormal>
+BoundaryCompositeDynamics<T, Descriptor>
+    *GeneralizedBoundaryManager3D<T, Descriptor>::getExternalVelocityCornerDynamics(
+        Dynamics<T, Descriptor> *baseDynamics)
 {
-    std::vector<plint> const& missingIndices = 
-        indexTemplates::subIndexOutgoingInternalCorner3D<Descriptor<T>,xNormal,yNormal,zNormal>();
-    return new GeneralizedVelocityBoundaryDynamics<T,Descriptor>(baseDynamics,missingIndices);
+    std::vector<plint> const &missingIndices = indexTemplates::subIndexOutgoingExternalCorner3D<
+        Descriptor<T>, xNormal, yNormal, zNormal>();
+
+    return new GeneralizedVelocityBoundaryDynamics<T, Descriptor>(baseDynamics, missingIndices);
 }
 
-template<typename T, template<typename U> class Descriptor>
-template<int xNormal, int yNormal, int zNormal>
-BoxProcessingFunctional3D_L<T,Descriptor>*
-    GeneralizedBoundaryManager3D<T,Descriptor>::
-        getInternalVelocityCornerFunctional()
+template <typename T, template <typename U> class Descriptor>
+template <int xNormal, int yNormal, int zNormal>
+BoxProcessingFunctional3D_L<T, Descriptor>
+    *GeneralizedBoundaryManager3D<T, Descriptor>::getExternalVelocityCornerFunctional()
 {
     return 0;
 }
 
+template <typename T, template <typename U> class Descriptor>
+template <int xNormal, int yNormal, int zNormal>
+BoundaryCompositeDynamics<T, Descriptor>
+    *GeneralizedBoundaryManager3D<T, Descriptor>::getInternalVelocityCornerDynamics(
+        Dynamics<T, Descriptor> *baseDynamics)
+{
+    std::vector<plint> const &missingIndices = indexTemplates::subIndexOutgoingInternalCorner3D<
+        Descriptor<T>, xNormal, yNormal, zNormal>();
+    return new GeneralizedVelocityBoundaryDynamics<T, Descriptor>(baseDynamics, missingIndices);
+}
+
+template <typename T, template <typename U> class Descriptor>
+template <int xNormal, int yNormal, int zNormal>
+BoxProcessingFunctional3D_L<T, Descriptor>
+    *GeneralizedBoundaryManager3D<T, Descriptor>::getInternalVelocityCornerFunctional()
+{
+    return 0;
+}
 
 ////////// WrappedGeneralizedBoundaryManager3D /////////////////////////////////////////
 
-template<typename T, template<typename U> class Descriptor>
-template<int direction, int orientation>
-BoundaryCompositeDynamics<T,Descriptor>* WrappedGeneralizedBoundaryManager3D<T,Descriptor>::
-    getVelocityBoundaryDynamics(Dynamics<T,Descriptor>* baseDynamics)
+template <typename T, template <typename U> class Descriptor>
+template <int direction, int orientation>
+BoundaryCompositeDynamics<T, Descriptor>
+    *WrappedGeneralizedBoundaryManager3D<T, Descriptor>::getVelocityBoundaryDynamics(
+        Dynamics<T, Descriptor> *baseDynamics)
 {
-    std::vector<plint> const& missingIndices = 
-        indexTemplates::subIndexOutgoing<Descriptor<T>,direction,orientation>();
+    std::vector<plint> const &missingIndices =
+        indexTemplates::subIndexOutgoing<Descriptor<T>, direction, orientation>();
     bool automaticPrepareCollision = false;
-        
-    return new GeneralizedVelocityBoundaryDynamics<T,Descriptor>(baseDynamics,missingIndices,automaticPrepareCollision);
+
+    return new GeneralizedVelocityBoundaryDynamics<T, Descriptor>(
+        baseDynamics, missingIndices, automaticPrepareCollision);
 }
 
-template<typename T, template<typename U> class Descriptor>
-template<int direction, int orientation>
-BoxProcessingFunctional3D_L<T,Descriptor>*
-    WrappedGeneralizedBoundaryManager3D<T,Descriptor>::
-        getVelocityBoundaryFunctional()
+template <typename T, template <typename U> class Descriptor>
+template <int direction, int orientation>
+BoxProcessingFunctional3D_L<T, Descriptor>
+    *WrappedGeneralizedBoundaryManager3D<T, Descriptor>::getVelocityBoundaryFunctional()
 {
-    return new WrappedLocalBoundaryFunctional3D<T,Descriptor>();
+    return new WrappedLocalBoundaryFunctional3D<T, Descriptor>();
 }
 
-template<typename T, template<typename U> class Descriptor>
-template<int direction, int orientation>
-BoundaryCompositeDynamics<T,Descriptor>* WrappedGeneralizedBoundaryManager3D<T,Descriptor>::
-    getPressureBoundaryDynamics(Dynamics<T,Descriptor>* baseDynamics)
+template <typename T, template <typename U> class Descriptor>
+template <int direction, int orientation>
+BoundaryCompositeDynamics<T, Descriptor>
+    *WrappedGeneralizedBoundaryManager3D<T, Descriptor>::getPressureBoundaryDynamics(
+        Dynamics<T, Descriptor> *baseDynamics)
 {
-//     TODO implement pressure BC 
+    //     TODO implement pressure BC
     PLB_ASSERT(false);
     return 0;
 }
 
-template<typename T, template<typename U> class Descriptor>
-template<int direction, int orientation>
-BoxProcessingFunctional3D_L<T,Descriptor>*
-    WrappedGeneralizedBoundaryManager3D<T,Descriptor>::
-        getPressureBoundaryFunctional()
+template <typename T, template <typename U> class Descriptor>
+template <int direction, int orientation>
+BoxProcessingFunctional3D_L<T, Descriptor>
+    *WrappedGeneralizedBoundaryManager3D<T, Descriptor>::getPressureBoundaryFunctional()
 {
     return 0;
 }
 
-template<typename T, template<typename U> class Descriptor>
-template<int plane, int normal1, int normal2>
-BoundaryCompositeDynamics<T,Descriptor>*
-    WrappedGeneralizedBoundaryManager3D<T,Descriptor>::
-        getExternalVelocityEdgeDynamics(Dynamics<T,Descriptor>* baseDynamics)
+template <typename T, template <typename U> class Descriptor>
+template <int plane, int normal1, int normal2>
+BoundaryCompositeDynamics<T, Descriptor>
+    *WrappedGeneralizedBoundaryManager3D<T, Descriptor>::getExternalVelocityEdgeDynamics(
+        Dynamics<T, Descriptor> *baseDynamics)
 {
-    std::vector<plint> const& missingIndices = 
-        indexTemplates::subIndexOutgoingExternalEdge3D<Descriptor<T>,plane,normal1,normal2>();
+    std::vector<plint> const &missingIndices =
+        indexTemplates::subIndexOutgoingExternalEdge3D<Descriptor<T>, plane, normal1, normal2>();
     bool automaticPrepareCollision = false;
-    return new GeneralizedVelocityBoundaryDynamics<T,Descriptor>(baseDynamics,missingIndices,automaticPrepareCollision);
+    return new GeneralizedVelocityBoundaryDynamics<T, Descriptor>(
+        baseDynamics, missingIndices, automaticPrepareCollision);
 }
 
-template<typename T, template<typename U> class Descriptor>
-template<int plane, int normal1, int normal2>
-BoxProcessingFunctional3D_L<T,Descriptor>*
-    WrappedGeneralizedBoundaryManager3D<T,Descriptor>::
-        getExternalVelocityEdgeFunctional()
+template <typename T, template <typename U> class Descriptor>
+template <int plane, int normal1, int normal2>
+BoxProcessingFunctional3D_L<T, Descriptor>
+    *WrappedGeneralizedBoundaryManager3D<T, Descriptor>::getExternalVelocityEdgeFunctional()
 {
-    return new WrappedLocalBoundaryFunctional3D<T,Descriptor>();
+    return new WrappedLocalBoundaryFunctional3D<T, Descriptor>();
 }
 
-template<typename T, template<typename U> class Descriptor>
-template<int plane, int normal1, int normal2>
-BoundaryCompositeDynamics<T,Descriptor>*
-    WrappedGeneralizedBoundaryManager3D<T,Descriptor>::
-        getInternalVelocityEdgeDynamics(Dynamics<T,Descriptor>* baseDynamics)
+template <typename T, template <typename U> class Descriptor>
+template <int plane, int normal1, int normal2>
+BoundaryCompositeDynamics<T, Descriptor>
+    *WrappedGeneralizedBoundaryManager3D<T, Descriptor>::getInternalVelocityEdgeDynamics(
+        Dynamics<T, Descriptor> *baseDynamics)
 {
-    std::vector<plint> const& missingIndices = 
-        indexTemplates::subIndexOutgoingInternalEdge3D<Descriptor<T>,plane,normal1,normal2>();
+    std::vector<plint> const &missingIndices =
+        indexTemplates::subIndexOutgoingInternalEdge3D<Descriptor<T>, plane, normal1, normal2>();
     bool automaticPrepareCollision = false;
-    return new GeneralizedVelocityBoundaryDynamics<T,Descriptor>(baseDynamics,missingIndices,automaticPrepareCollision);
+    return new GeneralizedVelocityBoundaryDynamics<T, Descriptor>(
+        baseDynamics, missingIndices, automaticPrepareCollision);
 }
 
-template<typename T, template<typename U> class Descriptor>
-template<int plane, int normal1, int normal2>
-BoxProcessingFunctional3D_L<T,Descriptor>*
-    WrappedGeneralizedBoundaryManager3D<T,Descriptor>::
-        getInternalVelocityEdgeFunctional()
+template <typename T, template <typename U> class Descriptor>
+template <int plane, int normal1, int normal2>
+BoxProcessingFunctional3D_L<T, Descriptor>
+    *WrappedGeneralizedBoundaryManager3D<T, Descriptor>::getInternalVelocityEdgeFunctional()
 {
-    return new WrappedLocalBoundaryFunctional3D<T,Descriptor>();
+    return new WrappedLocalBoundaryFunctional3D<T, Descriptor>();
 }
 
-template<typename T, template<typename U> class Descriptor>
-template<int xNormal, int yNormal, int zNormal>
-BoundaryCompositeDynamics<T,Descriptor>*
-    WrappedGeneralizedBoundaryManager3D<T,Descriptor>::
-        getExternalVelocityCornerDynamics(Dynamics<T,Descriptor>* baseDynamics)
+template <typename T, template <typename U> class Descriptor>
+template <int xNormal, int yNormal, int zNormal>
+BoundaryCompositeDynamics<T, Descriptor>
+    *WrappedGeneralizedBoundaryManager3D<T, Descriptor>::getExternalVelocityCornerDynamics(
+        Dynamics<T, Descriptor> *baseDynamics)
 {
-    std::vector<plint> const& missingIndices = 
-        indexTemplates::subIndexOutgoingExternalCorner3D<Descriptor<T>,xNormal,yNormal,zNormal>();
+    std::vector<plint> const &missingIndices = indexTemplates::subIndexOutgoingExternalCorner3D<
+        Descriptor<T>, xNormal, yNormal, zNormal>();
     bool automaticPrepareCollision = false;
-        
-    return new GeneralizedVelocityBoundaryDynamics<T,Descriptor>(baseDynamics,missingIndices,automaticPrepareCollision);
+
+    return new GeneralizedVelocityBoundaryDynamics<T, Descriptor>(
+        baseDynamics, missingIndices, automaticPrepareCollision);
 }
 
-template<typename T, template<typename U> class Descriptor>
-template<int xNormal, int yNormal, int zNormal>
-BoxProcessingFunctional3D_L<T,Descriptor>*
-    WrappedGeneralizedBoundaryManager3D<T,Descriptor>::
-        getExternalVelocityCornerFunctional()
+template <typename T, template <typename U> class Descriptor>
+template <int xNormal, int yNormal, int zNormal>
+BoxProcessingFunctional3D_L<T, Descriptor>
+    *WrappedGeneralizedBoundaryManager3D<T, Descriptor>::getExternalVelocityCornerFunctional()
 {
-    return new WrappedLocalBoundaryFunctional3D<T,Descriptor>();
+    return new WrappedLocalBoundaryFunctional3D<T, Descriptor>();
 }
 
-template<typename T, template<typename U> class Descriptor>
-template<int xNormal, int yNormal, int zNormal>
-BoundaryCompositeDynamics<T,Descriptor>*
-    WrappedGeneralizedBoundaryManager3D<T,Descriptor>::
-        getInternalVelocityCornerDynamics(Dynamics<T,Descriptor>* baseDynamics)
+template <typename T, template <typename U> class Descriptor>
+template <int xNormal, int yNormal, int zNormal>
+BoundaryCompositeDynamics<T, Descriptor>
+    *WrappedGeneralizedBoundaryManager3D<T, Descriptor>::getInternalVelocityCornerDynamics(
+        Dynamics<T, Descriptor> *baseDynamics)
 {
-    std::vector<plint> const& missingIndices = 
-        indexTemplates::subIndexOutgoingInternalCorner3D<Descriptor<T>,xNormal,yNormal,zNormal>();
+    std::vector<plint> const &missingIndices = indexTemplates::subIndexOutgoingInternalCorner3D<
+        Descriptor<T>, xNormal, yNormal, zNormal>();
     bool automaticPrepareCollision = false;
-    return new GeneralizedVelocityBoundaryDynamics<T,Descriptor>(baseDynamics,missingIndices,automaticPrepareCollision);
+    return new GeneralizedVelocityBoundaryDynamics<T, Descriptor>(
+        baseDynamics, missingIndices, automaticPrepareCollision);
 }
 
-template<typename T, template<typename U> class Descriptor>
-template<int xNormal, int yNormal, int zNormal>
-BoxProcessingFunctional3D_L<T,Descriptor>*
-    WrappedGeneralizedBoundaryManager3D<T,Descriptor>::
-        getInternalVelocityCornerFunctional()
+template <typename T, template <typename U> class Descriptor>
+template <int xNormal, int yNormal, int zNormal>
+BoxProcessingFunctional3D_L<T, Descriptor>
+    *WrappedGeneralizedBoundaryManager3D<T, Descriptor>::getInternalVelocityCornerFunctional()
 {
-    return new WrappedLocalBoundaryFunctional3D<T,Descriptor>();
+    return new WrappedLocalBoundaryFunctional3D<T, Descriptor>();
 }
-
 
 ////////// Factory functions //////////////////////////////////////////////////
 
-template<typename T, template<typename U> class Descriptor>
-OnLatticeBoundaryCondition3D<T,Descriptor>* createGeneralizedBoundaryCondition3D() {
-    return new BoundaryConditionInstantiator3D <
-                   T, Descriptor,
-                   WrappedGeneralizedBoundaryManager3D<T,Descriptor> > ();
+template <typename T, template <typename U> class Descriptor>
+OnLatticeBoundaryCondition3D<T, Descriptor> *createGeneralizedBoundaryCondition3D()
+{
+    return new BoundaryConditionInstantiator3D<
+        T, Descriptor, WrappedGeneralizedBoundaryManager3D<T, Descriptor> >();
 }
 
-template<typename T, template<typename U> class Descriptor>
-OnLatticeBoundaryCondition3D<T,Descriptor>* createDynamicsBasedGeneralizedBoundaryCondition3D() {
-    return new BoundaryConditionInstantiator3D <
-                   T, Descriptor,
-                   GeneralizedBoundaryManager3D<T,Descriptor> > ();
+template <typename T, template <typename U> class Descriptor>
+OnLatticeBoundaryCondition3D<T, Descriptor> *createDynamicsBasedGeneralizedBoundaryCondition3D()
+{
+    return new BoundaryConditionInstantiator3D<
+        T, Descriptor, GeneralizedBoundaryManager3D<T, Descriptor> >();
 }
 
 }  // namespace plb

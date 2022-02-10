@@ -5,7 +5,7 @@
  * own the IP rights for most of the code base. Since October 2019, the
  * Palabos project is maintained by the University of Geneva and accepts
  * source code contributions from the community.
- * 
+ *
  * Contact:
  * Jonas Latt
  * Computer Science Department
@@ -14,7 +14,7 @@
  * 1227 Carouge, Switzerland
  * jonas.latt@unige.ch
  *
- * The most recent release of Palabos can be downloaded at 
+ * The most recent release of Palabos can be downloaded at
  * <https://palabos.unige.ch/>
  *
  * The library Palabos is free software: you can redistribute it and/or
@@ -29,7 +29,7 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 /* Orestis Malaspinas contributed this code.
  */
@@ -37,55 +37,57 @@
 #ifndef INAMURO_ANALYTICAL_DYNAMICS_H
 #define INAMURO_ANALYTICAL_DYNAMICS_H
 
-#include "core/globalDefs.h"
 #include "boundaryCondition/boundaryDynamics.h"
+#include "core/globalDefs.h"
 
 namespace plb {
 
 /**
-* Implementation of Inamuro velocity boundary condition following
+ * Implementation of Inamuro velocity boundary condition following
  * the paper
  * "A non-slip boundary condition for lattice Boltzmann simulations",
- * Inamuro, Takaji; Yoshino, Masato; Ogino, Fumimaru, (1995). 
+ * Inamuro, Takaji; Yoshino, Masato; Ogino, Fumimaru, (1995).
  * This implementation works for the D2Q9 Lattice only.
-*/
-template<typename T, template<typename U> class Descriptor, int direction, int orientation>
-class InamuroAnalyticalVelocityDynamics : public VelocityDirichletBoundaryDynamics<T,Descriptor,direction,orientation>
-{
+ */
+template <typename T, template <typename U> class Descriptor, int direction, int orientation>
+class InamuroAnalyticalVelocityDynamics :
+    public VelocityDirichletBoundaryDynamics<T, Descriptor, direction, orientation> {
 public:
     /// Constructor
-    InamuroAnalyticalVelocityDynamics(Dynamics<T,Descriptor>* baseDynamics,
-                                      bool automaticPrepareCollision = true);
+    InamuroAnalyticalVelocityDynamics(
+        Dynamics<T, Descriptor> *baseDynamics, bool automaticPrepareCollision = true);
     /// Clone the object on its dynamic type.
-    virtual InamuroAnalyticalVelocityDynamics<T, Descriptor, direction, orientation>* clone() const;
+    virtual InamuroAnalyticalVelocityDynamics<T, Descriptor, direction, orientation> *clone() const;
     /// Return a unique ID for this class.
     virtual int getId() const;
     /// Execute completion scheme before base collision
-    virtual void completePopulations(Cell<T,Descriptor>& cell) const;
+    virtual void completePopulations(Cell<T, Descriptor> &cell) const;
+
 private:
     static int id;
 };
 
 /**
-* Implementation of Inamuro pressure boundary condition following
+ * Implementation of Inamuro pressure boundary condition following
  * the paper
  * "A non-slip boundary condition for lattice Boltzmann simulations",
- * Inamuro, Takaji; Yoshino, Masato; Ogino, Fumimaru, (1995). 
+ * Inamuro, Takaji; Yoshino, Masato; Ogino, Fumimaru, (1995).
  * This implementation works for the D2Q9 Lattice only.
-*/
-template<typename T, template<typename U> class Descriptor, int direction, int orientation>
-class InamuroAnalyticalPressureDynamics : public DensityDirichletBoundaryDynamics<T,Descriptor,direction,orientation>
-{
+ */
+template <typename T, template <typename U> class Descriptor, int direction, int orientation>
+class InamuroAnalyticalPressureDynamics :
+    public DensityDirichletBoundaryDynamics<T, Descriptor, direction, orientation> {
 public:
     /// Constructor
-    InamuroAnalyticalPressureDynamics(Dynamics<T,Descriptor>* baseDynamics,
-                                      bool automaticPrepareCollision = true);
+    InamuroAnalyticalPressureDynamics(
+        Dynamics<T, Descriptor> *baseDynamics, bool automaticPrepareCollision = true);
     /// Clone the object on its dynamic type.
-    virtual InamuroAnalyticalPressureDynamics<T, Descriptor, direction, orientation>* clone() const;
+    virtual InamuroAnalyticalPressureDynamics<T, Descriptor, direction, orientation> *clone() const;
     /// Return a unique ID for this class.
     virtual int getId() const;
     /// Execute completion scheme before base collision
-    virtual void completePopulations(Cell<T,Descriptor>& cell) const;
+    virtual void completePopulations(Cell<T, Descriptor> &cell) const;
+
 private:
     static int id;
 };

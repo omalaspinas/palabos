@@ -5,7 +5,7 @@
  * own the IP rights for most of the code base. Since October 2019, the
  * Palabos project is maintained by the University of Geneva and accepts
  * source code contributions from the community.
- * 
+ *
  * Contact:
  * Jonas Latt
  * Computer Science Department
@@ -14,7 +14,7 @@
  * 1227 Carouge, Switzerland
  * jonas.latt@unige.ch
  *
- * The most recent release of Palabos can be downloaded at 
+ * The most recent release of Palabos can be downloaded at
  * <https://palabos.unige.ch/>
  *
  * The library Palabos is free software: you can redistribute it and/or
@@ -29,7 +29,7 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 /** \file
  * Serial version of the 2D block communicator -- header file.
@@ -48,16 +48,17 @@ class MultiBlockManagement2D;
 class SerialBlockCommunicator2D : public BlockCommunicator2D {
 public:
     SerialBlockCommunicator2D();
-    virtual SerialBlockCommunicator2D* clone() const;
-    virtual void communicate( std::vector<Overlap2D> const& overlaps,
-                              MultiBlock2D const& originMultiBlock,
-                              MultiBlock2D& destinationMultiBlock, modif::ModifT whichData ) const;
-    virtual void duplicateOverlaps(MultiBlock2D& multiBlock, modif::ModifT whichData) const;
+    virtual SerialBlockCommunicator2D *clone() const;
+    virtual void communicate(
+        std::vector<Overlap2D> const &overlaps, MultiBlock2D const &originMultiBlock,
+        MultiBlock2D &destinationMultiBlock, modif::ModifT whichData) const;
+    virtual void duplicateOverlaps(MultiBlock2D &multiBlock, modif::ModifT whichData) const;
     virtual void signalPeriodicity() const;
+
 private:
-    void copyOverlap( Overlap2D const& overlap,
-                      MultiBlock2D const& fromMultiBlock,
-                      MultiBlock2D& toMultiBlock, modif::ModifT whichData ) const;
+    void copyOverlap(
+        Overlap2D const &overlap, MultiBlock2D const &fromMultiBlock, MultiBlock2D &toMultiBlock,
+        modif::ModifT whichData) const;
 };
 
 }  // namespace plb

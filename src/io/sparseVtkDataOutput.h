@@ -5,7 +5,7 @@
  * own the IP rights for most of the code base. Since October 2019, the
  * Palabos project is maintained by the University of Geneva and accepts
  * source code contributions from the community.
- * 
+ *
  * Contact:
  * Jonas Latt
  * Computer Science Department
@@ -14,7 +14,7 @@
  * 1227 Carouge, Switzerland
  * jonas.latt@unige.ch
  *
- * The most recent release of Palabos can be downloaded at 
+ * The most recent release of Palabos can be downloaded at
  * <https://palabos.unige.ch/>
  *
  * The library Palabos is free software: you can redistribute it and/or
@@ -29,15 +29,14 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-
+ */
 
 #ifndef SPARSE_VTK_DATA_OUTPUT_H
 #define SPARSE_VTK_DATA_OUTPUT_H
 
-#include <string>
 #include <fstream>
 #include <sstream>
+#include <string>
 #include <vector>
 
 #include "core/globalDefs.h"
@@ -51,24 +50,26 @@ class SparseVtkImageOutput3D {
 public:
     SparseVtkImageOutput3D(FileName fName_);
     ~SparseVtkImageOutput3D();
-    void writeVtkBlock( Group3D& group, double deltaX, Array<double,3> const& offset,
-                        plint vtkBlockId=0, bool pointData=true );
-    void writeVtkBlock( Group3D& group, double deltaX, plint vtkBlockId=0, bool pointData=true );
+    void writeVtkBlock(
+        Group3D &group, double deltaX, Array<double, 3> const &offset, plint vtkBlockId = 0,
+        bool pointData = true);
+    void writeVtkBlock(Group3D &group, double deltaX, plint vtkBlockId = 0, bool pointData = true);
+
 private:
-    std::string writeAtomicBlock (
-            Group3D& group, plint partId, plint vtkBlockId, plint atomicBlockId,
-            Box3D bulk, bool pointData, bool isLocal, double deltaX, Array<double,3> offset );
-    void writeField (
-            MultiBlock3D const& multiBlock, plint atomicBlockId, Box3D bulk,
-            std::string fieldName, VtkDataWriter3D& vtkOut );
+    std::string writeAtomicBlock(
+        Group3D &group, plint partId, plint vtkBlockId, plint atomicBlockId, Box3D bulk,
+        bool pointData, bool isLocal, double deltaX, Array<double, 3> offset);
+    void writeField(
+        MultiBlock3D const &multiBlock, plint atomicBlockId, Box3D bulk, std::string fieldName,
+        VtkDataWriter3D &vtkOut);
+
 private:
     FileName fName;
     std::string dName, rdName;
     plb_ofstream vtmFile;
-    Array<double,3> offset;
+    Array<double, 3> offset;
 };
 
-
-} // namespace plb
+}  // namespace plb
 
 #endif  // SPARSE_VTK_DATA_OUTPUT_H

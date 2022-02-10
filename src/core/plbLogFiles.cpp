@@ -5,7 +5,7 @@
  * own the IP rights for most of the code base. Since October 2019, the
  * Palabos project is maintained by the University of Geneva and accepts
  * source code contributions from the community.
- * 
+ *
  * Contact:
  * Jonas Latt
  * Computer Science Department
@@ -14,7 +14,7 @@
  * 1227 Carouge, Switzerland
  * jonas.latt@unige.ch
  *
- * The most recent release of Palabos can be downloaded at 
+ * The most recent release of Palabos can be downloaded at
  * <https://palabos.unige.ch/>
  *
  * The library Palabos is free software: you can redistribute it and/or
@@ -29,45 +29,42 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
-#include "parallelism/mpiManager.h"
 #include "core/plbLogFiles.h"
-#include "core/util.h"
-#include <utility>
+
 #include <fstream>
+#include <utility>
+
+#include "core/util.h"
+#include "parallelism/mpiManager.h"
 
 namespace plb {
 
 namespace global {
 
-PlbLogFile::PlbLogFile(std::string fName, bool parallel_)
-    : parallel(parallel_),
-      ofile(0),
-      indentation(0),
-      indentSpaces("")
+PlbLogFile::PlbLogFile(std::string fName, bool parallel_) :
+    parallel(parallel_), ofile(0), indentation(0), indentSpaces("")
 {
     if (parallel) {
         if (global::mpi().isMainProcessor()) {
-            ofile = new std::ofstream (
-                    (global::directories().getLogOutDir()+fName ).c_str() );
+            ofile = new std::ofstream((global::directories().getLogOutDir() + fName).c_str());
         }
-    }
-    else {
-        ofile = new std::ofstream (
-                ( global::directories().getLogOutDir() +
-                  util::val2str(global::mpi().getRank())+"_"+fName ).c_str() );
+    } else {
+        ofile = new std::ofstream((global::directories().getLogOutDir()
+                                   + util::val2str(global::mpi().getRank()) + "_" + fName)
+                                      .c_str());
     }
 }
 
-PlbLogFile::~PlbLogFile() {
+PlbLogFile::~PlbLogFile()
+{
     delete ofile;
 }
 
-PlbLogFile::PlbLogFile(PlbLogFile const& rhs)
-{ }
+PlbLogFile::PlbLogFile(PlbLogFile const &rhs) { }
 
-PlbLogFile& PlbLogFile::operator=(PlbLogFile const& rhs)
+PlbLogFile &PlbLogFile::operator=(PlbLogFile const &rhs)
 {
     return *this;
 }
@@ -85,56 +82,59 @@ void PlbLogFile::pop()
     indentSpaces = std::string(indentation, ' ');
 }
 
-void PlbLogFile::entry(std::string entryText) {
+void PlbLogFile::entry(std::string entryText)
+{
     if (ofile) {
         (*ofile) << indentSpaces << entryText << "\n";
     }
 }
 
-void PlbLogFile::flushEntry(std::string entryText) {
+void PlbLogFile::flushEntry(std::string entryText)
+{
     if (ofile) {
         // Using std::endl enforces file-buffer flush.
         (*ofile) << indentSpaces << entryText << std::endl;
     }
 }
 
-LogFileCollection::LogFileCollection(bool parallel_)
-    : parallel(parallel_)
-{ }
+LogFileCollection::LogFileCollection(bool parallel_) : parallel(parallel_) { }
 
-LogFileCollection::~LogFileCollection() {
-    std::map<std::string, PlbLogFile*>::iterator it=collection.begin();
+LogFileCollection::~LogFileCollection()
+{
+    std::map<std::string, PlbLogFile *>::iterator it = collection.begin();
     for (; it != collection.end(); ++it) {
         delete it->second;
     }
 }
 
 // QUESTION: Why do copy const and equal do nothing?
-LogFileCollection::LogFileCollection([[maybe_unused]] LogFileCollection const& rhs)
-{ }
+LogFileCollection::LogFileCollection([[maybe_unused]] LogFileCollection const &rhs) { }
 
-LogFileCollection& LogFileCollection::operator=([[maybe_unused]] LogFileCollection const& rhs) {
+LogFileCollection &LogFileCollection::operator=([[maybe_unused]] LogFileCollection const &rhs)
+{
     return *this;
 }
 
-PlbLogFile& LogFileCollection::get(std::string nameOfLogFile) {
-    std::map<std::string, PlbLogFile*>::iterator it=collection.find(nameOfLogFile);
+PlbLogFile &LogFileCollection::get(std::string nameOfLogFile)
+{
+    std::map<std::string, PlbLogFile *>::iterator it = collection.find(nameOfLogFile);
     if (it == collection.end()) {
-        PlbLogFile* logfile = new PlbLogFile(nameOfLogFile, parallel);
+        PlbLogFile *logfile = new PlbLogFile(nameOfLogFile, parallel);
         collection.insert(make_pair(nameOfLogFile, logfile));
         return *logfile;
-    }
-    else {
+    } else {
         return *it->second;
     }
 }
 
-PlbLogFile& logfile(std::string nameOfLogFile) {
+PlbLogFile &logfile(std::string nameOfLogFile)
+{
     static LogFileCollection collection(true);
     return collection.get(nameOfLogFile);
 }
 
-PlbLogFile& logfile_nonparallel(std::string nameOfLogFile) {
+PlbLogFile &logfile_nonparallel(std::string nameOfLogFile)
+{
     static LogFileCollection collection(false);
     return collection.get(nameOfLogFile);
 }

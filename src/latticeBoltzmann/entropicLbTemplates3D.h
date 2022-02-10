@@ -5,7 +5,7 @@
  * own the IP rights for most of the code base. Since October 2019, the
  * Palabos project is maintained by the University of Geneva and accepts
  * source code contributions from the community.
- * 
+ *
  * Contact:
  * Jonas Latt
  * Computer Science Department
@@ -14,7 +14,7 @@
  * 1227 Carouge, Switzerland
  * jonas.latt@unige.ch
  *
- * The most recent release of Palabos can be downloaded at 
+ * The most recent release of Palabos can be downloaded at
  * <https://palabos.unige.ch/>
  *
  * The library Palabos is free software: you can redistribute it and/or
@@ -29,7 +29,7 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 /* Orestis Malaspinas contributed this code.
  */
@@ -41,23 +41,24 @@
 #ifndef ENTROPIC_LB_HELPERS_3D_H
 #define ENTROPIC_LB_HELPERS_3D_H
 
+#include <cmath>
+
 #include "core/globalDefs.h"
 #include "latticeBoltzmann/nearestNeighborLattices3D.h"
-#include <cmath>
 
 namespace plb {
 
 /// Whatever is commented out corresponds to an old version, but as of now
 /// nobody is able to say what it is doing.
 
-//template<typename T>
-//struct entropicLbTemplates<T, descriptors::D3Q19Descriptor>
+// template<typename T>
+// struct entropicLbTemplates<T, descriptors::D3Q19Descriptor>
 //{
-//    /// Computation of equilibrium distribution with an expansion
-//    /// with respect to a small velocity u
-//    static T equilibrium( plint iPop, T rho, Array<T,3> const& u)
-//    {
-//        typedef descriptors::D3Q19Descriptor<T> L;
+//     /// Computation of equilibrium distribution with an expansion
+//     /// with respect to a small velocity u
+//     static T equilibrium( plint iPop, T rho, Array<T,3> const& u)
+//     {
+//         typedef descriptors::D3Q19Descriptor<T> L;
 
 //        T c_u = L::c[iPop][0]*u[0] + L::c[iPop][1]*u[1] + L::c[iPop][2]*u[2];;
 //        T c_u2 = c_u*c_u;
@@ -66,67 +67,67 @@ namespace plb {
 //        T c_u5 = c_u4*c_u;
 //        T c_u6 = c_u5*c_u;
 //        T c_u7 = c_u6*c_u;
-        
+
 //        T uSqr = u[0]*u[0] + u[1]*u[1] + u[2]*u[2];
 //        T uSqr2 = uSqr*uSqr;
 //        T uSqr3 = uSqr2*uSqr;
-        
+
 //        T powUx = u[0]*u[0]*u[0]*u[0]*u[0]; // u_x^5
 //        T powUy = u[1]*u[1]*u[1]*u[1]*u[1]; // u_y^5
 //        T powUz = u[2]*u[2]*u[2]*u[2]*u[2]; // u_z^5
-        
+
 //        T C = L::c[iPop][0] * powUx + L::c[iPop][1] * powUy
 //                + L::c[iPop][2] * powUz;
-        
+
 //        powUx *= u[0]; // u_x^6
 //        powUy *= u[1]; // u_y^6
 //        powUz *= u[2]; // u_z^6
-        
+
 //        T E = powUx + powUy + powUz;
-        
+
 //        powUx *= u[0]; // u_x^7
 //        powUy *= u[1]; // u_y^7
 //        powUz *= u[2]; // u_z^7
-        
+
 //        T F = L::c[iPop][0] * powUx + L::c[iPop][1] * powUy + L::c[iPop][2] * powUz;
-        
+
 //        return L::t[iPop] * rho *
 //              ((T)1
 //                + c_u*(C*(T)81/(T)20 + uSqr2*(T)27/(T)8 - uSqr*(T)9/(T)2
 //                - E*(T)81/(T)24 - uSqr3*(T)81/(T)48 + (T)3)
-                
+
 //                + c_u2*(uSqr2*(T)81/(T)16 - uSqr*(T)27/(T)4
 //                + C*(T)243/(T)40 + (T)9/(T)2)
-                
+
 //                + c_u3*(uSqr2*(T)243/(T)48 - uSqr*(T)81/(T)12 + (T)27/(T)6)
-                
+
 //                - c_u4*uSqr*(T)243/(T)48
 //                + c_u4*(T)81/(T)24
-                
+
 //                - c_u5*uSqr*(T)729/(T)240
 //                + c_u5*(T)243/(T)120
-                
+
 //                + c_u6*(T)729/(T)720
-                
+
 //                + c_u7*(T)2187/(T)5040
-                
+
 //                - C*uSqr*(T)81/(T)40
-                
+
 //                + C*(T)27/(T)20 - uSqr3*(T)27/(T)48 - E*(T)27/(T)24
 //                - F*(T)81/(T)56 - uSqr*(T)3/(T)2 + uSqr2*(T)9/(T)8
 //                )
 //                - L::SkordosFactor()*L::t[iPop];
 //    }
-    
+
 //};
 
-//template<typename T>
-//struct entropicLbTemplates<T, descriptors::D3Q15Descriptor>
+// template<typename T>
+// struct entropicLbTemplates<T, descriptors::D3Q15Descriptor>
 //{
-//    /// PRL 97, 010201 (2006), implemented as in Sailfish
-//    static T equilibrium( plint iPop, T rho, Array<T,3> const& u)
-//    {
-//        typedef descriptors::D3Q15Descriptor<T> L;
+//     /// PRL 97, 010201 (2006), implemented as in Sailfish
+//     static T equilibrium( plint iPop, T rho, Array<T,3> const& u)
+//     {
+//         typedef descriptors::D3Q15Descriptor<T> L;
 
 //        T uSqr = u[0]*u[0] + u[1]*u[1] + u[2]*u[2];
 //        T uSqr2 = uSqr*uSqr;
@@ -179,8 +180,8 @@ namespace plb {
 
 /// This version is actually much slower than the generic verison in entropicLbTemplates.h...
 // Implementation for D3Q19 equilibrium as in Sailfish
-//template<typename T>
-//struct entropicLbTemplates<T, descriptors::D3Q19Descriptor>
+// template<typename T>
+// struct entropicLbTemplates<T, descriptors::D3Q19Descriptor>
 //{
 //    static T equilibrium( plint iPop, T rho, Array<T,3> const& u)
 //    {
@@ -240,25 +241,22 @@ namespace plb {
 //};
 
 // Ansumali, Karlin, Ottinger (2003) for D3Q19
-template<typename T>
-struct entropicLbTemplates<T, descriptors::D3Q19Descriptor>
-{
-    static T equilibrium( plint iPop, T rhoBar, Array<T,3> const& u)
+template <typename T>
+struct entropicLbTemplates<T, descriptors::D3Q19Descriptor> {
+    static T equilibrium(plint iPop, T rhoBar, Array<T, 3> const &u)
     {
         typedef descriptors::D3Q19Descriptor<T> L;
 
         T prod = (T)1;
-        for (int iD=0; iD < 3; ++iD)
-        {
+        for (int iD = 0; iD < 3; ++iD) {
             T u2 = u[iD] * u[iD];
 
-            prod *= ((T)2 - sqrt(1.0+u2*3.)) *
-                    pow((2.*u[iD] + sqrt(1.0+u2*3.))/(1.0-u[iD]), L::c[iPop][iD]);
+            prod *= ((T)2 - sqrt(1.0 + u2 * 3.))
+                    * pow((2. * u[iD] + sqrt(1.0 + u2 * 3.)) / (1.0 - u[iD]), L::c[iPop][iD]);
         }
-        return ((rhoBar+L::SkordosFactor())*prod-L::SkordosFactor())*L::t[iPop];
+        return ((rhoBar + L::SkordosFactor()) * prod - L::SkordosFactor()) * L::t[iPop];
     }
-
 };
-}
+}  // namespace plb
 
 #endif

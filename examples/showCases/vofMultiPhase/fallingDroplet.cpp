@@ -5,7 +5,7 @@
  * own the IP rights for most of the code base. Since October 2019, the
  * Palabos project is maintained by the University of Geneva and accepts
  * source code contributions from the community.
- * 
+ *
  * Contact:
  * Jonas Latt
  * Computer Science Department
@@ -14,7 +14,7 @@
  * 1227 Carouge, Switzerland
  * jonas.latt@unige.ch
  *
- * The most recent release of Palabos can be downloaded at 
+ * The most recent release of Palabos can be downloaded at
  * <https://palabos.unige.ch/>
  *
  * The library Palabos is free software: you can redistribute it and/or
@@ -29,7 +29,7 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 #include "palabos3D.h"
 #include "palabos3D.hh"
@@ -53,10 +53,10 @@ static T lz = 0.06;
 static T radius = 0.002;
 
 static T rhoEmpty = 1.0;
-static T rho = 1000.0; // Water density.
+static T rho = 1000.0;  // Water density.
 
 static std::string outDir("./tmp/");
-    
+
 static plint writeImagesIter;
 static plint statIter;
 
@@ -64,8 +64,8 @@ static plint maxIter;
 static plint N;
 static plint nx, ny, nz, radiusLB;
 static T delta_t, delta_x;
-static Array<T,3> externalForce;
-static Array<T,3> externalForce2;
+static Array<T, 3> externalForce;
+static Array<T, 3> externalForce2;
 static T nuPhys, nuLB, tau, omega, surfaceTensionPhys, surfaceTensionLB, contactAngle;
 static T nuPhys2, nuLB2, tau2, omega2;
 static T densityRatio, viscosityRatio;
@@ -83,18 +83,19 @@ void setupParameters()
 
     // Gravity in lattice units.
     T gLB = 9.8 * delta_t * delta_t / delta_x;
-    externalForce = Array<T,3>(0., 0., -gLB);
-    tau            = (nuPhys*DESCRIPTOR<T>::invCs2*delta_t)/(delta_x*delta_x) + 0.5;
-    omega          = 1./tau;    
-    nuLB           = (tau-0.5)*DESCRIPTOR<T>::cs2; // Viscosity in lattice units.
+    externalForce = Array<T, 3>(0., 0., -gLB);
+    tau = (nuPhys * DESCRIPTOR<T>::invCs2 * delta_t) / (delta_x * delta_x) + 0.5;
+    omega = 1. / tau;
+    nuLB = (tau - 0.5) * DESCRIPTOR<T>::cs2;  // Viscosity in lattice units.
 
     nuPhys2 = nuPhys * viscosityRatio;
-    tau2           = (nuPhys2*DESCRIPTOR<T>::invCs2*delta_t)/(delta_x*delta_x) + 0.5;
-    omega2         = 1./tau2;    
-    nuLB2          = (tau2-0.5)*DESCRIPTOR<T>::cs2; // Viscosity in lattice units.
+    tau2 = (nuPhys2 * DESCRIPTOR<T>::invCs2 * delta_t) / (delta_x * delta_x) + 0.5;
+    omega2 = 1. / tau2;
+    nuLB2 = (tau2 - 0.5) * DESCRIPTOR<T>::cs2;  // Viscosity in lattice units.
     externalForce2 = densityRatio * externalForce;
-    
-    surfaceTensionLB = (rhoEmpty / rho) * (delta_t*delta_t) / (delta_x*delta_x*delta_x) * surfaceTensionPhys;
+
+    surfaceTensionLB =
+        (rhoEmpty / rho) * (delta_t * delta_t) / (delta_x * delta_x * delta_x) * surfaceTensionPhys;
 
     writeImagesIter = 40;
     statIter = 80;
@@ -102,19 +103,19 @@ void setupParameters()
 
 bool insideFluid(T x, T y, T z)
 {
-    Array<T,3> pos(x, y, z);
-    Array<T,3> center(nx/2.0, ny/2.0, 3.*nz/4.0);
-    T r = norm(pos-center);
+    Array<T, 3> pos(x, y, z);
+    Array<T, 3> center(nx / 2.0, ny / 2.0, 3. * nz / 4.0);
+    T r = norm(pos - center);
     if (r <= radiusLB) {
         return true;
     }
     return false;
 }
 
-void writeTwoPhaseResults(TwoPhaseFields3D<T,DESCRIPTOR> *fields, plint iT)
+void writeTwoPhaseResults(TwoPhaseFields3D<T, DESCRIPTOR> *fields, plint iT)
 {
-    std::unique_ptr<MultiScalarField3D<T> > smoothVF(lbmSmoothen<T,DESCRIPTOR>(fields->volumeFraction,
-                fields->volumeFraction.getBoundingBox().enlarge(-1)));
+    std::unique_ptr<MultiScalarField3D<T> > smoothVF(lbmSmoothen<T, DESCRIPTOR>(
+        fields->volumeFraction, fields->volumeFraction.getBoundingBox().enlarge(-1)));
 
     std::vector<T> isoLevels;
     isoLevels.push_back(0.5);
@@ -145,32 +146,37 @@ void writeTwoPhaseResults(TwoPhaseFields3D<T,DESCRIPTOR> *fields, plint iT)
 
     {
         VtkImageOutput3D<T> vtkOut_x(fname_x, delta_x);
-        std::unique_ptr<MultiTensorField3D<T,3> > vx = fields->computeVelocity(box_x, computeFluid1, computeFluid2);
-        std::unique_ptr<MultiScalarField3D<T> > px = fields->computePressure(box_x, computeFluid1, computeFluid2);
-        vtkOut_x.writeData<3,float>(*vx, "v", delta_x / delta_t);
+        std::unique_ptr<MultiTensorField3D<T, 3> > vx =
+            fields->computeVelocity(box_x, computeFluid1, computeFluid2);
+        std::unique_ptr<MultiScalarField3D<T> > px =
+            fields->computePressure(box_x, computeFluid1, computeFluid2);
+        vtkOut_x.writeData<3, float>(*vx, "v", delta_x / delta_t);
         vtkOut_x.writeData<float>(*px, "p", rho * (delta_x * delta_x) / (delta_t * delta_t));
         vtkOut_x.writeData<float>(*extractSubDomain(fields->volumeFraction, box_x), "vf", 1.0);
     }
 
     {
         VtkImageOutput3D<T> vtkOut_y(fname_y, delta_x);
-        std::unique_ptr<MultiTensorField3D<T,3> > vy = fields->computeVelocity(box_y, computeFluid1, computeFluid2);
-        std::unique_ptr<MultiScalarField3D<T> > py = fields->computePressure(box_y, computeFluid1, computeFluid2);
-        vtkOut_y.writeData<3,float>(*vy, "v", delta_x / delta_t);
+        std::unique_ptr<MultiTensorField3D<T, 3> > vy =
+            fields->computeVelocity(box_y, computeFluid1, computeFluid2);
+        std::unique_ptr<MultiScalarField3D<T> > py =
+            fields->computePressure(box_y, computeFluid1, computeFluid2);
+        vtkOut_y.writeData<3, float>(*vy, "v", delta_x / delta_t);
         vtkOut_y.writeData<float>(*py, "p", rho * (delta_x * delta_x) / (delta_t * delta_t));
         vtkOut_y.writeData<float>(*extractSubDomain(fields->volumeFraction, box_y), "vf", 1.0);
     }
 
     {
         VtkImageOutput3D<T> vtkOut_z(fname_z, delta_x);
-        std::unique_ptr<MultiTensorField3D<T,3> > vz = fields->computeVelocity(box_z, computeFluid1, computeFluid2);
-        std::unique_ptr<MultiScalarField3D<T> > pz = fields->computePressure(box_z, computeFluid1, computeFluid2);
-        vtkOut_z.writeData<3,float>(*vz, "v", delta_x / delta_t);
+        std::unique_ptr<MultiTensorField3D<T, 3> > vz =
+            fields->computeVelocity(box_z, computeFluid1, computeFluid2);
+        std::unique_ptr<MultiScalarField3D<T> > pz =
+            fields->computePressure(box_z, computeFluid1, computeFluid2);
+        vtkOut_z.writeData<3, float>(*vz, "v", delta_x / delta_t);
         vtkOut_z.writeData<float>(*pz, "p", rho * (delta_x * delta_x) / (delta_t * delta_t));
         vtkOut_z.writeData<float>(*extractSubDomain(fields->volumeFraction, box_z), "vf", 1.0);
     }
 }
-
 
 int main(int argc, char **argv)
 {
@@ -187,8 +193,7 @@ int main(int argc, char **argv)
         global::argv(7).read(delta_t);
         global::argv(8).read(modelName);
         global::argv(9).read(maxIter);
-    }
-    catch(PlbIOException& except) {
+    } catch (PlbIOException &except) {
         pcout << except.what() << std::endl;
         pcout << "The parameters for this program are :\n";
         pcout << "1. Kinematic viscosity in physical units (m^2/s).\n";
@@ -197,19 +202,18 @@ int main(int argc, char **argv)
         pcout << "4. Kinematic viscosity Ratio.\n";
         pcout << "5. Density Ratio.\n";
         pcout << "6. Number of lattice nodes for the sphere radius.\n";
-        pcout << "7. Time step in physical units (s).\n"; 
+        pcout << "7. Time step in physical units (s).\n";
         pcout << "8. Model (kinetic / dynamic / constRho).\n";
         pcout << "9. Maximum number of iterations.\n";
-        pcout << "Reasonable parameters on a desktop computer are: "
-              << (std::string)global::argv(0)
+        pcout << "Reasonable parameters on a desktop computer are: " << (std::string)global::argv(0)
               << " 1.e-3 0.0728 90.0 2.0 0.01 9 1.e-5 dynamic 500000\n";
-        exit (EXIT_FAILURE);
+        exit(EXIT_FAILURE);
     }
 
     model = stringToTwoPhaseModel(modelName);
-    
+
     setupParameters();
-    
+
     pcout << "delta_t = " << delta_t << std::endl;
     pcout << "delta_x = " << delta_x << std::endl;
     pcout << "externalForce = " << externalForce[2] << std::endl;
@@ -222,36 +226,35 @@ int main(int argc, char **argv)
     pcout << "kinematic viscosity 2, lattice units = " << nuLB2 << std::endl;
     pcout << "surface tension, lattice units = " << surfaceTensionLB << std::endl;
     pcout << "Size of the domain is " << nx << " x " << ny << " x " << nz << std::endl;
-    
+
     SparseBlockStructure3D blockStructure(createRegularDistribution3D(nx, ny, nz));
 
-    Dynamics<T,DESCRIPTOR>* dynamics
-        = new SmagorinskyBGKdynamics<T,DESCRIPTOR>(omega, cSmago);
+    Dynamics<T, DESCRIPTOR> *dynamics = new SmagorinskyBGKdynamics<T, DESCRIPTOR>(omega, cSmago);
 
-    Dynamics<T,DESCRIPTOR>* dynamics2
-        = new SmagorinskyBGKdynamics<T,DESCRIPTOR>(omega2, cSmago);
+    Dynamics<T, DESCRIPTOR> *dynamics2 = new SmagorinskyBGKdynamics<T, DESCRIPTOR>(omega2, cSmago);
 
     // If surfaceTensionLB is 0, then the surface tension algorithm is deactivated.
     // If contactAngle is less than 0, then the contact angle algorithm is deactivated.
-    TwoPhaseFields3D<T,DESCRIPTOR> fields(blockStructure, dynamics->clone(), dynamics2->clone(), rhoEmpty, densityRatio,
-                                          surfaceTensionLB, contactAngle, externalForce, externalForce2, model);
+    TwoPhaseFields3D<T, DESCRIPTOR> fields(
+        blockStructure, dynamics->clone(), dynamics2->clone(), rhoEmpty, densityRatio,
+        surfaceTensionLB, contactAngle, externalForce, externalForce2, model);
     pcout << "Setting initial fluid flags." << std::endl;
 
     // Initialization
 
     analyticalIniVolumeFraction(fields.volumeFraction, fields.flag, insideFluid, 8);
-    //analyticalIniVolumeFraction(fields.volumeFraction, fields.flag, insideFluid, 32);
+    // analyticalIniVolumeFraction(fields.volumeFraction, fields.flag, insideFluid, 32);
 
-    Box3D bottom  (0,    nx-1, 0,    ny-1, 0,    0);
-    Box3D top     (0,    nx-1, 0,    ny-1, nz-1, nz-1);
+    Box3D bottom(0, nx - 1, 0, ny - 1, 0, 0);
+    Box3D top(0, nx - 1, 0, ny - 1, nz - 1, nz - 1);
 
-    setToConstant(fields.flag, bottom,   (int) freeSurfaceFlag::wall);
-    setToConstant(fields.flag, top,      (int) freeSurfaceFlag::wall);
+    setToConstant(fields.flag, bottom, (int)freeSurfaceFlag::wall);
+    setToConstant(fields.flag, top, (int)freeSurfaceFlag::wall);
 
     fields.periodicityToggle(0, true);
     fields.periodicityToggle(1, true);
     fields.periodicityToggle(2, false);
-    
+
     fields.partiallyDefaultInitialize();
 
     for (plint iT = 0; iT <= maxIter; ++iT) {
@@ -288,4 +291,3 @@ int main(int argc, char **argv)
 
     return 0;
 }
-

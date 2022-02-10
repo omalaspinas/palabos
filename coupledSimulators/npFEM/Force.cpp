@@ -6,18 +6,18 @@
  * It is governed by the terms of the Mozilla Public License v. 2.0.
  *
  * This file is subject to the terms of the Mozilla Public License v. 2.0.
- * If a copy of the MPL was not distributed with this file, 
+ * If a copy of the MPL was not distributed with this file,
  * you can obtain one at http://mozilla.org/MPL/2.0/.
- * 
+ *
  * Contact:
  * Christos Kotsalos
  * kotsaloscv@gmail.com
  * Computer Science Department
  * University of Geneva
- * 
- * The most recent release of Palabos can be downloaded at 
+ *
+ * The most recent release of Palabos can be downloaded at
  * <https://palabos.unige.ch/>
-*/
+ */
 ///////////////////////////////////////////////////////////////////////////////
 #ifndef FORCE_CPP
 #define FORCE_CPP
@@ -27,28 +27,22 @@
 namespace plb {
 namespace npfem {
 ///////////////////////////////////////////////////////////////////////////////
-SHAPEOP_INLINE GravityForce::GravityForce(const Vector3& f)
-    : f_(f)
-{
-}
+SHAPEOP_INLINE GravityForce::GravityForce(const Vector3 &f) : f_(f) { }
 ///////////////////////////////////////////////////////////////////////////////
-SHAPEOP_INLINE Vector3 GravityForce::get(
-    const Matrix3X& /*positions*/, int /*id*/) const
+SHAPEOP_INLINE Vector3 GravityForce::get(const Matrix3X & /*positions*/, int /*id*/) const
 {
     return f_;
 }
 ///////////////////////////////////////////////////////////////////////////////
-SHAPEOP_INLINE int GravityForce::getId() const { return -1; }
-///////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////
-SHAPEOP_INLINE VertexForce::VertexForce(const Vector3& f, int id)
-    : f_(f)
-    , id_(id)
+SHAPEOP_INLINE int GravityForce::getId() const
 {
+    return -1;
 }
 ///////////////////////////////////////////////////////////////////////////////
-SHAPEOP_INLINE Vector3 VertexForce::get(
-    const Matrix3X& /*position*/, int id) const
+///////////////////////////////////////////////////////////////////////////////
+SHAPEOP_INLINE VertexForce::VertexForce(const Vector3 &f, int id) : f_(f), id_(id) { }
+///////////////////////////////////////////////////////////////////////////////
+SHAPEOP_INLINE Vector3 VertexForce::get(const Matrix3X & /*position*/, int id) const
 {
     if (id == id_)
         return f_;
@@ -56,14 +50,23 @@ SHAPEOP_INLINE Vector3 VertexForce::get(
         return Vector3::Zero();
 }
 ///////////////////////////////////////////////////////////////////////////////
-SHAPEOP_INLINE void VertexForce::setId(int id) { id_ = id; }
+SHAPEOP_INLINE void VertexForce::setId(int id)
+{
+    id_ = id;
+}
 ///////////////////////////////////////////////////////////////////////////////
-SHAPEOP_INLINE void VertexForce::setForce(const Vector3& f) { f_ = f; }
+SHAPEOP_INLINE void VertexForce::setForce(const Vector3 &f)
+{
+    f_ = f;
+}
 ///////////////////////////////////////////////////////////////////////////////
-SHAPEOP_INLINE int VertexForce::getId() const { return id_; }
+SHAPEOP_INLINE int VertexForce::getId() const
+{
+    return id_;
+}
 ///////////////////////////////////////////////////////////////////////////////
-} // namespace npfem
-} // namespace plb
+}  // namespace npfem
+}  // namespace plb
 ///////////////////////////////////////////////////////////////////////////////
-#endif // FORCE_CPP
-///////////////////////////////////////////////////////////////////////////////
+#endif  // FORCE_CPP
+        ///////////////////////////////////////////////////////////////////////////////

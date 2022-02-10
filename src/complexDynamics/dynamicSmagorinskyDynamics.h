@@ -5,7 +5,7 @@
  * own the IP rights for most of the code base. Since October 2019, the
  * Palabos project is maintained by the University of Geneva and accepts
  * source code contributions from the community.
- * 
+ *
  * Contact:
  * Jonas Latt
  * Computer Science Department
@@ -14,7 +14,7 @@
  * 1227 Carouge, Switzerland
  * jonas.latt@unige.ch
  *
- * The most recent release of Palabos can be downloaded at 
+ * The most recent release of Palabos can be downloaded at
  * <https://palabos.unige.ch/>
  *
  * The library Palabos is free software: you can redistribute it and/or
@@ -29,33 +29,34 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 #ifndef DYNAMIC_SMAGORINSKY_DYNAMICS_H
 #define DYNAMIC_SMAGORINSKY_DYNAMICS_H
 
-#include "core/globalDefs.h"
 #include "core/dynamics.h"
+#include "core/globalDefs.h"
 
 namespace plb {
 
 /// A dynamics which reads the relaxation parameter from external scalar before collision.
-template<typename T, template<typename U> class Descriptor>
-class ExternalOmegaDynamics : public CompositeDynamics<T,Descriptor> {
+template <typename T, template <typename U> class Descriptor>
+class ExternalOmegaDynamics : public CompositeDynamics<T, Descriptor> {
 public:
-    ExternalOmegaDynamics(Dynamics<T,Descriptor>* baseDynamics_)
-        : CompositeDynamics<T,Descriptor>(baseDynamics_)
+    ExternalOmegaDynamics(Dynamics<T, Descriptor> *baseDynamics_) :
+        CompositeDynamics<T, Descriptor>(baseDynamics_)
     { }
-    virtual void prepareCollision(Cell<T,Descriptor>& cell) {
+    virtual void prepareCollision(Cell<T, Descriptor> &cell)
+    {
         // Copy relaxation parameter from external scalar.
         this->setOmega(*cell.getExternal(Descriptor<T>::ExternalField::omegaBeginsAt));
     }
-    ExternalOmegaDynamics<T,Descriptor>* clone() const {
+    ExternalOmegaDynamics<T, Descriptor> *clone() const
+    {
         return new ExternalOmegaDynamics(*this);
     }
 };
 
-} // namespace plb
+}  // namespace plb
 
 #endif  // DYNAMIC_SMAGORINSKY_DYNAMICS_H
-

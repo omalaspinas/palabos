@@ -5,7 +5,7 @@
  * own the IP rights for most of the code base. Since October 2019, the
  * Palabos project is maintained by the University of Geneva and accepts
  * source code contributions from the community.
- * 
+ *
  * Contact:
  * Jonas Latt
  * Computer Science Department
@@ -14,7 +14,7 @@
  * 1227 Carouge, Switzerland
  * jonas.latt@unige.ch
  *
- * The most recent release of Palabos can be downloaded at 
+ * The most recent release of Palabos can be downloaded at
  * <https://palabos.unige.ch/>
  *
  * The library Palabos is free software: you can redistribute it and/or
@@ -29,7 +29,7 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 /** \file
  * Groups all the template instantiations for the 3D multiBlock.
@@ -37,12 +37,11 @@
 
 #include "multiGrid/coarseGridProcessors3D.hh"
 #include "multiGrid/fineGridProcessors3D.hh"
+#include "multiGrid/gridConversion3D.hh"
+#include "multiGrid/helperFineGridProcessors3D.hh"
+#include "multiGrid/interpolationHelper.hh"
+#include "multiGrid/multiGridDataAnalysisWrapper3D.hh"
 #include "multiGrid/multiGridDataField3D.hh"
+#include "multiGrid/multiGridDataProcessorWrapper3D.hh"
 #include "multiGrid/multiGridGenerator3D.hh"
 #include "multiGrid/multiGridLattice3D.hh"
-#include "multiGrid/multiGridDataAnalysisWrapper3D.hh"
-#include "multiGrid/multiGridDataProcessorWrapper3D.hh"
-#include "multiGrid/gridConversion3D.hh"
-#include "multiGrid/interpolationHelper.hh"
-#include "multiGrid/helperFineGridProcessors3D.hh"
-
