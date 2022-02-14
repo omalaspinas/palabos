@@ -37,8 +37,11 @@
 #include <algorithm>
 #include <cmath>
 
+#include "core/plbProfiler.h"
+#include "latticeBoltzmann/advectionDiffusionMomentTemplates.h"
 #include "latticeBoltzmann/externalFieldAccess.h"
 #include "latticeBoltzmann/geometricOperationTemplates.h"
+#include "latticeBoltzmann/indexTemplates.h"
 #include "offLattice/guoAdvDiffOffLatticeModel3D.h"
 #include "offLattice/nextNeighbors3D.h"
 
@@ -74,7 +77,11 @@ GuoAdvDiffOffLatticeModel3D<T, Descriptor> *GuoAdvDiffOffLatticeModel3D<T, Descr
 template <typename T, template <typename U> class Descriptor>
 plint GuoAdvDiffOffLatticeModel3D<T, Descriptor>::getNumNeighbors() const
 {
-    return 2;
+    if (usesSecondOrder()) {
+        return 2;
+    } else {
+        return 1;
+    }
 }
 
 template <typename T, template <typename U> class Descriptor>
@@ -258,21 +265,27 @@ void GuoAdvDiffOffLatticeModel3D<T, Descriptor>::computeRhoBarJNeq(
     OffBoundary::Type bdType, [[maybe_unused]] Array<T, 3> const &wallNormal, T &rhoBar,
     Array<T, Descriptor<T>::d> &jNeq) const
 {
-    if (!usesSecondOrder()) {
-        depth = 1;
+    if (depth > getNumNeighbors()) {
+        global::plbErrors().registerError(
+            "The number of fluid neighbors is wrong in the Guo AD off-lattice model.");
     }
     T wall_scalar = wallData[0];
-    T rhoBar1, rhoBar2;
-    Array<T, Descriptor<T>::d> jNeq1, jNeq2, jEqDummy;
+    T rhoBar1 = T(), rhoBar2 = T();
+    Array<T, Descriptor<T>::d> jNeq1(Array<T, Descriptor<T>::d>::zero()),
+        jNeq2(Array<T, Descriptor<T>::d>::zero()), jEqDummy(Array<T, Descriptor<T>::d>::zero());
     Cell<T, Descriptor> const &cell1 = lattice.get(
         guoNode.x + fluidDirection.x, guoNode.y + fluidDirection.y, guoNode.z + fluidDirection.z);
-    Cell<T, Descriptor> const &cell2 = lattice.get(
-        guoNode.x + 2 * fluidDirection.x, guoNode.y + 2 * fluidDirection.y,
-        guoNode.z + 2 * fluidDirection.z);
+
     advectionDiffusionMomentTemplates<T, Descriptor>::get_rhoBar_jEq_jNeq(
         cell1, rhoBar1, jEqDummy, jNeq1);
-    advectionDiffusionMomentTemplates<T, Descriptor>::get_rhoBar_jEq_jNeq(
-        cell2, rhoBar2, jEqDummy, jNeq2);
+
+    if (usesSecondOrder()) {
+        Cell<T, Descriptor> const &cell2 = lattice.get(
+            guoNode.x + 2 * fluidDirection.x, guoNode.y + 2 * fluidDirection.y,
+            guoNode.z + 2 * fluidDirection.z);
+        advectionDiffusionMomentTemplates<T, Descriptor>::get_rhoBar_jEq_jNeq(
+            cell2, rhoBar2, jEqDummy, jNeq2);
+    }
     T wall_rhoBar = Descriptor<T>::rhoBar(wall_scalar);
 
     if (depth < 2) {
