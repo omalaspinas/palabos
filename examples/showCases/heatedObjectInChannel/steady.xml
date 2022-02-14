@@ -62,6 +62,8 @@
     <cpIter> -1 </cpIter>
     <!-- Use a formulation with rhoBar and j or not?  (It might be more efficient) -->
     <useRhoBarJ> true </useRhoBarJ>
+    <!-- Use second order Guo boundary condition or not ? --> 
+    <useSecondOrder> false </useSecondOrder>
     <!-- Use MPI I/O or not? -->
     <useParallelIO> true </useParallelIO>
 </simulation>
