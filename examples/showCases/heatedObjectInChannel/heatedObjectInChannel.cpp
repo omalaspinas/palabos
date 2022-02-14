@@ -125,8 +125,9 @@ struct Param {
     plint maxIter, startIter;  // Time for events in lattice units.
     plint statIter, vtkIter;
     plint cpIter;
-    bool useRhoBarJ;     // Use a rhoBar-j formulation or not?
-    bool useParallelIO;  // Use MPI I/O or not?
+    bool useRhoBarJ;      // Use a rhoBar-j formulation or not?
+    bool useSecondOrder;  // Use a second order Guo BC or not?
+    bool useParallelIO;   // Use MPI I/O or not?
 
     std::string abortFile;       // File to signal program abortion.
     std::string continueFile;    // File to continue the simulation.
@@ -188,6 +189,7 @@ struct Param {
         document["simulation"]["vtkIter"].read(vtkIter);
         document["simulation"]["cpIter"].read(cpIter);
         document["simulation"]["useRhoBarJ"].read(useRhoBarJ);
+        document["simulation"]["useSecondOrder"].read(useSecondOrder);
         document["simulation"]["useParallelIO"].read(useParallelIO);
 
         abortFile = "abort";
@@ -558,7 +560,7 @@ void run(std::string continueFileName)
     GuoOffLatticeModel3D<T, DESCRIPTOR> *offLatticeModel = new GuoOffLatticeModel3D<T, DESCRIPTOR>(
         new TriangleFlowShape3D<T, Array<T, 3> >(voxelizedDomain.getBoundary(), profiles), flowType,
         useAllDirections);
-    offLatticeModel->selectSecondOrder(true);
+    offLatticeModel->selectSecondOrder(param.useSecondOrder);
     offLatticeModel->selectUseRegularizedModel(true);
     offLatticeModel->selectComputeStat(false);  // No force computation on object required.
     offLatticeModel->setVelIsJ(velIsJ);
