@@ -605,7 +605,7 @@ void run(std::string continueFileName)
             new TriangleFlowShape3D<T, Array<T, 2> >(
                 voxelizedDomain.getBoundary(), temperatureProfiles),
             flowType);
-    advDiffOffLatticeModel->selectSecondOrder(true);
+    advDiffOffLatticeModel->selectSecondOrder(param.useSecondOrder);
     OffLatticeBoundaryCondition3D<T, TEMPERATURE_DESCRIPTOR, Array<T, 2> >
         *temperatureBoundaryCondition =
             new OffLatticeBoundaryCondition3D<T, TEMPERATURE_DESCRIPTOR, Array<T, 2> >(
