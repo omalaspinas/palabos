@@ -60,17 +60,17 @@ typedef double T;
 template <typename T>
 class Param {
 public:
-    plint N;           // Resolution
-    plint nx, ny;      // Domain size (LB units)
-    T lx, ly;          // Domain size (Physical units)
-    T dx, dt;          // Space and time steps
-    T Re, Ma, tc;      // Dimensionless parameters
-    T u0;              // Velocity (LB units)
-    T soundSpeed;      // Speed of sound (Physical units)
-    T cSmago;          // Smagorinsky constant (turbulent flows)
-    T omega, tau, nu;  // Collision parameters (LB units)
-    T omega3, omega4;  // Relaxation frequencies of 3rd and 4th order moments
-    bool iniFneq;      // Init parameters (include nonequilibrium part in the init)
+    plint N;                   // Resolution
+    plint nx, ny;              // Domain size (LB units)
+    T lx, ly;                  // Domain size (Physical units)
+    T dx, dt;                  // Space and time steps
+    T Re, Ma, tc;              // Dimensionless parameters
+    T u0;                      // Velocity (LB units)
+    T soundSpeed;              // Speed of sound (Physical units)
+    T cSmago;                  // Smagorinsky constant (turbulent flows)
+    T omega, tau, nu;          // Collision parameters (LB units)
+    T omega3, omega4, omega5;  // Relaxation frequencies of 3rd and 4th order moments
+    bool iniFneq;              // Init parameters (include nonequilibrium part in the init)
     plint intIniFneq;
 
     T tAdim, vtsT;  // Simulation time and frequency of .vti outputs
@@ -127,9 +127,11 @@ public:
         if (hoOmega == "SRT") {
             omega3 = omega;
             omega4 = omega;
+            omega5 = omega;
         } else if (hoOmega == "REG") {
             omega3 = 1.;
             omega4 = 1.;
+            omega5 = 1.;
         } else {
             pcout << "Error: Relaxation of high-order moments not correct." << std::endl;
             exit(-1);
@@ -194,6 +196,7 @@ public:
         if (lbm == "D2Q9") {
             fout << "omega3 = " << omega3 << std::endl;
             fout << "omega4 = " << omega4 << std::endl;
+            fout << "omega5 = " << omega5 << std::endl;
         }
         fout << "Large Eddy Simulation parameters:    " << std::endl;
         fout << "cSmago = " << cSmago << std::endl;
@@ -289,12 +292,10 @@ void simulationSetup(MultiBlockLattice2D<T, DESCRIPTOR> &lattice, const Param<T>
     // Call initialize to get the lattice ready for the simulation.
     lattice.initialize();
 }
-void accurateInitialCondition(
-    MultiBlockLattice2D<T, DESCRIPTOR> &lattice, const Param<T> &param, T epsilon)
+void accurateInitialCondition(MultiBlockLattice2D<T, DESCRIPTOR> &lattice, const Param<T> &param)
 {
-    std::unique_ptr<MultiScalarField2D<T> > density;
-    density = computeDensity(lattice);
     if (param.iniFneq) {
+        std::unique_ptr<MultiScalarField2D<T> > density = computeDensity(lattice);
         std::unique_ptr<MultiTensorField2D<T, 2> > velocity = computeVelocity(lattice);
         std::unique_ptr<MultiTensorField2D<T, 3> > S = computeStrainRate(*velocity);
         recomposeFromFlowVariables(lattice, *density, *velocity, *S);
@@ -354,6 +355,7 @@ int main(int argc, char *argv[])
         allOmega[1] = param.omega;   // relaxation of M11
         allOmega[2] = param.omega3;  // relaxation of M21 and M12
         allOmega[3] = param.omega4;  // relaxation of M22
+        allOmega[4] = param.omega5;  // relaxation of bulk moment (M20 + M02)
     } else {
         pcout << "Error: lbm name does not exist." << std::endl;
         exit(-1);
@@ -385,7 +387,7 @@ int main(int argc, char *argv[])
     simulationSetup(lattice, param);
 
     //// Either add fNeqor do nothing
-    accurateInitialCondition(lattice, param, 1.e-4);
+    accurateInitialCondition(lattice, param);
 
     ///// Initial state is outputed
     writeVTS(lattice, param, 0);
