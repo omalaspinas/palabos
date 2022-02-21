@@ -381,6 +381,18 @@ std::string VtkTypeNames<unsigned long int>::getBaseName()
 }
 
 template <>
+std::string VtkTypeNames<long long>::getBaseName()
+{
+    return "Int";
+}
+
+template <>
+std::string VtkTypeNames<unsigned long long>::getBaseName()
+{
+    return "UInt";
+}
+
+template <>
 std::string VtkTypeNames<float>::getBaseName()
 {
     return "Float";

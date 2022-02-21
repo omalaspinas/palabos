@@ -47,7 +47,6 @@
 #include "palabos3D.hh"
 
 using namespace plb;
-using namespace std;
 
 typedef double T;
 #define DESCRIPTOR descriptors::D3Q19Descriptor
@@ -392,13 +391,13 @@ void readCommandLine(int argc, char *argv[])
         global::argv(3).read(radius);
         global::argv(4).read(fNameOut);
     } catch (...) {
-        pcout << "Error : Wrong parameters specified." << endl;
+        pcout << "Error : Wrong parameters specified." << std::endl;
 
-        pcout << "1 : surface tension" << endl;
-        pcout << "2 : thickness bubble" << endl;
-        pcout << "3 : bubble radius" << endl;
-        pcout << "4 : output folder name" << endl;
-        pcout << "Possible parameters are: " << argv[0] << " 1.e-4  5  15  tmp" << endl;
+        pcout << "1 : surface tension" << std::endl;
+        pcout << "2 : thickness bubble" << std::endl;
+        pcout << "3 : bubble radius" << std::endl;
+        pcout << "4 : output folder name" << std::endl;
+        pcout << "Possible parameters are: " << argv[0] << " 1.e-4  5  15  tmp" << std::endl;
         exit(1);
     }
 }
@@ -428,7 +427,7 @@ int main(int argc, char *argv[])
                 pcout << "Mega Site updates per second: "
                       << (double)g->getBoundingBox().nCells() / elapsed / 1.e6 << std::endl;
             }
-            pcout << "Iteration step " << iter << endl;
+            pcout << "Iteration step " << iter << std::endl;
             writeGifs(iter);
             writeVTKscalarField(*C, "C", iter);
         }

@@ -33,6 +33,9 @@
 
 #include "dataProcessors/metaStuffWrapper3D.h"
 
+#include <algorithm>
+#include <random>
+
 #include "atomicBlock/dataProcessingFunctional3D.h"
 #include "atomicBlock/dataProcessingFunctional3D.hh"
 #include "atomicBlock/dataProcessorWrapper3D.h"
@@ -84,7 +87,9 @@ void getRandomBlockNum(MultiScalarField3D<plint> &blockNum)
     for (plint i = 0; i < numIds; ++i) {
         ids[i] = i;
     }
-    std::random_shuffle(ids.begin(), ids.end());
+    std::random_device rd;
+    std::mt19937 rndGenerator(rd());
+    std::shuffle(ids.begin(), ids.end(), rndGenerator);
     for (pluint iBlock = 0; iBlock < blocks.size(); ++iBlock) {
         plint blockId = blocks[iBlock];
         ScalarField3D<plint> &component =
