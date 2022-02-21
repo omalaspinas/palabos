@@ -233,6 +233,7 @@ By alphabetic order
 * @helenmo
 * @izumiko
 * @jfburdet
+* @jolinjolin
 * @kotsaloscv
 * @liuanjun
 * @Latt
