@@ -475,8 +475,8 @@ int main(int argc, char *argv[])
         if (i == maxFluidIter) {
             pcout << "Writing fluid data.." << std::endl;
             VtkImageOutput3D<T> vtkOut("volume", 1.);
-            vtkOut.writeData<float>(*boundaryCondition->computePressure(), "p", 1.);
-            vtkOut.writeData<float>(*boundaryCondition->computeVelocityNorm(), "u", 1.);
+            vtkOut.writeData<float>(*(boundaryCondition->computePressure()), "p", 1.);
+            vtkOut.writeData<float>(*(boundaryCondition->computeVelocityNorm()), "u", 1.);
         }
 
         if (i % saveIter == 0 && i > startParticleIter) {

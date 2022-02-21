@@ -271,7 +271,7 @@ int main(int argc, char *argv[])
 
 #ifndef PLB_REGRESSION
         ///// Output.
-        if (iT % vtkTout == 0 and iT != 0) {
+        if (iT % vtkTout == 0 && iT != 0) {
             pcout << "Writing VTK file at iteration = " << iT << std::endl;
             writeVTK(lattice, param, iT);
             writeGif(lattice, param, iT);
