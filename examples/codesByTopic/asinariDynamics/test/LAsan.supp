@@ -7,3 +7,4 @@ leak:strdup
 leak:__interceptor_malloc
 leak:malloc
 leak:calloc
+leak:__interceptor_realloc
