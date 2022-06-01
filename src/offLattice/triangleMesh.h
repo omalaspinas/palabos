@@ -414,8 +414,7 @@ public:
 /// In these meshes case, the surface must be orientable and manifold.
 /// It can for example be represented by a Directed-Edge format.
 template <typename T>
-struct ManifoldTriangleMesh : public ConnectedTriangleMesh<T> {
-};
+struct ManifoldTriangleMesh : public ConnectedTriangleMesh<T> { };
 
 /*
 template<typename T>
