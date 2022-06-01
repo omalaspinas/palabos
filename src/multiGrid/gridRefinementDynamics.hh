@@ -138,8 +138,7 @@ void FineGridBoundaryDynamics<T, Descriptor>::completePopulations(Cell<T, Descri
     if (relativeTime == 0) {
         if ((plint)decomposedValuesT0.size()
             != cell.getDynamics().numDecomposedVariables(orderOfDecomposition))
-        {
-        }
+        { }
         PLB_ASSERT(
             (plint)decomposedValuesT0.size()
             == cell.getDynamics().numDecomposedVariables(orderOfDecomposition));
