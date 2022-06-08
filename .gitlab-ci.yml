@@ -4,6 +4,7 @@ variables:
   DOCKER_BASE_IMG: $CI_REGISTRY_IMAGE/plb-base-img:latest
   CCACHE_BASE: ccache
   CCACHE_TEST: ${CI_PROJECT_NAMESPACE}/${CI_COMMIT_REF_NAME}_test/
+  CCACHE_TESTMPI: ${CI_PROJECT_NAMESPACE}/${CI_COMMIT_REF_NAME}_testmpi/
   CCACHE_REL_CLANG_SER: ${CI_PROJECT_NAMESPACE}/${CI_COMMIT_REF_NAME}_rel_clang_ser/
   CCACHE_REL_CLANG_PAR: ${CI_PROJECT_NAMESPACE}/${CI_COMMIT_REF_NAME}_rel_clang_par/
   CCACHE_REL_GCC_SER: ${CI_PROJECT_NAMESPACE}/${CI_COMMIT_REF_NAME}_rel_gcc_ser/
@@ -15,11 +16,12 @@ variables:
 
 
 cache:
-    untracked: true
+    untracked: false
     key: "$CI_PROJECT_ID"
     paths:
         - ${PWD}/${CCACHE_BASE}
         - ${PWD}/${CCACHE_BASE}/${CCACHE_TEST}
+        - ${PWD}/${CCACHE_BASE}/${CCACHE_TESTMPI}
         - ${PWD}/${CCACHE_BASE}/${CCACHE_REL_CLANG_SER}
         - ${PWD}/${CCACHE_BASE}/${CCACHE_REL_CLANG_PAR}
         - ${PWD}/${CCACHE_BASE}/${CCACHE_REL_GCC_SER}
@@ -34,6 +36,7 @@ stages:
     - check_format
     - build_cmake
     - regression_tests
+    - parallel_regression_tests
     - deploy
 
 # Build and test stages are using a docker image containing package
@@ -75,7 +78,25 @@ test:
         - cd build
         - cmake .. -DCMAKE_BUILD_TYPE=Test
         - cmake --build .
-        - cmake --build . -- test
+        - cmake --build . -- test "ARGS=--rerun-failed --output-on-failure"
+
+## Parallel regression tests
+parallel_test:
+    stage: parallel_regression_tests
+    image: $DOCKER_BASE_IMG
+    before_script:
+        - mkdir -p ${CCACHE_TESTMPI}
+        - export CCACHE_BASEDIR=${PWD}/${CCACHE_BASE}
+        - export CCACHE_DIR=${PWD}/${CCACHE_BASE}/${CCACHE_TESTMPI}
+        - ccache --set-config=compression=true
+        - ccache --set-config=max_size=1000M
+
+    script: 
+        - pwd
+        - cd build
+        - cmake .. -DCMAKE_BUILD_TYPE=TestMpi
+        - cmake --build .
+        - cmake --build . -- test "ARGS=--rerun-failed --output-on-failure"
 
 ## Test compilation with CMake, everything in examples & utility directory
 release_clang_serial:

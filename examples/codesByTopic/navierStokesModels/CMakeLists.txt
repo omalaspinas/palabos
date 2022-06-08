@@ -28,6 +28,16 @@ if(BUILD_TESTING)
         SOURCES ./${EXECUTABLE_NAME}.cpp
     )
 endif()
+if(BUILD_TESTING_MPI)
+    add_custom_target(${PROJECT_NAME}_test_mpi
+        ALL
+        DEPENDS ${PROJECT_NAME}
+        COMMAND "LSAN_OPTIONS=suppressions=${LSAN_SUPPRESSION_FILE}" mpirun --allow-run-as-root -np 4 ./${PROJECT_NAME} > test/output_mpi.dat || (cat test/output_mpi.dat\; exit 1)
+        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+        COMMENT "run generated test in ${CMAKE_CURRENT_SOURCE_DIR}"
+        SOURCES ./${EXECUTABLE_NAME}.cpp
+    )
+endif()
 
 
 if (BUILD_TESTING)
@@ -35,6 +45,12 @@ if (BUILD_TESTING)
     add_test(NAME ${CMAKE_CURRENT_SOURCE_DIR}_test
              WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/test
              COMMAND ${CMAKE_COMMAND} -E compare_files ref.dat output.dat)
+endif()
+if (BUILD_TESTING_MPI)
+    enable_testing()
+    add_test(NAME ${CMAKE_CURRENT_SOURCE_DIR}_test_mpi
+             WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/test
+             COMMAND diff ref.dat output_mpi.dat)
 endif()
 
 ###############################################################################
