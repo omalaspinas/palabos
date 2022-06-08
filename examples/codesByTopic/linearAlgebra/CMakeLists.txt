@@ -25,6 +25,7 @@ if(BUILD_TESTING)
         COMMENT "run generated test in ${CMAKE_CURRENT_SOURCE_DIR}"
         SOURCES ./${EXECUTABLE_NAME}.cpp
     )
+# No parallel test. It does not make any sense.
 endif()
 
 
