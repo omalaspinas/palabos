@@ -44,17 +44,15 @@ using namespace plb;
 using namespace std;
 
 typedef double T;
-#define DESCRIPTOR descriptors::D3Q19Descriptor
+// #define DESCRIPTOR descriptors::D3Q19Descriptor
+#define DESCRIPTOR descriptors::AbsorbingWaveD3Q27Descriptor
 
-#define NMAX 150
+#define NMAX 100
 
 const T pi = (T)4. * std::atan((T)1.);
 
 struct Param {
     plint numOutletSpongeCells;  // Number of the lattice nodes contained in the outlet sponge zone.
-    int outletSpongeZoneType;    // Type of the outlet sponge zone (Viscosity or Smagorinsky).
-    T targetSpongeCSmago;  // Target Smagorinsky parameter at the end of the Smagorinsky sponge
-                           // Zone.
 };
 
 Param param;
@@ -178,6 +176,51 @@ private:
     plint maxN;
 };
 
+template <typename T>
+class SigmaFunction {
+public:
+    SigmaFunction(Box3D domain_, plint L_, T omega, T xiFactor) :
+        domain(domain_), L(L_), xi(omega - xiFactor)
+    { }
+    T operator()(plint iX, plint iY, plint iZ) const
+    {
+        std::vector<plint> distances;
+        addDistance(domain.z0 + L, iZ, distances);
+        addDistance(iZ, domain.z1 - L, distances);
+
+        plint distance = 0;
+        for (pluint i = 0; i < distances.size(); ++i) {
+            if (distances[i] > distance) {
+                distance = distances[i];
+            }
+        }
+
+        if (distance == 0) {
+            return T();
+        } else {
+            return xi * sigma(T(), (T)L, (T)distance);
+        }
+    }
+
+private:
+    void addDistance(plint from, plint pos, std::vector<plint> &distances) const
+    {
+        plint dist = from - pos;
+        if (dist > 0) {
+            distances.push_back(dist);
+        }
+    }
+    static T sigma(T x0, T x1, T x)
+    {
+        return (3125. * (x1 - x) * pow(x - x0, 4.)) / (256. * pow(x1 - x0, 5.));
+    }
+
+private:
+    Box3D domain;
+    plint L;
+    T xi;
+};
+
 void simulationSetup(
     MultiBlockLattice3D<T, DESCRIPTOR> &lattice, IncomprFlowParam<T> const &parameters,
     OnLatticeBoundaryCondition3D<T, DESCRIPTOR> &boundaryCondition, Array<plint, 3> &forceIds)
@@ -194,12 +237,12 @@ void simulationSetup(
     Box3D top = Box3D(0, nx - 1, ny - 1, ny - 1, 0, nz - 1);  // Full Area
     Box3D bottom = Box3D(0, nx - 1, 0, 0, 0, nz - 1);         // Full Area
 
-    Box3D inlet = Box3D(0, nx - 1, 0, ny - 1, 0, 0);  // Full Area
+    Box3D inlet = Box3D(1, nx - 1, 1, ny - 2, 0, 0);  // Full Area
     Box3D outlet = Box3D(
         1, nx - 2, 1, ny - 2, nz - 1, nz - 1);  // Offset from wall boundaries by 1 lattice unit
 
-    Box3D right = Box3D(0, 0, 0, ny - 1, 0, nz - 1);           // Full Area
-    Box3D left = Box3D(nx - 1, nx - 1, 0, ny - 1, 0, nz - 1);  // Full Area
+    Box3D right = Box3D(0, 0, 1, ny - 2, 1, nz - 2);           // Full Area
+    Box3D left = Box3D(nx - 1, nx - 1, 1, ny - 2, 1, nz - 2);  // Full Area
 
     boundaryCondition.setVelocityConditionOnBlockBoundaries(lattice, inlet);
     boundaryCondition.addVelocityBoundary2P(outlet, lattice, boundary::neumann);
@@ -221,20 +264,7 @@ void simulationSetup(
      * Implement the outlet sponge zone.
      */
     if (param.numOutletSpongeCells > 0) {
-        T bulkValue;
         Array<plint, 6> numSpongeCells;
-
-        if (param.outletSpongeZoneType == 0) {
-            pcout << "Generating an outlet viscosity sponge zone." << std::endl;
-            bulkValue = parameters.getOmega();
-        } else if (param.outletSpongeZoneType == 1) {
-            pcout << "Generating an outlet Smagorinsky sponge zone." << std::endl;
-            bulkValue = 0.14;  // Parameter for the Smagorinsky LES model
-        } else {
-            pcout << "Error: unknown type of sponge zone." << std::endl;
-            exit(-1);
-        }
-
         // Number of sponge zone lattice nodes at all the outer domain boundaries.
         // So: 0 means the boundary at x = 0
         //     1 means the boundary at x = nx-1
@@ -246,20 +276,20 @@ void simulationSetup(
         numSpongeCells[3] = 0;
         numSpongeCells[4] = 0;
         numSpongeCells[5] = param.numOutletSpongeCells;
-
         std::vector<MultiBlock3D *> args;
         args.push_back(&lattice);
 
-        if (param.outletSpongeZoneType == 0) {
-            applyProcessingFunctional(
-                new ViscositySpongeZone3D<T, DESCRIPTOR>(nx, ny, nz, bulkValue, numSpongeCells),
-                lattice.getBoundingBox(), args);
-        } else {
-            applyProcessingFunctional(
-                new SmagorinskySpongeZone3D<T, DESCRIPTOR>(
-                    nx, ny, nz, bulkValue, param.targetSpongeCSmago, numSpongeCells),
-                lattice.getBoundingBox(), args);
-        }
+        T xiFactor = 0.95 * parameters.getOmega();
+        setExternalScalar(
+            lattice, lattice.getBoundingBox(), DESCRIPTOR<T>::ExternalField::rhoBarBeginsAt, T());
+        setExternalVector(
+            lattice, lattice.getBoundingBox(), DESCRIPTOR<T>::ExternalField::uBeginsAt,
+            SquarePoiseuilleVelocity<T>(parameters, NMAX));
+        setGenericExternalScalar(
+            lattice, lattice.getBoundingBox(), DESCRIPTOR<T>::ExternalField::sigmaBeginsAt,
+            SigmaFunction<T>(
+                lattice.getBoundingBox(), param.numOutletSpongeCells, parameters.getOmega(),
+                xiFactor));
     }
 
     initializeAtEquilibrium(
@@ -268,7 +298,7 @@ void simulationSetup(
     // Add the obstacle: cylinder 3d
     plint cx = nx / 2 + 2;  // cx is slightly offset to avoid full symmetry,
                             // and to get a Von Karman Vortex street.
-    plint cz = nz / 6;
+    plint cz = param.numOutletSpongeCells + parameters.getResolution() * 3;
     plint radius = parameters.getResolution() / 2;  // the diameter is the reference length
 
     lattice.toggleInternalStatistics(true);
@@ -292,11 +322,37 @@ void writeGifs(BlockLatticeT &lattice, IncomprFlowParam<T> const &parameters, pl
     const plint ny = parameters.getNy();
     const plint nz = parameters.getNz();
 
-    Box3D slice(0, nx - 1, ny / 2, ny / 2, 0, nz - 1);
+    Box3D slice_x(nx / 2, nx / 2, 0, ny - 1, 0, nz - 1);
+    Box3D slice_y(0, nx - 1, ny / 2, ny / 2, 0, nz - 1);
+    Box3D slice_z(0, nx - 1, 0, ny - 1, nz / 2, nz / 2);
     ImageWriter<T> imageWriter("leeloo");
 
     imageWriter.writeScaledGif(
-        createFileName("uNorm", iter, 6), *computeVelocityNorm(lattice, slice), imSize, imSize);
+        createFileName("uNormX", iter, 6), *computeVelocityNorm(lattice, slice_x), imSize, imSize);
+    imageWriter.writeScaledGif(
+        createFileName("uNormY", iter, 6), *computeVelocityNorm(lattice, slice_y), imSize, imSize);
+    imageWriter.writeScaledGif(
+        createFileName("uNormZ", iter, 6), *computeVelocityNorm(lattice, slice_z), imSize, imSize);
+}
+
+template <class BlockLatticeT>
+void writeVTK(BlockLatticeT &lattice, IncomprFlowParam<T> const &parameters, plint iter)
+{
+    T dx = parameters.getDeltaX();
+    T dt = parameters.getDeltaT();
+
+    VtkImageOutput3D<T> vtkOut(createFileName("vtk", iter, 6), dx);
+    // ParallelVtkImageOutput3D<T> vtkOut(createFileName("vtk", iter, 6), 3, dx);
+
+    vtkOut.writeData<3, float>(*computeVelocity(lattice), "velocity", dx / dt);
+    vtkOut.writeData<float>(*computeVelocityNorm(lattice), "velocityNorm", dx / dt);
+    vtkOut.writeData<3, float>(*computeVorticity(*computeVelocity(lattice)), "vorticity", 1. / dt);
+    vtkOut.writeData<3, float>(
+        *computeExternalVector(lattice, DESCRIPTOR<T>::ExternalField::uBeginsAt), "extVel",
+        dx / dt);
+    vtkOut.writeData<float>(
+        *computeExternalScalar(lattice, DESCRIPTOR<T>::ExternalField::sigmaBeginsAt), "sigma",
+        (T)1);
 }
 
 int main(int argc, char *argv[])
@@ -304,11 +360,11 @@ int main(int argc, char *argv[])
     plbInit(&argc, &argv);
     global::directories().setOutputDir("./tmp/");
 
-    if (argc != 10) {
+    if (argc != 8) {
         pcout << "Error: the parameters are wrong. \n";
         pcout << "Give Re Resolution CylinderDiameter ChannelWidth ChannelHeight ChannhelLength "
-                 "outletSpongeZoneType numOutletSpongeCells targetSpongeCSmago \n";
-        pcout << "Example: ./executable 100 20 6 50 50 75 1 1 0.6 \n";
+                 "numOutletSpongeCells \n";
+        pcout << "Example: ./executable 100 20 1 5 10 30 20 \n";
         exit(1);
     }
 
@@ -320,12 +376,8 @@ int main(int argc, char *argv[])
     T h_ = atof(argv[5]);
     T L_ = atof(argv[6]);
     // Sponge Zone related
-    param.outletSpongeZoneType =
-        atoi(argv[7]);  // Outlet sponge zone type ("Viscosity":0 or "Smagorinsky":1)
     param.numOutletSpongeCells =
-        atoi(argv[8]);  // Number of the lattice nodes contained in the outlet sponge zone.
-    param.targetSpongeCSmago = atof(argv[9]);  // This parameter is relevant only if the chosen
-                                               // sponge zone is of "Smagorinsky" type.
+        atoi(argv[7]);  // Number of the lattice nodes contained in the outlet sponge zone.
 
     // Use the class IncomprFlowParam to convert from
     // dimensionless variables to lattice units, in the
@@ -342,27 +394,52 @@ int main(int argc, char *argv[])
 
     const T vtkSave =
         (T)0.1;  // Time intervals at which to save GIF VTKs, in dimensionless time units
+#ifndef PLB_REGRESSION
     const T maxT = (T)200.0;  // Total simulation time, in dimensionless time units
+#else
+    const T maxT = (T)0.51;  // Total simulation time, in dimensionless time units
+#endif
 
     pcout << "omega= " << parameters.getOmega() << std::endl;
     writeLogFile(parameters, "3D square Poiseuille with Cylinder as an obstacle");
 
+    Dynamics<T, DESCRIPTOR> *dyn = new WaveAbsorptionDynamics<T, DESCRIPTOR>(
+        new ConsistentSmagorinskyCompleteRegularizedBGKdynamics<T, DESCRIPTOR>(
+            parameters.getOmega(), 0.16));
     MultiBlockLattice3D<T, DESCRIPTOR> lattice(
-        parameters.getNx(), parameters.getNy(), parameters.getNz(),
-        new BGKdynamics<T, DESCRIPTOR>(parameters.getOmega()));
+        parameters.getNx(), parameters.getNy(), parameters.getNz(), dyn->clone());
+    defineDynamics(lattice, lattice.getBoundingBox(), dyn->clone());
 
     OnLatticeBoundaryCondition3D<T, DESCRIPTOR> *boundaryCondition =
-        createLocalBoundaryCondition3D<T, DESCRIPTOR>();
+        createInterpBoundaryCondition3D<T, DESCRIPTOR>();
 
     Array<plint, 3> forceIds;
     simulationSetup(lattice, parameters, *boundaryCondition, forceIds);
 
     // Loop over main time iteration.
     for (plint iT = 0; iT < parameters.nStep(maxT); ++iT) {
-        if (iT % parameters.nStep(vtkSave) == 0 && iT > 0) {
+        if (iT % parameters.nStep(vtkSave) == 0) {
             pcout << "step " << iT << "; t=" << iT * parameters.getDeltaT() << std::endl;
-
+#ifndef PLB_REGRESSION
             writeGifs(lattice, parameters, iT);
+            writeVTK(lattice, parameters, iT);
+#endif
+
+            T drag = lattice.getInternalStatistics().getSum(forceIds[2]);
+            T lift = lattice.getInternalStatistics().getSum(forceIds[0]);
+
+            T length = parameters.getNy();  // Because of periodicity!
+            T diameter = parameters.getResolution() + 1;
+
+            T vel = parameters.getLatticeU();
+
+            T avgRho = computeAverage(*computeDensity(lattice));
+
+            T drag_coef_factor = 1.0 / (length * util::sqr(vel) * diameter * avgRho);
+            pcout << "Drag coefficient: " << drag * drag_coef_factor << std::endl;
+            pcout << "Lift coefficient: " << lift * drag_coef_factor << std::endl;
+            pcout << "Average rho: " << avgRho << std::endl;
+            pcout << std::endl;
         }
 
         // Execute a time iteration.
@@ -370,4 +447,5 @@ int main(int argc, char *argv[])
     }
 
     delete boundaryCondition;
+    delete dyn;
 }

@@ -16,6 +16,41 @@ if(ENABLE_MPI)
     target_link_libraries(${PROJECT_NAME} ${MPI_CXX_LIBRARIES})
 endif()
 
+if(BUILD_TESTING)
+    add_custom_target(${PROJECT_NAME}_test
+        ALL
+        DEPENDS ${PROJECT_NAME}
+        COMMAND "LSAN_OPTIONS=suppressions=${LSAN_SUPPRESSION_FILE}" ./${PROJECT_NAME} 1000 10 1 5 10 30 10 > test/output.dat || (cat test/output.dat\; exit 1)
+        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+        COMMENT "run generated test in ${CMAKE_CURRENT_SOURCE_DIR}"
+        SOURCES ./${EXECUTABLE_NAME}.cpp
+    )
+endif()
+if(BUILD_TESTING_MPI)
+    add_custom_target(${PROJECT_NAME}_test_mpi
+        ALL
+        DEPENDS ${PROJECT_NAME}
+         COMMAND "LSAN_OPTIONS=suppressions=${LSAN_SUPPRESSION_FILE}" mpirun --allow-run-as-root -np 4 ./${PROJECT_NAME} 1000 10 1 5 10 30 10 > test/output_mpi.dat || (cat test/output_mpi.dat\; exit 1)
+        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+        COMMENT "run generated test in ${CMAKE_CURRENT_SOURCE_DIR}"
+        SOURCES ./${EXECUTABLE_NAME}.cpp
+    )
+endif()
+
+
+if (BUILD_TESTING)
+    enable_testing()
+    add_test(NAME ${CMAKE_CURRENT_SOURCE_DIR}_test
+             WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/test
+             COMMAND ${CMAKE_COMMAND} -E compare_files ref.dat output.dat)
+    endif()
+if (BUILD_TESTING_MPI)
+    enable_testing()
+    add_test(NAME ${CMAKE_CURRENT_SOURCE_DIR}_test_mpi
+             WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/test
+             COMMAND diff ref.dat output_mpi.dat)
+endif()
+
 ###############################################################################
 
 # This returns when you compile Palabos and all the examples (root CMakeLists.txt)
@@ -28,6 +63,7 @@ cmake_minimum_required(VERSION 2.8.12)
 
 project(palabosExample)
 enable_language(CXX)
+set(CMAKE_EXPORT_COMPILE_COMMANDS true)
 
 set(EXECUTABLE_NAME "rectangularChannelWithCylinder3d")
 set (CMAKE_RUNTIME_OUTPUT_DIRECTORY "../")
@@ -43,18 +79,23 @@ message(${CMAKE_BUILD_TYPE})
 # Append flags: set(CMAKE_XXX_FLAGS "${CMAKE_XXX_FLAGS} ...")
 if(${CMAKE_CXX_COMPILER_ID} STREQUAL GNU)
     message("GCC.")
-    set(CMAKE_CXX_FLAGS "-std=c++11 -Wall -Wnon-virtual-dtor")
+    set(CMAKE_CXX_FLAGS "-std=c++11 -Wall -Wextra -Wnon-virtual-dtor")
     set(CMAKE_CXX_FLAGS_RELEASE "-O3 -DNDEBUG")
     set(CMAKE_CXX_FLAGS_DEBUG "-g -DPLB_DEBUG -O0")
+    set(CMAKE_CXX_FLAGS_TEST "-g -DPLB_DEBUG -DPLB_REGRESSION -O0 -fno-omit-frame-pointer -fsanitize=address")
+    set(CMAKE_CXX_LINKER_FLAGS_TEST "${CMAKE_CXX_LINKER_FLAGS_TEST} -fno-omit-frame-pointer -fsanitize=address")
 elseif(${CMAKE_CXX_COMPILER_ID} STREQUAL Clang)
     message("Clang.")
-    set(CMAKE_CXX_FLAGS "-std=c++11 -Wall -Wnon-virtual-dtor")
+    set(CMAKE_CXX_FLAGS "-std=c++11 -Wall  -Wextra -Wnon-virtual-dtor")
     set(CMAKE_CXX_FLAGS_RELEASE "-O3 -DNDEBUG")
     set(CMAKE_CXX_FLAGS_DEBUG "-g -DPLB_DEBUG -O0")
+    set(CMAKE_CXX_FLAGS_TEST "-g -DPLB_DEBUG -DPLB_REGRESSION -O0 -fno-omit-frame-pointer -fsanitize=address")
+    set(CMAKE_CXX_LINKER_FLAGS_TEST "${CMAKE_CXX_LINKER_FLAGS_TEST} -fno-omit-frame-pointer -fsanitize=address")
 elseif(${CMAKE_CXX_COMPILER_ID} STREQUAL MSVC)
     message("MSVC.")
     set(CMAKE_CXX_FLAGS_RELEASE "/Ox /Ot /GS- /GL /DNDEBUG")
     set(CMAKE_CXX_FLAGS_DEBUG "/DPLB_DEBUG")
+    set(CMAKE_CXX_FLAGS_TEST "/Ox /Ot /GS- /GL /DPLB_DEBUG /DPLB_REGRESSION")
     set(CMAKE_EXE_LINKER_FLAGS_RELEASE "/LTCG /INCREMENTAL:NO /OPT:REF")
 else()
     message( FATAL_ERROR "CXX compiler not recognized. CMake will quit." )
