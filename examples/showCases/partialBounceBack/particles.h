@@ -69,7 +69,7 @@ public:
             for (plint iY = domain.y0; iY <= domain.y1; ++iY) {
                 for (plint iZ = domain.z0; iZ <= domain.z1; ++iZ) {
                     particleField.findParticles(Box3D(iX, iX, iY, iY, iZ, iZ), particles);
-                    for (plint iPart = 0; iPart < particles.size(); ++iPart)
+                    for (plint iPart = 0; iPart < (plint)particles.size(); ++iPart)
                         numParticlefield.get(
                             iX + offsetNumPart.x, iY + offsetNumPart.y, iZ + offsetNumPart.z) +=
                             particles[iPart]->getTag();
@@ -204,7 +204,7 @@ public:
         // pcout << "Parts to inject : " <<
         // double(numParticles)*(double)numVoxelsHere/(double)numVoxelsBeforeClot << " " <<
         // numParticles << " " << numVoxelsHere << " " << numVoxelsBeforeClot << endl;
-        for (size_t i = 0; i < partsToInjectInThisSubdomain; ++i) {
+        for (size_t i = 0; i < (size_t)partsToInjectInThisSubdomain; ++i) {
             // find a random position within tube
 
             do {

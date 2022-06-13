@@ -145,11 +145,12 @@ std::unique_ptr<MultiParticleField3D<DenseParticleField3D<T, Descriptor> > > com
         whichScalar, dynamicMesh);
 }
 
+// QUESTION: should we remove whichScalar and dynamicMesh which are unused?
 template <typename T, template <typename U> class Descriptor>
 std::unique_ptr<MultiParticleField3D<DenseParticleField3D<T, Descriptor> > > computeSurfaceScalar(
     TriangleBoundary3D<T> &boundary, VoxelizedDomain3D<T> &voxelizedDomain,
     MultiScalarField3D<T> &scalarField, Box3D domain, const std::vector<int> &usableFlowTypes,
-    plint whichScalar, bool dynamicMesh)
+    [[maybe_unused]] plint whichScalar, [[maybe_unused]] bool dynamicMesh)
 {
     if (dynamicMesh) {
         // Select Dynamic, Open mesh.

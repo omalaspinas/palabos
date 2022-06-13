@@ -110,7 +110,7 @@ public:
         Box3D domain, std::vector<char> const &buffer, modif::ModifT kind, Dot3D absoluteOffset);
     virtual void receive(
         Box3D domain, std::vector<char> const &buffer, modif::ModifT kind,
-        std::map<int, std::string> const &foreignIds)
+        [[maybe_unused]] std::map<int, std::string> const &foreignIds)
     {
         receive(domain, buffer, kind);
     }
@@ -185,7 +185,7 @@ public:
         Box3D domain, std::vector<char> const &buffer, modif::ModifT kind, Dot3D absoluteOffset);
     virtual void receive(
         Box3D domain, std::vector<char> const &buffer, modif::ModifT kind,
-        std::map<int, std::string> const &foreignIds)
+        [[maybe_unused]] std::map<int, std::string> const &foreignIds)
     {
         receive(domain, buffer, kind);
     }

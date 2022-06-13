@@ -65,7 +65,7 @@ template <typename T>
 class PoiseuilleVelocity {
 public:
     PoiseuilleVelocity(plb::IncomprFlowParam<T> parameters_) : parameters(parameters_) { }
-    void operator()(int iX, int iY, plb::Array<T, 2> &u) const
+    void operator()([[maybe_unused]] int iX, int iY, plb::Array<T, 2> &u) const
     {
         u[0] = poiseuilleVelocity(iY, parameters);
         u[1] = T();
@@ -80,7 +80,7 @@ template <typename T, template <typename U> class Descriptor>
 class PoiseuilleDensity {
 public:
     PoiseuilleDensity(plb::IncomprFlowParam<T> parameters_) : parameters(parameters_) { }
-    T operator()(int iX, int iY) const
+    T operator()([[maybe_unused]] int iX, int iY) const
     {
         return poiseuilleDensity<T, Descriptor>(iY, parameters);
     }

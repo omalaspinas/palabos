@@ -370,11 +370,11 @@ void generateRHS(MultiScalarField2D<T> &originalRHS, std::vector<MultiScalarFiel
         rhs[iLevel] = new MultiScalarField2D<T>(*coarsen<T>(*rhs[iLevel + 1], 1, -1, 1, 1));
     }
 }
-// TODO: This "domain" is misleading. Unused.
+// QUESTION: This "domain" is misleading. Unused. Remove?
 template <typename T>
 T multiGridVCycle(
     MultiScalarField2D<T> &initialValue, MultiScalarField2D<T> &newValue,
-    MultiScalarField2D<T> &rhs, Box2D const &domain, plint depth)
+    MultiScalarField2D<T> &rhs, [[maybe_unused]] Box2D const &domain, plint depth)
 {
     PLB_PRECONDITION(depth >= 1);
 
@@ -454,11 +454,11 @@ T multiGridVCycle(
 
     return newError;
 }
-// TODO: Unused initialValue. We should remove it.
+// QUESTION: Unused initialValue. Should we remove it.
 template <typename T>
 std::vector<MultiScalarField2D<T> *> fullMultiGrid(
-    MultiScalarField2D<T> &initialValue, MultiScalarField2D<T> &originalRhs, Box2D const &domain,
-    plint gridLevels, plint ncycles)
+    [[maybe_unused]] MultiScalarField2D<T> &initialValue, MultiScalarField2D<T> &originalRhs,
+    Box2D const &domain, plint gridLevels, plint ncycles)
 {
     PLB_PRECONDITION(gridLevels >= 2 && ncycles >= 1);
 
@@ -505,11 +505,12 @@ std::vector<MultiScalarField2D<T> *> fullMultiGrid(
 
     return solutions;
 }
-// TODO: Unused initalValue. Misleading. We should remove it. Same for domain.
+
+// QUESTION: Unused initalValue and domain. Should we remove them?
 template <typename T>
 std::vector<MultiScalarField2D<T> *> simpleMultiGrid(
-    MultiScalarField2D<T> &initialValue, MultiScalarField2D<T> &originalRhs, Box2D const &domain,
-    plint gridLevels)
+    [[maybe_unused]] MultiScalarField2D<T> &initialValue, MultiScalarField2D<T> &originalRhs,
+    [[maybe_unused]] Box2D const &domain, plint gridLevels)
 {
     PLB_PRECONDITION(gridLevels >= 2);
 

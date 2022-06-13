@@ -226,11 +226,13 @@ void AdvectionDiffusionBoundaryConditionInstantiator3D<T, Descriptor, BoundaryMa
     }
 }
 
+// TODO: We should add bcType for the edges.
 template <typename T, template <typename U> class Descriptor, class BoundaryManager>
 template <int plane, int normal1, int normal2>
 void AdvectionDiffusionBoundaryConditionInstantiator3D<T, Descriptor, BoundaryManager>::
     addTemperatureEdge(
-        Box3D domain, BlockLattice3D<T, Descriptor> &lattice, boundary::BcType bcType)
+        Box3D domain, BlockLattice3D<T, Descriptor> &lattice,
+        [[maybe_unused]] boundary::BcType bcType)
 {
     PLB_PRECONDITION(
         (domain.x0 == domain.x1 && domain.y0 == domain.y1)
@@ -249,11 +251,13 @@ void AdvectionDiffusionBoundaryConditionInstantiator3D<T, Descriptor, BoundaryMa
     }
 }
 
+// TODO: We should add bcType for the corners.
 template <typename T, template <typename U> class Descriptor, class BoundaryManager>
 template <int xNormal, int yNormal, int zNormal>
 void AdvectionDiffusionBoundaryConditionInstantiator3D<T, Descriptor, BoundaryManager>::
     addTemperatureCorner(
-        plint x, plint y, plint z, BlockLattice3D<T, Descriptor> &lattice, boundary::BcType bcType)
+        plint x, plint y, plint z, BlockLattice3D<T, Descriptor> &lattice,
+        [[maybe_unused]] boundary::BcType bcType)
 {
     setCompositeDynamics(
         lattice, Box3D(x, x, y, y, z, z),
@@ -504,11 +508,13 @@ void AdvectionDiffusionBoundaryConditionInstantiator3D<T, Descriptor, BoundaryMa
     }
 }
 
+// TODO: We should add bcType for the edges.
 template <typename T, template <typename U> class Descriptor, class BoundaryManager>
 template <int plane, int normal1, int normal2>
 void AdvectionDiffusionBoundaryConditionInstantiator3D<T, Descriptor, BoundaryManager>::
     addTemperatureEdge(
-        Box3D domain, MultiBlockLattice3D<T, Descriptor> &lattice, boundary::BcType bcType)
+        Box3D domain, MultiBlockLattice3D<T, Descriptor> &lattice,
+        [[maybe_unused]] boundary::BcType bcType)
 {
     PLB_PRECONDITION(
         (domain.x0 == domain.x1 && domain.y0 == domain.y1)
@@ -527,12 +533,13 @@ void AdvectionDiffusionBoundaryConditionInstantiator3D<T, Descriptor, BoundaryMa
     }
 }
 
+// TODO: We should add bcType for the corners.
 template <typename T, template <typename U> class Descriptor, class BoundaryManager>
 template <int xNormal, int yNormal, int zNormal>
 void AdvectionDiffusionBoundaryConditionInstantiator3D<T, Descriptor, BoundaryManager>::
     addTemperatureCorner(
         plint x, plint y, plint z, MultiBlockLattice3D<T, Descriptor> &lattice,
-        boundary::BcType bcType)
+        [[maybe_unused]] boundary::BcType bcType)
 {
     setCompositeDynamics(
         lattice, Box3D(x, x, y, y, z, z),

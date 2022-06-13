@@ -53,6 +53,7 @@
 namespace plb {
 namespace npfem {
 
+// QUESTION: dt, rho, writeVertexNormals and vertexNormalsName are not used. Should we remove them?
 template <typename T>
 void multiProcWriteVTK(
     // mesh in lattice units since it comes from palabos
@@ -60,9 +61,10 @@ void multiProcWriteVTK(
     // Visualization purposes
     pluint nx, pluint ny, pluint nz,
     // Conversion from Lattice to Physical units for visualization
-    T dx, T dt, T rho,
+    T dx, [[maybe_unused]] T dt, [[maybe_unused]] T rho,
     // Legacy reasons
-    bool writeVertexNormals = false, std::string vertexNormalsName = "")
+    [[maybe_unused]] bool writeVertexNormals = false,
+    [[maybe_unused]] std::string vertexNormalsName = "")
 {
     if (mesh.getNumTriangles() == 0)
         return;

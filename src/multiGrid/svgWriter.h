@@ -64,8 +64,7 @@ public:
     }
 
     void writeDomainsWithDynamicsInfo(
-        std::string fileName, int dynamicsNumber,
-        std::vector<MultiScalarField2D<int> > dynamicsInfo,
+        std::string fileName, std::vector<MultiScalarField2D<int> > dynamicsInfo,
         std::vector<std::map<int, std::string> > &idToName, std::map<std::string, int> &nameToColor)
     {
         out.open(fileName.c_str());
@@ -103,7 +102,7 @@ public:
     }
 
     void writeDomainsWithDynamicsInfo(
-        std::string fileName, int dynamicsNumber, std::vector<std::vector<Box2D> > blocks,
+        std::string fileName, std::vector<std::vector<Box2D> > blocks,
         std::vector<MultiScalarField2D<int> > dynamicsInfo,
         std::vector<std::map<int, std::string> > &idToName, std::map<std::string, int> &nameToColor)
     {

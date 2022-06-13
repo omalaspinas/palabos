@@ -58,7 +58,7 @@ struct advectionDiffusionDynamicsTemplatesImpl<T, descriptors::D2Q5DescriptorBas
     /// Regularization
     static void regularize(
         Array<T, Descriptor::q> &f, T rhoBar, Array<T, Descriptor::d> const &jAdvDiff,
-        Array<T, Descriptor::d> const &jEq)
+        [[maybe_unused]] Array<T, Descriptor::d> const &jEq)
     {
         f[0] = Descriptor::t[0] * rhoBar;
 
@@ -229,7 +229,7 @@ struct advectionDiffusionDynamicsTemplatesImpl<T, descriptors::D2Q9DescriptorBas
     static void bgk_ma2_off_equilibra(
         T phi, Array<T, D::d> const &u, Array<T, D::d> const &jNeq,
         const Array<T, SymmetricTensorImpl<T, D::d>::n> &piNeq, T omega, T omegaNonPhys,
-        T omegaFluid, T omegaFluidNonPhys, Array<T, D::q> &fNeq)
+        T omegaFluid, [[maybe_unused]] T omegaFluidNonPhys, Array<T, D::q> &fNeq)
     {
         T ux2 = u[0] * u[0];
         T uy2 = u[1] * u[1];

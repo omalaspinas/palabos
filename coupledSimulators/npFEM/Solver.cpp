@@ -616,10 +616,11 @@ SHAPEOP_INLINE bool Solver::solve(
 
     // counters
     unsigned int it = 0;
+#ifdef NPFEM_SA
     unsigned int avg_line_search_loops = 0;
+#endif
 
     // convergence related
-    bool stagnation = false;
     unsigned int attempts_to_solve_stagnation = 0;
     Scalar convergence_criterion;
     std::vector<Scalar> objective_history;
@@ -738,7 +739,9 @@ SHAPEOP_INLINE bool Solver::solve(
 #endif
 
             line_search_loops += 1;
+#ifdef NPFEM_SA
             avg_line_search_loops += 1;
+#endif
 
 #ifdef WOLFE
             if (Armijo_condition && curvature_condition) {
@@ -759,7 +762,6 @@ SHAPEOP_INLINE bool Solver::solve(
         ++it;
 
         if (attempts_to_solve_stagnation == max_attempts_to_solve_stagnation) {
-            stagnation = true;
             break;
         }
 

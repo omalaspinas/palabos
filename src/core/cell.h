@@ -69,13 +69,13 @@ private:
 template <typename T>
 class ExternalFieldArray<T, descriptors::NoExternalField> {
 public:
-    T *get(pluint index)
+    T *get([[maybe_unused]] pluint index)
     {
         PLB_PRECONDITION(false);
         static T data = T();
         return &data;
     }
-    T const *get(pluint index) const
+    T const *get([[maybe_unused]] pluint index) const
     {
         PLB_PRECONDITION(false);
         static T data = T();

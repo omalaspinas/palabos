@@ -398,10 +398,11 @@ inline bool contained<plint>(Array<plint, 3> const &x, Box3D const &box)
 {
     // IMPORTANT: the behavior of this function (for int) has changed in Palabos!
     // use contained(plint, plint, plint, Box3D) instead.
-    // TODO: In the future, this function will do the following instead of an assert:
-    // return contained(x[0], x[1], x[2], box);
-    PLB_ASSERT(false);
-    return false;
+    plbWarning(
+        true,
+        "The behavior of this function (for int) has changed in Palabos! It is the same as "
+        "contained(plint, plint, plint, Box3D).");
+    return contained(x[0], x[1], x[2], box);
 }
 
 /// Decide if a Lagrangian point is contained in 3D box, boundaries exclusive at the epsilon level

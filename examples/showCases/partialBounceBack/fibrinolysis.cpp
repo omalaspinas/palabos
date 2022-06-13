@@ -281,6 +281,7 @@ int main(int argc, char *argv[])
     T convRhoToPressureAdim = simParam.rho_LB * DESCRIPTOR<T>::cs2;
     T offsetRhoToPressure = -convRhoToPressure * simParam.rho_LB;
 
+    // QUESTION: FnInitial is set but not used. Should we remove it?
     plint FnInitial = 0;
     MultiScalarField3D<plint> clotFlagsInitial(simParam.nx, simParam.ny, simParam.nz);
     MultiScalarField3D<double> L_x_t(

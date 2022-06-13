@@ -90,8 +90,9 @@ public:
     DynamicsRegistration() { }
 
 private:
-    DynamicsRegistration(DynamicsRegistration<T, Descriptor> const &rhs) { }
-    DynamicsRegistration<T, Descriptor> &operator=(DynamicsRegistration<T, Descriptor> const &rhs)
+    DynamicsRegistration([[maybe_unused]] DynamicsRegistration<T, Descriptor> const &rhs) { }
+    DynamicsRegistration<T, Descriptor> &operator=(
+        [[maybe_unused]] DynamicsRegistration<T, Descriptor> const &rhs)
     {
         return *this;
     }
@@ -117,7 +118,8 @@ std::string constructIdNameChain(std::vector<int> const &ids, std::string separa
 
 template <typename T, template <typename U> class Descriptor, class NoParamDynamics>
 class NoParamDynamicsGenerator : public DynamicsGenerator<T, Descriptor> {
-    virtual Dynamics<T, Descriptor> *generate(HierarchicUnserializer &unserializer) const
+    virtual Dynamics<T, Descriptor> *generate(
+        [[maybe_unused]] HierarchicUnserializer &unserializer) const
     {
         return new NoParamDynamics();
     }

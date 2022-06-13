@@ -452,9 +452,10 @@ struct mrtTemplatesImpl<T, descriptors::MRTD3Q19DescriptorBase<T> > {
         return jSqr;
     }
 
+    // QUESTION: amplitude not used. Should we adapt the code?
     static void addHeForce(
         Array<T, Descriptor::q> &f, const Array<T, Descriptor::d> &force, const T &rhoBar,
-        Array<T, Descriptor::d> const &uLB, const T &omega, T amplitude)
+        Array<T, Descriptor::d> const &uLB, const T &omega, [[maybe_unused]] T amplitude)
     {
         ///////////// new
         // NOW WE CALCULATE THE moments of the forcing (HE forcing)
@@ -735,7 +736,8 @@ struct mrtTemplatesImpl<T, descriptors::MRTD3Q19DescriptorBase<T> > {
 
     /// Smagorinsky MRT collision step
     static T incSmagorinskyMrtCollisionWithForce(
-        Array<T, Descriptor::q> &f, const T &rhoBar, const Array<T, Descriptor::d> &u,
+        Array<T, Descriptor::q> &f, [[maybe_unused]] const T &rhoBar,
+        const Array<T, Descriptor::d> &u,
         const Array<T, SymmetricTensorImpl<T, Descriptor::d>::n> &strain, T omega, T cSmago,
         const Array<T, Descriptor::d> &force, T amplitude)
     {

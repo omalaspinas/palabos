@@ -93,7 +93,7 @@ public:
     virtual ParallelNTensorAccess2D<T> *clone() const;
 
 private:
-    ParallelNTensorAccess2D<T> &operator=(ParallelNTensorAccess2D<T> const &rhs)
+    ParallelNTensorAccess2D<T> &operator=([[maybe_unused]] ParallelNTensorAccess2D<T> const &rhs)
     {
         return *this;
     }

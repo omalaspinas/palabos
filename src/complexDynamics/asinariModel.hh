@@ -119,8 +119,8 @@ void AsinariDynamics<T, Descriptor>::collide(Cell<T, Descriptor> &cell, BlockSta
 
 template <typename T, template <typename U> class Descriptor>
 void AsinariDynamics<T, Descriptor>::collideExternal(
-    Cell<T, Descriptor> &cell, T rhoBar, Array<T, Descriptor<T>::d> const &j, T thetaBar,
-    BlockStatistics &statistics)
+    Cell<T, Descriptor> &cell, T rhoBar, Array<T, Descriptor<T>::d> const &j,
+    [[maybe_unused]] T thetaBar, BlockStatistics &statistics)
 {
     typedef Descriptor<T> D;
     static const int rhoBarOfs = D::ExternalField::rhoBarBeginsAt;
@@ -141,7 +141,8 @@ void AsinariDynamics<T, Descriptor>::collideExternal(
 
 template <typename T, template <typename U> class Descriptor>
 T AsinariDynamics<T, Descriptor>::computeEquilibrium(
-    plint iPop, T rhoBar, Array<T, Descriptor<T>::d> const &j, T jSqr, T thetaBar) const
+    plint iPop, T rhoBar, Array<T, Descriptor<T>::d> const &j, T jSqr,
+    [[maybe_unused]] T thetaBar) const
 {
     T invRho = Descriptor<T>::invRho(rhoBar);
     return dynamicsTemplates<T, Descriptor>::bgk_ma2_equilibrium(iPop, rhoBar, invRho, j, jSqr);
@@ -252,8 +253,8 @@ void IncAsinariDynamics<T, Descriptor>::collide(
 
 template <typename T, template <typename U> class Descriptor>
 void IncAsinariDynamics<T, Descriptor>::collideExternal(
-    Cell<T, Descriptor> &cell, T rhoBar, Array<T, Descriptor<T>::d> const &j, T thetaBar,
-    BlockStatistics &statistics)
+    Cell<T, Descriptor> &cell, T rhoBar, Array<T, Descriptor<T>::d> const &j,
+    [[maybe_unused]] T thetaBar, BlockStatistics &statistics)
 {
     typedef Descriptor<T> D;
     static const int rhoBarOfs = D::ExternalField::rhoBarBeginsAt;
@@ -276,7 +277,8 @@ void IncAsinariDynamics<T, Descriptor>::collideExternal(
 
 template <typename T, template <typename U> class Descriptor>
 T IncAsinariDynamics<T, Descriptor>::computeEquilibrium(
-    plint iPop, T rhoBar, Array<T, Descriptor<T>::d> const &j, T jSqr, T thetaBar) const
+    plint iPop, T rhoBar, Array<T, Descriptor<T>::d> const &j, T jSqr,
+    [[maybe_unused]] T thetaBar) const
 {
     // For the incompressible BGK dynamics, the "1/rho" pre-factor of
     // the O(Ma^2) term is unity.

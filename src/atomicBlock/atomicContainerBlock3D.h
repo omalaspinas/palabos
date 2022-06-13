@@ -48,8 +48,8 @@ namespace plb {
 class AtomicContainerDataTransfer3D : public BlockDataTransfer3D {
 public:
     AtomicContainerDataTransfer3D() { }
-    virtual void setBlock(AtomicBlock3D &block_) { }
-    virtual void setConstBlock(AtomicBlock3D const &block_) { }
+    virtual void setBlock([[maybe_unused]] AtomicBlock3D &block_) { }
+    virtual void setConstBlock([[maybe_unused]] AtomicBlock3D const &block_) { }
     virtual AtomicContainerDataTransfer3D *clone() const
     {
         return new AtomicContainerDataTransfer3D(*this);
@@ -58,24 +58,33 @@ public:
     {
         return 0;
     }
-    virtual void send(Box3D domain, std::vector<char> &buffer, modif::ModifT kind) const { }
-    virtual void receive(Box3D domain, std::vector<char> const &buffer, modif::ModifT kind) { }
-    virtual void receive(
-        Box3D domain, std::vector<char> const &buffer, modif::ModifT kind,
-        std::map<int, std::string> const &foreignIds)
+    virtual void send(
+        [[maybe_unused]] Box3D domain, [[maybe_unused]] std::vector<char> &buffer,
+        [[maybe_unused]] modif::ModifT kind) const
     { }
     virtual void receive(
-        Box3D domain, std::vector<char> const &buffer, modif::ModifT kind, Dot3D absoluteOffset)
+        [[maybe_unused]] Box3D domain, [[maybe_unused]] std::vector<char> const &buffer,
+        [[maybe_unused]] modif::ModifT kind)
+    { }
+    virtual void receive(
+        [[maybe_unused]] Box3D domain, [[maybe_unused]] std::vector<char> const &buffer,
+        [[maybe_unused]] modif::ModifT kind,
+        [[maybe_unused]] std::map<int, std::string> const &foreignIds)
+    { }
+    virtual void receive(
+        Box3D domain, std::vector<char> const &buffer, modif::ModifT kind,
+        [[maybe_unused]] Dot3D absoluteOffset)
     {
         receive(domain, buffer, kind);
     }
     virtual void attribute(
-        Box3D toDomain, plint deltaX, plint deltaY, plint deltaZ, AtomicBlock3D const &from,
-        modif::ModifT kind)
+        [[maybe_unused]] Box3D toDomain, [[maybe_unused]] plint deltaX,
+        [[maybe_unused]] plint deltaY, [[maybe_unused]] plint deltaZ,
+        [[maybe_unused]] AtomicBlock3D const &from, [[maybe_unused]] modif::ModifT kind)
     { }
     virtual void attribute(
         Box3D toDomain, plint deltaX, plint deltaY, plint deltaZ, AtomicBlock3D const &from,
-        modif::ModifT kind, Dot3D absoluteOffset)
+        modif::ModifT kind, [[maybe_unused]] Dot3D absoluteOffset)
     {
         attribute(toDomain, deltaX, deltaY, deltaZ, from, kind);
     }

@@ -53,7 +53,7 @@ namespace plb {
  */
 class DevNullBuffer : public std::streambuf {
 protected:
-    virtual int_type overflow(int_type c)
+    virtual int_type overflow([[maybe_unused]] int_type c)
     {
         return EOF;
     }

@@ -178,8 +178,8 @@ int MultiContainerBlock3D::getStaticId() const
 }
 
 void MultiContainerBlock3D::copyReceive(
-    MultiBlock3D const &fromBlock, Box3D const &fromDomain, Box3D const &toDomain,
-    modif::ModifT whichData)
+    [[maybe_unused]] MultiBlock3D const &fromBlock, [[maybe_unused]] Box3D const &fromDomain,
+    [[maybe_unused]] Box3D const &toDomain, [[maybe_unused]] modif::ModifT whichData)
 {
     PLB_ASSERT(false);
 }

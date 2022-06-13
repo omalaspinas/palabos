@@ -383,7 +383,7 @@ void writeVTKscalarField(MultiScalarField3D<T> &scalarField, std::string name, p
     vtkOut.writeData<float>(scalarField, name, (T)1);
 }
 
-void readCommandLine(int argc, char *argv[])
+void readCommandLine([[maybe_unused]] int argc, char *argv[])
 {
     try {
         global::argv(1).read(sigma);

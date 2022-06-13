@@ -65,7 +65,7 @@ public:
     CylinderShapeDomain3D(plb::plint cx_, plb::plint cz_, plb::plint radius) :
         cx(cx_), cz(cz_), radiusSqr(plb::util::sqr(radius))
     { }
-    virtual bool operator()(plb::plint iX, plb::plint iY, plb::plint iZ) const
+    virtual bool operator()(plb::plint iX, [[maybe_unused]] plb::plint iY, plb::plint iZ) const
     {
         return plb::util::sqr(iX - cx) + plb::util::sqr(iZ - cz) <= radiusSqr;
     }
@@ -147,7 +147,7 @@ public:
     SquarePoiseuilleDensityAndVelocity(IncomprFlowParam<T> const &parameters_, plint maxN_) :
         parameters(parameters_), maxN(maxN_)
     { }
-    void operator()(plint iX, plint iY, plint iZ, T &rho, Array<T, 3> &u) const
+    void operator()(plint iX, plint iY, [[maybe_unused]] plint iZ, T &rho, Array<T, 3> &u) const
     {
         rho = (T)1;
         u[0] = T();
@@ -166,7 +166,7 @@ public:
     SquarePoiseuilleVelocity(IncomprFlowParam<T> const &parameters_, plint maxN_) :
         parameters(parameters_), maxN(maxN_)
     { }
-    void operator()(plint iX, plint iY, plint iZ, Array<T, 3> &u) const
+    void operator()(plint iX, plint iY, [[maybe_unused]] plint iZ, Array<T, 3> &u) const
     {
         u[0] = T();
         u[1] = T();

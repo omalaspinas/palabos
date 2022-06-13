@@ -110,8 +110,8 @@ ParallelBlockCommunicator2D::ParallelBlockCommunicator2D() :
     overlapsModified(true), communication(0)
 { }
 
-// TODO: Why is copy constructor doing nothing?
-ParallelBlockCommunicator2D::ParallelBlockCommunicator2D(ParallelBlockCommunicator2D const &rhs) :
+ParallelBlockCommunicator2D::ParallelBlockCommunicator2D(
+    [[maybe_unused]] ParallelBlockCommunicator2D const &rhs) :
     overlapsModified(true), communication(0)
 { }
 

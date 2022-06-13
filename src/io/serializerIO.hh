@@ -56,7 +56,7 @@ AsciiWriter<T> *AsciiWriter<T>::clone() const
 }
 
 template <typename T>
-void AsciiWriter<T>::writeHeader(pluint dataSize)
+void AsciiWriter<T>::writeHeader([[maybe_unused]] pluint dataSize)
 { }
 
 template <typename T>
@@ -88,7 +88,7 @@ AsciiReader<T> *AsciiReader<T>::clone() const
 }
 
 template <typename T>
-void AsciiReader<T>::readHeader(pluint dataSize) const
+void AsciiReader<T>::readHeader([[maybe_unused]] pluint dataSize) const
 { }
 
 template <typename T>

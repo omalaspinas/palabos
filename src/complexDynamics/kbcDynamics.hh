@@ -81,28 +81,11 @@ int KBCDynamics<T, Descriptor>::getId() const
 
 template <typename T, template <typename U> class Descriptor>
 T KBCDynamics<T, Descriptor>::computeEquilibrium(
-    plint iPop, T rhoBar, Array<T, Descriptor<T>::d> const &j, T jSqr, T thetaBar) const
+    plint iPop, T rhoBar, Array<T, Descriptor<T>::d> const &j, T jSqr,
+    [[maybe_unused]] T thetaBar) const
 {
     typedef Descriptor<T> L;
-    //    typedef kbcTemplates<T,Descriptor> kbc;
-    //    Array<T, L::q > sEq, hEq, kEq, moments;
-
-    //    moments[0] = L::fullRho(rhoBar);
     T invRho = L::invRho(rhoBar);
-    //    moments[1] = j[0]*invRho;
-    //    moments[2] = j[1]*invRho;
-    //    moments[3] = 2*L::cs2;
-    //    moments[4] = (T)0.;
-    //    moments[5] = (T)0.;
-    //    moments[6] = (T)0.;
-    //    moments[7] = (T)0.;
-    //    moments[8] = L::cs2*L::cs2;
-
-    //    kbc::computeKEq(kEq, moments);
-    //    kbc::computeSEq(sEq, moments);
-    //    kbc::computeHEq(hEq, moments);
-
-    //    return kEq[iPop] + sEq[iPop] + hEq[iPop] - L::SkordosFactor()*L::t[iPop];
     return dynamicsTemplatesImpl<T, Descriptor<T> >::bgk_ma2_equilibrium(
         iPop, rhoBar, invRho, j, jSqr);
 }

@@ -117,9 +117,10 @@ void ConvectiveRefinementParameters<T>::createParameters()
     }
 }
 
+// QUESTION: this params is unused is this normal?
 template <typename T>
 DiffusiveRefinementParameters<T>::DiffusiveRefinementParameters(
-    plint levels, plint reference, IncomprFlowParam<T> params) :
+    plint levels, plint reference, [[maybe_unused]] IncomprFlowParam<T> params) :
     RefinementParameters<T>(levels, reference)
 {
     createParameters();

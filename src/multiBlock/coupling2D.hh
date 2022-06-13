@@ -69,9 +69,10 @@ void FullDomainCollideAndStreamAction2D<T, Descriptor>::execute(std::vector<id_t
     lattice->externalCollideAndStream();
 }
 
+// QUESTION: Does northing. Normal?
 template <typename T, template <typename U> class Descriptor>
 void FullDomainCollideAndStreamAction2D<T, Descriptor>::regenerate(
-    std::vector<id_t> &allMultiBlocks)
+    [[maybe_unused]] std::vector<id_t> &allMultiBlocks)
 { }
 
 /* ********************  CollideAndStreamAction2D ************************** */
@@ -98,8 +99,11 @@ void CollideAndStreamAction2D<T, Descriptor>::execute(std::vector<id_t> &allMult
     PLB_ASSERT(lattice);
     lattice->collideAndStream(domain);
 }
+
+// QUESTION: Does nothing. Normal?
 template <typename T, template <typename U> class Descriptor>
-void CollideAndStreamAction2D<T, Descriptor>::regenerate(std::vector<id_t> &allMultiBlocks)
+void CollideAndStreamAction2D<T, Descriptor>::regenerate(
+    [[maybe_unused]] std::vector<id_t> &allMultiBlocks)
 { }
 
 /* ********************  FullDomainStreamAction2D ************************** */
@@ -127,8 +131,10 @@ void FullDomainStreamAction2D<T, Descriptor>::execute(std::vector<id_t> &allMult
     lattice->externalStream();
 }
 
+// QUESTION: Does nothing. Normal?
 template <typename T, template <typename U> class Descriptor>
-void FullDomainStreamAction2D<T, Descriptor>::regenerate(std::vector<id_t> &allMultiBlocks)
+void FullDomainStreamAction2D<T, Descriptor>::regenerate(
+    [[maybe_unused]] std::vector<id_t> &allMultiBlocks)
 { }
 
 /* ********************  StreamAction2D ************************** */
@@ -155,8 +161,10 @@ void StreamAction2D<T, Descriptor>::execute(std::vector<id_t> &allMultiBlocks)
     PLB_ASSERT(lattice);
     lattice->stream(domain);
 }
+
+// QUESTION: DOes nothing. Normal?
 template <typename T, template <typename U> class Descriptor>
-void StreamAction2D<T, Descriptor>::regenerate(std::vector<id_t> &allMultiBlocks)
+void StreamAction2D<T, Descriptor>::regenerate([[maybe_unused]] std::vector<id_t> &allMultiBlocks)
 { }
 
 /* ********************  IncrementTimeAction2D ************************** */
@@ -182,8 +190,11 @@ void IncrementTimeAction2D<T, Descriptor>::execute(std::vector<id_t> &allMultiBl
     PLB_ASSERT(lattice);
     lattice->incrementTime();
 }
+
+// QUESTION: Empty. Is this normal?
 template <typename T, template <typename U> class Descriptor>
-void IncrementTimeAction2D<T, Descriptor>::regenerate(std::vector<id_t> &allMultiBlocks)
+void IncrementTimeAction2D<T, Descriptor>::regenerate(
+    [[maybe_unused]] std::vector<id_t> &allMultiBlocks)
 { }
 
 /* ********************  Actions2D ************************** */

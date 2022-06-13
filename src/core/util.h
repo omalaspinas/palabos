@@ -605,8 +605,8 @@ public:
     }
 
 private:
-    UniqueId(UniqueId const &rhs) { }
-    UniqueId &operator=(UniqueId const &rhs)
+    UniqueId([[maybe_unused]] UniqueId const &rhs) { }
+    UniqueId &operator=([[maybe_unused]] UniqueId const &rhs)
     {
         return *this;
     }

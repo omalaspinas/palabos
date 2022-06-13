@@ -83,7 +83,7 @@ public:
         t(t_)
     { }
 
-    void operator()(plint iX, plint iY, Array<T, 2> &u) const
+    void operator()([[maybe_unused]] plint iX, plint iY, Array<T, 2> &u) const
     {
         u[0] = womersleyVelocity(iY, t, A, omega, alpha, parameters);
         u[1] = T();

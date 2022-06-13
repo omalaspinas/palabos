@@ -88,7 +88,8 @@ struct BlockDataTransfer3D {
     /// abolute coordinate data.
     /** By default, offset information is ignored. **/
     virtual void receive(
-        Box3D domain, std::vector<char> const &buffer, modif::ModifT kind, Dot3D absoluteOffset)
+        Box3D domain, std::vector<char> const &buffer, modif::ModifT kind,
+        [[maybe_unused]] Dot3D absoluteOffset)
     {
         receive(domain, buffer, kind);
     }
@@ -104,7 +105,7 @@ struct BlockDataTransfer3D {
     /// coordinate data.
     virtual void attribute(
         Box3D toDomain, plint deltaX, plint deltaY, plint deltaZ, AtomicBlock3D const &from,
-        modif::ModifT kind, Dot3D absoluteOffset)
+        modif::ModifT kind, [[maybe_unused]] Dot3D absoluteOffset)
     {
         attribute(toDomain, deltaX, deltaY, deltaZ, from, kind);
     }

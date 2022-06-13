@@ -806,7 +806,7 @@ AdvanceParticlesEveryWhereFunctional2D<T, Descriptor>::AdvanceParticlesEveryWher
 
 template <typename T, template <typename U> class Descriptor>
 void AdvanceParticlesEveryWhereFunctional2D<T, Descriptor>::processGenericBlocks(
-    Box2D domain, std::vector<AtomicBlock2D *> blocks)
+    [[maybe_unused]] Box2D domain, std::vector<AtomicBlock2D *> blocks)
 {
     PLB_PRECONDITION(blocks.size() == 1);
     ParticleField2D<T, Descriptor> &particleField =

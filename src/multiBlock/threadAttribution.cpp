@@ -42,7 +42,7 @@
 
 namespace plb {
 
-bool SerialThreadAttribution::isLocal(plint blockId) const
+bool SerialThreadAttribution::isLocal([[maybe_unused]] plint blockId) const
 {
     return true;
 }
@@ -52,26 +52,28 @@ bool SerialThreadAttribution::allBlocksAreLocal() const
     return true;
 }
 
-int SerialThreadAttribution::getMpiProcess(plint blockId) const
+int SerialThreadAttribution::getMpiProcess([[maybe_unused]] plint blockId) const
 {
     return global::mpi().bossId();
 }
 
-int SerialThreadAttribution::getLocalThreadId(plint blockId) const
+int SerialThreadAttribution::getLocalThreadId([[maybe_unused]] plint blockId) const
 {
     return 0;
 }
 
 ThreadAttribution *SerialThreadAttribution::merge(
-    ThreadAttribution const &rhs, std::map<plint, std::vector<plint> > const &remappedIds) const
+    [[maybe_unused]] ThreadAttribution const &rhs,
+    [[maybe_unused]] std::map<plint, std::vector<plint> > const &remappedIds) const
 {
     // Serial remains serial. Nothing to be done here.
     return new SerialThreadAttribution();
 }
 
 ThreadAttribution *SerialThreadAttribution::extend(
-    std::vector<plint> const &ids, std::vector<plint> const &mpiProcesses,
-    std::vector<plint> const &localThreads) const
+    [[maybe_unused]] std::vector<plint> const &ids,
+    [[maybe_unused]] std::vector<plint> const &mpiProcesses,
+    [[maybe_unused]] std::vector<plint> const &localThreads) const
 {
     // Serial remains serial. Nothing to be done here.
     return new SerialThreadAttribution();
@@ -96,7 +98,7 @@ int OneToOneThreadAttribution::getMpiProcess(plint blockId) const
 {
     return blockId;
 }
-int OneToOneThreadAttribution::getLocalThreadId(plint blockId) const
+int OneToOneThreadAttribution::getLocalThreadId([[maybe_unused]] plint blockId) const
 {
     return 0;
 }

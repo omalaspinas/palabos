@@ -113,11 +113,11 @@ private:
     }
 
 private:
-    BubbleHistory3D(BubbleHistory3D<T> const &rhs)
+    BubbleHistory3D([[maybe_unused]] BubbleHistory3D<T> const &rhs)
     {
         PLB_ASSERT(false);
     }
-    BubbleHistory3D<T> &operator=(BubbleHistory3D<T> const &rhs)
+    BubbleHistory3D<T> &operator=([[maybe_unused]] BubbleHistory3D<T> const &rhs)
     {
         PLB_ASSERT(false);
         return *this;

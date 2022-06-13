@@ -101,12 +101,11 @@ private:
     void bubbleBucketFill(MultiScalarField3D<int> &flag);
 
 private:
-    // TODO: Why is the copy constructor and = doing nothing?
-    BubbleMatch3D(BubbleMatch3D const &rhs) : mpiData(rhs.mpiData)
+    BubbleMatch3D([[maybe_unused]] BubbleMatch3D const &rhs) : mpiData(rhs.mpiData)
     {
         PLB_ASSERT(false);
     }
-    BubbleMatch3D &operator=(BubbleMatch3D const &rhs)
+    BubbleMatch3D &operator=([[maybe_unused]] BubbleMatch3D const &rhs)
     {
         PLB_ASSERT(false);
         return *this;

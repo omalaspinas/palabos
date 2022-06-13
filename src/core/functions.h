@@ -256,7 +256,7 @@ inline T linearLagrangeBasis(T x, T x0, plint i)
 
 // Evaluate the derivative of linear Lagrange basis polynomials at a specific point.
 template <typename T>
-inline T linearLagrangeBasisDerivative(T x, T x0, plint i)
+inline T linearLagrangeBasisDerivative([[maybe_unused]] T x, [[maybe_unused]] T x0, plint i)
 {
     PLB_ASSERT(i >= 0 && i < 2);
     return (i == 0 ? (T)-1 : (T)1);

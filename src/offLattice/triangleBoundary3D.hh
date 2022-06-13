@@ -610,7 +610,7 @@ VertexProperty3D<T> const *TriangleBoundary3D<T>::getVertexProperty(plint iVerte
 
 template <typename T>
 bool TriangleBoundary3D<T>::intersectSegment(
-    plint iTriangle, AtomicBlock3D *boundaryArg, Array<T, 3> const &fromPoint,
+    plint iTriangle, [[maybe_unused]] AtomicBlock3D *boundaryArg, Array<T, 3> const &fromPoint,
     Array<T, 3> const &direction, Array<T, 3> &locatedPoint, T &distance,
     Array<T, 3> &wallNormal) const
 {

@@ -75,10 +75,10 @@ inline void transferDataProcessors(MultiBlock2D const &from, MultiBlock2D &to)
 
 /* *************** 1. MultiScalarField ************************************** */
 
-// TODO: Does it make sense to have a useless domain here?
+// QUESTION: Does it make sense to have a useless domain here?
 template <typename T>
 void transferScalarFieldLocal(
-    MultiScalarField2D<T> &from, MultiScalarField2D<T> &to, Box2D const &domain)
+    MultiScalarField2D<T> &from, MultiScalarField2D<T> &to, [[maybe_unused]] Box2D const &domain)
 {
     // 1. Copy all data from the old to the new field.
     plb::copy(from, to, from.getBoundingBox());
@@ -372,8 +372,8 @@ MultiNTensorField2D<T> *generateMultiNTensorField2D(
 
 template <typename T>
 void transferNTensorFieldLocal(
-    MultiNTensorField2D<T> &from, MultiNTensorField2D<T> &to, Box2D const &domain)
-// TODO: Remove the domain argument. Not used and can be misleading.
+    MultiNTensorField2D<T> &from, MultiNTensorField2D<T> &to, [[maybe_unused]] Box2D const &domain)
+// QUESTION: Remove the domain argument? Not used and can be misleading.
 {
     // 1. Copy all data from the old to the new field.
     plb::copy(from, to, from.getBoundingBox());
@@ -540,8 +540,9 @@ MultiNTensorField2D<T> *reparallelize(MultiNTensorField2D<T> const &originalBloc
 
 template <typename T, int nDim>
 void transferTensorFieldLocal(
-    MultiTensorField2D<T, nDim> &from, MultiTensorField2D<T, nDim> &to, Box2D const &domain)
-// TODO: remove the domain argument. It is not used and can be misleading.
+    MultiTensorField2D<T, nDim> &from, MultiTensorField2D<T, nDim> &to,
+    [[maybe_unused]] Box2D const &domain)
+// QUESTION: remove the domain argument? It is not used and can be misleading.
 {
     // 1. Copy all data from the old to the new field.
     plb::copy(from, to, from.getBoundingBox());
@@ -605,7 +606,7 @@ std::unique_ptr<MultiTensorField2D<T, nDim> > generateMultiTensorField(
 // TODO: why is there an unnamed arg?
 template <typename T, int nDim>
 std::unique_ptr<MultiTensorField2D<T, nDim> > defaultGenerateMultiTensorField2D(
-    MultiBlockManagement2D const &management, plint unnamedDummyArg)
+    MultiBlockManagement2D const &management, [[maybe_unused]] plint unnamedDummyArg)
 {
     Array<T, nDim> iniVal;
     iniVal.resetToZero();

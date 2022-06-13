@@ -51,7 +51,7 @@ public:
     {
         return 2;
     }
-    virtual plint extent(int whichDirection) const
+    virtual plint extent([[maybe_unused]] int whichDirection) const
     {
         return 2;
     }

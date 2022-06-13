@@ -223,7 +223,7 @@ BlockDomain::DomainT OffLatticeCompletionFunctional3D<T, Descriptor, SurfaceData
 
 template <typename T, template <typename U> class Descriptor, class SurfaceData>
 void OffLatticeCompletionFunctional3D<T, Descriptor, SurfaceData>::processGenericBlocks(
-    Box3D domain, std::vector<AtomicBlock3D *> fields)
+    [[maybe_unused]] Box3D domain, std::vector<AtomicBlock3D *> fields)
 {
     PLB_PRECONDITION((plint)fields.size() == 2 + numShapeArgs + numCompletionArgs);
     AtomicBlock3D *lattice = fields[0];
@@ -376,7 +376,7 @@ GetForceOnObjectFunctional3D<T, SurfaceData>
 
 template <typename T, class SurfaceData>
 void GetForceOnObjectFunctional3D<T, SurfaceData>::processGenericBlocks(
-    Box3D domain, std::vector<AtomicBlock3D *> fields)
+    [[maybe_unused]] Box3D domain, std::vector<AtomicBlock3D *> fields)
 {
     PLB_PRECONDITION(fields.size() == 1);
     AtomicContainerBlock3D *offLatticeInfo = dynamic_cast<AtomicContainerBlock3D *>(fields[0]);

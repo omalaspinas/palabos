@@ -145,8 +145,9 @@ Array<T, 2> predictorCorrectorNTensorField(
 
 template <typename T>
 void predictorCorrectorRhoBarJ(
-    NTensorField2D<T> &rhoBarJ, Array<T, 2> const &position, bool velIsJ, Array<T, 2> &j, T &rhoBar)
-{  // TODO: Check this velIsJ because it is unused. Misleading.
+    NTensorField2D<T> &rhoBarJ, Array<T, 2> const &position, [[maybe_unused]] bool velIsJ,
+    Array<T, 2> &j, T &rhoBar)
+{  // QUESTION: Check this velIsJ because it is unused. Misleading.
     PLB_ASSERT(rhoBarJ.getNdim() == 3);
     Array<T, 2> position1(position);
     std::vector<Dot2D> pos(4);

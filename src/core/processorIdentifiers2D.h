@@ -79,8 +79,8 @@ public:
     EntryMap::const_iterator end() const;
 
 private:
-    ProcessorRegistration2D(ProcessorRegistration2D const &rhs) { }
-    ProcessorRegistration2D &operator=(ProcessorRegistration2D const &rhs)
+    ProcessorRegistration2D([[maybe_unused]] ProcessorRegistration2D const &rhs) { }
+    ProcessorRegistration2D &operator=([[maybe_unused]] ProcessorRegistration2D const &rhs)
     {
         return *this;
     }

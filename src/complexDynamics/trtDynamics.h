@@ -73,6 +73,8 @@ public:
     /// Un-Serialize the dynamics object.
     void unserialize(HierarchicUnserializer &unserializer) override;
     /// Clone the object on its dynamic type.
+    // QUESTION: This clone function seems to override the IsoThermalBulkDynamics baseclass
+    // clone. Is this normal?
     virtual BaseTRTdynamics<T, Descriptor> *clone() const = 0;
 
     /* *************** Access to Dynamics variables, e.g. omega ***************** */
@@ -99,14 +101,20 @@ public:
     /* *************** Collision and Equilibrium ************************* */
 
     /// Implementation of the collision step
+    // QUESTION: This collide function seems to override the IsoThermalBulkDynamics baseclass
+    // clone. Is this normal?
     virtual void collide(Cell<T, Descriptor> &cell, BlockStatistics &statistics_) = 0;
 
     /// Implementation of the collision step, with imposed macroscopic variables
+    // QUESTION: This collideExternal function seems to override the IsoThermalBulkDynamics
+    // baseclass clone. Is this normal?
     virtual void collideExternal(
         Cell<T, Descriptor> &cell, T rhoBar, Array<T, Descriptor<T>::d> const &j, T thetaBar,
         BlockStatistics &stat) = 0;
 
     /// Compute equilibrium distribution function
+    // QUESTION: This computeEquilibrium function seems to override the IsoThermalBulkDynamics
+    // baseclass clone. Is this normal?
     virtual T computeEquilibrium(
         plint iPop, T rhoBar, Array<T, Descriptor<T>::d> const &j, T jSqr,
         T thetaBar = T()) const = 0;
@@ -152,7 +160,6 @@ public:
     using BaseTRTdynamics<T, Descriptor>::BaseTRTdynamics;
     /// Clone the object on its dynamic type.
     Ma1TRTdynamics<T, Descriptor> *clone() const override;
-    ;
 
     /// Return a unique ID for this class.
     int getId() const override;

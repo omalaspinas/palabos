@@ -166,7 +166,8 @@ void BGKCarreauDynamics<T, Descriptor, N>::collide(
 
 template <typename T, template <typename U> class Descriptor, int N>
 T BGKCarreauDynamics<T, Descriptor, N>::computeEquilibrium(
-    plint iPop, T rhoBar, Array<T, Descriptor<T>::d> const &j, T jSqr, T thetaBar) const
+    plint iPop, T rhoBar, Array<T, Descriptor<T>::d> const &j, T jSqr,
+    [[maybe_unused]] T thetaBar) const
 {
     T invRho = Descriptor<T>::invRho(rhoBar);
     return dynamicsTemplates<T, Descriptor>::bgk_ma2_equilibrium(iPop, rhoBar, invRho, j, jSqr);
@@ -249,7 +250,8 @@ void RegularizedBGKCarreauDynamics<T, Descriptor, N>::collide(
 
 template <typename T, template <typename U> class Descriptor, int N>
 T RegularizedBGKCarreauDynamics<T, Descriptor, N>::computeEquilibrium(
-    plint iPop, T rhoBar, Array<T, Descriptor<T>::d> const &j, T jSqr, T thetaBar) const
+    plint iPop, T rhoBar, Array<T, Descriptor<T>::d> const &j, T jSqr,
+    [[maybe_unused]] T thetaBar) const
 {
     T invRho = Descriptor<T>::invRho(rhoBar);
     return dynamicsTemplates<T, Descriptor>::bgk_ma2_equilibrium(iPop, rhoBar, invRho, j, jSqr);

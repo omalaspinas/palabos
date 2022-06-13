@@ -107,7 +107,7 @@ MultiContainerBlock2D *MultiContainerBlock2D::clone() const
 }
 
 MultiContainerBlock2D *MultiContainerBlock2D::clone(
-    MultiBlockManagement2D const &multiBlockManagement) const
+    [[maybe_unused]] MultiBlockManagement2D const &multiBlockManagement) const
 {
     // By definition, a multi container block cannot be redistributed over
     //   a different block arrangement. Consequently, this function
@@ -176,8 +176,8 @@ int MultiContainerBlock2D::getStaticId() const
 }
 
 void MultiContainerBlock2D::copyReceive(
-    MultiBlock2D const &fromBlock, Box2D const &fromDomain, Box2D const &toDomain,
-    modif::ModifT whichData)
+    [[maybe_unused]] MultiBlock2D const &fromBlock, [[maybe_unused]] Box2D const &fromDomain,
+    [[maybe_unused]] Box2D const &toDomain, [[maybe_unused]] modif::ModifT whichData)
 {
     PLB_ASSERT(false);
 }
