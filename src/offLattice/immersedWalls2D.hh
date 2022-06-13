@@ -52,7 +52,7 @@ InamuroIteration2D<T, VelFunction>::InamuroIteration2D(
 
 template <typename T, class VelFunction>
 void InamuroIteration2D<T, VelFunction>::processGenericBlocks(
-    Box2D domain, std::vector<AtomicBlock2D *> blocks)
+    [[maybe_unused]] Box2D domain, std::vector<AtomicBlock2D *> blocks)
 {
     PLB_PRECONDITION(blocks.size() == 3);
     ScalarField2D<T> *rhoBar = dynamic_cast<ScalarField2D<T> *>(blocks[0]);
@@ -189,7 +189,7 @@ IndexedInamuroIteration2D<T, VelFunction>::IndexedInamuroIteration2D(
 
 template <typename T, class VelFunction>
 void IndexedInamuroIteration2D<T, VelFunction>::processGenericBlocks(
-    Box2D domain, std::vector<AtomicBlock2D *> blocks)
+    [[maybe_unused]] Box2D domain, std::vector<AtomicBlock2D *> blocks)
 {
     PLB_PRECONDITION(blocks.size() == 3);
     ScalarField2D<T> *rhoBar = dynamic_cast<ScalarField2D<T> *>(blocks[0]);

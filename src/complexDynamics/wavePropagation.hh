@@ -118,7 +118,6 @@ T WaveDynamics<T, Descriptor>::computeEquilibrium(
     plint iPop, T rhoBar, Array<T, Descriptor<T>::d> const &j, [[maybe_unused]] T jSqr,
     [[maybe_unused]] T thetaBar) const
 {
-    T invRho = Descriptor<T>::invRho(rhoBar);
     return waveEquilibrium(iPop, rhoBar, j, vs2);
 }
 
