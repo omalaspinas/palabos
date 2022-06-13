@@ -1,0 +1,31 @@
+omega= 1.98807
+step 0; t=0
+Drag coefficient: 0
+Lift coefficient: 0
+Average rho: 0.994723
+
+step 10; t=0.1
+Drag coefficient: 4.19618
+Lift coefficient: -0.0206451
+Average rho: 0.994729
+
+step 20; t=0.2
+Drag coefficient: -0.326439
+Lift coefficient: -0.0338089
+Average rho: 0.994735
+
+step 30; t=0.3
+Drag coefficient: 2.23594
+Lift coefficient: -0.0644524
+Average rho: 0.99474
+
+step 40; t=0.4
+Drag coefficient: 0.345768
+Lift coefficient: -0.0666047
+Average rho: 0.994747
+
+step 50; t=0.5
+Drag coefficient: 1.12128
+Lift coefficient: -0.069399
+Average rho: 0.994747
+
