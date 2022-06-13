@@ -1016,9 +1016,11 @@ GuoFdCompletionAlgorithm3D<T, Descriptor>::GuoFdCompletionAlgorithm3D(
 
 template <typename T, template <typename U> class Descriptor>
 void GuoFdCompletionAlgorithm3D<T, Descriptor>::extrapolateVariables(
-    Dot3D const &fluidDirection, int depth, Array<T, 3> const &wallNode, T delta,
-    Array<T, 3> const &wall_vel, OffBoundary::Type bdType, Array<T, 3> const &wallNormal,
-    plint triangleId, plint iDirection)
+    [[maybe_unused]] Dot3D const &fluidDirection, [[maybe_unused]] int depth,
+    [[maybe_unused]] Array<T, 3> const &wallNode, [[maybe_unused]] T delta,
+    [[maybe_unused]] Array<T, 3> const &wall_vel, [[maybe_unused]] OffBoundary::Type bdType,
+    [[maybe_unused]] Array<T, 3> const &wallNormal, [[maybe_unused]] plint triangleId,
+    [[maybe_unused]] plint iDirection)
 {
     PLB_ASSERT(false && "Nothing to extrapolate in fd guo completion.");
 }

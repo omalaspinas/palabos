@@ -57,7 +57,8 @@ T rho0 = 1.;  // All cells have initially density rho ...
 T deltaRho = 1.e-4;
 Array<T, 2> u0(0, 0);
 
-void initializeConstRho(plint iX, plint iY, T &rho, Array<T, 2> &u)
+void initializeConstRho(
+    [[maybe_unused]] plint iX, [[maybe_unused]] plint iY, T &rho, Array<T, 2> &u)
 {
     u = u0;
     rho = rho0 + deltaRho;

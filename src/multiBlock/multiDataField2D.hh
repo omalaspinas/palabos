@@ -236,7 +236,7 @@ int MultiScalarField2D<T>::getStaticId() const
 template <typename T>
 void MultiScalarField2D<T>::copyReceive(
     MultiBlock2D const &fromBlock, Box2D const &fromDomain, Box2D const &toDomain,
-    modif::ModifT whichData)
+    [[maybe_unused]] modif::ModifT whichData)
 {
     MultiScalarField2D<T> const *fromField =
         dynamic_cast<MultiScalarField2D<T> const *>(&fromBlock);
@@ -498,7 +498,7 @@ int MultiTensorField2D<T, nDim>::getStaticId() const
 template <typename T, int nDim>
 void MultiTensorField2D<T, nDim>::copyReceive(
     MultiBlock2D const &fromBlock, Box2D const &fromDomain, Box2D const &toDomain,
-    modif::ModifT whichData)
+    [[maybe_unused]] modif::ModifT whichData)
 {
     MultiTensorField2D<T, nDim> const *fromField =
         dynamic_cast<MultiTensorField2D<T, nDim> const *>(&fromBlock);
@@ -765,7 +765,7 @@ int MultiNTensorField2D<T>::getStaticId() const
 template <typename T>
 void MultiNTensorField2D<T>::copyReceive(
     MultiBlock2D const &fromBlock, Box2D const &fromDomain, Box2D const &toDomain,
-    modif::ModifT whichData)
+    [[maybe_unused]] modif::ModifT whichData)
 {
     MultiNTensorField2D<T> const *fromField =
         dynamic_cast<MultiNTensorField2D<T> const *>(&fromBlock);

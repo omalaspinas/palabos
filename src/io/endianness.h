@@ -67,7 +67,7 @@ inline void endianByteSwapImpl<1>(char const *src, char *dest)
 
 // Specialization for 1-byte types.
 template <>
-inline void endianByteSwapImpl<1>(char *value)
+inline void endianByteSwapImpl<1>([[maybe_unused]] char *value)
 { }
 
 // Specialization for 2-byte types.

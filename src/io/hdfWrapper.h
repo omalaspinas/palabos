@@ -214,7 +214,7 @@ static void closeHDFfile()
 // the file
 static std::vector<std::vector<char> > readParallelHDF5(
     std::vector<plb::plint> const &my_block_id, std::vector<plb::plint> const &i_offset,
-    int mpi_rank, MPI_Comm comm)
+    [[maybe_unused]] int mpi_rank, [[maybe_unused]] MPI_Comm comm)
 {
     hid_t dset_id, plist_id;    // file and dataset identifiers //
     hid_t filespace, memspace;  // file and memory dataspace identifiers //

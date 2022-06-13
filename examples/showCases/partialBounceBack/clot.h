@@ -77,6 +77,7 @@ public:
         Dot3D offsetSolidFractionPhys =
             computeRelativeDisplacement(clotFlags, clotSolidFractionPhys);
 
+        // QUESTION: These two seem unused. Should we remove them?
         plint totalFnQty = 0;
         plint totalNbVoxels = 0;
         std::ifstream clotGeoFile;
@@ -97,14 +98,14 @@ public:
                 getline(clotGeoFile, line);
             // position reader at coordinates relevant for this atomic block (in terms of X and Y
             // domains)
-            for (size_t lineNb = 0; lineNb <= domain.y0 + offset.y; ++lineNb)
+            for (size_t lineNb = 0; lineNb <= (size_t)(domain.y0 + offset.y); ++lineNb)
                 getline(clotGeoFile, line);
 
             for (plint iY = domain.y0; iY <= domain.y1; ++iY) {
                 if (getline(clotGeoFile, line) && line != "") {
                     std::stringstream ss(line);
 
-                    for (size_t tokenNb = 0; tokenNb <= domain.x0 + offset.x; ++tokenNb)
+                    for (size_t tokenNb = 0; tokenNb <= (size_t)(domain.x0 + offset.x); ++tokenNb)
                         ss >> valsF;
                     for (plint iX = domain.x0; iX <= domain.x1; ++iX) {
                         ss >> valsF;
@@ -518,7 +519,7 @@ private:
 };
 
 // count the length of the clot in z-direction based on the clot txt file
-plint countClotZLength()
+inline plint countClotZLength()
 {
     std::fstream clotFile;
     clotFile.open(simParam.clotGeometryFile.c_str(), std::fstream::in);

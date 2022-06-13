@@ -62,9 +62,9 @@ PlbLogFile::~PlbLogFile()
     delete ofile;
 }
 
-PlbLogFile::PlbLogFile(PlbLogFile const &rhs) { }
+PlbLogFile::PlbLogFile([[maybe_unused]] PlbLogFile const &rhs) { }
 
-PlbLogFile &PlbLogFile::operator=(PlbLogFile const &rhs)
+PlbLogFile &PlbLogFile::operator=([[maybe_unused]] PlbLogFile const &rhs)
 {
     return *this;
 }

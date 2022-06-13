@@ -340,9 +340,10 @@ MultiGridTensorField3D<T, nDim>::MultiGridTensorField3D(
         defaultMultiGridPolicy3D().getCombinedStatistics(this->getNumLevels()));
 }
 
-// TODO: Unused rhs
+// QUESTION: Unused rhs is this normal?
 template <typename T, int nDim>
-MultiGridTensorField3D<T, nDim>::MultiGridTensorField3D(MultiGridTensorField3D<T, nDim> const &rhs)
+MultiGridTensorField3D<T, nDim>::MultiGridTensorField3D(
+    [[maybe_unused]] MultiGridTensorField3D<T, nDim> const &rhs)
 {
     allocateFields();
 }

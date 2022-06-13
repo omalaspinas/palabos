@@ -204,12 +204,13 @@ void BouzidiOffLatticeModel3D<T, Descriptor>::boundaryCompletion(
     }
 }
 
+// QUESTION: What are args for here?
 template <typename T, template <typename U> class Descriptor>
 void BouzidiOffLatticeModel3D<T, Descriptor>::cellCompletion(
     BlockLattice3D<T, Descriptor> &lattice, Dot3D const &boundaryNode,
     std::vector<int> const &solidDirections, std::vector<plint> const &boundaryIds,
     std::vector<bool> const &hasFluidNeighbor, Dot3D const &absoluteOffset, Array<T, 3> &localForce,
-    std::vector<AtomicBlock3D *> const &args)
+    [[maybe_unused]] std::vector<AtomicBlock3D *> const &args)
 {
     typedef Descriptor<T> D;
     Array<T, D::d> deltaJ;

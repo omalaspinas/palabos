@@ -361,7 +361,7 @@ int main(int argc, char *argv[])
     }
 
     SVGWriter2D test(management);
-    test.writeDomainsWithDynamicsInfo("dipole.svg", 3, dyn, idToName, nameToColor);
+    test.writeDomainsWithDynamicsInfo("dipole.svg", dyn, idToName, nameToColor);
     ////////////////////////////////////////////////////////////////////////////
 #endif
 

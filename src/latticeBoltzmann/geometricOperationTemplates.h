@@ -291,19 +291,22 @@ struct SymmetricTensorImpl {
 template <typename T>
 struct SymmetricTensorImpl<T, 0> {
     static const int n = 0;
-    static void matVectMult(Array<T, n> const &mat, Array<T, 0> const &vect, Array<T, 0> &result)
+    static void matVectMult(
+        [[maybe_unused]] Array<T, n> const &mat, [[maybe_unused]] Array<T, 0> const &vect,
+        Array<T, 0> &result)
     {
         result.resetToZero();
     }
-    static T tensorNormSqr(Array<T, n> const &mat)
+    static T tensorNormSqr([[maybe_unused]] Array<T, n> const &mat)
     {
         return T();
     }
-    static T contractIndexes(Array<T, n> const &A, Array<T, n> const &B)
+    static T contractIndexes(
+        [[maybe_unused]] Array<T, n> const &A, [[maybe_unused]] Array<T, n> const &B)
     {
         return T();
     }
-    static T trace(Array<T, n> const &A)
+    static T trace([[maybe_unused]] Array<T, n> const &A)
     {
         return T();
     }
@@ -311,11 +314,11 @@ struct SymmetricTensorImpl<T, 0> {
     {
         return Array<T, n>::zero();
     }
-    static T det(Array<T, n> const &A)
+    static T det([[maybe_unused]] Array<T, n> const &A)
     {
         return T();
     }
-    static void inv(Array<T, n> const &A, Array<T, n> &result)
+    static void inv([[maybe_unused]] Array<T, n> const &A, Array<T, n> &result)
     {
         result.resetToZero();
     }
@@ -458,18 +461,20 @@ struct SymmetricRankThreeTensorImpl {
 template <typename T>
 struct SymmetricRankThreeTensorImpl<T, 0> {
     static const int n = 0;
-    static void contractLastTwoIndexes(Array<T, n> const &tens, Array<T, 0> &res)
+    static void contractLastTwoIndexes([[maybe_unused]] Array<T, n> const &tens, Array<T, 0> &res)
     {
         res.resetToZero();
     }
 
-    static T contractIndexes(Array<T, n> const &A, Array<T, n> const &B)
+    static T contractIndexes(
+        [[maybe_unused]] Array<T, n> const &A, [[maybe_unused]] Array<T, n> const &B)
     {
         return T();
     }
 
     static void multWithRankTwoSymTensor(
-        Array<T, n> const &A, Array<T, SymmetricTensorImpl<T, 0>::n> const &B, Array<T, 0> &x)
+        [[maybe_unused]] Array<T, n> const &A,
+        [[maybe_unused]] Array<T, SymmetricTensorImpl<T, 0>::n> const &B, Array<T, 0> &x)
     {
         x.resetToZero();
     }

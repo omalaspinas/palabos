@@ -239,19 +239,23 @@ struct advectionDiffusionDynamicsTemplatesImpl {
     }
 
     static void complete_bgk_ma2_regularize(
-        Array<T, Descriptor::q> &f, T rhoPhiBar, T rhoBar, Array<T, Descriptor::d> const &jEq,
-        Array<T, Descriptor::d> const &jNeq,
-        const Array<T, SymmetricTensorImpl<T, Descriptor::d>::n> &piNeq, T omega, T omegaNonPhys,
-        T omegaFluid, T omegaFluidNonPhys)
+        [[maybe_unused]] Array<T, Descriptor::q> &f, [[maybe_unused]] T rhoPhiBar,
+        [[maybe_unused]] T rhoBar, [[maybe_unused]] Array<T, Descriptor::d> const &jEq,
+        [[maybe_unused]] Array<T, Descriptor::d> const &jNeq,
+        [[maybe_unused]] const Array<T, SymmetricTensorImpl<T, Descriptor::d>::n> &piNeq,
+        [[maybe_unused]] T omega, [[maybe_unused]] T omegaNonPhys, [[maybe_unused]] T omegaFluid,
+        [[maybe_unused]] T omegaFluidNonPhys)
     {
         PLB_ASSERT(false && "Not implemented in the generic case.");
     }
 
     static T complete_bgk_ma2_regularized_collision(
-        Array<T, Descriptor::q> &f, T rhoPhiBar, T rhoBar, Array<T, Descriptor::d> const &jEq,
-        Array<T, Descriptor::d> const &jNeq,
-        const Array<T, SymmetricTensorImpl<T, Descriptor::d>::n> &piNeq, T omega, T omegaNonPhys,
-        T omegaFluid, T omegaFluidNonPhys)
+        [[maybe_unused]] Array<T, Descriptor::q> &f, [[maybe_unused]] T rhoPhiBar,
+        [[maybe_unused]] T rhoBar, [[maybe_unused]] Array<T, Descriptor::d> const &jEq,
+        [[maybe_unused]] Array<T, Descriptor::d> const &jNeq,
+        [[maybe_unused]] const Array<T, SymmetricTensorImpl<T, Descriptor::d>::n> &piNeq,
+        [[maybe_unused]] T omega, [[maybe_unused]] T omegaNonPhys, [[maybe_unused]] T omegaFluid,
+        [[maybe_unused]] T omegaFluidNonPhys)
     {
         PLB_ASSERT(false && "Not implemented in the generic case.");
         return T();

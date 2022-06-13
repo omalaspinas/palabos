@@ -299,7 +299,7 @@ struct Dynamics {
     // but the collide-step relies on variables, which are usually only calculated
     // within integrate process functionals
     /// by default, nothing happens
-    void updateLocalVariables(Cell<T, Descriptor> &cell) { }
+    void updateLocalVariables([[maybe_unused]] Cell<T, Descriptor> &cell) { }
 };
 
 /// Common base for bulk dynamics

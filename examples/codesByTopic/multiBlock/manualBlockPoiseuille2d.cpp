@@ -74,7 +74,7 @@ template <typename T>
 class PoiseuilleVelocity {
 public:
     PoiseuilleVelocity(IncomprFlowParam<T> parameters_) : parameters(parameters_) { }
-    void operator()(plint iX, plint iY, Array<T, 2> &u) const
+    void operator()([[maybe_unused]] plint iX, plint iY, Array<T, 2> &u) const
     {
         u[0] = poiseuilleVelocity(iY, parameters);
         u[1] = T();

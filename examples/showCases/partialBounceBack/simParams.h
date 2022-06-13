@@ -69,7 +69,7 @@ public:
         return new Pipe<T>(*this);
     }
 
-    const bool inPipeSection(plint iX, plint iY) const
+    bool inPipeSection(plint iX, plint iY) const
     {
         if (!isSquarePipe)
             return (
@@ -80,7 +80,7 @@ public:
                 && util::sqr((T)iY - center[1]) < util::sqr(radius));
     }
 
-    const plint getRadius() const
+    plint getRadius() const
     {
         return radius;
     }
@@ -88,7 +88,7 @@ public:
     {
         return center;
     }
-    const plint getLength() const
+    plint getLength() const
     {
         return length;
     }
@@ -121,7 +121,9 @@ class PoiseuilleDensityAndZeroVelocity {
 public:
     PoiseuilleDensityAndZeroVelocity(const Pipe<T> &pipe_, T DPAdim_) : pipe(pipe_), DPAdim(DPAdim_)
     { }
-    void operator()(plint iX, plint iY, plint iZ, T &rho, Array<T, 3> &u) const
+    void operator()(
+        [[maybe_unused]] plint iX, [[maybe_unused]] plint iY, plint iZ, T &rho,
+        Array<T, 3> &u) const
     {
         rho = poiseuilleDensity(iZ, pipe, DPAdim);
         u[0] = T();

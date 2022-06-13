@@ -48,7 +48,9 @@ typedef double T;
 class PressureGradient {
 public:
     PressureGradient(T deltaP_, plint nx_) : deltaP(deltaP_), nx(nx_) { }
-    void operator()(plint iX, plint iY, plint iZ, T &density, Array<T, 3> &velocity) const
+    void operator()(
+        plint iX, [[maybe_unused]] plint iY, [[maybe_unused]] plint iZ, T &density,
+        Array<T, 3> &velocity) const
     {
         velocity.resetToZero();
         density = (T)1 - deltaP * DESCRIPTOR<T>::invCs2 / (T)(nx - 1) * (T)iX;

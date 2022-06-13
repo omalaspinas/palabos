@@ -88,7 +88,7 @@ template <typename T>
 class PoiseuilleVelocity {
 public:
     PoiseuilleVelocity(IncomprFlowParam<T> parameters_) : parameters(parameters_) { }
-    void operator()(plint iX, plint iY, Array<T, 2> &u) const
+    void operator()([[maybe_unused]] plint iX, plint iY, Array<T, 2> &u) const
     {
         u[0] = poiseuilleVelocity(iY, parameters);
         u[1] = T();
@@ -103,7 +103,7 @@ template <typename T>
 class PoiseuilleDensity {
 public:
     PoiseuilleDensity(IncomprFlowParam<T> parameters_) : parameters(parameters_) { }
-    T operator()(plint iX, plint iY) const
+    T operator()(plint iX, [[maybe_unused]] plint iY) const
     {
         return poiseuilleDensity(iX, parameters);
     }
@@ -118,7 +118,7 @@ template <typename T>
 class PoiseuilleDensityAndZeroVelocity {
 public:
     PoiseuilleDensityAndZeroVelocity(IncomprFlowParam<T> parameters_) : parameters(parameters_) { }
-    void operator()(plint iX, plint iY, T &rho, Array<T, 2> &u) const
+    void operator()(plint iX, [[maybe_unused]] plint iY, T &rho, Array<T, 2> &u) const
     {
         rho = poiseuilleDensity(iX, parameters);
         u[0] = T();

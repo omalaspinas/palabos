@@ -143,7 +143,7 @@ plint ScalarFieldDataTransfer2D<T>::staticCellSize() const
 
 template <typename T>
 void ScalarFieldDataTransfer2D<T>::send(
-    Box2D domain, std::vector<char> &buffer, modif::ModifT kind) const
+    Box2D domain, std::vector<char> &buffer, [[maybe_unused]] modif::ModifT kind) const
 {
     PLB_PRECONDITION(contained(domain, field.getBoundingBox()));
     plint cellSize = staticCellSize();
@@ -164,7 +164,7 @@ void ScalarFieldDataTransfer2D<T>::send(
 
 template <typename T>
 void ScalarFieldDataTransfer2D<T>::receive(
-    Box2D domain, std::vector<char> const &buffer, modif::ModifT kind)
+    Box2D domain, std::vector<char> const &buffer, [[maybe_unused]] modif::ModifT kind)
 {
     PLB_PRECONDITION(contained(domain, field.getBoundingBox()));
     PLB_PRECONDITION(domain.nCells() * staticCellSize() == (plint)buffer.size());
@@ -183,7 +183,8 @@ void ScalarFieldDataTransfer2D<T>::receive(
 
 template <typename T>
 void ScalarFieldDataTransfer2D<T>::attribute(
-    Box2D toDomain, plint deltaX, plint deltaY, AtomicBlock2D const &from, modif::ModifT kind)
+    Box2D toDomain, plint deltaX, plint deltaY, AtomicBlock2D const &from,
+    [[maybe_unused]] modif::ModifT kind)
 {
     PLB_PRECONDITION(typeid(from) == typeid(ScalarField2D<T> const &));
     PLB_PRECONDITION(contained(toDomain, field.getBoundingBox()));
@@ -310,7 +311,7 @@ plint TensorFieldDataTransfer2D<T, nDim>::staticCellSize() const
 
 template <typename T, int nDim>
 void TensorFieldDataTransfer2D<T, nDim>::send(
-    Box2D domain, std::vector<char> &buffer, modif::ModifT kind) const
+    Box2D domain, std::vector<char> &buffer, [[maybe_unused]] modif::ModifT kind) const
 {
     PLB_PRECONDITION(contained(domain, field.getBoundingBox()));
     plint cellSize = staticCellSize();
@@ -332,7 +333,7 @@ void TensorFieldDataTransfer2D<T, nDim>::send(
 
 template <typename T, int nDim>
 void TensorFieldDataTransfer2D<T, nDim>::receive(
-    Box2D domain, std::vector<char> const &buffer, modif::ModifT kind)
+    Box2D domain, std::vector<char> const &buffer, [[maybe_unused]] modif::ModifT kind)
 {
     PLB_PRECONDITION(contained(domain, field.getBoundingBox()));
     PLB_PRECONDITION(domain.nCells() * staticCellSize() == (plint)buffer.size());
@@ -352,7 +353,8 @@ void TensorFieldDataTransfer2D<T, nDim>::receive(
 
 template <typename T, int nDim>
 void TensorFieldDataTransfer2D<T, nDim>::attribute(
-    Box2D toDomain, plint deltaX, plint deltaY, AtomicBlock2D const &from, modif::ModifT kind)
+    Box2D toDomain, plint deltaX, plint deltaY, AtomicBlock2D const &from,
+    [[maybe_unused]] modif::ModifT kind)
 {
     PLB_PRECONDITION(typeid(from) == typeid(TensorField2D<T, nDim> const &));
     PLB_PRECONDITION(contained(toDomain, field.getBoundingBox()));
@@ -483,7 +485,7 @@ plint NTensorFieldDataTransfer2D<T>::staticCellSize() const
 
 template <typename T>
 void NTensorFieldDataTransfer2D<T>::send(
-    Box2D domain, std::vector<char> &buffer, modif::ModifT kind) const
+    Box2D domain, std::vector<char> &buffer, [[maybe_unused]] modif::ModifT kind) const
 {
     PLB_PRECONDITION(contained(domain, field.getBoundingBox()));
     plint cellSize = staticCellSize();
@@ -501,7 +503,7 @@ void NTensorFieldDataTransfer2D<T>::send(
 
 template <typename T>
 void NTensorFieldDataTransfer2D<T>::receive(
-    Box2D domain, std::vector<char> const &buffer, modif::ModifT kind)
+    Box2D domain, std::vector<char> const &buffer, [[maybe_unused]] modif::ModifT kind)
 {
     PLB_PRECONDITION(contained(domain, field.getBoundingBox()));
     PLB_PRECONDITION((pluint)domain.nCells() * staticCellSize() == buffer.size());
@@ -518,7 +520,8 @@ void NTensorFieldDataTransfer2D<T>::receive(
 
 template <typename T>
 void NTensorFieldDataTransfer2D<T>::attribute(
-    Box2D toDomain, plint deltaX, plint deltaY, AtomicBlock2D const &from, modif::ModifT kind)
+    Box2D toDomain, plint deltaX, plint deltaY, AtomicBlock2D const &from,
+    [[maybe_unused]] modif::ModifT kind)
 {
     PLB_PRECONDITION(typeid(from) == typeid(NTensorField2D<T> const &));
     PLB_PRECONDITION(contained(toDomain, field.getBoundingBox()));

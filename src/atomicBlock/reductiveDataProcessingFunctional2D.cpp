@@ -48,7 +48,9 @@ BlockDomain::DomainT ReductiveBoxProcessingFunctional2D::appliesTo() const
 }
 
 /** No rescaling is done by default. **/
-void ReductiveBoxProcessingFunctional2D::rescale(double dxScale, double dtScale) { }
+void ReductiveBoxProcessingFunctional2D::rescale(
+    [[maybe_unused]] double dxScale, [[maybe_unused]] double dtScale)
+{ }
 
 void ReductiveBoxProcessingFunctional2D::getDimensionsX(std::vector<int> &dimensions) const
 {
@@ -78,9 +80,9 @@ int ReductiveBoxProcessingFunctional2D::getStaticId() const
     return -1;
 }
 
-void ReductiveBoxProcessingFunctional2D::serialize(std::string &data) const { }
+void ReductiveBoxProcessingFunctional2D::serialize([[maybe_unused]] std::string &data) const { }
 
-void ReductiveBoxProcessingFunctional2D::unserialize(std::string &data) { }
+void ReductiveBoxProcessingFunctional2D::unserialize([[maybe_unused]] std::string &data) { }
 
 /* *************** Class PlainReductiveBoxProcessingFunctional2D ************************* */
 
@@ -230,7 +232,9 @@ BlockDomain::DomainT ReductiveDotProcessingFunctional2D::appliesTo() const
 }
 
 /** No rescaling is done by default. **/
-void ReductiveDotProcessingFunctional2D::rescale(double dxScale, double dtScale) { }
+void ReductiveDotProcessingFunctional2D::rescale(
+    [[maybe_unused]] double dxScale, [[maybe_unused]] double dtScale)
+{ }
 
 void ReductiveDotProcessingFunctional2D::getDimensionsX(std::vector<int> &dimensions) const
 {
@@ -378,7 +382,9 @@ BlockDomain::DomainT BoundedReductiveBoxProcessingFunctional2D::appliesTo() cons
 }
 
 /** No rescaling is done by default. **/
-void BoundedReductiveBoxProcessingFunctional2D::rescale(double dxScale, double dtScale) { }
+void BoundedReductiveBoxProcessingFunctional2D::rescale(
+    [[maybe_unused]] double dxScale, [[maybe_unused]] double dtScale)
+{ }
 
 void BoundedReductiveBoxProcessingFunctional2D::getDimensionsX(std::vector<int> &dimensions) const
 {

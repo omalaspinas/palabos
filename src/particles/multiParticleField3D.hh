@@ -47,7 +47,7 @@ namespace plb {
 // TODO:: Why this unused unnamedDummyArg?
 template <class ParticleFieldT>
 std::unique_ptr<MultiParticleField3D<ParticleFieldT> > defaultGenerateParticleField3D(
-    MultiBlockManagement3D const &management, plint unnamedDummyArg)
+    MultiBlockManagement3D const &management, [[maybe_unused]] plint unnamedDummyArg)
 {
     return std::unique_ptr<MultiParticleField3D<ParticleFieldT> >(
         new MultiParticleField3D<ParticleFieldT>(

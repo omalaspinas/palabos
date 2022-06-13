@@ -218,7 +218,8 @@ ParallelVtkDataWriter3D::~ParallelVtkDataWriter3D() { }
 
 // QUESTION: Suspicious: sizeOfScalar not used.
 void ParallelVtkDataWriter3D::writeDataField(
-    MultiBlock3D &block, IndexOrdering::OrderingT ordering, plint sizeOfScalar, plint dataSize)
+    MultiBlock3D &block, IndexOrdering::OrderingT ordering, [[maybe_unused]] plint sizeOfScalar,
+    plint dataSize)
 {
     if (global::mpi().isMainProcessor()) {
         ostr = new std::ofstream(fileName.c_str(), std::ios_base::app | std::ios_base::binary);

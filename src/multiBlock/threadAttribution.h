@@ -72,8 +72,8 @@ struct ThreadAttribution {
     {
         return false;
     }
-    virtual void setCoProcessors(std::map<plint, int> processorHandles) { }
-    virtual int getCoProcessorHandle(plint id) const
+    virtual void setCoProcessors([[maybe_unused]] std::map<plint, int> processorHandles) { }
+    virtual int getCoProcessorHandle([[maybe_unused]] plint id) const
     {
         return 0;
     }

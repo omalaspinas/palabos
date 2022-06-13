@@ -512,8 +512,10 @@ public:
         return mesh;
     }
 
+    // QUESTION: Should we remove dt and rho which are unused?
     RawConnectedTriangleMesh<T> generatePalabosMesh(
-        T dx, T dt, T rho, pluint nx, pluint ny, pluint nz, pluint iT, pluint dt_ShapeOp)
+        T dx, [[maybe_unused]] T dt, [[maybe_unused]] T rho, pluint nx, pluint ny, pluint nz,
+        pluint iT, pluint dt_ShapeOp)
     {
         typedef typename RawConnectedTriangleMesh<T>::PVertexIterator PVertexIterator;
         typedef typename RawConnectedTriangleMesh<T>::PVertex PVertex;

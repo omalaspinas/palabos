@@ -209,8 +209,8 @@ SHAPEOP_INLINE void SurfaceMaterialConstraint::mass_lumping(
 }
 ///////////////////////////////////////////////////////////////////////////////
 SHAPEOP_INLINE void SurfaceMaterialConstraint::project(
-    const Matrix3X &positions, Matrix3X &projections, Matrix3X &f_int_nonePD,
-    const Matrix3X &oldPositions)
+    const Matrix3X &positions, [[maybe_unused]] Matrix3X &projections, Matrix3X &f_int_nonePD,
+    [[maybe_unused]] const Matrix3X &oldPositions)
 {
     Matrix32 edges, P;
     edges.col(0) = (positions.col(idI_[1]) - positions.col(idI_[0]));
@@ -332,8 +332,8 @@ SHAPEOP_INLINE void VolumeMaterialConstraint::mass_lumping(
 }
 ///////////////////////////////////////////////////////////////////////////////
 SHAPEOP_INLINE void VolumeMaterialConstraint::project(
-    const Matrix3X &positions, Matrix3X &projections, Matrix3X &f_int_nonePD,
-    const Matrix3X &oldPositions)
+    const Matrix3X &positions, Matrix3X &projections, [[maybe_unused]] Matrix3X &f_int_nonePD,
+    [[maybe_unused]] const Matrix3X &oldPositions)
 {
     Matrix33 edges;
     for (int i = 0; i < 3; ++i)
@@ -407,7 +407,7 @@ SHAPEOP_INLINE VolumeDampingConstraint::VolumeDampingConstraint(
 }
 ///////////////////////////////////////////////////////////////////////////////
 SHAPEOP_INLINE void VolumeDampingConstraint::project(
-    const Matrix3X &positions, Matrix3X &projections, Matrix3X &f_int_nonePD,
+    const Matrix3X &positions, [[maybe_unused]] Matrix3X &projections, Matrix3X &f_int_nonePD,
     const Matrix3X &oldPositions)
 {
     Matrix33 edges, rest;
@@ -497,7 +497,7 @@ SHAPEOP_INLINE void VolumeDampingConstraint::addConstraint(
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 SHAPEOP_INLINE CollisionConstraint::CollisionConstraint(
-    const std::vector<int> &idI, Scalar weight, const Matrix3X &positions) :
+    const std::vector<int> &idI, Scalar weight, [[maybe_unused]] const Matrix3X &positions) :
     Constraint(idI, weight)
 {
     assert(idI.size() == 1);
@@ -528,8 +528,8 @@ SHAPEOP_INLINE void CollisionConstraint::setParams(
 }
 ///////////////////////////////////////////////////////////////////////////////
 SHAPEOP_INLINE void CollisionConstraint::project(
-    const Matrix3X &positions, Matrix3X &projections, Matrix3X &f_int_nonePD,
-    const Matrix3X &oldPositions)
+    const Matrix3X &positions, [[maybe_unused]] Matrix3X &projections, Matrix3X &f_int_nonePD,
+    [[maybe_unused]] const Matrix3X &oldPositions)
 {
     E_nonePD_ = 0.;
     Vector3 point = positions.col(idI_[0]);
@@ -561,7 +561,7 @@ SHAPEOP_INLINE void CollisionConstraint::project(
 }
 ///////////////////////////////////////////////////////////////////////////////
 SHAPEOP_INLINE void CollisionConstraint::addConstraint(
-    std::vector<Triplet> &triplets, int &idO) const
+    [[maybe_unused]] std::vector<Triplet> &triplets, [[maybe_unused]] int &idO) const
 { }
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
@@ -590,8 +590,8 @@ SHAPEOP_INLINE TriangleARAPConstraint::TriangleARAPConstraint(
 ///////////////////////////////////////////////////////////////////////////////
 /* Aq = F & Bp = R( SO(3) ) */
 SHAPEOP_INLINE void TriangleARAPConstraint::project(
-    const Matrix3X &positions, Matrix3X &projections, Matrix3X &f_int_nonePD,
-    const Matrix3X &oldPositions)
+    const Matrix3X &positions, Matrix3X &projections, [[maybe_unused]] Matrix3X &f_int_nonePD,
+    [[maybe_unused]] const Matrix3X &oldPositions)
 {
     Matrix32 edges, P;
     edges.col(0) = (positions.col(idI_[1]) - positions.col(idI_[0]));
@@ -637,8 +637,8 @@ SHAPEOP_INLINE TetrahedronARAPConstraint::TetrahedronARAPConstraint(
 }
 ///////////////////////////////////////////////////////////////////////////////
 SHAPEOP_INLINE void TetrahedronARAPConstraint::project(
-    const Matrix3X &positions, Matrix3X &projections, Matrix3X &f_int_nonePD,
-    const Matrix3X &oldPositions)
+    const Matrix3X &positions, Matrix3X &projections, [[maybe_unused]] Matrix3X &f_int_nonePD,
+    [[maybe_unused]] const Matrix3X &oldPositions)
 {
     Matrix33 edges;
     for (int i = 0; i < 3; ++i)
@@ -682,8 +682,8 @@ SHAPEOP_INLINE EdgeStrainLimitingConstraint::EdgeStrainLimitingConstraint(
 }
 ///////////////////////////////////////////////////////////////////////////////
 SHAPEOP_INLINE void EdgeStrainLimitingConstraint::project(
-    const Matrix3X &positions, Matrix3X &projections, Matrix3X &f_int_nonePD,
-    const Matrix3X &oldPositions)
+    const Matrix3X &positions, Matrix3X &projections, [[maybe_unused]] Matrix3X &f_int_nonePD,
+    [[maybe_unused]] const Matrix3X &oldPositions)
 {
     Vector3 edge = positions.col(idI_[1]) - positions.col(idI_[0]);
     Scalar l = edge.norm();
@@ -733,8 +733,8 @@ TriangleStrainLimitingConstraint::TriangleStrainLimitingConstraint(
 ///////////////////////////////////////////////////////////////////////////////
 /* Aq = F & Bp = F_clamped! */
 SHAPEOP_INLINE void TriangleStrainLimitingConstraint::project(
-    const Matrix3X &positions, Matrix3X &projections, Matrix3X &f_int_nonePD,
-    const Matrix3X &oldPositions)
+    const Matrix3X &positions, Matrix3X &projections, [[maybe_unused]] Matrix3X &f_int_nonePD,
+    [[maybe_unused]] const Matrix3X &oldPositions)
 {
     Matrix32 edges, P;
     edges.col(0) = (positions.col(idI_[1]) - positions.col(idI_[0]));
@@ -787,8 +787,8 @@ TetrahedronStrainLimitingConstraint::TetrahedronStrainLimitingConstraint(
 }
 ///////////////////////////////////////////////////////////////////////////////
 SHAPEOP_INLINE void TetrahedronStrainLimitingConstraint::project(
-    const Matrix3X &positions, Matrix3X &projections, Matrix3X &f_int_nonePD,
-    const Matrix3X &oldPositions)
+    const Matrix3X &positions, Matrix3X &projections, [[maybe_unused]] Matrix3X &f_int_nonePD,
+    [[maybe_unused]] const Matrix3X &oldPositions)
 {
     Matrix33 edges;
     for (int i = 0; i < 3; ++i)
@@ -859,8 +859,8 @@ SHAPEOP_INLINE void AreaConstraint::calculateArea(const Matrix3X &positions, Sca
 }
 ///////////////////////////////////////////////////////////////////////////////
 SHAPEOP_INLINE void AreaConstraint::project(
-    const Matrix3X &positions, Matrix3X &projections, Matrix3X &f_int_nonePD,
-    const Matrix3X &oldPositions)
+    const Matrix3X &positions, Matrix3X &projections, [[maybe_unused]] Matrix3X &f_int_nonePD,
+    [[maybe_unused]] const Matrix3X &oldPositions)
 {
     Matrix32 edges, P;
     edges.col(0) = (positions.col(idI_[1]) - positions.col(idI_[0]));
@@ -931,8 +931,8 @@ SHAPEOP_INLINE void VolumeConstraint::calculateVolume(const Matrix3X &positions,
 }
 ///////////////////////////////////////////////////////////////////////////////
 SHAPEOP_INLINE void VolumeConstraint::project(
-    const Matrix3X &positions, Matrix3X &projections, Matrix3X &f_int_nonePD,
-    const Matrix3X &oldPositions)
+    const Matrix3X &positions, Matrix3X &projections, [[maybe_unused]] Matrix3X &f_int_nonePD,
+    [[maybe_unused]] const Matrix3X &oldPositions)
 {
     Matrix33 edges;
     for (int i = 0; i < 3; ++i)
@@ -1010,8 +1010,8 @@ SHAPEOP_INLINE BendingConstraint::BendingConstraint(
 }
 ///////////////////////////////////////////////////////////////////////////////
 SHAPEOP_INLINE void BendingConstraint::project(
-    const Matrix3X &positions, Matrix3X &projections, Matrix3X &f_int_nonePD,
-    const Matrix3X &oldPositions)
+    const Matrix3X &positions, Matrix3X &projections, [[maybe_unused]] Matrix3X &f_int_nonePD,
+    [[maybe_unused]] const Matrix3X &oldPositions)
 {
     Vector3 e = Vector3::Zero();
     if (n_ > 1e-6) {
@@ -1051,8 +1051,8 @@ SHAPEOP_INLINE ClosenessConstraint::ClosenessConstraint(
 }
 ///////////////////////////////////////////////////////////////////////////////
 SHAPEOP_INLINE void ClosenessConstraint::project(
-    const Matrix3X & /*positions*/, Matrix3X &projections, Matrix3X &f_int_nonePD,
-    const Matrix3X &oldPositions)
+    const Matrix3X & /*positions*/, Matrix3X &projections, [[maybe_unused]] Matrix3X &f_int_nonePD,
+    [[maybe_unused]] const Matrix3X &oldPositions)
 {
     projections.col(idO_) = rest_ * weight_;
 }

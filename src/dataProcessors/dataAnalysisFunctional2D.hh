@@ -1357,7 +1357,8 @@ void BoundedBoxScalarSumFunctional2D<T>::processBulk(Box2D domain, ScalarField2D
 
 template <typename T>
 void BoundedBoxScalarSumFunctional2D<T>::processEdge(
-    int direction, int orientation, Box2D domain, ScalarField2D<T> &scalarField)
+    [[maybe_unused]] int direction, [[maybe_unused]] int orientation, Box2D domain,
+    ScalarField2D<T> &scalarField)
 {
     BlockStatistics &statistics = this->getStatistics();
     for (plint iX = domain.x0; iX <= domain.x1; ++iX) {
@@ -1371,7 +1372,8 @@ void BoundedBoxScalarSumFunctional2D<T>::processEdge(
 
 template <typename T>
 void BoundedBoxScalarSumFunctional2D<T>::processCorner(
-    int normalX, int normalY, Box2D domain, ScalarField2D<T> &scalarField)
+    [[maybe_unused]] int normalX, [[maybe_unused]] int normalY, Box2D domain,
+    ScalarField2D<T> &scalarField)
 {
     BlockStatistics &statistics = this->getStatistics();
     for (plint iX = domain.x0; iX <= domain.x1; ++iX) {

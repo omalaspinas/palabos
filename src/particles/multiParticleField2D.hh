@@ -44,7 +44,7 @@ namespace plb {
 
 template <class ParticleFieldT>
 std::unique_ptr<MultiParticleField2D<ParticleFieldT> > defaultGenerateParticleField2D(
-    MultiBlockManagement2D const &management, plint unnamedDummyArg)
+    MultiBlockManagement2D const &management, [[maybe_unused]] plint unnamedDummyArg)
 {
     return std::unique_ptr<MultiParticleField2D<ParticleFieldT> >(
         new MultiParticleField2D<ParticleFieldT>(
@@ -211,7 +211,7 @@ int MultiParticleField2D<ParticleFieldT>::getStaticId() const
 template <class ParticleFieldT>
 void MultiParticleField2D<ParticleFieldT>::copyReceive(
     MultiBlock2D const &fromBlock, Box2D const &fromDomain, Box2D const &toDomain,
-    modif::ModifT whichData)
+    [[maybe_unused]] modif::ModifT whichData)
 {
     MultiParticleField2D<ParticleFieldT> const *fromField =
         dynamic_cast<MultiParticleField2D<ParticleFieldT> const *>(&fromBlock);

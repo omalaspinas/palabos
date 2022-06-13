@@ -117,8 +117,8 @@ void RMdynamics<T, Descriptor>::collide(Cell<T, Descriptor> &cell, BlockStatisti
 
 template <typename T, template <typename U> class Descriptor>
 void RMdynamics<T, Descriptor>::collideExternal(
-    Cell<T, Descriptor> &cell, T rhoBar, Array<T, Descriptor<T>::d> const &j, T thetaBar,
-    BlockStatistics &stat)
+    Cell<T, Descriptor> &cell, [[maybe_unused]] T rhoBar, Array<T, Descriptor<T>::d> const &j,
+    [[maybe_unused]] T thetaBar, BlockStatistics &stat)
 {
     T rho;
     Array<T, Descriptor<T>::q> RM, RMeq;
@@ -141,8 +141,8 @@ void RMdynamics<T, Descriptor>::collideExternal(
 
 template <typename T, template <typename U> class Descriptor>
 void RMdynamics<T, Descriptor>::computeEquilibria(
-    Array<T, Descriptor<T>::q> &fEq, T rhoBar, Array<T, Descriptor<T>::d> const &j, T jSqr,
-    T thetaBar) const
+    Array<T, Descriptor<T>::q> &fEq, T rhoBar, Array<T, Descriptor<T>::d> const &j,
+    [[maybe_unused]] T jSqr, [[maybe_unused]] T thetaBar) const
 {
     T rho = rhoBar + 1.0;
     // Array<T, 3> u(j[0] / rho, j[1] / rho, j[2] / rho);
@@ -172,7 +172,7 @@ T RMdynamics<T, Descriptor>::computeEquilibrium(
 template <typename T, template <typename U> class Descriptor>
 void RMdynamics<T, Descriptor>::regularize(
     Cell<T, Descriptor> &cell, T rhoBar, Array<T, Descriptor<T>::d> const &j, T jSqr,
-    Array<T, SymmetricTensor<T, Descriptor>::n> const &PiNeq, T thetaBar) const
+    Array<T, SymmetricTensor<T, Descriptor>::n> const &PiNeq, [[maybe_unused]] T thetaBar) const
 {
     T invRho = Descriptor<T>::invRho(rhoBar);
     dynamicsTemplates<T, Descriptor>::complete_bgk_ma2_regularize(
@@ -214,7 +214,8 @@ void RMdynamics<T, Descriptor>::decomposeOrder0(
 
 template <typename T, template <typename U> class Descriptor>
 void RMdynamics<T, Descriptor>::decomposeOrder1(
-    Cell<T, Descriptor> const &cell, std::vector<T> &rawData) const
+    [[maybe_unused]] Cell<T, Descriptor> const &cell,
+    [[maybe_unused]] std::vector<T> &rawData) const
 {
     PLB_ASSERT(false);
 }
@@ -252,7 +253,8 @@ void RMdynamics<T, Descriptor>::recomposeOrder0(
 
 template <typename T, template <typename U> class Descriptor>
 void RMdynamics<T, Descriptor>::recomposeOrder1(
-    Cell<T, Descriptor> &cell, std::vector<T> const &rawData) const
+    [[maybe_unused]] Cell<T, Descriptor> &cell,
+    [[maybe_unused]] std::vector<T> const &rawData) const
 {
     PLB_ASSERT(false);
 }
@@ -317,8 +319,8 @@ void HMdynamics<T, Descriptor>::collide(Cell<T, Descriptor> &cell, BlockStatisti
 
 template <typename T, template <typename U> class Descriptor>
 void HMdynamics<T, Descriptor>::collideExternal(
-    Cell<T, Descriptor> &cell, T rhoBar, Array<T, Descriptor<T>::d> const &j, T thetaBar,
-    BlockStatistics &stat)
+    Cell<T, Descriptor> &cell, T rhoBar, Array<T, Descriptor<T>::d> const &j,
+    [[maybe_unused]] T thetaBar, BlockStatistics &stat)
 {
     T falseRho;
     Array<T, Descriptor<T>::q> HM, HMeq;
@@ -353,8 +355,8 @@ void HMdynamics<T, Descriptor>::collideExternal(
 
 template <typename T, template <typename U> class Descriptor>
 void HMdynamics<T, Descriptor>::computeEquilibria(
-    Array<T, Descriptor<T>::q> &fEq, T rhoBar, Array<T, Descriptor<T>::d> const &j, T jSqr,
-    T thetaBar) const
+    Array<T, Descriptor<T>::q> &fEq, T rhoBar, Array<T, Descriptor<T>::d> const &j,
+    [[maybe_unused]] T jSqr, [[maybe_unused]] T thetaBar) const
 {
     T rho = rhoBar + 1.0;
     // Array<T, 3> u(j[0] / rho, j[1] / rho, j[2] / rho);
@@ -384,7 +386,7 @@ T HMdynamics<T, Descriptor>::computeEquilibrium(
 template <typename T, template <typename U> class Descriptor>
 void HMdynamics<T, Descriptor>::regularize(
     Cell<T, Descriptor> &cell, T rhoBar, Array<T, Descriptor<T>::d> const &j, T jSqr,
-    Array<T, SymmetricTensor<T, Descriptor>::n> const &PiNeq, T thetaBar) const
+    Array<T, SymmetricTensor<T, Descriptor>::n> const &PiNeq, [[maybe_unused]] T thetaBar) const
 {
     T invRho = Descriptor<T>::invRho(rhoBar);
     dynamicsTemplates<T, Descriptor>::complete_bgk_ma2_regularize(
@@ -426,7 +428,8 @@ void HMdynamics<T, Descriptor>::decomposeOrder0(
 
 template <typename T, template <typename U> class Descriptor>
 void HMdynamics<T, Descriptor>::decomposeOrder1(
-    Cell<T, Descriptor> const &cell, std::vector<T> &rawData) const
+    [[maybe_unused]] Cell<T, Descriptor> const &cell,
+    [[maybe_unused]] std::vector<T> &rawData) const
 {
     PLB_ASSERT(false);
 }
@@ -464,7 +467,8 @@ void HMdynamics<T, Descriptor>::recomposeOrder0(
 
 template <typename T, template <typename U> class Descriptor>
 void HMdynamics<T, Descriptor>::recomposeOrder1(
-    Cell<T, Descriptor> &cell, std::vector<T> const &rawData) const
+    [[maybe_unused]] Cell<T, Descriptor> &cell,
+    [[maybe_unused]] std::vector<T> const &rawData) const
 {
     PLB_ASSERT(false);
 }
@@ -527,8 +531,8 @@ void CMdynamics<T, Descriptor>::collide(Cell<T, Descriptor> &cell, BlockStatisti
 
 template <typename T, template <typename U> class Descriptor>
 void CMdynamics<T, Descriptor>::collideExternal(
-    Cell<T, Descriptor> &cell, T rhoBar, Array<T, Descriptor<T>::d> const &j, T thetaBar,
-    BlockStatistics &stat)
+    Cell<T, Descriptor> &cell, T rhoBar, [[maybe_unused]] Array<T, Descriptor<T>::d> const &j,
+    [[maybe_unused]] T thetaBar, BlockStatistics &stat)
 {
     T falseRho;
     Array<T, Descriptor<T>::d> u;
@@ -560,8 +564,8 @@ void CMdynamics<T, Descriptor>::collideExternal(
 
 template <typename T, template <typename U> class Descriptor>
 void CMdynamics<T, Descriptor>::computeEquilibria(
-    Array<T, Descriptor<T>::q> &fEq, T rhoBar, Array<T, Descriptor<T>::d> const &j, T jSqr,
-    T thetaBar) const
+    Array<T, Descriptor<T>::q> &fEq, T rhoBar, Array<T, Descriptor<T>::d> const &j,
+    [[maybe_unused]] T jSqr, [[maybe_unused]] T thetaBar) const
 {
     T rho = rhoBar + 1.0;
     // Array<T, 3> u(j[0] / rho, j[1] / rho, j[2] / rho);
@@ -591,7 +595,7 @@ T CMdynamics<T, Descriptor>::computeEquilibrium(
 template <typename T, template <typename U> class Descriptor>
 void CMdynamics<T, Descriptor>::regularize(
     Cell<T, Descriptor> &cell, T rhoBar, Array<T, Descriptor<T>::d> const &j, T jSqr,
-    Array<T, SymmetricTensor<T, Descriptor>::n> const &PiNeq, T thetaBar) const
+    Array<T, SymmetricTensor<T, Descriptor>::n> const &PiNeq, [[maybe_unused]] T thetaBar) const
 {
     T invRho = Descriptor<T>::invRho(rhoBar);
     dynamicsTemplates<T, Descriptor>::complete_bgk_ma2_regularize(
@@ -633,7 +637,8 @@ void CMdynamics<T, Descriptor>::decomposeOrder0(
 
 template <typename T, template <typename U> class Descriptor>
 void CMdynamics<T, Descriptor>::decomposeOrder1(
-    Cell<T, Descriptor> const &cell, std::vector<T> &rawData) const
+    [[maybe_unused]] Cell<T, Descriptor> const &cell,
+    [[maybe_unused]] std::vector<T> &rawData) const
 {
     PLB_ASSERT(false);
 }
@@ -671,7 +676,8 @@ void CMdynamics<T, Descriptor>::recomposeOrder0(
 
 template <typename T, template <typename U> class Descriptor>
 void CMdynamics<T, Descriptor>::recomposeOrder1(
-    Cell<T, Descriptor> &cell, std::vector<T> const &rawData) const
+    [[maybe_unused]] Cell<T, Descriptor> &cell,
+    [[maybe_unused]] std::vector<T> const &rawData) const
 {
     PLB_ASSERT(false);
 }
@@ -735,8 +741,8 @@ void CHMdynamics<T, Descriptor>::collide(Cell<T, Descriptor> &cell, BlockStatist
 
 template <typename T, template <typename U> class Descriptor>
 void CHMdynamics<T, Descriptor>::collideExternal(
-    Cell<T, Descriptor> &cell, T rhoBar, Array<T, Descriptor<T>::d> const &j, T thetaBar,
-    BlockStatistics &stat)
+    Cell<T, Descriptor> &cell, T rhoBar, [[maybe_unused]] Array<T, Descriptor<T>::d> const &j,
+    [[maybe_unused]] T thetaBar, BlockStatistics &stat)
 {
     T falseRho;
     Array<T, Descriptor<T>::d> u;
@@ -769,8 +775,8 @@ void CHMdynamics<T, Descriptor>::collideExternal(
 
 template <typename T, template <typename U> class Descriptor>
 void CHMdynamics<T, Descriptor>::computeEquilibria(
-    Array<T, Descriptor<T>::q> &fEq, T rhoBar, Array<T, Descriptor<T>::d> const &j, T jSqr,
-    T thetaBar) const
+    Array<T, Descriptor<T>::q> &fEq, T rhoBar, Array<T, Descriptor<T>::d> const &j,
+    [[maybe_unused]] T jSqr, [[maybe_unused]] T thetaBar) const
 {
     T rho = rhoBar + 1.0;
     // Array<T, 3> u(j[0] / rho, j[1] / rho, j[2] / rho);
@@ -800,7 +806,7 @@ T CHMdynamics<T, Descriptor>::computeEquilibrium(
 template <typename T, template <typename U> class Descriptor>
 void CHMdynamics<T, Descriptor>::regularize(
     Cell<T, Descriptor> &cell, T rhoBar, Array<T, Descriptor<T>::d> const &j, T jSqr,
-    Array<T, SymmetricTensor<T, Descriptor>::n> const &PiNeq, T thetaBar) const
+    Array<T, SymmetricTensor<T, Descriptor>::n> const &PiNeq, [[maybe_unused]] T thetaBar) const
 {
     T invRho = Descriptor<T>::invRho(rhoBar);
     dynamicsTemplates<T, Descriptor>::complete_bgk_ma2_regularize(
@@ -842,7 +848,8 @@ void CHMdynamics<T, Descriptor>::decomposeOrder0(
 
 template <typename T, template <typename U> class Descriptor>
 void CHMdynamics<T, Descriptor>::decomposeOrder1(
-    Cell<T, Descriptor> const &cell, std::vector<T> &rawData) const
+    [[maybe_unused]] Cell<T, Descriptor> const &cell,
+    [[maybe_unused]] std::vector<T> &rawData) const
 {
     PLB_ASSERT(false);
 }
@@ -880,7 +887,8 @@ void CHMdynamics<T, Descriptor>::recomposeOrder0(
 
 template <typename T, template <typename U> class Descriptor>
 void CHMdynamics<T, Descriptor>::recomposeOrder1(
-    Cell<T, Descriptor> &cell, std::vector<T> const &rawData) const
+    [[maybe_unused]] Cell<T, Descriptor> &cell,
+    [[maybe_unused]] std::vector<T> const &rawData) const
 {
     PLB_ASSERT(false);
 }
@@ -943,8 +951,8 @@ void Kdynamics<T, Descriptor>::collide(Cell<T, Descriptor> &cell, BlockStatistic
 
 template <typename T, template <typename U> class Descriptor>
 void Kdynamics<T, Descriptor>::collideExternal(
-    Cell<T, Descriptor> &cell, T rhoBar, Array<T, Descriptor<T>::d> const &j, T thetaBar,
-    BlockStatistics &stat)
+    Cell<T, Descriptor> &cell, T rhoBar, [[maybe_unused]] Array<T, Descriptor<T>::d> const &j,
+    [[maybe_unused]] T thetaBar, BlockStatistics &stat)
 {
     T falseRho;
     Array<T, Descriptor<T>::d> u;
@@ -976,8 +984,8 @@ void Kdynamics<T, Descriptor>::collideExternal(
 
 template <typename T, template <typename U> class Descriptor>
 void Kdynamics<T, Descriptor>::computeEquilibria(
-    Array<T, Descriptor<T>::q> &fEq, T rhoBar, Array<T, Descriptor<T>::d> const &j, T jSqr,
-    T thetaBar) const
+    Array<T, Descriptor<T>::q> &fEq, T rhoBar, Array<T, Descriptor<T>::d> const &j,
+    [[maybe_unused]] T jSqr, [[maybe_unused]] T thetaBar) const
 {
     T rho = rhoBar + 1.0;
     // Array<T, 3> u(j[0] / rho, j[1] / rho, j[2] / rho);
@@ -1007,7 +1015,7 @@ T Kdynamics<T, Descriptor>::computeEquilibrium(
 template <typename T, template <typename U> class Descriptor>
 void Kdynamics<T, Descriptor>::regularize(
     Cell<T, Descriptor> &cell, T rhoBar, Array<T, Descriptor<T>::d> const &j, T jSqr,
-    Array<T, SymmetricTensor<T, Descriptor>::n> const &PiNeq, T thetaBar) const
+    Array<T, SymmetricTensor<T, Descriptor>::n> const &PiNeq, [[maybe_unused]] T thetaBar) const
 {
     T invRho = Descriptor<T>::invRho(rhoBar);
     dynamicsTemplates<T, Descriptor>::complete_bgk_ma2_regularize(
@@ -1049,7 +1057,8 @@ void Kdynamics<T, Descriptor>::decomposeOrder0(
 
 template <typename T, template <typename U> class Descriptor>
 void Kdynamics<T, Descriptor>::decomposeOrder1(
-    Cell<T, Descriptor> const &cell, std::vector<T> &rawData) const
+    [[maybe_unused]] Cell<T, Descriptor> const &cell,
+    [[maybe_unused]] std::vector<T> &rawData) const
 {
     PLB_ASSERT(false);
 }
@@ -1087,7 +1096,8 @@ void Kdynamics<T, Descriptor>::recomposeOrder0(
 
 template <typename T, template <typename U> class Descriptor>
 void Kdynamics<T, Descriptor>::recomposeOrder1(
-    Cell<T, Descriptor> &cell, std::vector<T> const &rawData) const
+    [[maybe_unused]] Cell<T, Descriptor> &cell,
+    [[maybe_unused]] std::vector<T> const &rawData) const
 {
     PLB_ASSERT(false);
 }
@@ -1156,8 +1166,8 @@ void GHdynamics<T, Descriptor>::collide(Cell<T, Descriptor> &cell, BlockStatisti
 
 template <typename T, template <typename U> class Descriptor>
 void GHdynamics<T, Descriptor>::collideExternal(
-    Cell<T, Descriptor> &cell, T rhoBar, Array<T, Descriptor<T>::d> const &j, T thetaBar,
-    BlockStatistics &stat)
+    Cell<T, Descriptor> &cell, T rhoBar, Array<T, Descriptor<T>::d> const &j,
+    [[maybe_unused]] T thetaBar, BlockStatistics &stat)
 {
     T falseRho;
     Array<T, Descriptor<T>::q> GH, GHeq;
@@ -1193,8 +1203,8 @@ void GHdynamics<T, Descriptor>::collideExternal(
 
 template <typename T, template <typename U> class Descriptor>
 void GHdynamics<T, Descriptor>::computeEquilibria(
-    Array<T, Descriptor<T>::q> &fEq, T rhoBar, Array<T, Descriptor<T>::d> const &j, T jSqr,
-    T thetaBar) const
+    Array<T, Descriptor<T>::q> &fEq, T rhoBar, Array<T, Descriptor<T>::d> const &j,
+    [[maybe_unused]] T jSqr, [[maybe_unused]] T thetaBar) const
 {
     T rho = rhoBar + 1.0;
     // Array<T, 3> u(j[0] / rho, j[1] / rho, j[2] / rho);
@@ -1224,7 +1234,7 @@ T GHdynamics<T, Descriptor>::computeEquilibrium(
 template <typename T, template <typename U> class Descriptor>
 void GHdynamics<T, Descriptor>::regularize(
     Cell<T, Descriptor> &cell, T rhoBar, Array<T, Descriptor<T>::d> const &j, T jSqr,
-    Array<T, SymmetricTensor<T, Descriptor>::n> const &PiNeq, T thetaBar) const
+    Array<T, SymmetricTensor<T, Descriptor>::n> const &PiNeq, [[maybe_unused]] T thetaBar) const
 {
     T invRho = Descriptor<T>::invRho(rhoBar);
     dynamicsTemplates<T, Descriptor>::complete_bgk_ma2_regularize(
@@ -1266,7 +1276,8 @@ void GHdynamics<T, Descriptor>::decomposeOrder0(
 
 template <typename T, template <typename U> class Descriptor>
 void GHdynamics<T, Descriptor>::decomposeOrder1(
-    Cell<T, Descriptor> const &cell, std::vector<T> &rawData) const
+    [[maybe_unused]] Cell<T, Descriptor> const &cell,
+    [[maybe_unused]] std::vector<T> &rawData) const
 {
     PLB_ASSERT(false);
 }
@@ -1304,7 +1315,8 @@ void GHdynamics<T, Descriptor>::recomposeOrder0(
 
 template <typename T, template <typename U> class Descriptor>
 void GHdynamics<T, Descriptor>::recomposeOrder1(
-    Cell<T, Descriptor> &cell, std::vector<T> const &rawData) const
+    [[maybe_unused]] Cell<T, Descriptor> &cell,
+    [[maybe_unused]] std::vector<T> const &rawData) const
 {
     PLB_ASSERT(false);
 }
@@ -1373,8 +1385,8 @@ void RRdynamics<T, Descriptor>::collide(Cell<T, Descriptor> &cell, BlockStatisti
 
 template <typename T, template <typename U> class Descriptor>
 void RRdynamics<T, Descriptor>::collideExternal(
-    Cell<T, Descriptor> &cell, T rhoBar, Array<T, Descriptor<T>::d> const &j, T thetaBar,
-    BlockStatistics &stat)
+    Cell<T, Descriptor> &cell, T rhoBar, Array<T, Descriptor<T>::d> const &j,
+    [[maybe_unused]] T thetaBar, BlockStatistics &stat)
 {
     T falseRho;
     Array<T, Descriptor<T>::q> RR, RReq;
@@ -1410,8 +1422,8 @@ void RRdynamics<T, Descriptor>::collideExternal(
 
 template <typename T, template <typename U> class Descriptor>
 void RRdynamics<T, Descriptor>::computeEquilibria(
-    Array<T, Descriptor<T>::q> &fEq, T rhoBar, Array<T, Descriptor<T>::d> const &j, T jSqr,
-    T thetaBar) const
+    Array<T, Descriptor<T>::q> &fEq, T rhoBar, Array<T, Descriptor<T>::d> const &j,
+    [[maybe_unused]] T jSqr, [[maybe_unused]] T thetaBar) const
 {
     T rho = rhoBar + 1.0;
     // Array<T, 3> u(j[0] / rho, j[1] / rho, j[2] / rho);
@@ -1441,7 +1453,7 @@ T RRdynamics<T, Descriptor>::computeEquilibrium(
 template <typename T, template <typename U> class Descriptor>
 void RRdynamics<T, Descriptor>::regularize(
     Cell<T, Descriptor> &cell, T rhoBar, Array<T, Descriptor<T>::d> const &j, T jSqr,
-    Array<T, SymmetricTensor<T, Descriptor>::n> const &PiNeq, T thetaBar) const
+    Array<T, SymmetricTensor<T, Descriptor>::n> const &PiNeq, [[maybe_unused]] T thetaBar) const
 {
     T invRho = Descriptor<T>::invRho(rhoBar);
     dynamicsTemplates<T, Descriptor>::complete_bgk_ma2_regularize(
@@ -1483,7 +1495,8 @@ void RRdynamics<T, Descriptor>::decomposeOrder0(
 
 template <typename T, template <typename U> class Descriptor>
 void RRdynamics<T, Descriptor>::decomposeOrder1(
-    Cell<T, Descriptor> const &cell, std::vector<T> &rawData) const
+    [[maybe_unused]] Cell<T, Descriptor> const &cell,
+    [[maybe_unused]] std::vector<T> &rawData) const
 {
     PLB_ASSERT(false);
 }
@@ -1521,7 +1534,8 @@ void RRdynamics<T, Descriptor>::recomposeOrder0(
 
 template <typename T, template <typename U> class Descriptor>
 void RRdynamics<T, Descriptor>::recomposeOrder1(
-    Cell<T, Descriptor> &cell, std::vector<T> const &rawData) const
+    [[maybe_unused]] Cell<T, Descriptor> &cell,
+    [[maybe_unused]] std::vector<T> const &rawData) const
 {
     PLB_ASSERT(false);
 }

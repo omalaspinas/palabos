@@ -220,7 +220,7 @@ class Pipe : public DomainFunctional3D {
 public:
     Pipe(Array<T, 3> center_, T radius_) : center(center_), radius(radius_) { }
 
-    virtual bool operator()(plint iX, plint iY, plint iZ) const
+    virtual bool operator()(plint iX, plint iY, [[maybe_unused]] plint iZ) const
     {
         // True if solid
         return (std::sqrt(util::sqr((T)iX - center[0]) + util::sqr((T)iY - center[1])) >= radius);
@@ -1575,6 +1575,9 @@ int main(int argc, char *argv[])
         {
             // Define number of bodies
             xmlFile["System_Setup"]["ht"].read(sp.ht);
+            // QUESTION: If these ifs are never satisfied Vtot is never
+            // initialized. Is that a desired behavior or should
+            // we warn the user?
             T Vtot;
             if (sp.Simulation_Type.compare("Shear_Flow") == 0
                 || sp.Simulation_Type.compare("Box_Poiseuille_Flow") == 0)

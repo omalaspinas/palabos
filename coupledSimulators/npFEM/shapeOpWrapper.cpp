@@ -362,7 +362,9 @@ void setOnSurfaceParticle(ShapeOp_Solver &s, std::string filename)
     s.set_onSurfaceParticle(onSurfaceParticle);
 }
 
-void addVertexForce(ShapeOp_Solver &s, const plb::npfem::Matrix3X &forces, const int cell_id)
+// QUESTION: Should we remove cell_id?
+void addVertexForce(
+    ShapeOp_Solver &s, const plb::npfem::Matrix3X &forces, [[maybe_unused]] const int cell_id)
 {
     // In the RBC implementation the Force Id coincides with the vertex Id
     // Both ways to edit Vertex forces are equivalent. I keep both for legacy
@@ -380,7 +382,9 @@ void addVertexForce(ShapeOp_Solver &s, const plb::npfem::Matrix3X &forces, const
     */
 }
 
-void editVertexForce(ShapeOp_Solver &s, const plb::npfem::Matrix3X &forces, const int cell_id)
+// QUESTION: Should we remove cell_id?
+void editVertexForce(
+    ShapeOp_Solver &s, const plb::npfem::Matrix3X &forces, [[maybe_unused]] const int cell_id)
 {
     // In the RBC implementation the Force Id coincides with the vertex Id
     // Both ways to edit Vertex forces are equivalent. I keep both for legacy

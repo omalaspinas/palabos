@@ -140,10 +140,10 @@ int MultiGridScalarField2D<T>::getBlockId() const
     return fields[0]->getStaticId();
 }
 
-// TODO: This function does nothing.
+// QUESTION: This function does nothing. Remove?
 template <typename T>
 std::unique_ptr<MultiScalarField2D<T> > MultiGridScalarField2D<T>::convertToCoarsest(
-    plint dimDx, plint dimDt)
+    [[maybe_unused]] plint dimDx, [[maybe_unused]] plint dimDt)
 {
     PLB_ASSERT(false);
 
@@ -166,10 +166,10 @@ std::unique_ptr<MultiScalarField2D<T> > MultiGridScalarField2D<T>::convertToCoar
     //      return std::unique_ptr<MultiScalarField2D<T> >(copy);
 }
 
-// TODO: This function does nothing.
+// QUESTION: This function does nothing, why? Remove?
 template <typename T>
 std::unique_ptr<MultiScalarField2D<T> > MultiGridScalarField2D<T>::convertToFinest(
-    plint dimDx, plint dimDt)
+    [[maybe_unused]] plint dimDx, [[maybe_unused]] plint dimDt)
 {
     PLB_ASSERT(false);
     // TODO: modify avec new functions
@@ -191,28 +191,30 @@ std::unique_ptr<MultiScalarField2D<T> > MultiGridScalarField2D<T>::convertToFine
 
 /* ************** MultiGridTensorField2D ******************* */
 
-// TODO: Unused management_and behaviorLevel_
+// QUESTION: Unused management_and behaviorLevel_. Remove?
 template <typename T, int nDim>
 MultiGridTensorField2D<T, nDim>::MultiGridTensorField2D(
-    MultiGridManagement2D management_, std::vector<BlockCommunicator2D *> communicators_,
-    std::vector<CombinedStatistics *> combinedStatistics_, plint behaviorLevel_)
+    [[maybe_unused]] MultiGridManagement2D management_,
+    std::vector<BlockCommunicator2D *> communicators_,
+    std::vector<CombinedStatistics *> combinedStatistics_, [[maybe_unused]] plint behaviorLevel_)
 {
     allocateFields(communicators_, combinedStatistics_);
 }
 
-// TODO: Unused management_and behaviorLevel_
+// QUESTION: Unused management_and behaviorLevel_, remove it maybe?
 template <typename T, int nDim>
 MultiGridTensorField2D<T, nDim>::MultiGridTensorField2D(
-    MultiGridManagement2D management_, plint behaviorLevel_)
+    [[maybe_unused]] MultiGridManagement2D management_, [[maybe_unused]] plint behaviorLevel_)
 {
     allocateFields(
         defaultMultiGridPolicy2D().getBlockCommunicator<T>(this->getNumLevels()),
         defaultMultiGridPolicy2D().getCombinedStatistics(this->getNumLevels()));
 }
 
-// TODO: Unused rhs
+// QUESTION: Unused rhs why?
 template <typename T, int nDim>
-MultiGridTensorField2D<T, nDim>::MultiGridTensorField2D(MultiGridTensorField2D<T, nDim> const &rhs)
+MultiGridTensorField2D<T, nDim>::MultiGridTensorField2D(
+    [[maybe_unused]] MultiGridTensorField2D<T, nDim> const &rhs)
 {
     allocateFields();
 }
@@ -300,10 +302,10 @@ void MultiGridTensorField2D<T, nDim>::allocateFields(
         this->getMultiGridManagement(), communicators, combinedStatistics);
 }
 
-// TODO: This function does nothing
+// QUESTION: This function does nothing should be remove it?
 template <typename T, int nDim>
 std::unique_ptr<MultiTensorField2D<T, nDim> > MultiGridTensorField2D<T, nDim>::convertToCoarsest(
-    plint dimDx, plint dimDt)
+    [[maybe_unused]] plint dimDx, [[maybe_unused]] plint dimDt)
 {
     PLB_ASSERT(false);
     // TODO: modify avec new functions
@@ -325,11 +327,12 @@ std::unique_ptr<MultiTensorField2D<T, nDim> > MultiGridTensorField2D<T, nDim>::c
     //      return std::unique_ptr<MultiTensorField2D<T,nDim> >(copy);
 }
 
-// TODO: This function does nothing
+// QUESTION: This function does nothing should be remove it?
 template <typename T, int nDim>
 std::unique_ptr<MultiTensorField2D<T, nDim> > MultiGridTensorField2D<T, nDim>::convertToFinest(
-    plint dimDx, plint dimDt)
+    [[maybe_unused]] plint dimDx, [[maybe_unused]] plint dimDt)
 {
+    PLB_ASSERT(false);
     // TODO: modify avec new functions
     //      MultiTensorField2D<T,nDim> *copy, *tmp;
     //      copy = joinMultiTensorInFinest(

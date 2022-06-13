@@ -117,7 +117,7 @@ public:
     SquarePoiseuilleDensityAndVelocity(IncomprFlowParam<T> const &parameters_, plint maxN_) :
         parameters(parameters_), maxN(maxN_)
     { }
-    void operator()(plint iX, plint iY, plint iZ, T &rho, Array<T, 3> &u) const
+    void operator()(plint iX, plint iY, [[maybe_unused]] plint iZ, T &rho, Array<T, 3> &u) const
     {
         rho = (T)1;
         u[0] = T();
@@ -136,7 +136,7 @@ public:
     SquarePoiseuilleVelocity(IncomprFlowParam<T> const &parameters_, plint maxN_) :
         parameters(parameters_), maxN(maxN_)
     { }
-    void operator()(plint iX, plint iY, plint iZ, Array<T, 3> &u) const
+    void operator()(plint iX, plint iY, [[maybe_unused]] plint iZ, Array<T, 3> &u) const
     {
         u[0] = T();
         u[1] = T();

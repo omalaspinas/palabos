@@ -58,7 +58,7 @@ public:
     CylinderShapeDomain3D(plb::plint cx_, plb::plint cz_, plb::plint radius) :
         cx(cx_), cz(cz_), radiusSqr(plb::util::sqr(radius))
     { }
-    virtual bool operator()(plb::plint iX, plb::plint iY, plb::plint iZ) const
+    virtual bool operator()(plb::plint iX, [[maybe_unused]] plb::plint iY, plb::plint iZ) const
     {
         return plb::util::sqr(iX - cx) + plb::util::sqr(iZ - cz) <= radiusSqr;
     }

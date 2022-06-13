@@ -85,9 +85,9 @@ public:
     ParticleRegistration2D() { }
 
 private:
-    ParticleRegistration2D(ParticleRegistration2D<T, Descriptor> const &rhs) { }
+    ParticleRegistration2D([[maybe_unused]] ParticleRegistration2D<T, Descriptor> const &rhs) { }
     ParticleRegistration2D<T, Descriptor> &operator=(
-        ParticleRegistration2D<T, Descriptor> const &rhs)
+        [[maybe_unused]] ParticleRegistration2D<T, Descriptor> const &rhs)
     {
         return *this;
     }

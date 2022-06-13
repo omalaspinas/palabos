@@ -1353,7 +1353,8 @@ struct comprehensiveDynamicsTemplatesImpl<T, descriptors::D3Q27DescriptorBase<T>
     // Gauss-Hermite formalisms. All formulations are equivalent for the D3Q27 so we use the fastest
     // one (RMs)
     static void CMcomputeEquilibrium(
-        T rho, Array<T, D::d> const &u, Array<T, D::q> const &CMeq, Array<T, D::q> &eq)
+        T rho, Array<T, D::d> const &u, [[maybe_unused]] Array<T, D::q> const &CMeq,
+        Array<T, D::q> &eq)
     {
         Array<T, D::q> RMeq;
         // Order 2
@@ -1945,7 +1946,8 @@ struct comprehensiveDynamicsTemplatesImpl<T, descriptors::D3Q27DescriptorBase<T>
     // Gauss-Hermite formalisms. All formulations are equivalent for the D3Q27 so we use the fastest
     // one (RMs)
     static void CHMcomputeEquilibrium(
-        T rho, Array<T, D::d> const &u, Array<T, D::q> const &CHMeq, Array<T, D::q> &eq)
+        T rho, Array<T, D::d> const &u, [[maybe_unused]] Array<T, D::q> const &CHMeq,
+        Array<T, D::q> &eq)
     {
         Array<T, D::q> RMeq;
         // Order 2
@@ -2625,7 +2627,8 @@ struct comprehensiveDynamicsTemplatesImpl<T, descriptors::D3Q27DescriptorBase<T>
     // Gauss-Hermite formalisms. All formulations are equivalent for the D3Q27 so we use the fastest
     // one (RMs)
     static void KcomputeEquilibrium(
-        T rho, Array<T, D::d> const &u, Array<T, D::q> const &Keq, Array<T, D::q> &eq)
+        T rho, Array<T, D::d> const &u, [[maybe_unused]] Array<T, D::q> const &Keq,
+        Array<T, D::q> &eq)
     {
         Array<T, D::q> RMeq;
         // Order 2
@@ -4882,8 +4885,10 @@ struct comprehensiveDynamicsTemplatesImpl<T, descriptors::D3Q19DescriptorBase<T>
     // Equilibrium populations based on 19 moments can be computed using either RM, HM, CM, CHM or
     // Gauss-Hermite formalisms. All formulations are equivalent for the D3Q19 as long as we stick
     // to non-weighted formulas (i.e, no Gauss-Hermite) so we use the fastest one (RMs)
+    // QUESTION: Is CMeq really necessary (or can we remove altogether)?
     static void CMcomputeEquilibrium(
-        T rho, Array<T, D::d> const &u, Array<T, D::q> const &CMeq, Array<T, D::q> &eq)
+        T rho, Array<T, D::d> const &u, [[maybe_unused]] Array<T, D::q> const &CMeq,
+        Array<T, D::q> &eq)
     {
         Array<T, D::q> RMeq;
         // Order 2
@@ -5245,8 +5250,10 @@ struct comprehensiveDynamicsTemplatesImpl<T, descriptors::D3Q19DescriptorBase<T>
     // Equilibrium populations based on 19 moments can be computed using either RM, HM, CM, CHM or
     // Gauss-Hermite formalisms. All formulations are equivalent for the D3Q19 as long as we stick
     // to non-weighted formulas (i.e, no Gauss-Hermite) so we use the fastest one (RMs)
+    // QUESTION: Is CHMeq really necessary? Or can me remove it?
     static void CHMcomputeEquilibrium(
-        T rho, Array<T, D::d> const &u, Array<T, D::q> const &CHMeq, Array<T, D::q> &eq)
+        T rho, Array<T, D::d> const &u, [[maybe_unused]] Array<T, D::q> const &CHMeq,
+        Array<T, D::q> &eq)
     {
         Array<T, D::q> RMeq;
         // Order 2
@@ -5651,8 +5658,10 @@ struct comprehensiveDynamicsTemplatesImpl<T, descriptors::D3Q19DescriptorBase<T>
     // Equilibrium populations based on 19 moments can be computed using either RM, HM, CM, CHM or
     // Gauss-Hermite formalisms. All formulations are equivalent for the D3Q19 as long as we stick
     // to non-weighted formulas (i.e, no Gauss-Hermite) so we use the fastest one (RMs)
+    // QUESTION: Is Keq really necessary? Or can me remove it?
     static void KcomputeEquilibrium(
-        T rho, Array<T, D::d> const &u, Array<T, D::q> const &Keq, Array<T, D::q> &eq)
+        T rho, Array<T, D::d> const &u, [[maybe_unused]] Array<T, D::q> const &Keq,
+        Array<T, D::q> &eq)
     {
         Array<T, D::q> RMeq;
         // Order 2

@@ -56,7 +56,7 @@ template <typename T>
 class ConstantDensity {
 public:
     ConstantDensity(T density_) : density(density_) { }
-    T operator()(plint iX, plint iY) const
+    T operator()([[maybe_unused]] plint iX, [[maybe_unused]] plint iY) const
     {
         return density;
     }

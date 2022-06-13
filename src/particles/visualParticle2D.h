@@ -52,10 +52,19 @@ public:
     VisualParticle2D(
         plint tag_, Array<T, 2> const &position, std::vector<T> const &scalars_,
         std::vector<Array<T, 2> > const &vectors_);
-    virtual void velocityToParticle(TensorField2D<T, 2> &velocityField, T scaling = 1.) { }
-    virtual void velocityToParticle(NTensorField2D<T> &velocityField, T scaling = 1.) { }
-    virtual void rhoBarJtoParticle(NTensorField2D<T> &rhoBarJfield, bool velIsJ, T scaling = 1.) { }
-    virtual void fluidToParticle(BlockLattice2D<T, Descriptor> &fluid, T scaling = 1.) { }
+    virtual void velocityToParticle(
+        [[maybe_unused]] TensorField2D<T, 2> &velocityField, [[maybe_unused]] T scaling = 1.)
+    { }
+    virtual void velocityToParticle(
+        [[maybe_unused]] NTensorField2D<T> &velocityField, [[maybe_unused]] T scaling = 1.)
+    { }
+    virtual void rhoBarJtoParticle(
+        [[maybe_unused]] NTensorField2D<T> &rhoBarJfield, [[maybe_unused]] bool velIsJ,
+        [[maybe_unused]] T scaling = 1.)
+    { }
+    virtual void fluidToParticle(
+        [[maybe_unused]] BlockLattice2D<T, Descriptor> &fluid, [[maybe_unused]] T scaling = 1.)
+    { }
     virtual void advance() { }
     virtual void serialize(HierarchicSerializer &serializer) const;
     virtual void unserialize(HierarchicUnserializer &unserializer);

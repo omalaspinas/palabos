@@ -65,7 +65,9 @@ class CuboidTriangleSelector : public TriangleSelector<T> {
 public:
     CuboidTriangleSelector(Cuboid<T> const &cuboid_) : cuboid(cuboid_) { }
 
-    virtual bool operator()(Array<Array<T, 3>, 3> const &triangle, plint partId) const
+    // QUESTION: partId is never used in these functions. Maybe we should remove it?
+    virtual bool operator()(
+        Array<Array<T, 3>, 3> const &triangle, [[maybe_unused]] plint partId) const
     {
         return doesIntersect(cuboid, triangle);
     }
@@ -90,7 +92,9 @@ public:
         cuboid(cuboid_), oneOverThree((T)1 / (T)3)
     { }
 
-    virtual bool operator()(Array<Array<T, 3>, 3> const &triangle, plint partId) const
+    // QUESTION: partId is never used in these functions. Maybe we should remove it?
+    virtual bool operator()(
+        Array<Array<T, 3>, 3> const &triangle, [[maybe_unused]] plint partId) const
     {
         Array<T, 3> centroid = oneOverThree * (triangle[0] + triangle[1] + triangle[2]);
         return isContained(centroid, cuboid);
@@ -146,7 +150,9 @@ public:
         }
     }
 
-    virtual bool operator()(Array<Array<T, 3>, 3> const &triangle, plint partId) const
+    // QUESTION: partId is never used in these functions. Maybe we should remove it?
+    virtual bool operator()(
+        Array<Array<T, 3>, 3> const &triangle, [[maybe_unused]] plint partId) const
     {
         SparseBlockStructure3D const &sparseBlock = management.getSparseBlockStructure();
         ThreadAttribution const &attribution = management.getThreadAttribution();
@@ -224,7 +230,9 @@ public:
         }
     }
 
-    virtual bool operator()(Array<Array<T, 3>, 3> const &triangle, plint partId) const
+    // QUESTION: partId is never used in these functions. Maybe we should remove it?
+    virtual bool operator()(
+        Array<Array<T, 3>, 3> const &triangle, [[maybe_unused]] plint partId) const
     {
         SparseBlockStructure3D const &sparseBlock = management.getSparseBlockStructure();
         ThreadAttribution const &attribution = management.getThreadAttribution();
@@ -321,7 +329,9 @@ public:
         }
     }
 
-    virtual bool operator()(Array<Array<T, 3>, 3> const &triangle, plint partId) const
+    // QUESTION: partId is never used in these functions. Maybe we should remove it?
+    virtual bool operator()(
+        Array<Array<T, 3>, 3> const &triangle, [[maybe_unused]] plint partId) const
     {
         Array<Array<T, 3>, 3> triangleLU = toLatticeUnits(triangle);
 
@@ -395,7 +405,9 @@ public:
         }
     }
 
-    virtual bool operator()(Array<Array<T, 3>, 3> const &triangle, plint partId) const
+    // QUESTION: partId is never used in these functions. Maybe we should remove it?
+    virtual bool operator()(
+        Array<Array<T, 3>, 3> const &triangle, [[maybe_unused]] plint partId) const
     {
         Array<Array<T, 3>, 3> triangleLU = toLatticeUnits(triangle);
         Array<T, 3> centroidLU = oneOverThree * (triangleLU[0] + triangleLU[1] + triangleLU[2]);

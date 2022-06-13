@@ -274,7 +274,7 @@ void XMLwriter::set(Array<T, N> const &values, plint precision)
 }
 
 template <>
-inline void XMLwriter::set<bool>(bool const &value, plint precision)
+inline void XMLwriter::set<bool>(bool const &value, [[maybe_unused]] plint precision)
 {
     if (value) {
         data_map[currentId].text = "True";

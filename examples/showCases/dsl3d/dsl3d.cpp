@@ -99,7 +99,7 @@ class DoubleShearLayerInitialVelocityField {
 public:
     DoubleShearLayerInitialVelocityField(Param<T> const &param_) : param(param_) { }
 
-    void operator()(plint iX, plint iY, plint iZ, T &rho, Array<T, 3> &u) const
+    void operator()(plint iX, plint iY, [[maybe_unused]] plint iZ, T &rho, Array<T, 3> &u) const
     {
         rho = (T)1;
 

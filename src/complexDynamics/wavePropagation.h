@@ -95,8 +95,7 @@ private:
     static T waveCollision(
         Cell<T, Descriptor> &cell, T rhoBar, Array<T, Descriptor<T>::d> const &j, T vs2);
     /// Implementation of equilibrium
-    static T waveEquilibrium(
-        plint iPop, T rhoBar, T invRho, Array<T, Descriptor<T>::d> const &j, T jSqr, T vs2);
+    static T waveEquilibrium(plint iPop, T rhoBar, Array<T, Descriptor<T>::d> const &j, T vs2);
 
 private:
     T vs2;  ///< speed of sound

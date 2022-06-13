@@ -180,8 +180,9 @@ ExecuteFunctionAction<Function> *ExecuteFunctionAction<Function>::clone() const
     return new ExecuteFunctionAction<Function>(*this);
 }
 
+// QUESTION: This looks strange why?
 template <class Function>
-void ExecuteFunctionAction<Function>::execute(std::vector<id_t> &allMultiBlocks)
+void ExecuteFunctionAction<Function>::execute([[maybe_unused]] std::vector<id_t> &allMultiBlocks)
 {
     f();
 }

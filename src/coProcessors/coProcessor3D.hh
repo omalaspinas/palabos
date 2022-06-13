@@ -41,6 +41,8 @@
 
 namespace plb {
 
+// QUESTION: These coprocessor files should probably be removed, no?
+
 template <typename T>
 int D3Q19ExampleCoProcessor3D<T>::addDomain(
     plint nx, plint ny, plint nz, T omega, int &domainHandle)
@@ -137,7 +139,9 @@ D3Q19CudaCoProcessor3D<T>::~D3Q19CudaCoProcessor3D()
 }
 
 template <typename T>
-int D3Q19CudaCoProcessor3D<T>::addDomain(plint nx, plint ny, plint nz, T omega, int &domainHandle)
+int D3Q19CudaCoProcessor3D<T>::addDomain(
+    [[maybe_unused]] plint nx, [[maybe_unused]] plint ny, [[maybe_unused]] plint nz,
+    [[maybe_unused]] T omega, [[maybe_unused]] int &domainHandle)
 // int D3Q19CudaCoProcessor3D<T>::addDomain(Box3D const& domain, T omega)
 {
     /*
@@ -192,7 +196,8 @@ int D3Q19CudaCoProcessor3D<T>::addDomain(plint nx, plint ny, plint nz, T omega, 
 
 template <typename T>
 int D3Q19CudaCoProcessor3D<T>::send(
-    int domainHandle, Box3D const &subDomain, std::vector<char> const &data)
+    [[maybe_unused]] int domainHandle, [[maybe_unused]] Box3D const &subDomain,
+    [[maybe_unused]] std::vector<char> const &data)
 {
     /*
     PyObject *memories, *memory, *args;
@@ -282,7 +287,8 @@ for (int i = 0; i < size; i++) {
 }
 template <typename T>
 int D3Q19CudaCoProcessor3D<T>::receive(
-    int domainHandle, Box3D const &subDomain, std::vector<char> &data) const
+    [[maybe_unused]] int domainHandle, [[maybe_unused]] Box3D const &subDomain,
+    [[maybe_unused]] std::vector<char> &data) const
 {
     /*
     PyObject *memories, *memory, *args;
@@ -373,7 +379,7 @@ for (int i = 0; i < size/sizeof(T); i++) {
 }
 
 template <typename T>
-int D3Q19CudaCoProcessor3D<T>::collideAndStream(int domainHandle)
+int D3Q19CudaCoProcessor3D<T>::collideAndStream([[maybe_unused]] int domainHandle)
 {
     /*
     PyObject_CallMethod(this->simulation, "sim_step", NULL);

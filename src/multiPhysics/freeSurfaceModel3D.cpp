@@ -59,7 +59,7 @@ namespace plb {
 // CAUTION: This data processor will not work (will hang) if the multi-block passed does
 //          not have at least one atomic block on every MPI process.
 void FreeSurfaceComputeReductions3D::processGenericBlocks(
-    Box3D domain, std::vector<AtomicBlock3D *> blocks)
+    [[maybe_unused]] Box3D domain, std::vector<AtomicBlock3D *> blocks)
 {
     PLB_ASSERT(blocks.size() == 1);
 
@@ -106,7 +106,7 @@ void FreeSurfaceComputeSerialReductions3D::processGenericBlocks(
  */
 
 void FreeSurfaceResetReductionData3D::processGenericBlocks(
-    Box3D domain, std::vector<AtomicBlock3D *> blocks)
+    [[maybe_unused]] Box3D domain, std::vector<AtomicBlock3D *> blocks)
 {
     PLB_ASSERT(blocks.size() == 1);
     reductionData.reset();

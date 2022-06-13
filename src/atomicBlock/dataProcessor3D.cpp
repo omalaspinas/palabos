@@ -66,7 +66,7 @@ plint DataProcessor3D::extent() const
 /** By default, this method assumes a symmetric neighborhood relation
  *  and refers to the non-directed version of extent().
  */
-plint DataProcessor3D::extent(int direction) const
+plint DataProcessor3D::extent([[maybe_unused]] int direction) const
 {
     return extent();
 }
@@ -88,12 +88,16 @@ BlockDomain::DomainT DataProcessorGenerator3D::appliesTo() const
     return BlockDomain::bulk;
 }
 
-void DataProcessorGenerator3D::rescale(double dxScale_, double dtScale_) { }
+void DataProcessorGenerator3D::rescale(
+    [[maybe_unused]] double dxScale_, [[maybe_unused]] double dtScale_)
+{ }
 
 /** \param dxScale Scale factor for space scale dx.
  *  \param dtScale Scale factor for time scale dt.
  */
-void DataProcessorGenerator3D::setscale(int dxScale_, int dtScale_) { }
+void DataProcessorGenerator3D::setscale(
+    [[maybe_unused]] int dxScale_, [[maybe_unused]] int dtScale_)
+{ }
 
 void DataProcessorGenerator3D::getModificationPattern(std::vector<bool> &isWritten) const
 {
@@ -114,7 +118,9 @@ int DataProcessorGenerator3D::getStaticId() const
 }
 
 /** Default action does nothing to help transition period. **/
-void DataProcessorGenerator3D::serialize(Box3D &domain, std::string &data) const { }
+void DataProcessorGenerator3D::serialize(
+    [[maybe_unused]] Box3D &domain, [[maybe_unused]] std::string &data) const
+{ }
 
 ////////////////////// Class BoxedDataProcessorGenerator3D /////////////////
 
@@ -151,7 +157,8 @@ Box3D BoxedDataProcessorGenerator3D::getDomain() const
     return domain;
 }
 
-void BoxedDataProcessorGenerator3D::serialize(Box3D &domain_, std::string &data) const
+void BoxedDataProcessorGenerator3D::serialize(
+    Box3D &domain_, [[maybe_unused]] std::string &data) const
 {
     domain_ = domain;
 }
@@ -206,7 +213,9 @@ std::vector<Box3D> const &MultiBoxedDataProcessorGenerator3D::getDomains() const
     return domains;
 }
 
-void MultiBoxedDataProcessorGenerator3D::serialize(Box3D &domain_, std::string &data) const { }
+void MultiBoxedDataProcessorGenerator3D::serialize(
+    [[maybe_unused]] Box3D &domain_, [[maybe_unused]] std::string &data) const
+{ }
 
 ////////////////////// Class ReductiveDataProcessorGenerator3D /////////////////
 
@@ -228,7 +237,9 @@ BlockDomain::DomainT ReductiveDataProcessorGenerator3D::appliesTo() const
  *  \param dxScale Scale factor for space scale dx.
  *  \param dtScale Scale factor for time scale dt.
  */
-void ReductiveDataProcessorGenerator3D::rescale(double dxScale, double dtScale) { }
+void ReductiveDataProcessorGenerator3D::rescale(
+    [[maybe_unused]] double dxScale, [[maybe_unused]] double dtScale)
+{ }
 
 /** \param dxScale Scale factor for space scale dx.
  *  \param dtScale Scale factor for time scale dt.
@@ -277,7 +288,9 @@ void ReductiveDataProcessorGenerator3D::getModificationPattern(std::vector<bool>
     }
 }
 
-void ReductiveDataProcessorGenerator3D::serialize(Box3D &domain, std::string &data) const { }
+void ReductiveDataProcessorGenerator3D::serialize(
+    [[maybe_unused]] Box3D &domain, [[maybe_unused]] std::string &data) const
+{ }
 
 ////////////////////// Class BoxedReductiveDataProcessorGenerator3D /////////////////
 
@@ -316,7 +329,8 @@ Box3D BoxedReductiveDataProcessorGenerator3D::getDomain() const
     return domain;
 }
 
-void BoxedReductiveDataProcessorGenerator3D::serialize(Box3D &domain_, std::string &data) const
+void BoxedReductiveDataProcessorGenerator3D::serialize(
+    Box3D &domain_, [[maybe_unused]] std::string &data) const
 {
     domain_ = domain;
 }
@@ -371,7 +385,8 @@ std::vector<Box3D> const &MultiBoxedReductiveDataProcessorGenerator3D::getDomain
     return domains;
 }
 
-void MultiBoxedReductiveDataProcessorGenerator3D::serialize(Box3D &domain_, std::string &data) const
+void MultiBoxedReductiveDataProcessorGenerator3D::serialize(
+    [[maybe_unused]] Box3D &domain_, [[maybe_unused]] std::string &data) const
 { }
 
 ////////////////////// Class DottedDataProcessorGenerator3D /////////////////

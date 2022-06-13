@@ -51,7 +51,7 @@ bool NonLocalDynamics2D<T, Descriptor>::isNonLocal() const
 }
 
 template <typename T, template <typename U> class Descriptor>
-void NonLocalDynamics2D<T, Descriptor>::prepareCollision(Cell<T, Descriptor> &cell)
+void NonLocalDynamics2D<T, Descriptor>::prepareCollision([[maybe_unused]] Cell<T, Descriptor> &cell)
 { }
 
 template <typename T, template <typename U> class Descriptor>
