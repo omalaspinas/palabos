@@ -83,7 +83,7 @@ template <typename T>
 class PoiseuilleVelocity {
 public:
     PoiseuilleVelocity(IncomprFlowParam<T> parameters_) : parameters(parameters_) { }
-    void operator()(plint iX, plint iY, Array<T, 2> &u) const
+    void operator()([[maybe_unused]] plint iX, plint iY, Array<T, 2> &u) const
     {
         u[0] = poiseuilleVelocity(iY, parameters);
         u[1] = T();
@@ -98,7 +98,7 @@ template <typename T>
 class ConstantDensity {
 public:
     ConstantDensity(T density_) : density(density_) { }
-    T operator()(plint iX, plint iY) const
+    T operator()([[maybe_unused]] plint iX, [[maybe_unused]] plint iY) const
     {
         return density;
     }
@@ -125,14 +125,11 @@ private:
 
 class SurfaceVelocity {
 public:
-    SurfaceVelocity(T t_) : t(t_) { }
-    Array<T, 2> operator()(Array<T, 2> const &pos)
+    SurfaceVelocity() { }
+    Array<T, 2> operator()([[maybe_unused]] Array<T, 2> const &pos)
     {
         return Array<T, 2>(T(), T());
     }
-
-private:
-    T t;
 };
 
 void boundarySetup(
@@ -292,7 +289,7 @@ int main(int argc, char *argv[])
         plint ibIter = 5;
         for (int i = 0; i < ibIter; ++i) {
             inamuroIteration(
-                SurfaceVelocity(iT + 1.0), *rhoBar, *j, container, (T)parameters.getTau(), false);
+                SurfaceVelocity(), *rhoBar, *j, container, (T)parameters.getTau(), false);
         }
 
         // At this point, the state of the lattice corresponds to the

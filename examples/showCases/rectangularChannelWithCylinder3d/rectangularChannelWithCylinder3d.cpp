@@ -182,7 +182,7 @@ public:
     SigmaFunction(Box3D domain_, plint L_, T omega, T xiFactor) :
         domain(domain_), L(L_), xi(omega - xiFactor)
     { }
-    T operator()(plint iX, plint iY, plint iZ) const
+    T operator()([[maybe_unused]] plint iX, [[maybe_unused]] plint iY, plint iZ) const
     {
         std::vector<plint> distances;
         addDistance(domain.z0 + L, iZ, distances);
