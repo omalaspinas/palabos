@@ -30,7 +30,6 @@
  * simulation.
  **/
 
-#include "io/xdmfDataOutput.h"
 #include "palabos3D.h"
 #include "palabos3D.hh"
 

@@ -37,11 +37,16 @@
 
 #include "io/multiBlockReader3D.h"
 
+#include <algorithm>
+#include <memory>
+#include <numeric>
+
 #include "core/globalDefs.h"
 #include "core/multiBlockIdentifiers3D.h"
 #include "core/plbTypenames.h"
 #include "core/processorIdentifiers3D.h"
 #include "core/util.h"
+#include "io/hdfWrapper.h"
 #include "io/mpiParallelIO.h"
 #include "io/plbFiles.h"
 #include "libraryInterfaces/TINYXML_xmlIO.h"
@@ -49,12 +54,6 @@
 #include "multiBlock/multiBlockOperations3D.h"
 #include "multiBlock/nonLocalTransfer3D.h"
 #include "parallelism/mpiManager.h"
-#ifdef HDF5
-#include "io/hdfWrapper.h"
-#endif
-#include <algorithm>
-#include <memory>
-#include <numeric>
 
 namespace plb {
 
@@ -278,8 +277,8 @@ MultiBlock3D *load3dHDF(FileName fName)
     bool dynamicContent;
     plint cellDim;
 
-    openHDFfile(fName.get().c_str(), global::mpi().getGlobalCommunicator());
-    char *xml = readStringHDF5();
+    hsize_t fid = openHDFfile(fName.get().c_str(), global::mpi().getGlobalCommunicator());
+    char *xml = readStringHDF5(fid);
 
     XMLreader Parsed_xml = readXmlSpec(
         xml, fName.getPath(), boundingBox, offsets, envelopeWidth, gridLevel, cellDim, dataType,
@@ -315,14 +314,14 @@ MultiBlock3D *load3dHDF(FileName fName)
 
     std::vector<std::vector<char>> data;
     data = readParallelHDF5(
-        myBlockIds, offsets, global::mpi().getRank(), global::mpi().getGlobalCommunicator());
+        fid, myBlockIds, offsets, global::mpi().getRank(), global::mpi().getGlobalCommunicator());
 
     std::map<int, std::string> foreignIds;
     createDynamicsForeignIds3D(Parsed_xml, foreignIds);
     // intepreting binary blobs as lattice append here
     dumpRestoreData(*newBlock, dynamicContent, myBlockIds, data, foreignIds);
     readXmlProcessors(Parsed_xml, *newBlock);
-    closeHDFfile();
+    closeHDFfile(fid);
 
     return newBlock;
 }

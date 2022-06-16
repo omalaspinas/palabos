@@ -3,30 +3,9 @@ if(CI)
 
 enable_language(CXX)
 
-option(BUILD_HDF5 "compile with hdf5" ON)
-
-if(BUILD_HDF5)
-	set(HDF5_PREFER_PARALLEL ON)
-	find_package(HDF5 REQUIRED )
-	if(HDF5_FOUND)
-		if(HDF5_IS_PARALLEL AND ENABLE_MPI)
-			message("HDF5 PARALLEL FOUND")
-			add_definitions(-DHDF5)
-		else()
-			message("You need the parallel version of HDF5 to run this example, the code will compile and run, but without the HFD5 output!")
-			option(BUILD_HDF5 "compile with hdf5" OFF)
-		endif()
-	else()
-		message("You don’t have HDF5 library or cmake couldn’t find it, the code will compile and run, but without the HFD5 output!")
-		option(BUILD_HDF5 "compile with hdf5" OFF)
-	endif()
-endif()
-
 set(EXECUTABLE_NAME "aneurysm")
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
-
-include_directories(${HDF5_INCLUDE_DIRS})
 
 ###############################################################################
 set(PROJECT_NAME "aneurysm_hdf5")

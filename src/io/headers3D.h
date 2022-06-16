@@ -51,3 +51,4 @@
 #include "io/utilIO_3D.h"
 #include "io/vtkDataOutput.h"
 #include "io/vtkStructuredDataOutput.h"
+#include "io/xdmfDataOutput.h"
