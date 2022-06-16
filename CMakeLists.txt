@@ -111,6 +111,29 @@ endif()
 # Palabos Library
 ###############################################################################
 
+# Needed to compile hdf5 stuff. For CI we enable the hdf5 compilation.
+option(BUILD_HDF5 "compile with hdf5" ON)
+if(BUILD_HDF5)
+    message("Building with HDF5.")
+	set(HDF5_PREFER_PARALLEL ON)
+	find_package(HDF5 REQUIRED )
+	if(HDF5_FOUND)
+		if(HDF5_IS_PARALLEL AND ENABLE_MPI)
+			message("HDF5 PARALLEL FOUND")
+			add_definitions(-DHDF5)
+		else()
+			message("You need the parallel version of HDF5 to run this example, the code will compile and run, but without the HFD5 output!")
+			option(BUILD_HDF5 "compile with hdf5" OFF)
+		endif()
+	else()
+		message("You don’t have HDF5 library or cmake couldn’t find it, the code will compile and run, but without the HFD5 output!")
+		option(BUILD_HDF5 "compile with hdf5" OFF)
+	endif()
+endif()
+
+if(BUILD_HDF5)
+    include_directories(${HDF5_INCLUDE_DIRS})
+endif()
 include_directories("src")
 include_directories("externalLibraries")
 include_directories("externalLibraries/Eigen3")
@@ -119,6 +142,9 @@ file(GLOB_RECURSE PALABOS_SRC "src/*.cpp")
 file(GLOB_RECURSE EXT_SRC "externalLibraries/tinyxml/*.cpp")
 
 add_library(palabos STATIC ${PALABOS_SRC} ${EXT_SRC})
+if(BUILD_HDF5)
+        target_link_libraries(palabos ${HDF5_LIBRARIES} )
+endif()
 
 ###############################################################################
 
@@ -157,7 +183,11 @@ add_subdirectory(examples/codesByTopic/smagorinskyModel)
 add_subdirectory(examples/codesByTopic/transientStatistics)
 add_subdirectory(examples/codesByTopic/unsignedTypes)
 add_subdirectory(examples/codesByTopic/userInput)
-add_subdirectory(examples/codesByTopic/aneurysm_xdmf_hdf5_output)
+if(BUILD_HDF5)
+    add_subdirectory(examples/codesByTopic/aneurysm_xdmf_hdf5_output)
+else()
+    message("Without HDF5 enabled aneurysm_xdmf_hdf5_output cannot be compiled!")
+endif()
 add_subdirectory(examples/codesByTopic/TRTdynamics)
 # showCases
 add_subdirectory(examples/showCases/aneurysm)

@@ -38,6 +38,7 @@
 #include "io/multiBlockWriter3D.h"
 
 #include <algorithm>
+#include <ctime>
 #include <memory>
 #include <numeric>
 
@@ -47,6 +48,8 @@
 #include "core/plbTypenames.h"
 #include "core/processorIdentifiers3D.h"
 #include "core/util.h"
+#include "io/hdfWrapper.h"
+#include "io/hdfWrapper.hh"
 #include "io/mpiParallelIO.h"
 #include "io/plbFiles.h"
 #include "libraryInterfaces/TINYXML_xmlIO.h"
@@ -54,10 +57,6 @@
 #include "multiBlock/multiBlockOperations3D.h"
 #include "multiBlock/nonLocalTransfer3D.h"
 #include "parallelism/mpiManager.h"
-#ifdef HDF5
-#include "io/hdfWrapper.h"
-#endif
-#include <ctime>
 
 namespace plb {
 
@@ -226,7 +225,7 @@ void saveHDF(MultiBlock3D &multiBlock, FileName fName, bool dynamicContent)
     std::string s_fname = fName.get();
     std::string s_xml = xml.sprint();
 
-    writeParallelHDF5(
+    writeParallelHDF5<char>(
         s_fname.c_str(), "binary_blob", myBlockIds, offset, data, s_xml, global::mpi().getRank(),
         global::mpi().getGlobalCommunicator());
 

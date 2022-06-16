@@ -31,45 +31,39 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef XDMF_DATA_OUTPUT_H
-#define XDMF_DATA_OUTPUT_H
-
 #ifdef HDF5
 
-#include <fstream>
-#include <sstream>
-#include <string>
-#include <vector>
-
-#include "atomicBlock/dataField2D.h"
-#include "atomicBlock/dataField3D.h"
-#include "core/array.h"
-#include "core/globalDefs.h"
-#include "core/serializer.h"
-#include "io/hdfWrapper.h"
-#include "io/multiBlockWriter3D.h"
-#include "multiBlock/multiDataField2D.h"
-#include "multiBlock/multiDataField3D.h"
+#include "io/xdmfDataOutput.h"
 
 namespace plb {
 
-class ParallelXdmfDataWriter3D {
-public:
-    ParallelXdmfDataWriter3D(const std::string &fname);
-    ~ParallelXdmfDataWriter3D();
+ParallelXdmfDataWriter3D::ParallelXdmfDataWriter3D(const std::string &fname) :
+    xdmf_fname(FileName(fname + ".xdmf").defaultPath(global::directories().getOutputDir())),
+    h5_fname(FileName(fname + ".h5").defaultPath(global::directories().getOutputDir()))
+{
+    if (global::mpi().isMainProcessor()) {
+        fhandle = new std::ofstream(xdmf_fname.c_str());
+        if (!(*fhandle)) {
+            std::cerr << "could not open file " << fname << "\n";
+            return;
+        }
+        (*fhandle) << "<?xml version = \"1.0\"?>\n<!DOCTYPE Xdmf SYSTEM \"Xdmf.dtd\" []>\n";
+        (*fhandle) << "\t<Xdmf Version=\"2.0\">\n";
+        (*fhandle) << "\t\t<Domain>\n";
+        (*fhandle).flush();
+    }
+}
 
-    template <typename T>
-    void writeDataField(MultiBlock3D &multiBlock, const std::string &field_name);
-
-private:
-    std::string xdmf_fname;
-    std::string h5_fname;
-    std::ofstream *fhandle;
-    int field = 0;
-};
+ParallelXdmfDataWriter3D::~ParallelXdmfDataWriter3D()
+{
+    if (global::mpi().isMainProcessor()) {
+        (*fhandle) << "\t\t</Domain>\n";
+        (*fhandle) << "\t</Xdmf>\n";
+        (*fhandle).close();
+        delete fhandle;
+    }
+}
 
 }  // namespace plb
-
-#endif
 
 #endif

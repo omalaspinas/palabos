@@ -36,9 +36,11 @@
  */
 
 #include "io/base64.hh"
+#include "io/hdfWrapper.hh"
 #include "io/imageWriter.hh"
 #include "io/serializerIO.hh"
 #include "io/serializerIO_3D.hh"
 #include "io/transientStatistics3D.hh"
 #include "io/vtkDataOutput.hh"
 #include "io/vtkStructuredDataOutput.hh"
+#include "io/xdmfDataOutput.hh"
