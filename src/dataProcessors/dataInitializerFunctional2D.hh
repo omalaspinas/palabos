@@ -1409,7 +1409,7 @@ void SetExternalVectorFromTensorFieldFunctional2D<T, Descriptor, nDim>::getTypeO
     std::vector<modif::ModifT> &modified) const
 {
     modified[0] = modif::staticVariables;
-    modified[0] = modif::nothing;
+    modified[1] = modif::nothing;
 }
 
 template <typename T, template <typename U> class Descriptor, int nDim>
