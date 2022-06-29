@@ -54,9 +54,21 @@ maintainers life much simpler by haveing the CI perform the tests on your branch
 
 In order to have an uniform code formatting we are using a custom 
 `clang-format` configuration file that can be found at the root of the project 
-and which is named `.clang-format`. A `bash` script named `run-clang-format.sh` 
+and which is named `.clang-format`. It is mandatory to use `clang-format` version 14.
+A `bash` script named `run-clang-format.sh` 
 can help you format your code in place. Note that the continuous integration 
 will fail if you have not formatted your code before making your merge request.
+
+In order to help you with code formatting there is a `docker-compose`
+configuration at the root of the palabos repository (it requires the `docker` and `docker-compose`
+packages that are available on most platforms). To format the code
+through docker, run:
+
+```bash
+CURRENT_UID=$(id -u):$(id -g) docker-compose run clang_format
+```
+
+On some distributions one might need to run this command as root via `sudo`.
 
 ## Feature requests
 

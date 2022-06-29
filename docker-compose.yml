@@ -1,0 +1,13 @@
+# To run type: 
+# CURRENT_UID=$(id -u):$(id -g) docker-compose run clang_format
+# Certain systems might need to add sudo in front of the command.
+version: "3.3"
+services:
+    clang_format:
+        build: docker # build image
+        container_name: clang_format
+        volumes:
+            - ./:/palabos
+        entrypoint: ["./run-clang-format.sh", "-i"]
+        working_dir: /palabos
+        user: ${CURRENT_UID} # files changed have user permission
