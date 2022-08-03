@@ -127,7 +127,7 @@ T WaveDynamics<T, Descriptor>::getParameter(plint whichParameter) const
     switch (whichParameter) {
     case dynamicParams::sqrSpeedOfSound:
         return this->getVs2();
-    };
+    }
     return 0.;
 }
 
@@ -137,7 +137,7 @@ void WaveDynamics<T, Descriptor>::setParameter(plint whichParameter, T value)
     switch (whichParameter) {
     case dynamicParams::sqrSpeedOfSound:
         setVs2(value);
-    };
+    }
 }
 
 template <typename T, template <typename U> class Descriptor>

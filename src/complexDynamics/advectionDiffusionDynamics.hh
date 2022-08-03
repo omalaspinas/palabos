@@ -1294,7 +1294,7 @@ T CompleteAdvectionDiffusionTRTdynamics<T, Descriptor>::getParameter(plint which
         return this->getOmega();
     case dynamicParams::psi:
         return getPsi();
-    };
+    }
     return 0.;
 }
 
@@ -1307,7 +1307,7 @@ void CompleteAdvectionDiffusionTRTdynamics<T, Descriptor>::setParameter(
         this->setOmega(value);
     case dynamicParams::psi:
         setPsi(value);
-    };
+    }
 }
 
 template <typename T, template <typename U> class Descriptor>
