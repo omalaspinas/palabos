@@ -602,7 +602,7 @@ __device__ void project_surface_material(
     cuda_scalar rangeMin_ = rangeMin_d[tid];
     cuda_scalar rangeMax_ = rangeMax_d[tid];
     cuda_scalar weight_ = weight_d[tid];
-    // int idO_ = idO_d[tid] + blockIdx.x*3*n_projected_points;;
+    // int idO_ = idO_d[tid] + blockIdx.x*3*n_projected_points;
 
     cuda_scalar rest00_, rest01_, rest10_, rest11_;
     int idI0_, idI1_, idI2_, cell_shift = blockIdx.x * 3 * n_points;

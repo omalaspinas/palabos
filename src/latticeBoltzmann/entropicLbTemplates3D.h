@@ -60,7 +60,7 @@ namespace plb {
 //     {
 //         typedef descriptors::D3Q19Descriptor<T> L;
 
-//        T c_u = L::c[iPop][0]*u[0] + L::c[iPop][1]*u[1] + L::c[iPop][2]*u[2];;
+//        T c_u = L::c[iPop][0]*u[0] + L::c[iPop][1]*u[1] + L::c[iPop][2]*u[2];
 //        T c_u2 = c_u*c_u;
 //        T c_u3 = c_u2*c_u;
 //        T c_u4 = c_u3*c_u;
