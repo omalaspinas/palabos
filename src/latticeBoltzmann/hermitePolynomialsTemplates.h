@@ -160,33 +160,27 @@ struct HermiteTemplate {
         switch (order) {
         case 0: {
             return 1;
-            break;
         }
         case 1: {
             return 1 + Descriptor<T>::d;
-            break;
         }
         case 2: {
             return 1 + Descriptor<T>::d + SymmetricTensor<T, Descriptor>::n;
-            break;
         }
         case 3: {
             return 1 + Descriptor<T>::d + SymmetricTensor<T, Descriptor>::n
                    + SymmetricRankThreeTensor<T, Descriptor>::n;
-            break;
         }
         case 4: {
             return 1 + Descriptor<T>::d + SymmetricTensor<T, Descriptor>::n
                    + SymmetricRankThreeTensor<T, Descriptor>::n
                    + SymmetricRankFourTensor<T, Descriptor>::n;
-            break;
         }
         case 5: {
             return 1 + Descriptor<T>::d + SymmetricTensor<T, Descriptor>::n
                    + SymmetricRankThreeTensor<T, Descriptor>::n
                    + SymmetricRankFourTensor<T, Descriptor>::n
                    + SymmetricRankFiveTensor<T, Descriptor>::n;
-            break;
         }
         case 6: {
             return 1 + Descriptor<T>::d + SymmetricTensor<T, Descriptor>::n
@@ -194,7 +188,6 @@ struct HermiteTemplate {
                    + SymmetricRankFourTensor<T, Descriptor>::n
                    + SymmetricRankFiveTensor<T, Descriptor>::n
                    + SymmetricRankSixTensor<T, Descriptor>::n;
-            break;
         }
         default:
             return 0;

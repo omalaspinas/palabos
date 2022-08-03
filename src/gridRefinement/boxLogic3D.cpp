@@ -3881,16 +3881,12 @@ std::pair<plint, plint> getDirections(plint dir)
     switch (dir) {
     case 0:
         return std::make_pair<plint, plint>(OT::surface0N(), OT::surface0P());
-        break;
     case 1:
         return std::make_pair<plint, plint>(OT::surface1N(), OT::surface1P());
-        break;
     case 2:
         return std::make_pair<plint, plint>(OT::surface2N(), OT::surface2P());
-        break;
     default:
         return std::make_pair<plint, plint>(-1, -1);
-        break;
     }
     return std::make_pair<plint, plint>(-1, -1);
 }

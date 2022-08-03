@@ -1305,6 +1305,7 @@ void CompleteAdvectionDiffusionTRTdynamics<T, Descriptor>::setParameter(
     switch (whichParameter) {
     case dynamicParams::omega_shear:
         this->setOmega(value);
+        break;
     case dynamicParams::psi:
         setPsi(value);
     }

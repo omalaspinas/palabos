@@ -977,6 +977,7 @@ void CompleteTRTdynamics<T, Descriptor>::setParameter(plint whichParameter, T va
     switch (whichParameter) {
     case dynamicParams::omega_shear:
         this->setOmega(value);
+        break;
     case dynamicParams::psi:
         setPsi(value);
     }
@@ -2458,6 +2459,7 @@ void ChopardDynamics<T, Descriptor>::setParameter(plint whichParameter, T value)
     switch (whichParameter) {
     case dynamicParams::omega_shear:
         this->setOmega(value);
+        break;
     case dynamicParams::sqrSpeedOfSound:
         setVs2(value);
     }
