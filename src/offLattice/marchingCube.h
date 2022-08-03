@@ -360,6 +360,8 @@ public:
                     triangles.push_back(Array<Array<T, 3>, 3>(vertex1, vertex2, vertex3));
                 }
                 break;
+            default:
+                PLB_ASSERT(false);
             }
             return triangles;
         }
@@ -488,6 +490,9 @@ public:
                     return edge2Vertex;
                 case 2:
                     return edge3Vertex;
+                default:
+                    PLB_ASSERT(false);
+                    return Array<T, 3>::zero();
                 }
             }
             // Each element in the three following vectors defines the topology of
