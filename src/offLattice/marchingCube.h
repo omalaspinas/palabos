@@ -273,8 +273,11 @@ public:
                 return data.get(iX, iY, iZ).edge2triangles;
             case 2:
                 return data.get(iX, iY, iZ).edge3triangles;
-            default:
+            default: {
                 PLB_ASSERT(false);
+                static std::vector<OnEdgeTriangle> dummy;
+                return dummy;
+            }
             }
         }
         void setVertex(plint iX, plint iY, plint iZ, int iEdge, Array<T, 3> const &vertex)
@@ -310,6 +313,7 @@ public:
                 return data.get(iX, iY, iZ).edge3VertexDefined;
             default:
                 PLB_ASSERT(false);
+                return false;
             }
         }
         std::vector<Array<Array<T, 3>, 3> > reconstructTriangles(
@@ -413,6 +417,7 @@ public:
                 }
             default:
                 PLB_ASSERT(false);
+                return -1.0;
             }
         }
         std::vector<T> const &getScalars(plint iX, plint iY, plint iZ, int iEdge) const
@@ -424,8 +429,11 @@ public:
                 return data.get(iX, iY, iZ).scalars2;
             case 2:
                 return data.get(iX, iY, iZ).scalars3;
-            default:
+            default: {
                 PLB_ASSERT(false);
+                static std::vector<T> dummy;
+                return dummy;
+            }
             }
         }
         std::vector<T> &getScalars(plint iX, plint iY, plint iZ, int iEdge)
@@ -437,8 +445,11 @@ public:
                 return data.get(iX, iY, iZ).scalars2;
             case 2:
                 return data.get(iX, iY, iZ).scalars3;
-            default:
+            default: {
                 PLB_ASSERT(false);
+                static std::vector<T> dummy;
+                return dummy;
+            }
             }
         }
         bool isEdgeVertexDefined(plint iX, plint iY, plint iZ, int iEdge)
@@ -452,6 +463,7 @@ public:
                 return data.get(iX, iY, iZ).edge3VertexDefined;
             default:
                 PLB_ASSERT(false);
+                return false;
             }
         }
         plint getNx() const
@@ -490,9 +502,11 @@ public:
                     return edge2Vertex;
                 case 2:
                     return edge3Vertex;
-                default:
+                default: {
                     PLB_ASSERT(false);
-                    return Array<T, 3>::zero();
+                    static Array<T, 3> dummy((T)-1, (T)-1, (T)-1);
+                    return dummy;
+                }
                 }
             }
             // Each element in the three following vectors defines the topology of

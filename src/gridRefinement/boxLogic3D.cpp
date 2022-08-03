@@ -3886,9 +3886,9 @@ std::pair<plint, plint> getDirections(plint dir)
     case 2:
         return std::make_pair<plint, plint>(OT::surface2N(), OT::surface2P());
     default:
-        return std::make_pair<plint, plint>(-1, -1);
+        PLB_ASSERT(false);
+        return std::make_pair<plint, plint>(OT::undef(), OT::undef());
     }
-    return std::make_pair<plint, plint>(-1, -1);
 }
 
 std::pair<Array<plint, 2>, Array<plint, 2> > getEdgesIndices(

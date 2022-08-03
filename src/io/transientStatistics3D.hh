@@ -266,6 +266,7 @@ void TransientStatistics3D<T, Descriptor>::update()
                         functional = new UpdateDevScalarTransientStatistics3D<T>(n);
                         break;
                     default:
+                        PLB_ASSERT(false);
                         functional = 0;
                         break;
                     }
@@ -443,6 +444,7 @@ std::string TransientStatistics3D<T, Descriptor>::idToField(int iField) const
     case vorticityNorm:
         return std::string("vorticityNorm");
     default:
+        PLB_ASSERT(false);
         return std::string("error");
     }
 }
@@ -464,6 +466,7 @@ std::string TransientStatistics3D<T, Descriptor>::idToOperation(int iOperation) 
     case dev:
         return std::string("dev");
     default:
+        PLB_ASSERT(false);
         return std::string("error");
     }
 }
@@ -495,6 +498,7 @@ T TransientStatistics3D<T, Descriptor>::getScalingFactor(int iField, T dx, T dt,
         scalingFactor = 1.0 / dt;
         break;
     default:
+        PLB_ASSERT(false);
         scalingFactor = 0.0;
         break;
     }
@@ -566,6 +570,7 @@ MultiScalarField3D<T> *TransientStatistics3D<T, Descriptor>::computeField(int iF
                     .release();
         break;
     default:
+        PLB_ASSERT(false);
         field = 0;
         break;
     }
