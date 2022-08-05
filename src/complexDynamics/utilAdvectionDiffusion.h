@@ -78,10 +78,9 @@ private:
             normalY = 0;
             break;
         }
-        default: {
+        default:
             PLB_ASSERT(false);
             normalX = normalY = normalZ = 0;
-        }
         }
 
         // I define the dimension of Normal Vec=3 to make this routine usable for 2D and 3D flat
@@ -162,10 +161,9 @@ private:
                 normalY = -1;
             break;
         }
-        default: {
+        default:
             PLB_ASSERT(false);
             normalX = normalY = normalZ = 0;
-        }
         }
 
         // add zero velocity
