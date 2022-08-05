@@ -1563,6 +1563,8 @@ void toLatticeUnits(
     case 2:
         deltaX = zRange[1] - zRange[0];
         break;
+    default:
+        PLB_ASSERT(false);
     }
 
     T scalingFactor = (T)(resolution) / deltaX;

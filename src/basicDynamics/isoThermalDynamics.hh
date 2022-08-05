@@ -967,7 +967,7 @@ T CompleteTRTdynamics<T, Descriptor>::getParameter(plint whichParameter) const
         return this->getOmega();
     case dynamicParams::psi:
         return this->getPsi();
-    };
+    }
     return 0.;
 }
 
@@ -977,9 +977,10 @@ void CompleteTRTdynamics<T, Descriptor>::setParameter(plint whichParameter, T va
     switch (whichParameter) {
     case dynamicParams::omega_shear:
         this->setOmega(value);
+        break;
     case dynamicParams::psi:
         setPsi(value);
-    };
+    }
 }
 
 template <typename T, template <typename U> class Descriptor>
@@ -1203,7 +1204,7 @@ T CompleteRegularizedTRTdynamics<T, Descriptor>::getParameter(plint whichParamet
         return this->getOmega();
     case dynamicParams::psi:
         return this->getPsi();
-    };
+    }
     return 0.;
 }
 
@@ -1216,7 +1217,7 @@ void CompleteRegularizedTRTdynamics<T, Descriptor>::setParameter(plint whichPara
         break;
     case dynamicParams::psi:
         setPsi(value);
-    };
+    }
 }
 
 template <typename T, template <typename U> class Descriptor>
@@ -1406,7 +1407,7 @@ T TruncatedTRTdynamics<T, Descriptor>::getParameter(plint whichParameter) const
         return this->getOmega();
     case dynamicParams::psi:
         return this->getPsi();
-    };
+    }
     return 0.;
 }
 
@@ -1419,7 +1420,7 @@ void TruncatedTRTdynamics<T, Descriptor>::setParameter(plint whichParameter, T v
         break;
     case dynamicParams::psi:
         setPsi(value);
-    };
+    }
 }
 
 template <typename T, template <typename U> class Descriptor>
@@ -2448,7 +2449,7 @@ T ChopardDynamics<T, Descriptor>::getParameter(plint whichParameter) const
         return this->getOmega();
     case dynamicParams::sqrSpeedOfSound:
         return this->getVs2();
-    };
+    }
     return 0.;
 }
 
@@ -2458,9 +2459,10 @@ void ChopardDynamics<T, Descriptor>::setParameter(plint whichParameter, T value)
     switch (whichParameter) {
     case dynamicParams::omega_shear:
         this->setOmega(value);
+        break;
     case dynamicParams::sqrSpeedOfSound:
         setVs2(value);
-    };
+    }
 }
 
 template <typename T, template <typename U> class Descriptor>
