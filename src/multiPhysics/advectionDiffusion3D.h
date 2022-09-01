@@ -550,6 +550,55 @@ private:
     static T R;  // Universal gas constant [J / (mol * K)].
 };
 
+/*
+ * 3rd order Weighted Essentially Non-Oscillatory procedure for the convective term
+ * (includes diffusion term and settling velocity)
+ * Includes also the Runge-Kunta steps for the time discretization (to ensure the TVD properties)
+ */
+template <typename T>
+class WENO3 : public BoxProcessingFunctional3D {
+public:
+    WENO3(T d_, T eps_, bool neumann_, plint nx_, plint ny_, plint nz_);
+    virtual void processGenericBlocks(Box3D domain, std::vector<AtomicBlock3D *> fields);
+    virtual WENO3<T> *clone() const;
+    virtual void getTypeOfModification(std::vector<modif::ModifT> &modified) const;
+
+private:
+    T d, eps;
+    bool neumann;
+    plint nx, ny, nz;
+};
+
+/* ******** RK3Step1Functional3D ****************************************** */
+template <typename T>
+class RK3Step1Functional3D : public ScalarFieldBoxProcessingFunctional3D<T> {
+public:
+    virtual void process(Box3D domain, std::vector<ScalarField3D<T> *> scalarFields);
+    virtual RK3Step1Functional3D<T> *clone() const;
+    virtual void getTypeOfModification(std::vector<modif::ModifT> &modified) const;
+    virtual BlockDomain::DomainT appliesTo() const;
+};
+
+/* ******** RK3Step2Functional3D ****************************************** */
+template <typename T>
+class RK3Step2Functional3D : public ScalarFieldBoxProcessingFunctional3D<T> {
+public:
+    virtual void process(Box3D domain, std::vector<ScalarField3D<T> *> scalarFields);
+    virtual RK3Step2Functional3D<T> *clone() const;
+    virtual void getTypeOfModification(std::vector<modif::ModifT> &modified) const;
+    virtual BlockDomain::DomainT appliesTo() const;
+};
+
+/* ******** RK3Step3Functional3D ****************************************** */
+template <typename T>
+class RK3Step3Functional3D : public ScalarFieldBoxProcessingFunctional3D<T> {
+public:
+    virtual void process(Box3D domain, std::vector<ScalarField3D<T> *> scalarFields);
+    virtual RK3Step3Functional3D<T> *clone() const;
+    virtual void getTypeOfModification(std::vector<modif::ModifT> &modified) const;
+    virtual BlockDomain::DomainT appliesTo() const;
+};
+
 }  // namespace plb
 
 #endif  // ADVECTION_DIFFUSION_3D_H
