@@ -501,11 +501,6 @@ template <typename T>
 std::unique_ptr<MultiLevelTensorFieldForOutput3D<T, 3> > computeVorticity(
     const MultiLevelTensorField3D<T, 3> &velocities, Box3D domain, plint levelOfDomain, bool crop);
 
-template <typename T>
-std::unique_ptr<MultiLevelTensorFieldForOutput3D<T, 3> > computeVorticity(
-    const MultiLevelTensorField3D<T, 3> &vorticities, Box3D domain, plint levelOfDomain, bool crop,
-    plint tmp);
-
 /* *************** Strain Rate from Velocity field ********************* */
 
 template <typename T>

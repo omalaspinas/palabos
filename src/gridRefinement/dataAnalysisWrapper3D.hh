@@ -969,21 +969,6 @@ std::unique_ptr<MultiLevelTensorFieldForOutput3D<T, 3> > computeVorticity(
     return outputVorticity;
 }
 
-// QUESTION: tmp unused. Should we remove it?
-template <typename T>
-std::unique_ptr<MultiLevelTensorFieldForOutput3D<T, 3> > computeVorticity(
-    MultiLevelTensorField3D<T, 3> &vorticities, Box3D domain, plint levelOfDomain, bool crop,
-    [[maybe_unused]] plint tmp)
-{
-    std::unique_ptr<MultiLevelTensorFieldForOutput3D<T, 3> > outputVorticity =
-        generateMultiLevelTensorFieldForOutput3D<T, 3>(
-            vorticities.getOgs(), domain, levelOfDomain, crop);
-
-    copy<T, 3>(vorticities, *outputVorticity, domain, levelOfDomain);
-
-    return outputVorticity;
-}
-
 /* *************** Strain Rate from Velocity field ********************* */
 
 template <typename T>
