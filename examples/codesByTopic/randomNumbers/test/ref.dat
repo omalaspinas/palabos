@@ -1,8 +1,8 @@
 Scalar Field
 Size of the multi-block:     100-by-100-by-100
-Number of atomic-blocks:     1
-Smallest atomic-block:       100-by-100-by-100
-Largest atomic-block:        100-by-100-by-100
+Number of atomic-blocks:     125
+Smallest atomic-block:       20-by-20-by-20
+Largest atomic-block:        20-by-20-by-20
 Number of allocated cells:   1 million
 Fraction of allocated domain: 100 percent
 
