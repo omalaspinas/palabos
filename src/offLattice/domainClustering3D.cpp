@@ -36,6 +36,7 @@
 #include <algorithm>
 #include <iterator>
 #include <numeric>
+#include <random>
 
 #include "core/globalDefs.h"
 #include "io/parallelIO.h"
@@ -153,9 +154,11 @@ std::vector<plint> mainProcessorRepartition(
     for (int i = 0; i < global::mpi().getSize(); ++i) {
         processIds[i] = i;
     }
+    std::random_device rd;
+    std::mt19937 rndGenerator(rd());
     for (plint iter = 0; iter < maxIter; ++iter) {
         std::vector<int> shuffledIds(processIds);
-        std::random_shuffle(shuffledIds.begin(), shuffledIds.end());
+        std::shuffle(shuffledIds.begin(), shuffledIds.end(), rndGenerator);
         int myPartner = 0;
         for (int i = 0; i < global::mpi().getSize() - 1; i += 2) {
             int partner1 = shuffledIds[i];
