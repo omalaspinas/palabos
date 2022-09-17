@@ -1,20 +1,23 @@
 if(CI)
 ###############################################################################
 
-set(EXECUTABLE_NAME "rayleighTaylor3D")
-
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
 
 ###############################################################################
 
-get_filename_component(PROJECT_NAME ${CMAKE_CURRENT_SOURCE_DIR} NAME)
-add_executable(${PROJECT_NAME} "./${EXECUTABLE_NAME}.cpp")
+add_executable(rayleighTaylor3D "./rayleighTaylor3D.cpp")
+add_executable(multiPhaseMixer3D "./multiPhaseMixer3D.cpp")
 
 # Link with the following libraries
-target_link_libraries(${PROJECT_NAME} palabos)
+target_link_libraries(rayleighTaylor3D palabos)
+target_link_libraries(multiPhaseMixer3D palabos)
 if(ENABLE_MPI)
-    target_link_libraries(${PROJECT_NAME} ${MPI_CXX_LIBRARIES})
+    target_link_libraries(rayleighTaylor3D ${MPI_CXX_LIBRARIES})
+    target_link_libraries(multiPhaseMixer3D ${MPI_CXX_LIBRARIES})
 endif()
+
+set(EXECUTABLE_NAME "rayleighTaylor3D")
+get_filename_component(PROJECT_NAME ${CMAKE_CURRENT_SOURCE_DIR} NAME)
 
 if(BUILD_TESTING)
     add_custom_target(${PROJECT_NAME}_test

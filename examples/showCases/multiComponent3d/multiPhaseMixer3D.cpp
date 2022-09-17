@@ -75,7 +75,7 @@ public:
     {
         return new TwoLayerInitializer<T, Descriptor>(*this);
     }
-    virtual void execute(plint iX, plint iY, plint iZ, T rand_val, Cell<T, Descriptor> &cell) const
+    virtual void execute(plint, plint iY, plint, T rand_val, Cell<T, Descriptor> &cell) const
     {
         T densityFluctuations = 0.0;  // 1.e-2;
         T almostNoFluid = 1.e-4;
@@ -104,7 +104,7 @@ public:
     MixerShapeDomain3D(plint cx_, plint cy_, plint radius) :
         cx(cx_), cy(cy_), radiusSqr(util::sqr(radius))
     { }
-    virtual bool operator()(plint iX, plint iY, plint iZ) const
+    virtual bool operator()(plint iX, plint iY, plint) const
     {
         return iX <= cx && util::sqr(iX - cx) + util::sqr(iY - cy) > radiusSqr;
     }
@@ -164,7 +164,7 @@ T getAngle(T t)
 }
 
 // The angular velocity of the immersed rectangle is the time derivative of the angle function.
-T getAngularVelocity(T t)
+T getAngularVelocity(T)
 {
     return angVel;
 }

@@ -1,19 +1,19 @@
 if(CI)
 ###############################################################################
 
-get_filename_component(EXECUTABLE_NAME ${CMAKE_CURRENT_SOURCE_DIR} NAME)
-
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
 
 ###############################################################################
 
-get_filename_component(PROJECT_NAME ${CMAKE_CURRENT_SOURCE_DIR} NAME)
-add_executable(${PROJECT_NAME} "./${EXECUTABLE_NAME}.cpp")
+add_executable(aneurysm "./aneurysm.cpp")
+add_executable(aneurysm_bounceback "./aneurysm_bounceback.cpp")
 
 # Link with the following libraries
-target_link_libraries(${PROJECT_NAME} palabos)
+target_link_libraries(aneurysm palabos)
+target_link_libraries(aneurysm_bounceback palabos)
 if(ENABLE_MPI)
-    target_link_libraries(${PROJECT_NAME} ${MPI_CXX_LIBRARIES})
+    target_link_libraries(aneurysm ${MPI_CXX_LIBRARIES})
+    target_link_libraries(aneurysm_bounceback ${MPI_CXX_LIBRARIES})
 endif()
 
 ###############################################################################

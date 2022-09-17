@@ -1,22 +1,25 @@
 if(CI)
 ###############################################################################
 
-set(EXECUTABLE_NAME "computeDrag")
-
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
 
 ###############################################################################
 
 include_directories("../include")
 
-get_filename_component(PROJECT_NAME ${CMAKE_CURRENT_SOURCE_DIR} NAME)
-add_executable(${PROJECT_NAME} "./${EXECUTABLE_NAME}.cpp")
+add_executable(computeDrag "./computeDrag.cpp")
+add_executable(instantiateCylinder "./instantiateCylinder.cpp")
 
 # Link with the following libraries
-target_link_libraries(${PROJECT_NAME} palabos)
+target_link_libraries(computeDrag palabos)
+target_link_libraries(instantiateCylinder palabos)
 if(ENABLE_MPI)
-    target_link_libraries(${PROJECT_NAME} ${MPI_CXX_LIBRARIES})
+    target_link_libraries(computeDrag ${MPI_CXX_LIBRARIES})
+    target_link_libraries(instantiateCylinder ${MPI_CXX_LIBRARIES})
 endif()
+
+set(EXECUTABLE_NAME "computeDrag")
+get_filename_component(PROJECT_NAME ${CMAKE_CURRENT_SOURCE_DIR} NAME)
 
 if(BUILD_TESTING)
     add_custom_target(${PROJECT_NAME}_test

@@ -1,20 +1,23 @@
 if(CI)
 ###############################################################################
 
-set(EXECUTABLE_NAME "cylinder2d")
-
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
 
 ###############################################################################
 
-get_filename_component(PROJECT_NAME ${CMAKE_CURRENT_SOURCE_DIR} NAME)
-add_executable(${PROJECT_NAME} "./${EXECUTABLE_NAME}.cpp")
+add_executable(cylinder2d_dynamicsInfo "./cylinder2d.cpp")
+add_executable(cavity3d_dynamicsInfo "./cavity3d.cpp")
 
 # Link with the following libraries
-target_link_libraries(${PROJECT_NAME} palabos)
+target_link_libraries(cylinder2d_dynamicsInfo palabos)
+target_link_libraries(cavity3d_dynamicsInfo palabos)
 if(ENABLE_MPI)
-    target_link_libraries(${PROJECT_NAME} ${MPI_CXX_LIBRARIES})
+    target_link_libraries(cylinder2d_dynamicsInfo ${MPI_CXX_LIBRARIES})
+    target_link_libraries(cavity3d_dynamicsInfo ${MPI_CXX_LIBRARIES})
 endif()
+
+set(EXECUTABLE_NAME "cylinder2d")
+get_filename_component(PROJECT_NAME ${CMAKE_CURRENT_SOURCE_DIR} NAME)
 
 if(BUILD_TESTING)
     add_custom_target(${PROJECT_NAME}_test
