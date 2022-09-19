@@ -19,10 +19,12 @@ endif()
 set(EXECUTABLE_NAME "cylinder2d")
 get_filename_component(PROJECT_NAME ${CMAKE_CURRENT_SOURCE_DIR} NAME)
 
+set(TEST_PROJECT_NAME "cylinder2d_dynamicsInfo")
+
 if(BUILD_TESTING)
     add_custom_target(${PROJECT_NAME}_test
         ALL
-        DEPENDS ${PROJECT_NAME}
+        DEPENDS ${TEST_PROJECT_NAME}
         COMMAND "LSAN_OPTIONS=suppressions=${LSAN_SUPPRESSION_FILE}" ./${PROJECT_NAME} > test/output.dat || (cat test/output.dat\; exit 1)
         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
         COMMENT "run generated test in ${CMAKE_CURRENT_SOURCE_DIR}"
@@ -32,7 +34,7 @@ endif()
 if(BUILD_TESTING_MPI)
     add_custom_target(${PROJECT_NAME}_test_mpi
         ALL
-        DEPENDS ${PROJECT_NAME}
+        DEPENDS ${TEST_PROJECT_NAME}
         COMMAND "LSAN_OPTIONS=suppressions=${LSAN_SUPPRESSION_FILE}" mpirun --allow-run-as-root -np 4 ./${PROJECT_NAME} > test/output_mpi.dat || (cat test/output_mpi.dat\; exit 1)
         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
         COMMENT "run generated test in ${CMAKE_CURRENT_SOURCE_DIR}"
