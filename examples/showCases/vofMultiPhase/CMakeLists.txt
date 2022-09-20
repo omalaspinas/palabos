@@ -19,13 +19,11 @@ endif()
 set(EXECUTABLE_NAME "damBreak3d")
 get_filename_component(PROJECT_NAME ${CMAKE_CURRENT_SOURCE_DIR} NAME)
 
-set(TEST_PROJECT_NAME "damBreak3d")
-
 if(BUILD_TESTING)
     add_custom_target(${PROJECT_NAME}_test
         ALL
-        DEPENDS ${TEST_PROJECT_NAME}
-        COMMAND "LSAN_OPTIONS=suppressions=${LSAN_SUPPRESSION_FILE}" ./${PROJECT_NAME} tmp 1.e-5 100 80.0 40 1.e-3 101 > test/output.dat || (cat test/output.dat\; exit 1)
+        DEPENDS ${EXECUTABLE_NAME}
+        COMMAND "LSAN_OPTIONS=suppressions=${LSAN_SUPPRESSION_FILE}" ./${EXECUTABLE_NAME} tmp 1.e-5 100 80.0 40 1.e-3 101 > test/output.dat || (cat test/output.dat\; exit 1)
         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
         COMMENT "run generated test in ${CMAKE_CURRENT_SOURCE_DIR}"
         SOURCES ./${EXECUTABLE_NAME}.cpp
