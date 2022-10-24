@@ -1,19 +1,27 @@
 if(CI)
 ###############################################################################
 
-set(EXECUTABLE_NAME "checkPointing")
-
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
 
 ###############################################################################
 
-get_filename_component(PROJECT_NAME ${CMAKE_CURRENT_SOURCE_DIR} NAME)
-add_executable(${PROJECT_NAME} "./${EXECUTABLE_NAME}.cpp")
+include_directories("../include")
+
+add_executable(checkPointing "./checkPointing.cpp")
+add_executable(manualUserInput "./manualUserInput.cpp")
+add_executable(useIOstream "./useIOstream.cpp")
+add_executable(loadGeometry "./loadGeometry.cpp")
 
 # Link with the following libraries
-target_link_libraries(${PROJECT_NAME} palabos)
+target_link_libraries(checkPointing palabos)
+target_link_libraries(manualUserInput palabos)
+target_link_libraries(useIOstream palabos)
+target_link_libraries(loadGeometry palabos)
 if(ENABLE_MPI)
-    target_link_libraries(${PROJECT_NAME} ${MPI_CXX_LIBRARIES})
+    target_link_libraries(checkPointing ${MPI_CXX_LIBRARIES})
+    target_link_libraries(manualUserInput ${MPI_CXX_LIBRARIES})
+    target_link_libraries(useIOstream ${MPI_CXX_LIBRARIES})
+    target_link_libraries(loadGeometry ${MPI_CXX_LIBRARIES})
 endif()
 
 ###############################################################################

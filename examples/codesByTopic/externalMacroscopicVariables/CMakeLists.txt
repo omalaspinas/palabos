@@ -1,39 +1,44 @@
 if(CI)
 ###############################################################################
 
-set(EXECUTABLE_NAME "cavity3d")
-
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
 
 ###############################################################################
 
-get_filename_component(PROJECT_NAME ${CMAKE_CURRENT_SOURCE_DIR} NAME)
-add_executable(${PROJECT_NAME} "./${EXECUTABLE_NAME}.cpp")
+add_executable(cavity3d_externalMacroscopicVariables "./cavity3d.cpp")
+add_executable(cavity2d_externalMacroscopicVariables "./cavity2d.cpp")
 
 # Link with the following libraries
-target_link_libraries(${PROJECT_NAME} palabos)
+target_link_libraries(cavity3d_externalMacroscopicVariables palabos)
+target_link_libraries(cavity2d_externalMacroscopicVariables palabos)
 if(ENABLE_MPI)
-    target_link_libraries(${PROJECT_NAME} ${MPI_CXX_LIBRARIES})
+    target_link_libraries(cavity3d_externalMacroscopicVariables ${MPI_CXX_LIBRARIES})
+    target_link_libraries(cavity2d_externalMacroscopicVariables ${MPI_CXX_LIBRARIES})
 endif()
+
+set(SOURCE_NAME "cavity3d")
+get_filename_component(PROJECT_NAME ${CMAKE_CURRENT_SOURCE_DIR} NAME)
+
+set(EXECUTABLE_NAME "cavity3d_externalMacroscopicVariables")
 
 if(BUILD_TESTING)
     add_custom_target(${PROJECT_NAME}_test
         ALL
-        DEPENDS ${PROJECT_NAME}
-        COMMAND "LSAN_OPTIONS=suppressions=${LSAN_SUPPRESSION_FILE}" ./${PROJECT_NAME} > test/output.dat || (cat test/output.dat\; exit 1)
+        DEPENDS ${EXECUTABLE_NAME}
+        COMMAND "LSAN_OPTIONS=suppressions=${LSAN_SUPPRESSION_FILE}" ./${EXECUTABLE_NAME} > test/output.dat || (cat test/output.dat\; exit 1)
         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
         COMMENT "run generated test in ${CMAKE_CURRENT_SOURCE_DIR}"
-        SOURCES ./${EXECUTABLE_NAME}.cpp
+        SOURCES ./${SOURCE_NAME}.cpp
     )
 endif()
 if(BUILD_TESTING_MPI)
     add_custom_target(${PROJECT_NAME}_test_mpi
         ALL
-        DEPENDS ${PROJECT_NAME}
-        COMMAND "LSAN_OPTIONS=suppressions=${LSAN_SUPPRESSION_FILE}" mpirun --allow-run-as-root -np 4 ./${PROJECT_NAME} > test/output_mpi.dat || (cat test/output_mpi.dat\; exit 1)
+        DEPENDS ${EXECUTABLE_NAME}
+        COMMAND "LSAN_OPTIONS=suppressions=${LSAN_SUPPRESSION_FILE}" mpirun --allow-run-as-root -np 4 ./${EXECUTABLE_NAME} > test/output_mpi.dat || (cat test/output_mpi.dat\; exit 1)
         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
         COMMENT "run generated test in ${CMAKE_CURRENT_SOURCE_DIR}"
-        SOURCES ./${EXECUTABLE_NAME}.cpp
+        SOURCES ./${SOURCE_NAME}.cpp
     )
 endif()
 

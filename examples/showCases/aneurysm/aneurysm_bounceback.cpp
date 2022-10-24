@@ -112,9 +112,10 @@ void iniLattice(MultiBlockLattice3D<T, DESCRIPTOR> &lattice, VoxelizedDomain3D<T
 //   the input XML file. For the inlet, there is a choice between a Poiseuille velocity
 //   profile and a simple plug velocity profile. At the outlets a Neumann boundary
 //   condition with constant pressure is prescribed.
+// QUESTION: This function is unused. Check the program for the proper use of openings.
 void setOpenings(
     std::vector<BoundaryProfile3D<T, Velocity> *> &inletOutlets, TriangleBoundary3D<T> &boundary,
-    T uLB, T dx, T dt)
+    T uLB)
 {
     for (pluint i = 0; i < openings.size(); ++i) {
         Opening<T> &opening = openings[i];

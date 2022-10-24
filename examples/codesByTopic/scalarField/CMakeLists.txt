@@ -1,19 +1,19 @@
 if(CI)
 ###############################################################################
 
-set(EXECUTABLE_NAME "scalarField2d")
-
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
 
 ###############################################################################
 
-get_filename_component(PROJECT_NAME ${CMAKE_CURRENT_SOURCE_DIR} NAME)
-add_executable(${PROJECT_NAME} "./${EXECUTABLE_NAME}.cpp")
+add_executable(scalarField2d "./scalarField2d.cpp")
+add_executable(scalarField3d "./scalarField3d.cpp")
 
 # Link with the following libraries
-target_link_libraries(${PROJECT_NAME} palabos)
+target_link_libraries(scalarField2d palabos)
+target_link_libraries(scalarField3d palabos)
 if(ENABLE_MPI)
-    target_link_libraries(${PROJECT_NAME} ${MPI_CXX_LIBRARIES})
+    target_link_libraries(scalarField2d ${MPI_CXX_LIBRARIES})
+    target_link_libraries(scalarField3d ${MPI_CXX_LIBRARIES})
 endif()
 
 ###############################################################################

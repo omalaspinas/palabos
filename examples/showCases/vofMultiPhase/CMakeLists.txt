@@ -1,26 +1,29 @@
 if(CI)
 ###############################################################################
 
-set(EXECUTABLE_NAME "damBreak3d")
-
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
 
 ###############################################################################
 
-get_filename_component(PROJECT_NAME ${CMAKE_CURRENT_SOURCE_DIR} NAME)
-add_executable(${PROJECT_NAME} "./${EXECUTABLE_NAME}.cpp")
+add_executable(damBreak3d "./damBreak3d.cpp")
+add_executable(fallingDroplet "./fallingDroplet.cpp")
 
 # Link with the following libraries
-target_link_libraries(${PROJECT_NAME} palabos)
+target_link_libraries(damBreak3d palabos)
+target_link_libraries(fallingDroplet palabos)
 if(ENABLE_MPI)
-    target_link_libraries(${PROJECT_NAME} ${MPI_CXX_LIBRARIES})
+    target_link_libraries(damBreak3d ${MPI_CXX_LIBRARIES})
+    target_link_libraries(fallingDroplet ${MPI_CXX_LIBRARIES})
 endif()
+
+set(EXECUTABLE_NAME "damBreak3d")
+get_filename_component(PROJECT_NAME ${CMAKE_CURRENT_SOURCE_DIR} NAME)
 
 if(BUILD_TESTING)
     add_custom_target(${PROJECT_NAME}_test
         ALL
-        DEPENDS ${PROJECT_NAME}
-        COMMAND "LSAN_OPTIONS=suppressions=${LSAN_SUPPRESSION_FILE}" ./${PROJECT_NAME} tmp 1.e-5 100 80.0 40 1.e-3 101 > test/output.dat || (cat test/output.dat\; exit 1)
+        DEPENDS ${EXECUTABLE_NAME}
+        COMMAND "LSAN_OPTIONS=suppressions=${LSAN_SUPPRESSION_FILE}" ./${EXECUTABLE_NAME} tmp 1.e-5 100 80.0 40 1.e-3 101 > test/output.dat || (cat test/output.dat\; exit 1)
         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
         COMMENT "run generated test in ${CMAKE_CURRENT_SOURCE_DIR}"
         SOURCES ./${EXECUTABLE_NAME}.cpp
