@@ -60,22 +60,28 @@ int main(int argc, char *argv[])
     plint nz = 100;
     uint32_t seed = 1;
 
+    MultiScalarField3D<T> originalField(nx, ny, nz);
+
     pcout << "Scalar Field" << std::endl;
-    MultiScalarField3D<T> scalarField(nx, ny, nz);
-    pcout << getMultiBlockInfo(scalarField) << std::endl;
-    setToRandom(scalarField, scalarField.getBoundingBox(), seed);
-    writeVTK(scalarField, "scalarField");
-    pcout << "Sum = " << std::scientific << std::setprecision(16) << computeSum(scalarField)
+    plint blockLx = 20;
+    plint blockLy = 20;
+    plint blockLz = 20;
+    std::unique_ptr<MultiScalarField3D<T>> scalarField =
+        reparallelize<T>(originalField, blockLx, blockLy, blockLz);
+    pcout << getMultiBlockInfo(*scalarField) << std::endl;
+    setToRandom(*scalarField, scalarField->getBoundingBox(), seed);
+    writeVTK(*scalarField, "scalarField");
+    pcout << "Sum = " << std::scientific << std::setprecision(16) << computeSum(*scalarField)
           << std::endl;
 
     pcout << std::endl;
 
     pcout << "Scalar Field 2" << std::endl;
-    plint numBlocksX = 10;
-    plint numBlocksY = 10;
-    plint numBlocksZ = 10;
+    blockLx = 10;
+    blockLy = 10;
+    blockLz = 10;
     std::unique_ptr<MultiScalarField3D<T>> scalarField2 =
-        reparallelize<T>(scalarField, numBlocksX, numBlocksY, numBlocksZ);
+        reparallelize<T>(originalField, blockLx, blockLy, blockLz);
     pcout << getMultiBlockInfo(*scalarField2) << std::endl;
     setToRandom(*scalarField2, scalarField2->getBoundingBox(), seed);
     writeVTK(*scalarField2, "scalarField2");
