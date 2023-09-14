@@ -1,9 +1,11 @@
 # Instructions for Palabos-npFEM
 
+The library (Palabos-npFEM) is further explained in [this software article](https://doi.org/10.5334/jors.343) published in the Journal of Open Research Software.
+
 For more information on the library (numerics & parameters), you can consult the publications below:
 
-* https://arxiv.org/abs/1903.06479
-* https://arxiv.org/abs/1911.03062
+* https://doi.org/10.1016/j.jcp.2019.108905
+* https://doi.org/10.1098/rsfs.2019.0116
 
 npFEM is a heavily modified version of ShapeOp (https://www.shapeop.org/). The different naming originates from the fact that the modifications make the solver more like an FEM solver instead of a computer graphics tool. In more details:
 
