@@ -77,8 +77,7 @@ inline void transferDataProcessors(MultiBlock3D const &from, MultiBlock3D &to)
 
 // QUESTION: Does it make sense to have a useless domain here?
 template <typename T>
-void transferScalarFieldLocal(
-    MultiScalarField3D<T> &from, MultiScalarField3D<T> &to, [[maybe_unused]] Box3D const &domain)
+void transferScalarFieldLocal(MultiScalarField3D<T> &from, MultiScalarField3D<T> &to, Box3D const &)
 {
     // 1. Copy all data from the old to the new field.
     plb::copy(from, to, from.getBoundingBox());
@@ -576,7 +575,7 @@ template <typename T, int nDim>
 void transferTensorFieldLocal(
     MultiTensorField3D<T, nDim> &from, MultiTensorField3D<T, nDim> &to,
     [[maybe_unused]] Box3D const &domain)
-// TODO: Remove thedomain argument. Not used and misleading.
+// TODO: Remove the domain argument. Not used and misleading.
 {
     // 1. Copy all data from the old to the new field.
     plb::copy(from, to, from.getBoundingBox());
@@ -641,7 +640,7 @@ std::unique_ptr<MultiTensorField3D<T, nDim> > generateMultiTensorField(
 // QUESTION: Why do we have this unnamedDummyArg ?
 template <typename T, int nDim>
 std::unique_ptr<MultiTensorField3D<T, nDim> > defaultGenerateMultiTensorField3D(
-    MultiBlockManagement3D const &management, [[maybe_unused]] plint unnamedDummyArg)
+    MultiBlockManagement3D const &management, plint)
 {
     Array<T, nDim> iniVal;
     iniVal.resetToZero();
@@ -833,8 +832,7 @@ std::unique_ptr<MultiTensorField3D<T, nDim> > reparallelize(
 // QUESTION: Does it make sense to have a useless domain here?
 template <typename T, template <typename U> class Descriptor>
 void transferBlockLatticeLocal(
-    MultiBlockLattice3D<T, Descriptor> &from, MultiBlockLattice3D<T, Descriptor> &to,
-    [[maybe_unused]] Box3D const &domain)
+    MultiBlockLattice3D<T, Descriptor> &from, MultiBlockLattice3D<T, Descriptor> &to, Box3D const &)
 {
     // 1. Copy static and dynamic data to the new block.
     copyRegenerate(from, to, from.getBoundingBox());
@@ -870,7 +868,7 @@ std::unique_ptr<MultiBlockLattice3D<T, Descriptor> > generateMultiBlockLattice(
 // QUESTION: Why do we have this unnamedDummyArg?
 template <typename T, template <typename U> class Descriptor>
 std::unique_ptr<MultiBlockLattice3D<T, Descriptor> > defaultGenerateMultiBlockLattice3D(
-    MultiBlockManagement3D const &management, [[maybe_unused]] plint unnamedDummyArg)
+    MultiBlockManagement3D const &management, plint)
 {
     return std::unique_ptr<MultiBlockLattice3D<T, Descriptor> >(
         new MultiBlockLattice3D<T, Descriptor>(

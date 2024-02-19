@@ -200,8 +200,7 @@ int ForcedEntropicDynamics<T, Descriptor>::getId() const
 
 template <typename T, template <typename U> class Descriptor>
 T ForcedEntropicDynamics<T, Descriptor>::computeEquilibrium(
-    plint iPop, T rhoBar, Array<T, Descriptor<T>::d> const &j, [[maybe_unused]] T jSqr,
-    [[maybe_unused]] T thetaBar) const
+    plint iPop, T rhoBar, Array<T, Descriptor<T>::d> const &j, T, T) const
 {
     //    T rho = Descriptor<T>::fullRho(rhoBar);
     T invRho = Descriptor<T>::invRho(rhoBar);
@@ -364,8 +363,7 @@ int EntropicDynamics<T, Descriptor>::getId() const
 
 template <typename T, template <typename U> class Descriptor>
 T EntropicDynamics<T, Descriptor>::computeEquilibrium(
-    plint iPop, T rhoBar, Array<T, Descriptor<T>::d> const &j, [[maybe_unused]] T jSqr,
-    [[maybe_unused]] T thetaBar) const
+    plint iPop, T rhoBar, Array<T, Descriptor<T>::d> const &j, T, T) const
 {
     //    T rho = Descriptor<T>::fullRho(rhoBar);
     T invRho = Descriptor<T>::invRho(rhoBar);
@@ -420,8 +418,8 @@ void EntropicDynamics<T, Descriptor>::collide(
 
 template <typename T, template <typename U> class Descriptor>
 void EntropicDynamics<T, Descriptor>::collideExternal(
-    Cell<T, Descriptor> &cell, T rhoBar, Array<T, Descriptor<T>::d> const &j,
-    [[maybe_unused]] T thetaBar, BlockStatistics &stat)
+    Cell<T, Descriptor> &cell, T rhoBar, Array<T, Descriptor<T>::d> const &j, T,
+    BlockStatistics &stat)
 {
     typedef Descriptor<T> L;
 

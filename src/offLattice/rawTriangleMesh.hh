@@ -131,7 +131,7 @@ T &RawTriangleMesh<T>::Vertex::operator[](plint i)
 }
 
 template <typename T>
-Array<T, 3> RawTriangleMesh<T>::Vertex::normal([[maybe_unused]] bool areaWeighted) const
+Array<T, 3> RawTriangleMesh<T>::Vertex::normal(bool) const
 {
     // Not implemented at the level of raw triangle meshes.
     PLB_ASSERT(false);
@@ -155,8 +155,7 @@ plint RawTriangleMesh<T>::Vertex::numAdjacentTriangles() const
 }
 
 template <typename T>
-typename RawTriangleMesh<T>::CPTriangle RawTriangleMesh<T>::Vertex::adjacentTriangle(
-    [[maybe_unused]] plint iTriangle) const
+typename RawTriangleMesh<T>::CPTriangle RawTriangleMesh<T>::Vertex::adjacentTriangle(plint) const
 {
     // Not implemented at the level of raw triangle meshes.
     PLB_ASSERT(false);
@@ -164,8 +163,7 @@ typename RawTriangleMesh<T>::CPTriangle RawTriangleMesh<T>::Vertex::adjacentTria
 }
 
 template <typename T>
-typename RawTriangleMesh<T>::PTriangle RawTriangleMesh<T>::Vertex::adjacentTriangle(
-    [[maybe_unused]] plint iTriangle)
+typename RawTriangleMesh<T>::PTriangle RawTriangleMesh<T>::Vertex::adjacentTriangle(plint)
 {
     // Not implemented at the level of raw triangle meshes.
     PLB_ASSERT(false);
@@ -189,7 +187,7 @@ std::vector<plint> RawTriangleMesh<T>::Vertex::adjacentVertices() const
 }
 
 template <typename T>
-T RawTriangleMesh<T>::Vertex::property([[maybe_unused]] plint whichProperty) const
+T RawTriangleMesh<T>::Vertex::property(plint) const
 {
     // Not implemented at the level of raw triangle meshes.
     PLB_ASSERT(false);
@@ -197,15 +195,14 @@ T RawTriangleMesh<T>::Vertex::property([[maybe_unused]] plint whichProperty) con
 }
 
 template <typename T>
-void RawTriangleMesh<T>::Vertex::setProperty(
-    [[maybe_unused]] plint whichProperty, [[maybe_unused]] T value)
+void RawTriangleMesh<T>::Vertex::setProperty(plint, T)
 {
     // Not implemented at the level of raw triangle meshes.
     PLB_ASSERT(false);
 }
 
 template <typename T>
-plint RawTriangleMesh<T>::Vertex::tag([[maybe_unused]] plint whichTag) const
+plint RawTriangleMesh<T>::Vertex::tag(plint) const
 {
     // Not implemented at the level of raw triangle meshes.
     PLB_ASSERT(false);
@@ -213,8 +210,7 @@ plint RawTriangleMesh<T>::Vertex::tag([[maybe_unused]] plint whichTag) const
 }
 
 template <typename T>
-void RawTriangleMesh<T>::Vertex::setTag(
-    [[maybe_unused]] plint whichTag, [[maybe_unused]] plint value)
+void RawTriangleMesh<T>::Vertex::setTag(plint, plint)
 {
     // Not implemented at the level of raw triangle meshes.
     PLB_ASSERT(false);
@@ -290,16 +286,14 @@ Array<T, 3> RawTriangleMesh<T>::Triangle::normalTimesArea() const
 }
 
 template <typename T>
-Array<T, 3> RawTriangleMesh<T>::Triangle::edgeNormal(
-    [[maybe_unused]] plint iEdge, [[maybe_unused]] bool areaWeighted) const
+Array<T, 3> RawTriangleMesh<T>::Triangle::edgeNormal(plint, bool) const
 {
     // Not implemented at the level of raw triangle meshes.
     PLB_ASSERT(false);
     return Array<T, 3>(T(), T(), T());
 }
 template <typename T>
-Array<T, 3> RawTriangleMesh<T>::Triangle::continuousNormal(
-    [[maybe_unused]] Array<T, 3> const &p, [[maybe_unused]] bool areaWeighted) const
+Array<T, 3> RawTriangleMesh<T>::Triangle::continuousNormal(Array<T, 3> const &, bool) const
 {
     // Not implemented at the level of raw triangle meshes.
     PLB_ASSERT(false);
@@ -307,8 +301,7 @@ Array<T, 3> RawTriangleMesh<T>::Triangle::continuousNormal(
 }
 
 template <typename T>
-typename RawTriangleMesh<T>::CPTriangle RawTriangleMesh<T>::Triangle::edgeNeighbor(
-    [[maybe_unused]] plint iEdge) const
+typename RawTriangleMesh<T>::CPTriangle RawTriangleMesh<T>::Triangle::edgeNeighbor(plint) const
 {
     // Not implemented at the level of raw triangle meshes.
     PLB_ASSERT(false);
@@ -316,7 +309,7 @@ typename RawTriangleMesh<T>::CPTriangle RawTriangleMesh<T>::Triangle::edgeNeighb
 }
 
 template <typename T>
-std::vector<plint> RawTriangleMesh<T>::Triangle::edgeNeighbors([[maybe_unused]] plint iEdge) const
+std::vector<plint> RawTriangleMesh<T>::Triangle::edgeNeighbors(plint) const
 {
     // Not implemented at the level of raw triangle meshes.
     PLB_ASSERT(false);
@@ -324,7 +317,7 @@ std::vector<plint> RawTriangleMesh<T>::Triangle::edgeNeighbors([[maybe_unused]] 
 }
 
 template <typename T>
-plint RawTriangleMesh<T>::Triangle::numVertexNeighbors([[maybe_unused]] plint iVertex) const
+plint RawTriangleMesh<T>::Triangle::numVertexNeighbors(plint) const
 {
     // Not implemented at the level of raw triangle meshes.
     PLB_ASSERT(false);
@@ -333,7 +326,7 @@ plint RawTriangleMesh<T>::Triangle::numVertexNeighbors([[maybe_unused]] plint iV
 
 template <typename T>
 typename RawTriangleMesh<T>::CPTriangle RawTriangleMesh<T>::Triangle::vertexNeighbor(
-    [[maybe_unused]] plint iVertex, [[maybe_unused]] plint iNeighbor) const
+    plint, plint) const
 {
     // Not implemented at the level of raw triangle meshes.
     PLB_ASSERT(false);
@@ -341,7 +334,7 @@ typename RawTriangleMesh<T>::CPTriangle RawTriangleMesh<T>::Triangle::vertexNeig
 }
 
 template <typename T>
-T RawTriangleMesh<T>::Triangle::property([[maybe_unused]] plint whichProperty) const
+T RawTriangleMesh<T>::Triangle::property(plint) const
 {
     // Not implemented at the level of raw triangle meshes.
     PLB_ASSERT(false);
@@ -349,8 +342,7 @@ T RawTriangleMesh<T>::Triangle::property([[maybe_unused]] plint whichProperty) c
 }
 
 template <typename T>
-void RawTriangleMesh<T>::Triangle::setProperty(
-    [[maybe_unused]] plint whichProperty, [[maybe_unused]] T value)
+void RawTriangleMesh<T>::Triangle::setProperty(plint, T)
 {
     // Not implemented at the level of raw triangle meshes.
     PLB_ASSERT(false);
@@ -369,7 +361,7 @@ plint RawTriangleMesh<T>::Triangle::tag(plint whichTag) const
 }
 
 template <typename T>
-void RawTriangleMesh<T>::Triangle::setTag(plint whichTag, [[maybe_unused]] plint value)
+void RawTriangleMesh<T>::Triangle::setTag(plint whichTag, plint)
 {
     if (whichTag == 0) {
         // Can't reassign part numbering.
@@ -1689,9 +1681,8 @@ plint RawTriangleMesh<T>::getTriangleTag(std::string tagName) const
     return -1;
 }
 template <typename T>
-std::string RawTriangleMesh<T>::getTriangleTagName(plint tag) const
+std::string RawTriangleMesh<T>::getTriangleTagName(plint) const
 {
-    PLB_ASSERT(tag == 0);
     return "Part";
 }
 

@@ -453,15 +453,13 @@ MultiScaleManager const &MultiGrid2D::getScaleManager() const
 }
 
 /// I/O
-DataSerializer *MultiGrid2D::getBlockSerializer(
-    [[maybe_unused]] Box2D const &domain, [[maybe_unused]] IndexOrdering::OrderingT ordering) const
+DataSerializer *MultiGrid2D::getBlockSerializer(Box2D const &, IndexOrdering::OrderingT) const
 {
     PLB_ASSERT(false);
     return 0;
 }
 
-DataUnSerializer *MultiGrid2D::getBlockUnSerializer(
-    [[maybe_unused]] Box2D const &domain, [[maybe_unused]] IndexOrdering::OrderingT ordering)
+DataUnSerializer *MultiGrid2D::getBlockUnSerializer(Box2D const &, IndexOrdering::OrderingT)
 {
     PLB_ASSERT(false);
     return 0;

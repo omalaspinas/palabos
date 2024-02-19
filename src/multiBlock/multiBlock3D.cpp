@@ -437,7 +437,7 @@ void MultiBlock3D::resetFlags()
     }
 }
 
-void MultiBlock3D::getDynamicsDict([[maybe_unused]] Box3D domain, std::map<std::string, int> &dict)
+void MultiBlock3D::getDynamicsDict(Box3D, std::map<std::string, int> &dict)
 {
     return dict.clear();
 }
@@ -703,16 +703,6 @@ MultiBlock3D *MultiBlockRegistration3D::find(id_t id)
     } else {
         return it->second;
     }
-}
-
-MultiBlockRegistration3D::MultiBlockRegistration3D(
-    [[maybe_unused]] MultiBlockRegistration3D const &rhs)
-{ }
-
-MultiBlockRegistration3D &MultiBlockRegistration3D::operator=(
-    [[maybe_unused]] MultiBlockRegistration3D const &rhs)
-{
-    return *this;
 }
 
 MultiBlockRegistration3D &multiBlockRegistration3D()

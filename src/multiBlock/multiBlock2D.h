@@ -251,14 +251,14 @@ private:
 
 class MultiBlockRegistration2D {
 public:
+    MultiBlockRegistration2D(MultiBlockRegistration2D const &) = delete;
+    MultiBlockRegistration2D &operator=(MultiBlockRegistration2D const &) = delete;
     id_t announce(MultiBlock2D &block);
     void release(MultiBlock2D &block);
     MultiBlock2D *find(id_t id);
 
 private:
     MultiBlockRegistration2D();
-    MultiBlockRegistration2D(MultiBlockRegistration2D const &rhs);
-    MultiBlockRegistration2D &operator=(MultiBlockRegistration2D const &rhs);
 
 private:
     util::UniqueId uniqueId;

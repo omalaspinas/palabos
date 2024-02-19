@@ -62,13 +62,6 @@ PlbLogFile::~PlbLogFile()
     delete ofile;
 }
 
-PlbLogFile::PlbLogFile([[maybe_unused]] PlbLogFile const &rhs) { }
-
-PlbLogFile &PlbLogFile::operator=([[maybe_unused]] PlbLogFile const &rhs)
-{
-    return *this;
-}
-
 void PlbLogFile::push(std::string sectionName)
 {
     entry("\nSECTION " + sectionName);
@@ -105,14 +98,6 @@ LogFileCollection::~LogFileCollection()
     for (; it != collection.end(); ++it) {
         delete it->second;
     }
-}
-
-// QUESTION: Why do copy const and equal do nothing?
-LogFileCollection::LogFileCollection([[maybe_unused]] LogFileCollection const &rhs) { }
-
-LogFileCollection &LogFileCollection::operator=([[maybe_unused]] LogFileCollection const &rhs)
-{
-    return *this;
 }
 
 PlbLogFile &LogFileCollection::get(std::string nameOfLogFile)

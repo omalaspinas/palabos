@@ -63,8 +63,7 @@ void multiProcWriteVTK(
     // Conversion from Lattice to Physical units for visualization
     T dx, [[maybe_unused]] T dt, [[maybe_unused]] T rho,
     // Legacy reasons
-    [[maybe_unused]] bool writeVertexNormals = false,
-    [[maybe_unused]] std::string vertexNormalsName = "")
+    bool = false, std::string = "")
 {
     if (mesh.getNumTriangles() == 0)
         return;

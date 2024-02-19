@@ -59,6 +59,8 @@ class BubbleMatch3D {
 public:
     BubbleMatch3D(MultiBlock3D &templ);
     ~BubbleMatch3D();
+    BubbleMatch3D(BubbleMatch3D const &) = delete;
+    BubbleMatch3D &operator=(BubbleMatch3D const &) = delete;
     template <typename T>
     void execute(MultiScalarField3D<int> &flag, MultiScalarField3D<T> &volumeFraction);
     MultiScalarField3D<plint> *getTagMatrix()
@@ -99,17 +101,6 @@ private:
     void resetBubbleContainer();
     // Parallel bucket-fill algorithm to assign a unique ID to every contiguous region.
     void bubbleBucketFill(MultiScalarField3D<int> &flag);
-
-private:
-    BubbleMatch3D([[maybe_unused]] BubbleMatch3D const &rhs) : mpiData(rhs.mpiData)
-    {
-        PLB_ASSERT(false);
-    }
-    BubbleMatch3D &operator=([[maybe_unused]] BubbleMatch3D const &rhs)
-    {
-        PLB_ASSERT(false);
-        return *this;
-    }
 
 private:
     MultiContainerBlock3D *bubbleContainer, *bubbleAnalysisContainer, *bubbleRemapContainer;

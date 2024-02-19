@@ -343,8 +343,8 @@ void SmagorinskyBGKdynamics<T, Descriptor>::collide(
 
 template <typename T, template <typename U> class Descriptor>
 void SmagorinskyBGKdynamics<T, Descriptor>::collideExternal(
-    Cell<T, Descriptor> &cell, T rhoBar, Array<T, Descriptor<T>::d> const &j,
-    [[maybe_unused]] T thetaBar, BlockStatistics &stat)
+    Cell<T, Descriptor> &cell, T rhoBar, Array<T, Descriptor<T>::d> const &j, T,
+    BlockStatistics &stat)
 {
     Array<T, SymmetricTensor<T, Descriptor>::n> PiNeq;
     momentTemplates<T, Descriptor>::compute_PiNeq(cell, rhoBar, j, PiNeq);
@@ -357,8 +357,7 @@ void SmagorinskyBGKdynamics<T, Descriptor>::collideExternal(
 
 template <typename T, template <typename U> class Descriptor>
 T SmagorinskyBGKdynamics<T, Descriptor>::computeEquilibrium(
-    plint iPop, T rhoBar, Array<T, Descriptor<T>::d> const &j, T jSqr,
-    [[maybe_unused]] T thetaBar) const
+    plint iPop, T rhoBar, Array<T, Descriptor<T>::d> const &j, T jSqr, T) const
 {
     T invRho = Descriptor<T>::invRho(rhoBar);
     return dynamicsTemplates<T, Descriptor>::bgk_ma2_equilibrium(iPop, rhoBar, invRho, j, jSqr);
@@ -487,8 +486,8 @@ void ConsistentSmagorinskyBGKdynamics<T, Descriptor>::collide(
 
 template <typename T, template <typename U> class Descriptor>
 void ConsistentSmagorinskyBGKdynamics<T, Descriptor>::collideExternal(
-    Cell<T, Descriptor> &cell, T rhoBar, Array<T, Descriptor<T>::d> const &j,
-    [[maybe_unused]] T thetaBar, BlockStatistics &stat)
+    Cell<T, Descriptor> &cell, T rhoBar, Array<T, Descriptor<T>::d> const &j, T,
+    BlockStatistics &stat)
 {
     Array<T, SymmetricTensor<T, Descriptor>::n> PiNeq;
     momentTemplates<T, Descriptor>::compute_PiNeq(cell, rhoBar, j, PiNeq);
@@ -525,8 +524,7 @@ void ConsistentSmagorinskyBGKdynamics<T, Descriptor>::collideExternal(
 
 template <typename T, template <typename U> class Descriptor>
 T ConsistentSmagorinskyBGKdynamics<T, Descriptor>::computeEquilibrium(
-    plint iPop, T rhoBar, Array<T, Descriptor<T>::d> const &j, T jSqr,
-    [[maybe_unused]] T thetaBar) const
+    plint iPop, T rhoBar, Array<T, Descriptor<T>::d> const &j, T jSqr, T) const
 {
     T invRho = Descriptor<T>::invRho(rhoBar);
     return dynamicsTemplates<T, Descriptor>::bgk_ma2_equilibrium(iPop, rhoBar, invRho, j, jSqr);
@@ -626,8 +624,8 @@ void ConsistentSmagorinskyCompleteTRTdynamics<T, Descriptor>::collide(
 
 template <typename T, template <typename U> class Descriptor>
 void ConsistentSmagorinskyCompleteTRTdynamics<T, Descriptor>::collideExternal(
-    Cell<T, Descriptor> &cell, T rhoBar, Array<T, Descriptor<T>::d> const &j,
-    [[maybe_unused]] T thetaBar, BlockStatistics &stat)
+    Cell<T, Descriptor> &cell, T rhoBar, Array<T, Descriptor<T>::d> const &j, T,
+    BlockStatistics &stat)
 {
     T uSqr = dynamicsTemplates<T, Descriptor>::complete_mrt_smagorinsky_ma2_ext_rhoBar_j_collision(
         cell, rhoBar, j, 6, cSmago, this->getOmega(), this->getPsi());
@@ -755,8 +753,8 @@ void ConsistentSmagorinskyCompleteRegularizedBGKdynamics<T, Descriptor>::collide
 
 template <typename T, template <typename U> class Descriptor>
 void ConsistentSmagorinskyCompleteRegularizedBGKdynamics<T, Descriptor>::collideExternal(
-    Cell<T, Descriptor> &cell, T rhoBar, Array<T, Descriptor<T>::d> const &j,
-    [[maybe_unused]] T thetaBar, BlockStatistics &stat)
+    Cell<T, Descriptor> &cell, T rhoBar, Array<T, Descriptor<T>::d> const &j, T,
+    BlockStatistics &stat)
 {
     T invRho = Descriptor<T>::invRho(rhoBar);
     Array<T, SymmetricTensor<T, Descriptor>::n> piNeq;
@@ -895,8 +893,8 @@ void ConsistentSmagorinskyCompleteRegularizedTRTdynamics<T, Descriptor>::collide
 
 template <typename T, template <typename U> class Descriptor>
 void ConsistentSmagorinskyCompleteRegularizedTRTdynamics<T, Descriptor>::collideExternal(
-    Cell<T, Descriptor> &cell, T rhoBar, Array<T, Descriptor<T>::d> const &j,
-    [[maybe_unused]] T thetaBar, BlockStatistics &stat)
+    Cell<T, Descriptor> &cell, T rhoBar, Array<T, Descriptor<T>::d> const &j, T,
+    BlockStatistics &stat)
 {
     T rhoBarLb;
     Array<T, Descriptor<T>::d> jLb;
@@ -1007,8 +1005,8 @@ void ConsistentSmagorinskyTruncatedTRTdynamics<T, Descriptor>::collide(
 
 template <typename T, template <typename U> class Descriptor>
 void ConsistentSmagorinskyTruncatedTRTdynamics<T, Descriptor>::collideExternal(
-    Cell<T, Descriptor> &cell, T rhoBar, Array<T, Descriptor<T>::d> const &j,
-    [[maybe_unused]] T thetaBar, BlockStatistics &stat)
+    Cell<T, Descriptor> &cell, T rhoBar, Array<T, Descriptor<T>::d> const &j, T,
+    BlockStatistics &stat)
 {
     T uSqr = dynamicsTemplates<T, Descriptor>::truncated_mrt_smagorinsky_ma2_ext_rhoBar_j_collision(
         cell, rhoBar, j, cSmago, this->getOmega(), this->getPsi());
@@ -1049,7 +1047,7 @@ T ConsistentSgsBGKdynamics<T, Descriptor>::getOmega() const
 // QUESTION: Is this one correct? It does not look like it is to me.
 template <typename T, template <typename U> class Descriptor>
 T ConsistentSgsBGKdynamics<T, Descriptor>::getDynamicParameter(
-    plint whichParameter, [[maybe_unused]] Cell<T, Descriptor> const &cell) const
+    plint whichParameter, Cell<T, Descriptor> const &) const
 {
     //     if (whichParameter==dynamicParams::dynamicOmega) {
     //         T rhoBar;
@@ -1134,8 +1132,8 @@ void ConsistentSgsBGKdynamics<T, Descriptor>::collide(
 
 template <typename T, template <typename U> class Descriptor>
 void ConsistentSgsBGKdynamics<T, Descriptor>::collideExternal(
-    Cell<T, Descriptor> &cell, T rhoBar, Array<T, Descriptor<T>::d> const &j,
-    [[maybe_unused]] T thetaBar, BlockStatistics &stat)
+    Cell<T, Descriptor> &cell, T rhoBar, Array<T, Descriptor<T>::d> const &j, T,
+    BlockStatistics &stat)
 {
     Array<T, SymmetricTensor<T, Descriptor>::n> PiNeq;
     PiNeq.from_cArray(cell.getExternal(Descriptor<T>::ExternalField::tensorBeginsAt));
@@ -1154,8 +1152,7 @@ void ConsistentSgsBGKdynamics<T, Descriptor>::collideExternal(
 
 template <typename T, template <typename U> class Descriptor>
 T ConsistentSgsBGKdynamics<T, Descriptor>::computeEquilibrium(
-    plint iPop, T rhoBar, Array<T, Descriptor<T>::d> const &j, T jSqr,
-    [[maybe_unused]] T thetaBar) const
+    plint iPop, T rhoBar, Array<T, Descriptor<T>::d> const &j, T jSqr, T) const
 {
     T invRho = Descriptor<T>::invRho(rhoBar);
     return dynamicsTemplates<T, Descriptor>::bgk_ma2_equilibrium(iPop, rhoBar, invRho, j, jSqr);
@@ -1305,8 +1302,8 @@ void GuoExternalForceSmagorinskyBGKdynamics<T, Descriptor>::collide(
 
 template <typename T, template <typename U> class Descriptor>
 void GuoExternalForceSmagorinskyBGKdynamics<T, Descriptor>::collideExternal(
-    Cell<T, Descriptor> &cell, T rhoBar, Array<T, Descriptor<T>::d> const &j,
-    [[maybe_unused]] T thetaBar, BlockStatistics &stat)
+    Cell<T, Descriptor> &cell, T rhoBar, Array<T, Descriptor<T>::d> const &j, T,
+    BlockStatistics &stat)
 {
     Array<T, SymmetricTensor<T, Descriptor>::n> PiNeq;
     momentTemplates<T, Descriptor>::compute_PiNeq(cell, rhoBar, j, PiNeq);
@@ -1327,8 +1324,7 @@ void GuoExternalForceSmagorinskyBGKdynamics<T, Descriptor>::collideExternal(
 
 template <typename T, template <typename U> class Descriptor>
 T GuoExternalForceSmagorinskyBGKdynamics<T, Descriptor>::computeEquilibrium(
-    plint iPop, T rhoBar, Array<T, Descriptor<T>::d> const &j, T jSqr,
-    [[maybe_unused]] T thetaBar) const
+    plint iPop, T rhoBar, Array<T, Descriptor<T>::d> const &j, T jSqr, T) const
 {
     T invRho = Descriptor<T>::invRho(rhoBar);
     return dynamicsTemplates<T, Descriptor>::bgk_ma2_equilibrium(iPop, rhoBar, invRho, j, jSqr);
@@ -1465,8 +1461,8 @@ void SmagorinskyIncBGKdynamics<T, Descriptor>::collide(
 
 template <typename T, template <typename U> class Descriptor>
 void SmagorinskyIncBGKdynamics<T, Descriptor>::collideExternal(
-    Cell<T, Descriptor> &cell, T rhoBar, Array<T, Descriptor<T>::d> const &j,
-    [[maybe_unused]] T thetaBar, BlockStatistics &stat)
+    Cell<T, Descriptor> &cell, T rhoBar, Array<T, Descriptor<T>::d> const &j, T,
+    BlockStatistics &stat)
 {
     Array<T, SymmetricTensor<T, Descriptor>::n> PiNeq;
     momentTemplates<T, Descriptor>::compute_PiNeq(cell, rhoBar, j, PiNeq);
@@ -1479,8 +1475,7 @@ void SmagorinskyIncBGKdynamics<T, Descriptor>::collideExternal(
 
 template <typename T, template <typename U> class Descriptor>
 T SmagorinskyIncBGKdynamics<T, Descriptor>::computeEquilibrium(
-    plint iPop, T rhoBar, Array<T, Descriptor<T>::d> const &j, T jSqr,
-    [[maybe_unused]] T thetaBar) const
+    plint iPop, T rhoBar, Array<T, Descriptor<T>::d> const &j, T jSqr, T) const
 {
     // Incompressible: rho0=1
     T invRho0 = (T)1;
@@ -1582,8 +1577,8 @@ void SmagorinskyRegularizedDynamics<T, Descriptor>::collide(
 
 template <typename T, template <typename U> class Descriptor>
 void SmagorinskyRegularizedDynamics<T, Descriptor>::collideExternal(
-    Cell<T, Descriptor> &cell, T rhoBar, Array<T, Descriptor<T>::d> const &j,
-    [[maybe_unused]] T thetaBar, BlockStatistics &stat)
+    Cell<T, Descriptor> &cell, T rhoBar, Array<T, Descriptor<T>::d> const &j, T,
+    BlockStatistics &stat)
 {
     Array<T, SymmetricTensor<T, Descriptor>::n> PiNeq;
     momentTemplates<T, Descriptor>::compute_PiNeq(cell, rhoBar, j, PiNeq);
@@ -1597,8 +1592,7 @@ void SmagorinskyRegularizedDynamics<T, Descriptor>::collideExternal(
 
 template <typename T, template <typename U> class Descriptor>
 T SmagorinskyRegularizedDynamics<T, Descriptor>::computeEquilibrium(
-    plint iPop, T rhoBar, Array<T, Descriptor<T>::d> const &j, T jSqr,
-    [[maybe_unused]] T thetaBar) const
+    plint iPop, T rhoBar, Array<T, Descriptor<T>::d> const &j, T jSqr, T) const
 {
     T invRho = Descriptor<T>::invRho(rhoBar);
     return dynamicsTemplates<T, Descriptor>::bgk_ma2_equilibrium(iPop, rhoBar, invRho, j, jSqr);
@@ -1724,8 +1718,8 @@ void SecuredSmagorinskyRegularizedDynamics<T, Descriptor>::constrainValue(
 
 template <typename T, template <typename U> class Descriptor>
 void SecuredSmagorinskyRegularizedDynamics<T, Descriptor>::collideExternal(
-    Cell<T, Descriptor> &cell, T rhoBar, Array<T, Descriptor<T>::d> const &j,
-    [[maybe_unused]] T thetaBar, BlockStatistics &stat)
+    Cell<T, Descriptor> &cell, T rhoBar, Array<T, Descriptor<T>::d> const &j, T,
+    BlockStatistics &stat)
 {
     Array<T, SymmetricTensor<T, Descriptor>::n> PiNeq;
     momentTemplates<T, Descriptor>::compute_PiNeq(cell, rhoBar, j, PiNeq);
@@ -1755,8 +1749,7 @@ void SecuredSmagorinskyRegularizedDynamics<T, Descriptor>::collideExternal(
 
 template <typename T, template <typename U> class Descriptor>
 T SecuredSmagorinskyRegularizedDynamics<T, Descriptor>::computeEquilibrium(
-    plint iPop, T rhoBar, Array<T, Descriptor<T>::d> const &j, T jSqr,
-    [[maybe_unused]] T thetaBar) const
+    plint iPop, T rhoBar, Array<T, Descriptor<T>::d> const &j, T jSqr, T) const
 {
     T invRho = Descriptor<T>::invRho(rhoBar);
     return dynamicsTemplates<T, Descriptor>::bgk_ma2_equilibrium(iPop, rhoBar, invRho, j, jSqr);
@@ -1867,8 +1860,8 @@ void SmagorinskyMRTdynamics<T, Descriptor>::collide(
 
 template <typename T, template <typename U> class Descriptor>
 void SmagorinskyMRTdynamics<T, Descriptor>::collideExternal(
-    Cell<T, Descriptor> &cell, T rhoBar, Array<T, Descriptor<T>::d> const &j,
-    [[maybe_unused]] T thetaBar, BlockStatistics &stat)
+    Cell<T, Descriptor> &cell, T rhoBar, Array<T, Descriptor<T>::d> const &j, T,
+    BlockStatistics &stat)
 {
     typedef mrtTemplates<T, Descriptor> mrtTemp;
 
@@ -1884,8 +1877,7 @@ void SmagorinskyMRTdynamics<T, Descriptor>::collideExternal(
 
 template <typename T, template <typename U> class Descriptor>
 T SmagorinskyMRTdynamics<T, Descriptor>::computeEquilibrium(
-    plint iPop, T rhoBar, Array<T, Descriptor<T>::d> const &j, T jSqr,
-    [[maybe_unused]] T thetaBar) const
+    plint iPop, T rhoBar, Array<T, Descriptor<T>::d> const &j, T jSqr, T) const
 {
     T invRho = Descriptor<T>::invRho(rhoBar);
     return dynamicsTemplates<T, Descriptor>::bgk_ma2_equilibrium(iPop, rhoBar, invRho, j, jSqr);
@@ -2009,8 +2001,8 @@ void ConsistentSmagorinskyMRTdynamics<T, Descriptor>::collide(
 
 template <typename T, template <typename U> class Descriptor>
 void ConsistentSmagorinskyMRTdynamics<T, Descriptor>::collideExternal(
-    Cell<T, Descriptor> &cell, T rhoBar, Array<T, Descriptor<T>::d> const &j,
-    [[maybe_unused]] T thetaBar, BlockStatistics &stat)
+    Cell<T, Descriptor> &cell, T rhoBar, Array<T, Descriptor<T>::d> const &j, T,
+    BlockStatistics &stat)
 {
     typedef mrtTemplates<T, Descriptor> mrtTemp;
     Array<T, SymmetricTensor<T, Descriptor>::n> PiNeq;
@@ -2040,8 +2032,7 @@ void ConsistentSmagorinskyMRTdynamics<T, Descriptor>::collideExternal(
 
 template <typename T, template <typename U> class Descriptor>
 T ConsistentSmagorinskyMRTdynamics<T, Descriptor>::computeEquilibrium(
-    plint iPop, T rhoBar, Array<T, Descriptor<T>::d> const &j, T jSqr,
-    [[maybe_unused]] T thetaBar) const
+    plint iPop, T rhoBar, Array<T, Descriptor<T>::d> const &j, T jSqr, T) const
 {
     T invRho = Descriptor<T>::invRho(rhoBar);
     return dynamicsTemplates<T, Descriptor>::bgk_ma2_equilibrium(iPop, rhoBar, invRho, j, jSqr);
@@ -2072,7 +2063,7 @@ ConsistentSgsMRTdynamics<T, Descriptor>::ConsistentSgsMRTdynamics(
 // QUESTION: Is this correct? Maybe not...
 template <typename T, template <typename U> class Descriptor>
 T ConsistentSgsMRTdynamics<T, Descriptor>::getDynamicParameter(
-    plint whichParameter, [[maybe_unused]] Cell<T, Descriptor> const &cell) const
+    plint whichParameter, Cell<T, Descriptor> const &) const
 {
     //     if (whichParameter==dynamicParams::dynamicOmega) {
     //         T rhoBar;
@@ -2134,8 +2125,8 @@ void ConsistentSgsMRTdynamics<T, Descriptor>::collide(
 
 template <typename T, template <typename U> class Descriptor>
 void ConsistentSgsMRTdynamics<T, Descriptor>::collideExternal(
-    Cell<T, Descriptor> &cell, T rhoBar, Array<T, Descriptor<T>::d> const &j,
-    [[maybe_unused]] T thetaBar, BlockStatistics &stat)
+    Cell<T, Descriptor> &cell, T rhoBar, Array<T, Descriptor<T>::d> const &j, T,
+    BlockStatistics &stat)
 {
     typedef mrtTemplates<T, Descriptor> mrtTemp;
 
@@ -2158,8 +2149,7 @@ void ConsistentSgsMRTdynamics<T, Descriptor>::collideExternal(
 
 template <typename T, template <typename U> class Descriptor>
 T ConsistentSgsMRTdynamics<T, Descriptor>::computeEquilibrium(
-    plint iPop, T rhoBar, Array<T, Descriptor<T>::d> const &j, T jSqr,
-    [[maybe_unused]] T thetaBar) const
+    plint iPop, T rhoBar, Array<T, Descriptor<T>::d> const &j, T jSqr, T) const
 {
     T invRho = Descriptor<T>::invRho(rhoBar);
     return dynamicsTemplates<T, Descriptor>::bgk_ma2_equilibrium(iPop, rhoBar, invRho, j, jSqr);
@@ -2231,8 +2221,7 @@ void GuoExternalForceConsistentSgsMRTdynamics<T, Descriptor>::collide(
 
 template <typename T, template <typename U> class Descriptor>
 T GuoExternalForceConsistentSgsMRTdynamics<T, Descriptor>::computeEquilibrium(
-    plint iPop, T rhoBar, Array<T, Descriptor<T>::d> const &j, T jSqr,
-    [[maybe_unused]] T thetaBar) const
+    plint iPop, T rhoBar, Array<T, Descriptor<T>::d> const &j, T jSqr, T) const
 {
     T invRho = Descriptor<T>::invRho(rhoBar);
     return dynamicsTemplates<T, Descriptor>::bgk_ma2_equilibrium(iPop, rhoBar, invRho, j, jSqr);
@@ -2266,7 +2255,7 @@ ConsistentSmagorinskyIncMRTdynamics<T, Descriptor>::ConsistentSmagorinskyIncMRTd
 // that it should not be the "smagorinsky" omega. But not sure.
 template <typename T, template <typename U> class Descriptor>
 T ConsistentSmagorinskyIncMRTdynamics<T, Descriptor>::getDynamicParameter(
-    plint whichParameter, [[maybe_unused]] Cell<T, Descriptor> const &cell) const
+    plint whichParameter, Cell<T, Descriptor> const &) const
 {
     if (whichParameter == dynamicParams::smagorinskyConstant) {
         return cSmago;
@@ -2369,8 +2358,8 @@ void ConsistentSmagorinskyIncMRTdynamics<T, Descriptor>::collide(
 
 template <typename T, template <typename U> class Descriptor>
 void ConsistentSmagorinskyIncMRTdynamics<T, Descriptor>::collideExternal(
-    Cell<T, Descriptor> &cell, T rhoBar, Array<T, Descriptor<T>::d> const &j,
-    [[maybe_unused]] T thetaBar, BlockStatistics &stat)
+    Cell<T, Descriptor> &cell, T rhoBar, Array<T, Descriptor<T>::d> const &j, T,
+    BlockStatistics &stat)
 {
     typedef mrtTemplates<T, Descriptor> mrtTemp;
     Array<T, SymmetricTensor<T, Descriptor>::n> PiNeq;
@@ -2400,8 +2389,7 @@ void ConsistentSmagorinskyIncMRTdynamics<T, Descriptor>::collideExternal(
 
 template <typename T, template <typename U> class Descriptor>
 T ConsistentSmagorinskyIncMRTdynamics<T, Descriptor>::computeEquilibrium(
-    plint iPop, T rhoBar, Array<T, Descriptor<T>::d> const &j, T jSqr,
-    [[maybe_unused]] T thetaBar) const
+    plint iPop, T rhoBar, Array<T, Descriptor<T>::d> const &j, T jSqr, T) const
 {
     return dynamicsTemplates<T, Descriptor>::bgk_ma2_equilibrium(iPop, rhoBar, (T)1, j, jSqr);
 }

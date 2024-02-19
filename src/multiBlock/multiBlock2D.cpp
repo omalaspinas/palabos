@@ -419,7 +419,7 @@ void MultiBlock2D::resetFlags()
     }
 }
 
-void MultiBlock2D::getDynamicsDict([[maybe_unused]] Box2D domain, std::map<std::string, int> &dict)
+void MultiBlock2D::getDynamicsDict(Box2D, std::map<std::string, int> &dict)
 {
     return dict.clear();
 }
@@ -665,16 +665,6 @@ MultiBlock2D *MultiBlockRegistration2D::find(id_t id)
     } else {
         return it->second;
     }
-}
-
-MultiBlockRegistration2D::MultiBlockRegistration2D(
-    [[maybe_unused]] MultiBlockRegistration2D const &rhs)
-{ }
-
-MultiBlockRegistration2D &MultiBlockRegistration2D::operator=(
-    [[maybe_unused]] MultiBlockRegistration2D const &rhs)
-{
-    return *this;
 }
 
 MultiBlockRegistration2D &multiBlockRegistration2D()

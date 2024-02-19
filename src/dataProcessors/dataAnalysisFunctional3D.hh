@@ -3494,8 +3494,7 @@ void BoundedBoxScalarSumFunctional3D<T>::processBulk(Box3D domain, ScalarField3D
 
 template <typename T>
 void BoundedBoxScalarSumFunctional3D<T>::processPlane(
-    [[maybe_unused]] int direction, [[maybe_unused]] int orientation, Box3D domain,
-    ScalarField3D<T> &scalarField)
+    int, int, Box3D domain, ScalarField3D<T> &scalarField)
 {
     BlockStatistics &statistics = this->getStatistics();
     for (plint iX = domain.x0; iX <= domain.x1; ++iX) {
@@ -3511,8 +3510,7 @@ void BoundedBoxScalarSumFunctional3D<T>::processPlane(
 
 template <typename T>
 void BoundedBoxScalarSumFunctional3D<T>::processEdge(
-    [[maybe_unused]] int plane, [[maybe_unused]] int normal1, [[maybe_unused]] int normal2,
-    Box3D domain, ScalarField3D<T> &scalarField)
+    int, int, int, Box3D domain, ScalarField3D<T> &scalarField)
 {
     BlockStatistics &statistics = this->getStatistics();
     for (plint iX = domain.x0; iX <= domain.x1; ++iX) {
@@ -3528,8 +3526,7 @@ void BoundedBoxScalarSumFunctional3D<T>::processEdge(
 
 template <typename T>
 void BoundedBoxScalarSumFunctional3D<T>::processCorner(
-    [[maybe_unused]] int normalX, [[maybe_unused]] int normalY, [[maybe_unused]] int normalZ,
-    Box3D domain, ScalarField3D<T> &scalarField)
+    int, int, int, Box3D domain, ScalarField3D<T> &scalarField)
 {
     BlockStatistics &statistics = this->getStatistics();
     for (plint iX = domain.x0; iX <= domain.x1; ++iX) {

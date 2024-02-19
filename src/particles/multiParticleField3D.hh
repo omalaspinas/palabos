@@ -213,8 +213,7 @@ int MultiParticleField3D<ParticleFieldT>::getStaticId() const
 
 template <class ParticleFieldT>
 void MultiParticleField3D<ParticleFieldT>::copyReceive(
-    MultiBlock3D const &fromBlock, Box3D const &fromDomain, Box3D const &toDomain,
-    [[maybe_unused]] modif::ModifT whichData)
+    MultiBlock3D const &fromBlock, Box3D const &fromDomain, Box3D const &toDomain, modif::ModifT)
 {
     MultiParticleField3D<ParticleFieldT> const *fromField =
         dynamic_cast<MultiParticleField3D<ParticleFieldT> const *>(&fromBlock);

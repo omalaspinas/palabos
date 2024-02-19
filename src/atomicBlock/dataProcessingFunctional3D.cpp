@@ -49,9 +49,7 @@ BlockDomain::DomainT BoxProcessingFunctional3D::appliesTo() const
     return BlockDomain::bulk;
 }
 
-void BoxProcessingFunctional3D::rescale(
-    [[maybe_unused]] double dxScale, [[maybe_unused]] double dtScale)
-{ }
+void BoxProcessingFunctional3D::rescale(double, double) { }
 
 void BoxProcessingFunctional3D::setscale(int dxScale_, int dtScale_)
 {
@@ -342,12 +340,9 @@ BlockDomain::DomainT DotProcessingFunctional3D::appliesTo() const
 }
 
 /** No rescaling is done by default. **/
-void DotProcessingFunctional3D::rescale(
-    [[maybe_unused]] double dxScale, [[maybe_unused]] double dtScale)
-{ }
+void DotProcessingFunctional3D::rescale(double, double) { }
 
-void DotProcessingFunctional3D::setscale([[maybe_unused]] int dxScale, [[maybe_unused]] int dtScale)
-{ }
+void DotProcessingFunctional3D::setscale(int, int) { }
 
 /** The default assumption is conservative: all blocks have potentially been modified.
  */
@@ -471,9 +466,7 @@ BlockDomain::DomainT BoundedBoxProcessingFunctional3D::appliesTo() const
 }
 
 /** No rescaling is done by default. **/
-void BoundedBoxProcessingFunctional3D::rescale(
-    [[maybe_unused]] double dxScale, [[maybe_unused]] double dtScale)
-{ }
+void BoundedBoxProcessingFunctional3D::rescale(double, double) { }
 
 void BoundedBoxProcessingFunctional3D::setscale(int dxScale_, int dtScale_)
 {

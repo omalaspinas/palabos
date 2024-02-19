@@ -161,7 +161,7 @@ public:
         parameters(parameters_), kappa(kappa_), tol(tol_), maxIter(maxIter_)
     { }
 
-    void operator()([[maybe_unused]] int iX, int iY, Array<T, nDim> &u)
+    void operator()(int, int iY, Array<T, nDim> &u)
     {
         TrapeziumIntegration<T> ti(
             new NewtonRaphson<T>(

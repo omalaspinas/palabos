@@ -57,9 +57,8 @@ struct HermiteTemplate {
     /// Number of dimensions for current lattice
     static const int d = Descriptor<T>::d;
     /// Compute order0 hermite polynomial
-    static T order0(plint iPop)
+    static T order0(plint)
     {
-        PLB_ASSERT(iPop < Descriptor<T>::q && iPop >= 0);
         return (T)1;
     }
     /// Compute order1 hermite polynomial
@@ -302,7 +301,7 @@ template <typename T, class Descriptor>
 struct HermiteTemplateImpl<T, Descriptor, 2> {
     typedef Descriptor D;
 
-    static T order0([[maybe_unused]] plint iPop)
+    static T order0(plint)
     {
         return (T)1;
     }
@@ -443,8 +442,7 @@ struct HermiteTemplateImpl<T, Descriptor, 2> {
 
     /// Compute order4 hermite polynomial contracted with symmetric tensor (only the hermite part)
     /// Symmetric parts are multiplied bz the appropriate amount
-    static Array<T, SymmetricRankFiveTensorImpl<T, 2>::n> contractedOrder5(
-        [[maybe_unused]] plint iPop)
+    static Array<T, SymmetricRankFiveTensorImpl<T, 2>::n> contractedOrder5(plint)
     {
         PLB_ASSERT(false && "contracted order 5 hermite not implemented.");
     }
@@ -487,8 +485,7 @@ struct HermiteTemplateImpl<T, Descriptor, 2> {
 
     /// Compute order4 hermite polynomial contracted with symmetric tensor (only the hermite part)
     /// Symmetric parts are multiplied bz the appropriate amount
-    static Array<T, SymmetricRankFiveTensorImpl<T, 2>::n> contractedOrder6(
-        [[maybe_unused]] plint iPop)
+    static Array<T, SymmetricRankFiveTensorImpl<T, 2>::n> contractedOrder6(plint)
     {
         PLB_ASSERT(false && "contracted order 6 hermite not implemented.");
     }
@@ -498,7 +495,7 @@ template <typename T, class Descriptor>
 struct HermiteTemplateImpl<T, Descriptor, 3> {
     typedef Descriptor D;
 
-    static T order0([[maybe_unused]] plint iPop)
+    static T order0(plint)
     {
         return (T)1;
     }
@@ -755,8 +752,7 @@ struct HermiteTemplateImpl<T, Descriptor, 3> {
 
     /// Compute order4 hermite polynomial contracted with symmetric tensor (only the hermite part)
     /// Symmetric parts are multiplied bz the appropriate amount
-    static Array<T, SymmetricRankFiveTensorImpl<T, 3>::n> contractedOrder5(
-        [[maybe_unused]] plint iPop)
+    static Array<T, SymmetricRankFiveTensorImpl<T, 3>::n> contractedOrder5(plint)
     {
         PLB_ASSERT(false && "contracted order 5 hermite not implemented.");
     }
@@ -845,8 +841,7 @@ struct HermiteTemplateImpl<T, Descriptor, 3> {
 
     /// Compute order4 hermite polynomial contracted with symmetric tensor (only the hermite part)
     /// Symmetric parts are multiplied bz the appropriate amount
-    static Array<T, SymmetricRankSixTensorImpl<T, 3>::n> contractedOrder6(
-        [[maybe_unused]] plint iPop)
+    static Array<T, SymmetricRankSixTensorImpl<T, 3>::n> contractedOrder6(plint)
     {
         PLB_ASSERT(false && "contracted order 6 hermite not implemented.");
     }

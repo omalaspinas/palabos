@@ -58,7 +58,7 @@ struct advectionDiffusionDynamicsTemplatesImpl<T, descriptors::D2Q5DescriptorBas
     /// Regularization
     static void regularize(
         Array<T, Descriptor::q> &f, T rhoBar, Array<T, Descriptor::d> const &jAdvDiff,
-        [[maybe_unused]] Array<T, Descriptor::d> const &jEq)
+        Array<T, Descriptor::d> const &)
     {
         f[0] = Descriptor::t[0] * rhoBar;
 
@@ -226,7 +226,7 @@ struct advectionDiffusionDynamicsTemplatesImpl<T, descriptors::D2Q9DescriptorBas
     }
 
     // TODO: this omegaFluidNonPhys looks suspicious. Should check it.
-    static void bgk_ma2_off_equilibra(
+    static void bgk_ma2_off_equilibria(
         T phi, Array<T, D::d> const &u, Array<T, D::d> const &jNeq,
         const Array<T, SymmetricTensorImpl<T, D::d>::n> &piNeq, T omega, T omegaNonPhys,
         T omegaFluid, [[maybe_unused]] T omegaFluidNonPhys, Array<T, D::q> &fNeq)
@@ -291,7 +291,7 @@ struct advectionDiffusionDynamicsTemplatesImpl<T, descriptors::D2Q9DescriptorBas
 
         Array<T, D::d> u = jEq * invRhoPhi;
         Array<T, D::q> fNeq;
-        bgk_ma2_off_equilibra(
+        bgk_ma2_off_equilibria(
             phi, u, jNeq, piNeq, omega, omegaNonPhys, omegaFluid, omegaFluidNonPhys, fNeq);
 
         f += fNeq;
@@ -308,7 +308,7 @@ struct advectionDiffusionDynamicsTemplatesImpl<T, descriptors::D2Q9DescriptorBas
         T jSqr = jEq[0] * jEq[0] + jEq[1] * jEq[1];
         dynamicsTemplatesImpl<T, D>::bgk_ma2_equilibria(rhoPhiBar, invRhoPhi, jEq, jSqr, f);
         Array<T, D::q> fNeq;
-        bgk_ma2_off_equilibra(
+        bgk_ma2_off_equilibria(
             phi, jEq * invRhoPhi, jNeq, piNeq, omega, omegaNonPhys, omegaFluid, omegaFluidNonPhys,
             fNeq);
 

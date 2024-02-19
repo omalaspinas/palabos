@@ -84,6 +84,7 @@ public:
     ParallelNTensorAccess2D();
     virtual ~ParallelNTensorAccess2D();
     ParallelNTensorAccess2D(ParallelNTensorAccess2D<T> const &rhs);
+    ParallelNTensorAccess2D<T> &operator=(ParallelNTensorAccess2D<T> const &) = delete;
     virtual T *getDistributedNTensor(
         plint iX, plint iY, MultiBlockManagement2D const &multiBlockManagement,
         std::map<plint, NTensorField2D<T> *> &fields);
@@ -91,12 +92,6 @@ public:
         plint iX, plint iY, MultiBlockManagement2D const &multiBlockManagement,
         std::map<plint, NTensorField2D<T> *> const &fields) const;
     virtual ParallelNTensorAccess2D<T> *clone() const;
-
-private:
-    ParallelNTensorAccess2D<T> &operator=([[maybe_unused]] ParallelNTensorAccess2D<T> const &rhs)
-    {
-        return *this;
-    }
 
 private:
     mutable T *distributedNTensor;

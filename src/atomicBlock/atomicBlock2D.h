@@ -75,9 +75,7 @@ struct BlockDataTransfer2D {
     /// Receive data from a byte-stream into the block, and adjust coordinates if the block contains
     /// abolute coordinate data.
     /** By default, offset information is ignored. **/
-    virtual void receive(
-        Box2D domain, std::vector<char> const &buffer, modif::ModifT kind,
-        [[maybe_unused]] Dot2D offset)
+    virtual void receive(Box2D domain, std::vector<char> const &buffer, modif::ModifT kind, Dot2D)
     {
         receive(domain, buffer, kind);
     }
@@ -92,7 +90,7 @@ struct BlockDataTransfer2D {
     /// coordinate data.
     virtual void attribute(
         Box2D toDomain, plint deltaX, plint deltaY, AtomicBlock2D const &from, modif::ModifT kind,
-        [[maybe_unused]] Dot2D absoluteOffset)
+        Dot2D)
     {
         attribute(toDomain, deltaX, deltaY, from, kind);
     }

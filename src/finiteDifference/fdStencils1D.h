@@ -233,8 +233,7 @@ inline T edgeZderiv(
 
 template <typename T>
 inline T cornerXderiv(
-    ScalarField3D<T> const &field, int normalX, [[maybe_unused]] int normalY,
-    [[maybe_unused]] int normalZ, plint iX, plint iY, plint iZ)
+    ScalarField3D<T> const &field, int normalX, int, int, plint iX, plint iY, plint iZ)
 {
     int orientation = normalX;
     return -orientation
@@ -243,8 +242,7 @@ inline T cornerXderiv(
 
 template <typename T>
 inline T cornerYderiv(
-    ScalarField3D<T> const &field, [[maybe_unused]] int normalX, int normalY,
-    [[maybe_unused]] int normalZ, plint iX, plint iY, plint iZ)
+    ScalarField3D<T> const &field, int, int normalY, int, plint iX, plint iY, plint iZ)
 {
     int orientation = normalY;
     return -orientation
@@ -253,8 +251,7 @@ inline T cornerYderiv(
 
 template <typename T>
 inline T cornerZderiv(
-    ScalarField3D<T> const &field, [[maybe_unused]] int normalX, [[maybe_unused]] int normalY,
-    int normalZ, plint iX, plint iY, plint iZ)
+    ScalarField3D<T> const &field, int, int, int normalZ, plint iX, plint iY, plint iZ)
 {
     int orientation = normalZ;
     return -orientation
@@ -470,8 +467,8 @@ inline T edgeZderiv(
 
 template <typename T, int nDim>
 inline T cornerXderiv(
-    TensorField3D<T, nDim> const &velocity, int normalX, [[maybe_unused]] int normalY,
-    [[maybe_unused]] int normalZ, plint iX, plint iY, plint iZ, int iD)
+    TensorField3D<T, nDim> const &velocity, int normalX, int, int, plint iX, plint iY, plint iZ,
+    int iD)
 {
     int orientation = normalX;
     return -orientation
@@ -481,8 +478,8 @@ inline T cornerXderiv(
 
 template <typename T, int nDim>
 inline T cornerYderiv(
-    TensorField3D<T, nDim> const &velocity, [[maybe_unused]] int normalX, int normalY,
-    [[maybe_unused]] int normalZ, plint iX, plint iY, plint iZ, int iD)
+    TensorField3D<T, nDim> const &velocity, int, int normalY, int, plint iX, plint iY, plint iZ,
+    int iD)
 {
     int orientation = normalY;
     return -orientation
@@ -492,8 +489,8 @@ inline T cornerYderiv(
 
 template <typename T, int nDim>
 inline T cornerZderiv(
-    TensorField3D<T, nDim> const &velocity, [[maybe_unused]] int normalX,
-    [[maybe_unused]] int normalY, int normalZ, plint iX, plint iY, plint iZ, int iD)
+    TensorField3D<T, nDim> const &velocity, int, int, int normalZ, plint iX, plint iY, plint iZ,
+    int iD)
 {
     int orientation = normalZ;
     return -orientation
@@ -755,16 +752,14 @@ inline T edgeYderiv(
 }
 
 template <typename T>
-inline T cornerXderiv(
-    ScalarField2D<T> const &field, int normalX, [[maybe_unused]] int normalY, plint iX, plint iY)
+inline T cornerXderiv(ScalarField2D<T> const &field, int normalX, int, plint iX, plint iY)
 {
     int orientation = normalX;
     return -orientation * fd::o1_fwd_diff(field.get(iX, iY), field.get(iX - 1 * orientation, iY));
 }
 
 template <typename T>
-inline T cornerYderiv(
-    ScalarField2D<T> const &field, [[maybe_unused]] int normalX, int normalY, plint iX, plint iY)
+inline T cornerYderiv(ScalarField2D<T> const &field, int, int normalY, plint iX, plint iY)
 {
     int orientation = normalY;
     return -orientation * fd::o1_fwd_diff(field.get(iX, iY), field.get(iX, iY - 1 * orientation));
@@ -814,8 +809,7 @@ inline T edgeYderiv(
 
 template <typename T, int nDim>
 inline T cornerXderiv(
-    TensorField2D<T, nDim> const &velocity, int normalX, [[maybe_unused]] int normalY, plint iX,
-    plint iY, int iD)
+    TensorField2D<T, nDim> const &velocity, int normalX, int, plint iX, plint iY, int iD)
 {
     int orientation = normalX;
     return -orientation
@@ -824,8 +818,7 @@ inline T cornerXderiv(
 
 template <typename T, int nDim>
 inline T cornerYderiv(
-    TensorField2D<T, nDim> const &velocity, [[maybe_unused]] int normalX, int normalY, plint iX,
-    plint iY, int iD)
+    TensorField2D<T, nDim> const &velocity, int, int normalY, plint iX, plint iY, int iD)
 {
     int orientation = normalY;
     return -orientation

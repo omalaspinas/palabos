@@ -53,23 +53,11 @@ public:
     VisualParticle3D(
         plint tag_, Array<T, 3> const &position, std::vector<T> const &scalars_,
         std::vector<Array<T, 3> > const &vectors_);
-    virtual void velocityToParticle(
-        [[maybe_unused]] TensorField3D<T, 3> &velocityField, [[maybe_unused]] T scaling = 1.)
-    { }
-    virtual void velocityToParticle(
-        [[maybe_unused]] NTensorField3D<T> &velocityField, [[maybe_unused]] T scaling = 1.)
-    { }
-    virtual void rhoBarJtoParticle(
-        [[maybe_unused]] NTensorField3D<T> &rhoBarJfield, [[maybe_unused]] bool velIsJ,
-        [[maybe_unused]] T scaling = 1.)
-    { }
-    virtual void fluidToParticle(
-        [[maybe_unused]] BlockLattice3D<T, Descriptor> &fluid, [[maybe_unused]] T scaling = 1.)
-    { }
-    virtual void fluidToParticle(
-        [[maybe_unused]] BlockLattice3D<T, Descriptor> &fluid,
-        [[maybe_unused]] ScalarField3D<T> &sF, [[maybe_unused]] T scaling = 1.)
-    { }
+    virtual void velocityToParticle(TensorField3D<T, 3> &, T) { }
+    virtual void velocityToParticle(NTensorField3D<T> &, T) { }
+    virtual void rhoBarJtoParticle(NTensorField3D<T> &, bool, T) { }
+    virtual void fluidToParticle(BlockLattice3D<T, Descriptor> &, T) { }
+    virtual void fluidToParticle(BlockLattice3D<T, Descriptor> &, ScalarField3D<T> &, T) { }
     virtual void advance() { }
     virtual void serialize(HierarchicSerializer &serializer) const;
     virtual void unserialize(HierarchicUnserializer &unserializer);

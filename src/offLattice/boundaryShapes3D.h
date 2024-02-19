@@ -134,8 +134,7 @@ struct BoundaryShape3D {
     virtual BoundaryShape3D<T, SurfaceData> *clone() const = 0;
     /// In case the shape class needs additional meshed data, this clone function
     ///   offers the possibility to provide the data.
-    virtual BoundaryShape3D<T, SurfaceData> *clone(
-        [[maybe_unused]] std::vector<AtomicBlock3D *> args) const
+    virtual BoundaryShape3D<T, SurfaceData> *clone(std::vector<AtomicBlock3D *>) const
     {
         return clone();
     }

@@ -171,8 +171,7 @@ ParallelBlockCommunicator3D::ParallelBlockCommunicator3D() :
     overlapsModified(true), communication(0)
 { }
 
-ParallelBlockCommunicator3D::ParallelBlockCommunicator3D(
-    [[maybe_unused]] ParallelBlockCommunicator3D const &rhs) :
+ParallelBlockCommunicator3D::ParallelBlockCommunicator3D(ParallelBlockCommunicator3D const &) :
     overlapsModified(true), communication(0)
 { }
 
@@ -293,7 +292,7 @@ BlockingCommunicator3D::BlockingCommunicator3D() : overlapsModified(true), commu
 }
 
 // QUESTION: Why is copy constructor doing nothing?
-BlockingCommunicator3D::BlockingCommunicator3D([[maybe_unused]] BlockingCommunicator3D const &rhs) :
+BlockingCommunicator3D::BlockingCommunicator3D(BlockingCommunicator3D const &) :
     overlapsModified(true), communication(0)
 { }
 

@@ -58,6 +58,8 @@ class BubbleHistory3D {
 public:
     BubbleHistory3D(MultiBlock3D &templ);
     ~BubbleHistory3D();
+    BubbleHistory3D(BubbleHistory3D<T> const &) = delete;
+    BubbleHistory3D<T> &operator=(BubbleHistory3D<T> const &) = delete;
     void transition(
         BubbleMatch3D &bubbleMatch, plint iterationStep, T newBubbleVolumeCorrection = (T)1.,
         bool entrapBubbles = false, plint numRememberedVolumes = 1);
@@ -110,17 +112,6 @@ private:
     static T getCutoffVolume()
     {
         return 2.0;
-    }
-
-private:
-    BubbleHistory3D([[maybe_unused]] BubbleHistory3D<T> const &rhs)
-    {
-        PLB_ASSERT(false);
-    }
-    BubbleHistory3D<T> &operator=([[maybe_unused]] BubbleHistory3D<T> const &rhs)
-    {
-        PLB_ASSERT(false);
-        return *this;
     }
 
 private:

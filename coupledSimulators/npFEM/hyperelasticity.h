@@ -53,8 +53,7 @@ namespace npfem {
 ///////////////////////////////////////////////////////////////////////////////
 // Trianglular Elements
 ///////////////////////////////////////////////////////////////////////////////
-SHAPEOP_INLINE Scalar f_tr(
-    const Scalar &x, const Scalar &miu, const Scalar &lambda, [[maybe_unused]] const Scalar &kappa)
+SHAPEOP_INLINE Scalar f_tr(const Scalar &x, const Scalar &miu, const Scalar &lambda, const Scalar &)
 {
     // Custom Energy
     // return miu * (1. / 4.) * std::pow(x - 1., 4.);
@@ -67,8 +66,8 @@ SHAPEOP_INLINE Scalar f_tr(
            - (lambda / 4.) * std::pow(x, 2.);
 }
 ///////////////////////////////////////////////////////////////////////////////
-SHAPEOP_INLINE Scalar f_prime_tr(
-    const Scalar &x, const Scalar &miu, const Scalar &lambda, [[maybe_unused]] const Scalar &kappa)
+SHAPEOP_INLINE Scalar
+    f_prime_tr(const Scalar &x, const Scalar &miu, const Scalar &lambda, const Scalar &)
 {
     // Custom Energy
     // return miu * std::pow(x - 1., 3.);
@@ -80,9 +79,7 @@ SHAPEOP_INLINE Scalar f_prime_tr(
     return miu * std::pow(x - 1., 3.) + (lambda / 2.) * std::pow(x, 3.) - (lambda / 2.) * x;
 }
 ///////////////////////////////////////////////////////////////////////////////
-SHAPEOP_INLINE Scalar g_tr(
-    [[maybe_unused]] const Scalar &x, [[maybe_unused]] const Scalar &miu,
-    [[maybe_unused]] const Scalar &lambda, [[maybe_unused]] const Scalar &kappa)
+SHAPEOP_INLINE Scalar g_tr(const Scalar &, const Scalar &, const Scalar &, const Scalar &)
 {
     // Custom Energy
     // return lambda * (1. / 4.) * std::pow(x - 1., 4.);
@@ -94,9 +91,7 @@ SHAPEOP_INLINE Scalar g_tr(
     return 0.;
 }
 ///////////////////////////////////////////////////////////////////////////////
-SHAPEOP_INLINE Scalar g_prime_tr(
-    [[maybe_unused]] const Scalar &x, [[maybe_unused]] const Scalar &miu,
-    [[maybe_unused]] const Scalar &lambda, [[maybe_unused]] const Scalar &kappa)
+SHAPEOP_INLINE Scalar g_prime_tr(const Scalar &, const Scalar &, const Scalar &, const Scalar &)
 {
     // Custom Energy
     // return lambda * std::pow(x - 1., 3.);
@@ -110,44 +105,32 @@ SHAPEOP_INLINE Scalar g_prime_tr(
 ///////////////////////////////////////////////////////////////////////////////
 // Tetrahedra
 ///////////////////////////////////////////////////////////////////////////////
-inline Scalar f_tet(
-    const Scalar &x, const Scalar &miu, [[maybe_unused]] const Scalar &lambda,
-    [[maybe_unused]] const Scalar &kappa)
+inline Scalar f_tet(const Scalar &x, const Scalar &miu, const Scalar &, const Scalar &)
 {
     return miu * (1. / 4.) * std::pow(x - 1., 4.);
 }
 ///////////////////////////////////////////////////////////////////////////////
-inline Scalar f_prime_tet(
-    const Scalar &x, const Scalar &miu, [[maybe_unused]] const Scalar &lambda,
-    [[maybe_unused]] const Scalar &kappa)
+inline Scalar f_prime_tet(const Scalar &x, const Scalar &miu, const Scalar &, const Scalar &)
 {
     return miu * std::pow(x - 1., 3.);
 }
 ///////////////////////////////////////////////////////////////////////////////
-inline Scalar g_tet(
-    [[maybe_unused]] const Scalar &x, [[maybe_unused]] const Scalar &miu,
-    [[maybe_unused]] const Scalar &lambda, [[maybe_unused]] const Scalar &kappa)
+inline Scalar g_tet(const Scalar &, const Scalar &, const Scalar &, const Scalar &)
 {
     return 0.;
 }
 ///////////////////////////////////////////////////////////////////////////////
-inline Scalar g_prime_tet(
-    [[maybe_unused]] const Scalar &x, [[maybe_unused]] const Scalar &miu,
-    [[maybe_unused]] const Scalar &lambda, [[maybe_unused]] const Scalar &kappa)
+inline Scalar g_prime_tet(const Scalar &, const Scalar &, const Scalar &, const Scalar &)
 {
     return 0.;
 }
 ///////////////////////////////////////////////////////////////////////////////
-inline Scalar h_tet(
-    const Scalar &x, [[maybe_unused]] const Scalar &miu, const Scalar &lambda,
-    [[maybe_unused]] const Scalar &kappa)
+inline Scalar h_tet(const Scalar &x, const Scalar &, const Scalar &lambda, const Scalar &)
 {
     return lambda * (1. / 4.) * std::pow(x - 1., 4.);
 }
 ///////////////////////////////////////////////////////////////////////////////
-inline Scalar h_prime_tet(
-    const Scalar &x, [[maybe_unused]] const Scalar &miu, const Scalar &lambda,
-    [[maybe_unused]] const Scalar &kappa)
+inline Scalar h_prime_tet(const Scalar &x, const Scalar &, const Scalar &lambda, const Scalar &)
 {
     return lambda * std::pow(x - 1., 3.);
 }

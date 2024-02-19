@@ -374,7 +374,7 @@ void generateRHS(MultiScalarField2D<T> &originalRHS, std::vector<MultiScalarFiel
 template <typename T>
 T multiGridVCycle(
     MultiScalarField2D<T> &initialValue, MultiScalarField2D<T> &newValue,
-    MultiScalarField2D<T> &rhs, [[maybe_unused]] Box2D const &domain, plint depth)
+    MultiScalarField2D<T> &rhs, Box2D const &, plint depth)
 {
     PLB_PRECONDITION(depth >= 1);
 
@@ -457,8 +457,8 @@ T multiGridVCycle(
 // QUESTION: Unused initialValue. Should we remove it.
 template <typename T>
 std::vector<MultiScalarField2D<T> *> fullMultiGrid(
-    [[maybe_unused]] MultiScalarField2D<T> &initialValue, MultiScalarField2D<T> &originalRhs,
-    Box2D const &domain, plint gridLevels, plint ncycles)
+    MultiScalarField2D<T> &, MultiScalarField2D<T> &originalRhs, Box2D const &domain,
+    plint gridLevels, plint ncycles)
 {
     PLB_PRECONDITION(gridLevels >= 2 && ncycles >= 1);
 
@@ -509,8 +509,7 @@ std::vector<MultiScalarField2D<T> *> fullMultiGrid(
 // QUESTION: Unused initalValue and domain. Should we remove them?
 template <typename T>
 std::vector<MultiScalarField2D<T> *> simpleMultiGrid(
-    [[maybe_unused]] MultiScalarField2D<T> &initialValue, MultiScalarField2D<T> &originalRhs,
-    [[maybe_unused]] Box2D const &domain, plint gridLevels)
+    MultiScalarField2D<T> &, MultiScalarField2D<T> &originalRhs, Box2D const &, plint gridLevels)
 {
     PLB_PRECONDITION(gridLevels >= 2);
 

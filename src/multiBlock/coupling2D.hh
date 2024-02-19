@@ -71,8 +71,7 @@ void FullDomainCollideAndStreamAction2D<T, Descriptor>::execute(std::vector<id_t
 
 // QUESTION: Does northing. Normal?
 template <typename T, template <typename U> class Descriptor>
-void FullDomainCollideAndStreamAction2D<T, Descriptor>::regenerate(
-    [[maybe_unused]] std::vector<id_t> &allMultiBlocks)
+void FullDomainCollideAndStreamAction2D<T, Descriptor>::regenerate(std::vector<id_t> &)
 { }
 
 /* ********************  CollideAndStreamAction2D ************************** */
@@ -102,8 +101,7 @@ void CollideAndStreamAction2D<T, Descriptor>::execute(std::vector<id_t> &allMult
 
 // QUESTION: Does nothing. Normal?
 template <typename T, template <typename U> class Descriptor>
-void CollideAndStreamAction2D<T, Descriptor>::regenerate(
-    [[maybe_unused]] std::vector<id_t> &allMultiBlocks)
+void CollideAndStreamAction2D<T, Descriptor>::regenerate(std::vector<id_t> &)
 { }
 
 /* ********************  FullDomainStreamAction2D ************************** */
@@ -133,8 +131,7 @@ void FullDomainStreamAction2D<T, Descriptor>::execute(std::vector<id_t> &allMult
 
 // QUESTION: Does nothing. Normal?
 template <typename T, template <typename U> class Descriptor>
-void FullDomainStreamAction2D<T, Descriptor>::regenerate(
-    [[maybe_unused]] std::vector<id_t> &allMultiBlocks)
+void FullDomainStreamAction2D<T, Descriptor>::regenerate(std::vector<id_t> &)
 { }
 
 /* ********************  StreamAction2D ************************** */
@@ -164,7 +161,7 @@ void StreamAction2D<T, Descriptor>::execute(std::vector<id_t> &allMultiBlocks)
 
 // QUESTION: DOes nothing. Normal?
 template <typename T, template <typename U> class Descriptor>
-void StreamAction2D<T, Descriptor>::regenerate([[maybe_unused]] std::vector<id_t> &allMultiBlocks)
+void StreamAction2D<T, Descriptor>::regenerate(std::vector<id_t> &)
 { }
 
 /* ********************  IncrementTimeAction2D ************************** */
@@ -193,8 +190,7 @@ void IncrementTimeAction2D<T, Descriptor>::execute(std::vector<id_t> &allMultiBl
 
 // QUESTION: Empty. Is this normal?
 template <typename T, template <typename U> class Descriptor>
-void IncrementTimeAction2D<T, Descriptor>::regenerate(
-    [[maybe_unused]] std::vector<id_t> &allMultiBlocks)
+void IncrementTimeAction2D<T, Descriptor>::regenerate(std::vector<id_t> &)
 { }
 
 /* ********************  Actions2D ************************** */

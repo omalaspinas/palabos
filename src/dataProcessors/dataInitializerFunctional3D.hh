@@ -72,8 +72,7 @@ void OneCellFunctional3D<T, Descriptor>::getTypeOfModification(
 }
 
 template <typename T, template <class U> class Descriptor>
-void OneCellFunctional3D<T, Descriptor>::setscale(
-    [[maybe_unused]] int dxScale, [[maybe_unused]] int dtScale)
+void OneCellFunctional3D<T, Descriptor>::setscale(int, int)
 { }
 
 template <typename T, template <class U> class Descriptor>
@@ -94,8 +93,7 @@ void OneCellIndexedFunctional3D<T, Descriptor>::getTypeOfModification(
 }
 
 template <typename T, template <class U> class Descriptor>
-void OneCellIndexedFunctional3D<T, Descriptor>::setscale(
-    [[maybe_unused]] int dxScale, [[maybe_unused]] int dtScale)
+void OneCellIndexedFunctional3D<T, Descriptor>::setscale(int, int)
 { }
 
 template <typename T, template <class U> class Descriptor>
@@ -116,8 +114,7 @@ void OneCellIndexedWithRandFunctional3D<T, Descriptor>::getTypeOfModification(
 }
 
 template <typename T, template <class U> class Descriptor>
-void OneCellIndexedWithRandFunctional3D<T, Descriptor>::setscale(
-    [[maybe_unused]] int dxScale, [[maybe_unused]] int dtScale)
+void OneCellIndexedWithRandFunctional3D<T, Descriptor>::setscale(int, int)
 { }
 
 template <typename T, template <class U> class Descriptor>

@@ -77,8 +77,7 @@ inline void transferDataProcessors(MultiBlock2D const &from, MultiBlock2D &to)
 
 // QUESTION: Does it make sense to have a useless domain here?
 template <typename T>
-void transferScalarFieldLocal(
-    MultiScalarField2D<T> &from, MultiScalarField2D<T> &to, [[maybe_unused]] Box2D const &domain)
+void transferScalarFieldLocal(MultiScalarField2D<T> &from, MultiScalarField2D<T> &to, Box2D const &)
 {
     // 1. Copy all data from the old to the new field.
     plb::copy(from, to, from.getBoundingBox());
@@ -372,7 +371,7 @@ MultiNTensorField2D<T> *generateMultiNTensorField2D(
 
 template <typename T>
 void transferNTensorFieldLocal(
-    MultiNTensorField2D<T> &from, MultiNTensorField2D<T> &to, [[maybe_unused]] Box2D const &domain)
+    MultiNTensorField2D<T> &from, MultiNTensorField2D<T> &to, Box2D const &)
 // QUESTION: Remove the domain argument? Not used and can be misleading.
 {
     // 1. Copy all data from the old to the new field.
@@ -540,8 +539,7 @@ MultiNTensorField2D<T> *reparallelize(MultiNTensorField2D<T> const &originalBloc
 
 template <typename T, int nDim>
 void transferTensorFieldLocal(
-    MultiTensorField2D<T, nDim> &from, MultiTensorField2D<T, nDim> &to,
-    [[maybe_unused]] Box2D const &domain)
+    MultiTensorField2D<T, nDim> &from, MultiTensorField2D<T, nDim> &to, Box2D const &)
 // QUESTION: remove the domain argument? It is not used and can be misleading.
 {
     // 1. Copy all data from the old to the new field.
@@ -785,8 +783,7 @@ std::unique_ptr<MultiTensorField2D<T, nDim> > reparallelize(
 // QUESTION: Does it make sense to have a useless domain here?
 template <typename T, template <typename U> class Descriptor>
 void transferBlockLatticeLocal(
-    MultiBlockLattice2D<T, Descriptor> &from, MultiBlockLattice2D<T, Descriptor> &to,
-    [[maybe_unused]] Box2D const &domain)
+    MultiBlockLattice2D<T, Descriptor> &from, MultiBlockLattice2D<T, Descriptor> &to, Box2D const &)
 {
     // 1. Copy static and dynamic data to the new block.
     copyRegenerate(from, to, from.getBoundingBox());
@@ -822,7 +819,7 @@ std::unique_ptr<MultiBlockLattice2D<T, Descriptor> > generateMultiBlockLattice(
 // QUESTION: Why this dummy arg
 template <typename T, template <typename U> class Descriptor>
 std::unique_ptr<MultiBlockLattice2D<T, Descriptor> > defaultGenerateMultiBlockLattice2D(
-    MultiBlockManagement2D const &management, [[maybe_unused]] plint unnamedDummyArg)
+    MultiBlockManagement2D const &management, plint)
 {
     return std::unique_ptr<MultiBlockLattice2D<T, Descriptor> >(
         new MultiBlockLattice2D<T, Descriptor>(

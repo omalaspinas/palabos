@@ -70,6 +70,8 @@ public:
 public:
     ProcessorRegistration2D() { }
     ~ProcessorRegistration2D();
+    ProcessorRegistration2D(ProcessorRegistration2D const &) = delete;
+    ProcessorRegistration2D &operator=(ProcessorRegistration2D const &) = delete;
     int announce(std::string nameOfProcessor, ProcessorFactory2D *factory_ = 0);
     int getId(std::string name) const;
     int getNumId() const;
@@ -77,13 +79,6 @@ public:
     BoxProcessingFunctional2D *create(std::string procName, std::string data);
     EntryMap::const_iterator begin() const;
     EntryMap::const_iterator end() const;
-
-private:
-    ProcessorRegistration2D([[maybe_unused]] ProcessorRegistration2D const &rhs) { }
-    ProcessorRegistration2D &operator=([[maybe_unused]] ProcessorRegistration2D const &rhs)
-    {
-        return *this;
-    }
 
 private:
     EntryMap processorByName;

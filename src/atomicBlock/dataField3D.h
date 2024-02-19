@@ -63,15 +63,13 @@ public:
     virtual void send(Box3D domain, std::vector<char> &buffer, modif::ModifT kind) const;
     /// Receive data from a byte-stream into the block.
     virtual void receive(Box3D domain, std::vector<char> const &buffer, modif::ModifT kind);
-    virtual void receive(
-        Box3D domain, std::vector<char> const &buffer, modif::ModifT kind,
-        [[maybe_unused]] Dot3D absoluteOffset)
+    virtual void receive(Box3D domain, std::vector<char> const &buffer, modif::ModifT kind, Dot3D)
     {
         receive(domain, buffer, kind);
     }
     virtual void receive(
         Box3D domain, std::vector<char> const &buffer, modif::ModifT kind,
-        [[maybe_unused]] std::map<int, std::string> const &foreignIds)
+        std::map<int, std::string> const &)
     {
         receive(domain, buffer, kind);
     }
@@ -81,7 +79,7 @@ public:
         modif::ModifT kind);
     virtual void attribute(
         Box3D toDomain, plint deltaX, plint deltaY, plint deltaZ, AtomicBlock3D const &from,
-        modif::ModifT kind, [[maybe_unused]] Dot3D absoluteOffset)
+        modif::ModifT kind, Dot3D)
     {
         attribute(toDomain, deltaX, deltaY, deltaZ, from, kind);
     }
@@ -161,15 +159,13 @@ public:
     virtual void send(Box3D domain, std::vector<char> &buffer, modif::ModifT kind) const;
     /// Receive data from a byte-stream into the block.
     virtual void receive(Box3D domain, std::vector<char> const &buffer, modif::ModifT kind);
-    virtual void receive(
-        Box3D domain, std::vector<char> const &buffer, modif::ModifT kind,
-        [[maybe_unused]] Dot3D absoluteOffset)
+    virtual void receive(Box3D domain, std::vector<char> const &buffer, modif::ModifT kind, Dot3D)
     {
         receive(domain, buffer, kind);
     }
     virtual void receive(
         Box3D domain, std::vector<char> const &buffer, modif::ModifT kind,
-        [[maybe_unused]] std::map<int, std::string> const &foreignIds)
+        std::map<int, std::string> const &)
     {
         receive(domain, buffer, kind);
     }
@@ -179,7 +175,7 @@ public:
         modif::ModifT kind);
     virtual void attribute(
         Box3D toDomain, plint deltaX, plint deltaY, plint deltaZ, AtomicBlock3D const &from,
-        modif::ModifT kind, [[maybe_unused]] Dot3D absoluteOffset)
+        modif::ModifT kind, Dot3D)
     {
         attribute(toDomain, deltaX, deltaY, deltaZ, from, kind);
     }
@@ -257,15 +253,13 @@ public:
     virtual void send(Box3D domain, std::vector<char> &buffer, modif::ModifT kind) const;
     /// Receive data from a byte-stream into the block.
     virtual void receive(Box3D domain, std::vector<char> const &buffer, modif::ModifT kind);
-    virtual void receive(
-        Box3D domain, std::vector<char> const &buffer, modif::ModifT kind,
-        [[maybe_unused]] Dot3D absoluteOffset)
+    virtual void receive(Box3D domain, std::vector<char> const &buffer, modif::ModifT kind, Dot3D)
     {
         receive(domain, buffer, kind);
     }
     virtual void receive(
         Box3D domain, std::vector<char> const &buffer, modif::ModifT kind,
-        [[maybe_unused]] std::map<int, std::string> const &foreignIds)
+        std::map<int, std::string> const &)
     {
         receive(domain, buffer, kind);
     }
@@ -275,7 +269,7 @@ public:
         modif::ModifT kind);
     virtual void attribute(
         Box3D toDomain, plint deltaX, plint deltaY, plint deltaZ, AtomicBlock3D const &from,
-        modif::ModifT kind, [[maybe_unused]] Dot3D absoluteOffset)
+        modif::ModifT kind, Dot3D)
     {
         attribute(toDomain, deltaX, deltaY, deltaZ, from, kind);
     }

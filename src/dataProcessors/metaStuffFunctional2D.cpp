@@ -55,8 +55,7 @@ IterateDynamicsFunctional2D::IterateDynamicsFunctional2D(std::vector<int> previo
     }
 }
 
-void IterateDynamicsFunctional2D::processGenericBlocks(
-    [[maybe_unused]] Box2D domain, std::vector<AtomicBlock2D *> blocks)
+void IterateDynamicsFunctional2D::processGenericBlocks(Box2D, std::vector<AtomicBlock2D *> blocks)
 {
     PLB_PRECONDITION(blocks.size() == 1);
     AtomicContainerBlock2D &container = *dynamic_cast<AtomicContainerBlock2D *>(blocks[0]);
@@ -115,8 +114,7 @@ AllFlagsTrueFunctional2D::AllFlagsTrueFunctional2D() :
     numFalseId(this->getStatistics().subscribeIntSum())
 { }
 
-void AllFlagsTrueFunctional2D::processGenericBlocks(
-    [[maybe_unused]] Box2D domain, std::vector<AtomicBlock2D *> blocks)
+void AllFlagsTrueFunctional2D::processGenericBlocks(Box2D, std::vector<AtomicBlock2D *> blocks)
 {
     PLB_PRECONDITION(blocks.size() == 1);
     if (!blocks[0]->getFlag()) {

@@ -55,7 +55,7 @@ InamuroAdvectionDiffusionIteration3D<T, ScalarFunction>::InamuroAdvectionDiffusi
 
 template <typename T, class ScalarFunction>
 void InamuroAdvectionDiffusionIteration3D<T, ScalarFunction>::processGenericBlocks(
-    [[maybe_unused]] Box3D domain, std::vector<AtomicBlock3D *> blocks)
+    Box3D, std::vector<AtomicBlock3D *> blocks)
 {
     PLB_PRECONDITION(blocks.size() == 2);
     ScalarField3D<T> *rhoBar = dynamic_cast<ScalarField3D<T> *>(blocks[0]);
@@ -164,7 +164,7 @@ IndexedInamuroAdvectionDiffusionIteration3D<T, ScalarFunction>::
 
 template <typename T, class ScalarFunction>
 void IndexedInamuroAdvectionDiffusionIteration3D<T, ScalarFunction>::processGenericBlocks(
-    [[maybe_unused]] Box3D domain, std::vector<AtomicBlock3D *> blocks)
+    Box3D, std::vector<AtomicBlock3D *> blocks)
 {
     PLB_PRECONDITION(blocks.size() == 2);
     ScalarField3D<T> *rhoBar = dynamic_cast<ScalarField3D<T> *>(blocks[0]);
@@ -272,7 +272,7 @@ ConstScalarInamuroAdvectionDiffusionIteration3D<T>::ConstScalarInamuroAdvectionD
 
 template <typename T>
 void ConstScalarInamuroAdvectionDiffusionIteration3D<T>::processGenericBlocks(
-    [[maybe_unused]] Box3D domain, std::vector<AtomicBlock3D *> blocks)
+    Box3D, std::vector<AtomicBlock3D *> blocks)
 {
     PLB_PRECONDITION(blocks.size() == 2);
     ScalarField3D<T> *rhoBar = dynamic_cast<ScalarField3D<T> *>(blocks[0]);

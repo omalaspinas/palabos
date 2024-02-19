@@ -44,11 +44,12 @@ namespace plb {
 
 namespace parallelIO {
 
+#ifdef PLB_MPI_PARALLEL
+
 void writeRawData_mpi(
     FileName fName, std::vector<plint> const &myBlockIds, std::vector<plint> const &offset,
     std::vector<std::vector<char> > &data, bool appendMode)
 {
-#ifdef PLB_MPI_PARALLEL
     char fNameBuf[1024];
     if (fName.get().size() < 1024) {
         strcpy(fNameBuf, fName.get().c_str());
@@ -110,8 +111,16 @@ void writeRawData_mpi(
         ioError = true;
     }
     plbIOError(ioError, std::string("File access unsuccessful in file ") + fName.get());
-#endif
 }
+
+#else  // PLB_MPI_PARALLEL
+
+void writeRawData_mpi(
+    FileName, std::vector<plint> const &, std::vector<plint> const &,
+    std::vector<std::vector<char> > &, bool)
+{ }
+
+#endif  // PLB_MPI_PARALLEL
 
 void writeRawData_posix(
     FileName fName, std::vector<plint> const &myBlockIds, std::vector<plint> const &offset,
@@ -202,11 +211,12 @@ void writeRawData(
     }
 }
 
+#ifdef PLB_MPI_PARALLEL
+
 void loadRawData_mpi(
     FileName fName, std::vector<plint> const &myBlockIds, std::vector<plint> const &offset,
     std::vector<std::vector<char> > &data)
 {
-#ifdef PLB_MPI_PARALLEL
     char fNameBuf[1024];
     if (fName.get().size() < 1024) {
         strcpy(fNameBuf, fName.get().c_str());
@@ -255,8 +265,16 @@ void loadRawData_mpi(
         ioError = true;
     }
     plbIOError(ioError, std::string("File access unsuccessful in file ") + fName.get());
-#endif
 }
+
+#else  // PLB_MPI_PARALLEL
+
+void loadRawData_mpi(
+    FileName, std::vector<plint> const &, std::vector<plint> const &,
+    std::vector<std::vector<char> > &)
+{ }
+
+#endif  // PLB_MPI_PARALLEL
 
 void loadRawData_posix(
     FileName fName, std::vector<plint> const &myBlockIds, std::vector<plint> const &offset,

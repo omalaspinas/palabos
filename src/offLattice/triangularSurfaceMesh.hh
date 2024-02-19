@@ -86,16 +86,24 @@ void TriangularSurfaceMesh<T>::resetVertices(Array<T, 3> const &defaultVertex)
     }
 }
 
+#ifdef PLB_DEBUG
+
 template <typename T>
 inline void TriangularSurfaceMesh<T>::assertVertex(Array<T, 3> const &vertex) const
 {
-#ifdef PLB_DEBUG
     if (global::IOpolicy().stlFilesHaveLowerBound()) {
         double bound = global::IOpolicy().getLowerBoundForStlFiles();
         PLB_ASSERT(!(vertex[0] < bound && vertex[1] < bound && vertex[2] < bound));
     }
-#endif  // PLB_DEBUG
 }
+
+#else  // PLB_DEBUG
+
+template <typename T>
+inline void TriangularSurfaceMesh<T>::assertVertex(Array<T, 3> const &) const
+{ }
+
+#endif  // PLB_DEBUG
 
 template <typename T>
 inline Array<T, 3> const &TriangularSurfaceMesh<T>::getVertex(
@@ -1721,8 +1729,7 @@ void TriangularSurfaceMesh<T>::writeHTML(std::string fname)
 // in the <title>
 template <typename T>
 void TriangularSurfaceMesh<T>::writeHTML(
-    std::string fname, [[maybe_unused]] std::string title, [[maybe_unused]] T phys_dx,
-    [[maybe_unused]] Array<T, 3> phys_location)
+    std::string fname, std::string, T phys_dx, Array<T, 3> phys_location)
 {
     if (!global::mpi().isMainProcessor()) {
         return;
@@ -1830,9 +1837,7 @@ void TriangularSurfaceMesh<T>::writeX3D(std::string fname)
 
 // QUESTION: title, phys_dx and phys_location unused could we remove them?
 template <typename T>
-void TriangularSurfaceMesh<T>::writeX3D(
-    std::string fname, [[maybe_unused]] std::string title, [[maybe_unused]] T phys_dx,
-    [[maybe_unused]] Array<T, 3> phys_location)
+void TriangularSurfaceMesh<T>::writeX3D(std::string fname, std::string, T, Array<T, 3>)
 {
     if (!global::mpi().isMainProcessor()) {
         return;

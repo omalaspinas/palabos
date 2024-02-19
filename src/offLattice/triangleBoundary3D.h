@@ -420,6 +420,7 @@ public:
         plint borderWidth_, plint envelopeWidth_, plint blockSize_, Box3D const &seed,
         plint gridLevel_ = 0, bool dynamicMesh_ = false);
     VoxelizedDomain3D(VoxelizedDomain3D<T> const &rhs);
+    VoxelizedDomain3D<T> &operator=(VoxelizedDomain3D<T> const &) = delete;
     ~VoxelizedDomain3D();
     MultiScalarField3D<int> &getVoxelMatrix();
     MultiScalarField3D<int> const &getVoxelMatrix() const;
@@ -439,7 +440,6 @@ public:
     }
 
 private:
-    VoxelizedDomain3D<T> &operator=([[maybe_unused]] VoxelizedDomain3D<T> const &rhs) { }
     void createSparseVoxelMatrix(
         MultiScalarField3D<int> &fullVoxelMatrix, plint blockSize_, plint envelopeWidth_);
     void computeSparseVoxelMatrix(

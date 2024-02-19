@@ -76,6 +76,9 @@ public:
 
 public:
     ~DynamicsRegistration();
+    DynamicsRegistration(DynamicsRegistration<T, Descriptor> const &) = delete;
+    DynamicsRegistration<T, Descriptor> &operator=(DynamicsRegistration<T, Descriptor> const &) =
+        delete;
     int announce(std::string nameOfDynamics, DynamicsGenerator<T, Descriptor> *generator_ = 0);
     int getId(std::string name) const;
     int getNumId() const;
@@ -88,14 +91,6 @@ public:
     /// This default constructor should actually be private, but it is public
     ///  for now to fix a parse error in older GCCs.
     DynamicsRegistration() { }
-
-private:
-    DynamicsRegistration([[maybe_unused]] DynamicsRegistration<T, Descriptor> const &rhs) { }
-    DynamicsRegistration<T, Descriptor> &operator=(
-        [[maybe_unused]] DynamicsRegistration<T, Descriptor> const &rhs)
-    {
-        return *this;
-    }
 
 private:
     EntryMap dynamicsByName;
@@ -118,8 +113,7 @@ std::string constructIdNameChain(std::vector<int> const &ids, std::string separa
 
 template <typename T, template <typename U> class Descriptor, class NoParamDynamics>
 class NoParamDynamicsGenerator : public DynamicsGenerator<T, Descriptor> {
-    virtual Dynamics<T, Descriptor> *generate(
-        [[maybe_unused]] HierarchicUnserializer &unserializer) const
+    virtual Dynamics<T, Descriptor> *generate(HierarchicUnserializer &) const
     {
         return new NoParamDynamics();
     }

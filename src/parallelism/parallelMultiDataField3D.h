@@ -84,6 +84,7 @@ public:
     ParallelNTensorAccess3D();
     virtual ~ParallelNTensorAccess3D();
     ParallelNTensorAccess3D(ParallelNTensorAccess3D<T> const &rhs);
+    ParallelNTensorAccess3D<T> &operator=(ParallelNTensorAccess3D<T> const &) = delete;
     virtual T *getDistributedNTensor(
         plint iX, plint iY, plint iZ, MultiBlockManagement3D const &multiBlockManagement,
         std::map<plint, NTensorField3D<T> *> &fields);
@@ -91,12 +92,6 @@ public:
         plint iX, plint iY, plint iZ, MultiBlockManagement3D const &multiBlockManagement,
         std::map<plint, NTensorField3D<T> *> const &fields) const;
     virtual ParallelNTensorAccess3D<T> *clone() const;
-
-private:
-    ParallelNTensorAccess3D<T> &operator=([[maybe_unused]] ParallelNTensorAccess3D<T> const &rhs)
-    {
-        return *this;
-    }
 
 private:
     mutable T *distributedNTensor;

@@ -575,9 +575,8 @@ void CorrelateBubbleIds3D<T>::processGenericBlocks(
     Dot3D tag2Ofs = computeRelativeDisplacement(tagMatrix1, tagMatrix2);
 
 #ifdef PLB_DEBUG
-    pluint numNewBubbles =
+    pluint numNewBubbles = data.newToOldMap0.size();
 #endif
-        data.newToOldMap0.size();
     PLB_ASSERT(data.newToOldMap1.size() == numNewBubbles);
 
     for (plint iX = domain.x0; iX <= domain.x1; ++iX) {

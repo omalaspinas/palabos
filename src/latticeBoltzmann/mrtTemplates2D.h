@@ -252,7 +252,7 @@ struct mrtTemplatesImpl<T, descriptors::MRTD2Q9DescriptorBase<T> > {
     // QUESTION: amplitude unused. Should we adapt the code?
     static void addHeForce(
         Array<T, Descriptor::q> &f, const Array<T, Descriptor::d> &force, const T &rhoBar,
-        Array<T, Descriptor::d> const &uLB, const T &omega, [[maybe_unused]] T amplitude)
+        Array<T, Descriptor::d> const &uLB, const T &omega, T)
     {
         ///////////// new
         // NOW WE CALCULATE THE moments of the forcing (HE forcing)
