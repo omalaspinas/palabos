@@ -68,8 +68,7 @@ public:
     {
         return new TwoLayerInitializer<T, Descriptor>(*this);
     }
-    virtual void execute(
-        [[maybe_unused]] plint iX, plint iY, T rand_val, Cell<T, Descriptor> &cell) const
+    virtual void execute(plint, plint iY, T rand_val, Cell<T, Descriptor> &cell) const
     {
         T densityFluctuations = 1.e-2;
         T almostNoFluid = 1.e-4;

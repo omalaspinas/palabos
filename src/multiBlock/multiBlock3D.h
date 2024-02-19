@@ -257,14 +257,14 @@ private:
 
 class MultiBlockRegistration3D {
 public:
+    MultiBlockRegistration3D(MultiBlockRegistration3D const &) = delete;
+    MultiBlockRegistration3D &operator=(MultiBlockRegistration3D const &) = delete;
     id_t announce(MultiBlock3D &block);
     void release(MultiBlock3D &block);
     MultiBlock3D *find(id_t id);
 
 private:
     MultiBlockRegistration3D();
-    MultiBlockRegistration3D(MultiBlockRegistration3D const &rhs);
-    MultiBlockRegistration3D &operator=(MultiBlockRegistration3D const &rhs);
 
 private:
     util::UniqueId uniqueId;

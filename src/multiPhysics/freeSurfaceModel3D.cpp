@@ -58,11 +58,8 @@ namespace plb {
 
 // CAUTION: This data processor will not work (will hang) if the multi-block passed does
 //          not have at least one atomic block on every MPI process.
-void FreeSurfaceComputeReductions3D::processGenericBlocks(
-    [[maybe_unused]] Box3D domain, std::vector<AtomicBlock3D *> blocks)
+void FreeSurfaceComputeReductions3D::processGenericBlocks(Box3D, std::vector<AtomicBlock3D *>)
 {
-    PLB_ASSERT(blocks.size() == 1);
-
     if (!reductionData.used) {
         double sendbuf[3] = {
             reductionData.localLostMass, reductionData.localTotalMass,
@@ -86,11 +83,8 @@ void FreeSurfaceComputeReductions3D::processGenericBlocks(
 /* *************** Class FreeSurfaceComputeSerialReductions3D
  * ******************************************* */
 
-void FreeSurfaceComputeSerialReductions3D::processGenericBlocks(
-    Box3D domain, std::vector<AtomicBlock3D *> blocks)
+void FreeSurfaceComputeSerialReductions3D::processGenericBlocks(Box3D, std::vector<AtomicBlock3D *>)
 {
-    PLB_ASSERT(blocks.size() == 1);
-
     if (!reductionData.used) {
         reductionData.lostMass = reductionData.localLostMass;
         reductionData.totalMass = reductionData.localTotalMass;
@@ -105,10 +99,8 @@ void FreeSurfaceComputeSerialReductions3D::processGenericBlocks(
 /* *************** Class FreeSurfaceResetReductionData3D *******************************************
  */
 
-void FreeSurfaceResetReductionData3D::processGenericBlocks(
-    [[maybe_unused]] Box3D domain, std::vector<AtomicBlock3D *> blocks)
+void FreeSurfaceResetReductionData3D::processGenericBlocks(Box3D, std::vector<AtomicBlock3D *>)
 {
-    PLB_ASSERT(blocks.size() == 1);
     reductionData.reset();
 }
 

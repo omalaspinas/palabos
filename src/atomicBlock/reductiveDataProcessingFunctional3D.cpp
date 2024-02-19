@@ -48,9 +48,7 @@ BlockDomain::DomainT ReductiveBoxProcessingFunctional3D::appliesTo() const
 }
 
 /** No rescaling is done by default. **/
-void ReductiveBoxProcessingFunctional3D::rescale(
-    [[maybe_unused]] double dxScale, [[maybe_unused]] double dtScale)
-{ }
+void ReductiveBoxProcessingFunctional3D::rescale(double, double) { }
 
 void ReductiveBoxProcessingFunctional3D::getDimensionsX(std::vector<int> &dimensions) const
 {
@@ -80,9 +78,9 @@ int ReductiveBoxProcessingFunctional3D::getStaticId() const
     return -1;
 }
 
-void ReductiveBoxProcessingFunctional3D::serialize([[maybe_unused]] std::string &data) const { }
+void ReductiveBoxProcessingFunctional3D::serialize(std::string &) const { }
 
-void ReductiveBoxProcessingFunctional3D::unserialize([[maybe_unused]] std::string &data) { }
+void ReductiveBoxProcessingFunctional3D::unserialize(std::string &) { }
 
 /* *************** Class PlainReductiveBoxProcessingFunctional3D ************************* */
 
@@ -234,9 +232,7 @@ BlockDomain::DomainT ReductiveDotProcessingFunctional3D::appliesTo() const
 }
 
 /** No rescaling is done by default. **/
-void ReductiveDotProcessingFunctional3D::rescale(
-    [[maybe_unused]] double dxScale, [[maybe_unused]] double dtScale)
-{ }
+void ReductiveDotProcessingFunctional3D::rescale(double, double) { }
 
 void ReductiveDotProcessingFunctional3D::getDimensionsX(std::vector<int> &dimensions) const
 {
@@ -384,9 +380,7 @@ BlockDomain::DomainT BoundedReductiveBoxProcessingFunctional3D::appliesTo() cons
 }
 
 /** No rescaling is done by default. **/
-void BoundedReductiveBoxProcessingFunctional3D::rescale(
-    [[maybe_unused]] double dxScale, [[maybe_unused]] double dtScale)
-{ }
+void BoundedReductiveBoxProcessingFunctional3D::rescale(double, double) { }
 
 void BoundedReductiveBoxProcessingFunctional3D::getDimensionsX(std::vector<int> &dimensions) const
 {

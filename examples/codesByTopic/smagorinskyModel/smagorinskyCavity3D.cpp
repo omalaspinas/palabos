@@ -48,9 +48,7 @@ using namespace std;
 typedef double T;
 #define DESCRIPTOR descriptors::D3Q19Descriptor
 
-void randomIniCondition(
-    [[maybe_unused]] plint iX, [[maybe_unused]] plint iY, [[maybe_unused]] plint iZ, T randomValue,
-    T &rho, Array<T, 3> &velocity)
+void randomIniCondition(plint, plint, plint, T randomValue, T &rho, Array<T, 3> &velocity)
 {
     velocity.resetToZero();
     rho = (T)1 + 1.e-2 * randomValue;

@@ -44,7 +44,7 @@ namespace plb {
 
 template <class ParticleFieldT>
 std::unique_ptr<MultiParticleField2D<ParticleFieldT> > defaultGenerateParticleField2D(
-    MultiBlockManagement2D const &management, [[maybe_unused]] plint unnamedDummyArg)
+    MultiBlockManagement2D const &management, plint)
 {
     return std::unique_ptr<MultiParticleField2D<ParticleFieldT> >(
         new MultiParticleField2D<ParticleFieldT>(
@@ -210,8 +210,7 @@ int MultiParticleField2D<ParticleFieldT>::getStaticId() const
 // TODO: whichData is not used. Should we remove it?
 template <class ParticleFieldT>
 void MultiParticleField2D<ParticleFieldT>::copyReceive(
-    MultiBlock2D const &fromBlock, Box2D const &fromDomain, Box2D const &toDomain,
-    [[maybe_unused]] modif::ModifT whichData)
+    MultiBlock2D const &fromBlock, Box2D const &fromDomain, Box2D const &toDomain, modif::ModifT)
 {
     MultiParticleField2D<ParticleFieldT> const *fromField =
         dynamic_cast<MultiParticleField2D<ParticleFieldT> const *>(&fromBlock);

@@ -63,17 +63,14 @@ void PartialBBdynamics<T, Descriptor>::collide(
 // TODO: This function should be implemented.
 template <typename T, template <typename U> class Descriptor>
 void PartialBBdynamics<T, Descriptor>::collideExternal(
-    [[maybe_unused]] Cell<T, Descriptor> &cell, [[maybe_unused]] T rhoBar,
-    [[maybe_unused]] Array<T, Descriptor<T>::d> const &j, [[maybe_unused]] T thetaBar,
-    [[maybe_unused]] BlockStatistics &stat)
+    Cell<T, Descriptor> &, T, Array<T, Descriptor<T>::d> const &, T, BlockStatistics &)
 {
     PLB_ASSERT(false);
 }
 
 template <typename T, template <typename U> class Descriptor>
 T PartialBBdynamics<T, Descriptor>::computeEquilibrium(
-    plint iPop, T rhoBar, Array<T, Descriptor<T>::d> const &j, T jSqr,
-    [[maybe_unused]] T thetaBar) const
+    plint iPop, T rhoBar, Array<T, Descriptor<T>::d> const &j, T jSqr, T) const
 {
     T invRho = Descriptor<T>::invRho(rhoBar);
     return dynamicsTemplates<T, Descriptor>::bgk_ma2_equilibrium(iPop, rhoBar, invRho, j, jSqr);
@@ -132,7 +129,7 @@ void PartialBBdynamics<T, Descriptor>::recomposeOrder0(
 template <typename T, template <typename U> class Descriptor>
 T PartialBBdynamics<T, Descriptor>::PSMCollision(
     Cell<T, Descriptor> &cell, T rhoBar, Array<T, Descriptor<T>::d> const &j,
-    [[maybe_unused]] Array<T, Descriptor<T>::d> const &wallVelocity, T &solidFraction, T omega)
+    Array<T, Descriptor<T>::d> const &, T &solidFraction, T omega)
 {
     T invRho = Descriptor<T>::invRho(rhoBar);
     const T jSqr = VectorTemplate<T, Descriptor>::normSqr(j);

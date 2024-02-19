@@ -190,10 +190,11 @@ void MultiBlockSerializer2D::computeBufferAlongY(plint nextBlockId, plint nextCh
     communicateBuffer(bufferSize, nextBlockId, blockIsLocal);
 }
 
+#ifdef PLB_MPI_PARALLEL
+
 void MultiBlockSerializer2D::communicateBuffer(
     plint bufferSize, plint fromBlockId, bool isAllocated) const
 {
-#ifdef PLB_MPI_PARALLEL
     // Exchanging a dummy message ahead of the main data has the effect
     //   of synchronizing sender and receiver and therefore avoiding network
     //   jams: given that only processor 0 is receiving and treating the data,
@@ -216,8 +217,13 @@ void MultiBlockSerializer2D::communicateBuffer(
         global::mpi().send(&dummyMessage, 1, fromProc);
         global::mpi().wait(&request, &status);
     }
-#endif  // PLB_MPI_PARALLEL
 }
+
+#else  // PLB_MPI_PARALLEL
+
+void MultiBlockSerializer2D::communicateBuffer(plint, plint, bool) const { }
+
+#endif  // PLB_MPI_PARALLEL
 
 void MultiBlockSerializer2D::fillBufferWithZeros(plint nextChunkSize) const
 {
@@ -391,10 +397,11 @@ void MultiBlockUnSerializer2D::fillBufferAlongY(plint nextBlockId, plint nextChu
     }
 }
 
+#ifdef PLB_MPI_PARALLEL
+
 void MultiBlockUnSerializer2D::communicateBuffer(
     plint bufferSize, plint toBlockId, bool isAllocated) const
 {
-#ifdef PLB_MPI_PARALLEL
     if (isAllocated && !global::mpi().isMainProcessor()) {
         // Avoid pointing to a buffer of size 0, as this leads to undefined behavior.
         PLB_ASSERT(bufferSize > 0);
@@ -406,8 +413,13 @@ void MultiBlockUnSerializer2D::communicateBuffer(
             multiBlock.getMultiBlockManagement().getThreadAttribution().getMpiProcess(toBlockId);
         global::mpi().send(&buffer[0], bufferSize, toProc);
     }
-#endif
 }
+
+#else  // PLB_MPI_PARALLEL
+
+void MultiBlockUnSerializer2D::communicateBuffer(plint, plint, bool) const { }
+
+#endif  // PLB_MPI_PARALLEL
 
 MultiBlockFastSerializer2D::MultiBlockFastSerializer2D(
     MultiBlock2D const &multiBlock_, IndexOrdering::OrderingT ordering_) :

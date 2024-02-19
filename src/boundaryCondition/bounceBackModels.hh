@@ -148,85 +148,73 @@ void MomentumExchangeBounceBack<T, Descriptor>::collide(
 
 template <typename T, template <typename U> class Descriptor>
 void MomentumExchangeBounceBack<T, Descriptor>::collideExternal(
-    Cell<T, Descriptor> &cell, [[maybe_unused]] T rhoBar,
-    [[maybe_unused]] Array<T, Descriptor<T>::d> const &j, [[maybe_unused]] T thetaBar,
-    BlockStatistics &stat)
+    Cell<T, Descriptor> &cell, T, Array<T, Descriptor<T>::d> const &, T, BlockStatistics &stat)
 {
     collide(cell, stat);
 }
 
 template <typename T, template <typename U> class Descriptor>
 T MomentumExchangeBounceBack<T, Descriptor>::computeEquilibrium(
-    [[maybe_unused]] plint iPop, [[maybe_unused]] T rhoBar,
-    [[maybe_unused]] Array<T, Descriptor<T>::d> const &j, [[maybe_unused]] T jSqr,
-    [[maybe_unused]] T thetaBar) const
+    plint, T, Array<T, Descriptor<T>::d> const &, T, T) const
 {
     return T();
 }
 
 template <typename T, template <typename U> class Descriptor>
 void MomentumExchangeBounceBack<T, Descriptor>::regularize(
-    [[maybe_unused]] Cell<T, Descriptor> &cell, [[maybe_unused]] T rhoBar,
-    [[maybe_unused]] Array<T, Descriptor<T>::d> const &j, [[maybe_unused]] T jSqr,
-    [[maybe_unused]] Array<T, SymmetricTensor<T, Descriptor>::n> const &PiNeq,
-    [[maybe_unused]] T thetaBar) const
+    Cell<T, Descriptor> &, T, Array<T, Descriptor<T>::d> const &, T,
+    Array<T, SymmetricTensor<T, Descriptor>::n> const &, T) const
 { }
 
 template <typename T, template <typename U> class Descriptor>
-T MomentumExchangeBounceBack<T, Descriptor>::computeDensity(
-    [[maybe_unused]] Cell<T, Descriptor> const &cell) const
+T MomentumExchangeBounceBack<T, Descriptor>::computeDensity(Cell<T, Descriptor> const &) const
 {
     return rho;
 }
 
 template <typename T, template <typename U> class Descriptor>
-T MomentumExchangeBounceBack<T, Descriptor>::computePressure(
-    [[maybe_unused]] Cell<T, Descriptor> const &cell) const
+T MomentumExchangeBounceBack<T, Descriptor>::computePressure(Cell<T, Descriptor> const &) const
 {
     return T();
 }
 
 template <typename T, template <typename U> class Descriptor>
 void MomentumExchangeBounceBack<T, Descriptor>::computeVelocity(
-    [[maybe_unused]] Cell<T, Descriptor> const &cell, Array<T, Descriptor<T>::d> &u) const
+    Cell<T, Descriptor> const &, Array<T, Descriptor<T>::d> &u) const
 {
     u.resetToZero();
 }
 
 template <typename T, template <typename U> class Descriptor>
-T MomentumExchangeBounceBack<T, Descriptor>::computeTemperature(
-    [[maybe_unused]] Cell<T, Descriptor> const &cell) const
+T MomentumExchangeBounceBack<T, Descriptor>::computeTemperature(Cell<T, Descriptor> const &) const
 {
     return T();
 }
 
 template <typename T, template <typename U> class Descriptor>
 void MomentumExchangeBounceBack<T, Descriptor>::computePiNeq(
-    [[maybe_unused]] Cell<T, Descriptor> const &cell,
-    Array<T, SymmetricTensor<T, Descriptor>::n> &PiNeq) const
+    Cell<T, Descriptor> const &, Array<T, SymmetricTensor<T, Descriptor>::n> &PiNeq) const
 {
     PiNeq.resetToZero();
 }
 
 template <typename T, template <typename U> class Descriptor>
 void MomentumExchangeBounceBack<T, Descriptor>::computeShearStress(
-    [[maybe_unused]] Cell<T, Descriptor> const &cell,
-    Array<T, SymmetricTensor<T, Descriptor>::n> &stress) const
+    Cell<T, Descriptor> const &, Array<T, SymmetricTensor<T, Descriptor>::n> &stress) const
 {
     stress.resetToZero();
 }
 
 template <typename T, template <typename U> class Descriptor>
 void MomentumExchangeBounceBack<T, Descriptor>::computeHeatFlux(
-    [[maybe_unused]] Cell<T, Descriptor> const &cell, Array<T, Descriptor<T>::d> &q) const
+    Cell<T, Descriptor> const &, Array<T, Descriptor<T>::d> &q) const
 {
     q.resetToZero();
 }
 
 template <typename T, template <typename U> class Descriptor>
 void MomentumExchangeBounceBack<T, Descriptor>::computeMoment(
-    [[maybe_unused]] Cell<T, Descriptor> const &cell, [[maybe_unused]] plint momentId,
-    [[maybe_unused]] T *moment) const
+    Cell<T, Descriptor> const &, plint, T *) const
 { }
 
 template <typename T, template <typename U> class Descriptor>
@@ -236,20 +224,18 @@ T MomentumExchangeBounceBack<T, Descriptor>::getOmega() const
 }
 
 template <typename T, template <typename U> class Descriptor>
-void MomentumExchangeBounceBack<T, Descriptor>::setOmega([[maybe_unused]] T omega_)
+void MomentumExchangeBounceBack<T, Descriptor>::setOmega(T)
 { }
 
 template <typename T, template <typename U> class Descriptor>
-T MomentumExchangeBounceBack<T, Descriptor>::computeRhoBar(
-    [[maybe_unused]] Cell<T, Descriptor> const &cell) const
+T MomentumExchangeBounceBack<T, Descriptor>::computeRhoBar(Cell<T, Descriptor> const &) const
 {
     return Descriptor<T>::rhoBar(rho);
 }
 
 template <typename T, template <typename U> class Descriptor>
 void MomentumExchangeBounceBack<T, Descriptor>::computeRhoBarJ(
-    [[maybe_unused]] Cell<T, Descriptor> const &cell, T &rhoBar,
-    Array<T, Descriptor<T>::d> &j) const
+    Cell<T, Descriptor> const &, T &rhoBar, Array<T, Descriptor<T>::d> &j) const
 {
     rhoBar = Descriptor<T>::rhoBar(rho);
     j.resetToZero();
@@ -257,7 +243,7 @@ void MomentumExchangeBounceBack<T, Descriptor>::computeRhoBarJ(
 
 template <typename T, template <typename U> class Descriptor>
 void MomentumExchangeBounceBack<T, Descriptor>::computeRhoBarJPiNeq(
-    [[maybe_unused]] Cell<T, Descriptor> const &cell, T &rhoBar, Array<T, Descriptor<T>::d> &j,
+    Cell<T, Descriptor> const &, T &rhoBar, Array<T, Descriptor<T>::d> &j,
     Array<T, SymmetricTensor<T, Descriptor>::n> &PiNeq) const
 {
     rhoBar = Descriptor<T>::rhoBar(rho);
@@ -266,22 +252,20 @@ void MomentumExchangeBounceBack<T, Descriptor>::computeRhoBarJPiNeq(
 }
 
 template <typename T, template <typename U> class Descriptor>
-T MomentumExchangeBounceBack<T, Descriptor>::computeEbar(
-    [[maybe_unused]] Cell<T, Descriptor> const &cell) const
+T MomentumExchangeBounceBack<T, Descriptor>::computeEbar(Cell<T, Descriptor> const &) const
 {
     return T();
 }
 
 template <typename T, template <typename U> class Descriptor>
-plint MomentumExchangeBounceBack<T, Descriptor>::numDecomposedVariables(
-    [[maybe_unused]] plint order) const
+plint MomentumExchangeBounceBack<T, Descriptor>::numDecomposedVariables(plint) const
 {
     return Descriptor<T>::q + Descriptor<T>::ExternalField::numScalars;
 }
 
 template <typename T, template <typename U> class Descriptor>
 void MomentumExchangeBounceBack<T, Descriptor>::decompose(
-    [[maybe_unused]] Cell<T, Descriptor> const &cell, std::vector<T> &rawData, plint order) const
+    Cell<T, Descriptor> const &, std::vector<T> &rawData, plint order) const
 {
     rawData.resize(numDecomposedVariables(order));
     std::fill(rawData.begin(), rawData.end(), T());
@@ -289,14 +273,11 @@ void MomentumExchangeBounceBack<T, Descriptor>::decompose(
 
 template <typename T, template <typename U> class Descriptor>
 void MomentumExchangeBounceBack<T, Descriptor>::recompose(
-    [[maybe_unused]] Cell<T, Descriptor> &cell, [[maybe_unused]] std::vector<T> const &rawData,
-    [[maybe_unused]] plint order) const
+    Cell<T, Descriptor> &, std::vector<T> const &, plint) const
 { }
 
 template <typename T, template <typename U> class Descriptor>
-void MomentumExchangeBounceBack<T, Descriptor>::rescale(
-    [[maybe_unused]] std::vector<T> &rawData, [[maybe_unused]] T xDxInv, [[maybe_unused]] T xDt,
-    [[maybe_unused]] plint order) const
+void MomentumExchangeBounceBack<T, Descriptor>::rescale(std::vector<T> &, T, T, plint) const
 { }
 
 template <typename T, template <typename U> class Descriptor>

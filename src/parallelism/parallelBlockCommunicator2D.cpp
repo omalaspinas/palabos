@@ -110,8 +110,7 @@ ParallelBlockCommunicator2D::ParallelBlockCommunicator2D() :
     overlapsModified(true), communication(0)
 { }
 
-ParallelBlockCommunicator2D::ParallelBlockCommunicator2D(
-    [[maybe_unused]] ParallelBlockCommunicator2D const &rhs) :
+ParallelBlockCommunicator2D::ParallelBlockCommunicator2D(ParallelBlockCommunicator2D const &) :
     overlapsModified(true), communication(0)
 { }
 

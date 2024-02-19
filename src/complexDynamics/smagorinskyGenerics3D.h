@@ -85,8 +85,7 @@ private:
 };
 
 template <typename T>
-T constOmegaFromOmega0(
-    [[maybe_unused]] plint iX, [[maybe_unused]] plint iY, [[maybe_unused]] plint iZ, T omega0)
+T constOmegaFromOmega0(plint, plint, plint, T omega0)
 {
     return omega0;
 }

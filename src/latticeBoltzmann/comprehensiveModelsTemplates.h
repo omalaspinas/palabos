@@ -289,72 +289,60 @@ struct comprehensiveDynamicsTemplates {
 template <typename T, class Descriptor>
 struct comprehensiveDynamicsTemplatesImpl {
     //========================= RM = Raw Moments ======================//
-    static void RMcomputeMoments(
-        [[maybe_unused]] Array<T, Descriptor::q> const &cell,
-        [[maybe_unused]] Array<T, Descriptor::q> &RM, [[maybe_unused]] T &rho)
+    static void RMcomputeMoments(Array<T, Descriptor::q> const &, Array<T, Descriptor::q> &, T &)
     {
         // We only provide specialized implementations.
         PLB_ASSERT(false);
     }
 
     static void RMcomputeEquilibriumMoments(
-        [[maybe_unused]] Array<T, Descriptor::d> const &u,
-        [[maybe_unused]] Array<T, Descriptor::q> &RMeq)
+        Array<T, Descriptor::d> const &, Array<T, Descriptor::q> &)
     {
         // We only provide specialized implementations.
         PLB_ASSERT(false);
     }
 
-    static void RMcomputeEquilibrium(
-        [[maybe_unused]] T rho, [[maybe_unused]] Array<T, Descriptor::q> const &RMeq,
-        [[maybe_unused]] Array<T, Descriptor::q> &eq)
+    static void RMcomputeEquilibrium(T, Array<T, Descriptor::q> const &, Array<T, Descriptor::q> &)
     {
         // We only provide specialized implementations.
         PLB_ASSERT(false);
     }
 
     static void RMcollide(
-        [[maybe_unused]] Array<T, Descriptor::q> &cell, [[maybe_unused]] T rho,
-        [[maybe_unused]] Array<T, Descriptor::d> const &u,
-        [[maybe_unused]] Array<T, Descriptor::q> const &RM,    // Raw moments
-        [[maybe_unused]] Array<T, Descriptor::q> const &RMeq,  // Equilibrium moments (raw)
-        [[maybe_unused]] Array<T, Descriptor::numRelaxationTimes> const &omega)
+        Array<T, Descriptor::q> &, T, Array<T, Descriptor::d> const &,
+        Array<T, Descriptor::q> const &,  // Raw moments
+        Array<T, Descriptor::q> const &,  // Equilibrium moments (raw)
+        Array<T, Descriptor::numRelaxationTimes> const &)
     {
         // We only provide specialized implementations.
         PLB_ASSERT(false);
     }
 
     //========================= HM = Hermite Moments ======================//
-    static void HMcomputeMoments(
-        [[maybe_unused]] Array<T, Descriptor::q> const &cell,
-        [[maybe_unused]] Array<T, Descriptor::q> &HM, [[maybe_unused]] T &rho)
+    static void HMcomputeMoments(Array<T, Descriptor::q> const &, Array<T, Descriptor::q> &, T &)
     {
         // We only provide specialized implementations.
         PLB_ASSERT(false);
     }
 
     static void HMcomputeEquilibriumMoments(
-        [[maybe_unused]] Array<T, Descriptor::d> const &u,
-        [[maybe_unused]] Array<T, Descriptor::q> &HMeq)
+        Array<T, Descriptor::d> const &, Array<T, Descriptor::q> &)
     {
         // We only provide specialized implementations.
         PLB_ASSERT(false);
     }
 
-    static void HMcomputeEquilibrium(
-        [[maybe_unused]] T rho, [[maybe_unused]] Array<T, Descriptor::q> const &HMeq,
-        [[maybe_unused]] Array<T, Descriptor::q> &eq)
+    static void HMcomputeEquilibrium(T, Array<T, Descriptor::q> const &, Array<T, Descriptor::q> &)
     {
         // We only provide specialized implementations.
         PLB_ASSERT(false);
     }
 
     static void HMcollide(
-        [[maybe_unused]] Array<T, Descriptor::q> &cell, [[maybe_unused]] T rho,
-        [[maybe_unused]] Array<T, Descriptor::d> const &u,
-        [[maybe_unused]] Array<T, Descriptor::q> const &HM,    // Hermite moments
-        [[maybe_unused]] Array<T, Descriptor::q> const &HMeq,  // Equilibrium moments (hermite)
-        [[maybe_unused]] Array<T, Descriptor::numRelaxationTimes> const &omega)
+        Array<T, Descriptor::q> &, T, Array<T, Descriptor::d> const &,
+        Array<T, Descriptor::q> const &,  // Hermite moments
+        Array<T, Descriptor::q> const &,  // Equilibrium moments (hermite)
+        Array<T, Descriptor::numRelaxationTimes> const &)
     {
         // We only provide specialized implementations.
         PLB_ASSERT(false);
@@ -362,35 +350,30 @@ struct comprehensiveDynamicsTemplatesImpl {
 
     //========================= CM = Central Moments ======================//
     static void CMcomputeMoments(
-        [[maybe_unused]] Array<T, Descriptor::q> const &cell,
-        [[maybe_unused]] Array<T, Descriptor::q> &CM, [[maybe_unused]] T &rho,
-        [[maybe_unused]] Array<T, Descriptor::d> &u)
+        Array<T, Descriptor::q> const &, Array<T, Descriptor::q> &, T &, Array<T, Descriptor::d> &)
     {
         // We only provide specialized implementations.
         PLB_ASSERT(false);
     }
 
-    static void CMcomputeEquilibriumMoments([[maybe_unused]] Array<T, Descriptor::q> &CMeq)
+    static void CMcomputeEquilibriumMoments(Array<T, Descriptor::q> &)
     {
         // We only provide specialized implementations.
         PLB_ASSERT(false);
     }
 
     static void CMcomputeEquilibrium(
-        [[maybe_unused]] T rho, [[maybe_unused]] Array<T, Descriptor::d> &u,
-        [[maybe_unused]] Array<T, Descriptor::q> const &CMeq,
-        [[maybe_unused]] Array<T, Descriptor::q> &eq)
+        T, Array<T, Descriptor::d> &, Array<T, Descriptor::q> const &, Array<T, Descriptor::q> &)
     {
         // We only provide specialized implementations.
         PLB_ASSERT(false);
     }
 
     static void CMcollide(
-        [[maybe_unused]] Array<T, Descriptor::q> &cell, [[maybe_unused]] T rho,
-        [[maybe_unused]] Array<T, Descriptor::d> const &u,
-        [[maybe_unused]] Array<T, Descriptor::q> const &CM,    // Central moments
-        [[maybe_unused]] Array<T, Descriptor::q> const &CMeq,  // Equilibrium moments (central)
-        [[maybe_unused]] Array<T, Descriptor::numRelaxationTimes> const &omega)
+        Array<T, Descriptor::q> &, T, Array<T, Descriptor::d> const &,
+        Array<T, Descriptor::q> const &,  // Central moments
+        Array<T, Descriptor::q> const &,  // Equilibrium moments (central)
+        Array<T, Descriptor::numRelaxationTimes> const &)
     {
         // We only provide specialized implementations.
         PLB_ASSERT(false);
@@ -398,36 +381,30 @@ struct comprehensiveDynamicsTemplatesImpl {
 
     //========================= CHM = Central Hermite Moments ======================//
     static void CHMcomputeMoments(
-        [[maybe_unused]] Array<T, Descriptor::q> const &cell,
-        [[maybe_unused]] Array<T, Descriptor::q> &CHM, [[maybe_unused]] T &rho,
-        [[maybe_unused]] Array<T, Descriptor::d> &u)
+        Array<T, Descriptor::q> const &, Array<T, Descriptor::q> &, T &, Array<T, Descriptor::d> &)
     {
         // We only provide specialized implementations.
         PLB_ASSERT(false);
     }
 
-    static void CHMcomputeEquilibriumMoments([[maybe_unused]] Array<T, Descriptor::q> &CHMeq)
+    static void CHMcomputeEquilibriumMoments(Array<T, Descriptor::q> &)
     {
         // We only provide specialized implementations.
         PLB_ASSERT(false);
     }
 
     static void CHMcomputeEquilibrium(
-        [[maybe_unused]] T rho, [[maybe_unused]] Array<T, Descriptor::d> &u,
-        [[maybe_unused]] Array<T, Descriptor::q> const &CHMeq,
-        [[maybe_unused]] Array<T, Descriptor::q> &eq)
+        T, Array<T, Descriptor::d> &, Array<T, Descriptor::q> const &, Array<T, Descriptor::q> &)
     {
         // We only provide specialized implementations.
         PLB_ASSERT(false);
     }
 
     static void CHMcollide(
-        [[maybe_unused]] Array<T, Descriptor::q> &cell, [[maybe_unused]] T rho,
-        [[maybe_unused]] Array<T, Descriptor::d> const &u,
-        [[maybe_unused]] Array<T, Descriptor::q> const &CHM,  // Central Hermite moments
-        [[maybe_unused]] Array<T, Descriptor::q> const
-            &CHMeq,  // Equilibrium moments (central hermite)
-        [[maybe_unused]] Array<T, Descriptor::numRelaxationTimes> const &omega)
+        Array<T, Descriptor::q> &, T, Array<T, Descriptor::d> const &,
+        Array<T, Descriptor::q> const &,  // Central Hermite moments
+        Array<T, Descriptor::q> const &,  // Equilibrium moments (central hermite)
+        Array<T, Descriptor::numRelaxationTimes> const &)
     {
         // We only provide specialized implementations.
         PLB_ASSERT(false);
@@ -435,35 +412,30 @@ struct comprehensiveDynamicsTemplatesImpl {
 
     //========================= K = Cumulants ======================//
     static void KcomputeMoments(
-        [[maybe_unused]] Array<T, Descriptor::q> const &cell,
-        [[maybe_unused]] Array<T, Descriptor::q> &K, [[maybe_unused]] T &rho,
-        [[maybe_unused]] Array<T, Descriptor::d> &u)
+        Array<T, Descriptor::q> const &, Array<T, Descriptor::q> &, T &, Array<T, Descriptor::d> &)
     {
         // We only provide specialized implementations.
         PLB_ASSERT(false);
     }
 
-    static void KcomputeEquilibriumMoments([[maybe_unused]] Array<T, Descriptor::q> &Keq)
+    static void KcomputeEquilibriumMoments(Array<T, Descriptor::q> &)
     {
         // We only provide specialized implementations.
         PLB_ASSERT(false);
     }
 
     static void KcomputeEquilibrium(
-        [[maybe_unused]] T rho, [[maybe_unused]] Array<T, Descriptor::d> &u,
-        [[maybe_unused]] Array<T, Descriptor::q> const &Keq,
-        [[maybe_unused]] Array<T, Descriptor::q> &eq)
+        T, Array<T, Descriptor::d> &, Array<T, Descriptor::q> const &, Array<T, Descriptor::q> &)
     {
         // We only provide specialized implementations.
         PLB_ASSERT(false);
     }
 
     static void Kcollide(
-        [[maybe_unused]] Array<T, Descriptor::q> &cell, [[maybe_unused]] T rho,
-        [[maybe_unused]] Array<T, Descriptor::d> const &u,
-        [[maybe_unused]] Array<T, Descriptor::q> const &K,    // Central moments
-        [[maybe_unused]] Array<T, Descriptor::q> const &Keq,  // Equilibrium moments (central)
-        [[maybe_unused]] Array<T, Descriptor::numRelaxationTimes> const &omega)
+        Array<T, Descriptor::q> &, T, Array<T, Descriptor::d> const &,
+        Array<T, Descriptor::q> const &,  // Central moments
+        Array<T, Descriptor::q> const &,  // Equilibrium moments (central)
+        Array<T, Descriptor::numRelaxationTimes> const &)
     {
         // We only provide specialized implementations.
         PLB_ASSERT(false);
@@ -471,36 +443,30 @@ struct comprehensiveDynamicsTemplatesImpl {
 
     //========================= GH = Gauss-Hermite Formalism (still Hermite moments)
     //======================//
-    static void GHcomputeMoments(
-        [[maybe_unused]] Array<T, Descriptor::q> const &cell,
-        [[maybe_unused]] Array<T, Descriptor::q> &GH, [[maybe_unused]] T &rho)
+    static void GHcomputeMoments(Array<T, Descriptor::q> const &, Array<T, Descriptor::q> &, T &)
     {
         // We only provide specialized implementations.
         PLB_ASSERT(false);
     }
 
     static void GHcomputeEquilibriumMoments(
-        [[maybe_unused]] Array<T, Descriptor::d> const &u,
-        [[maybe_unused]] Array<T, Descriptor::q> &GHeq)
+        Array<T, Descriptor::d> const &, Array<T, Descriptor::q> &)
     {
         // We only provide specialized implementations.
         PLB_ASSERT(false);
     }
 
-    static void GHcomputeEquilibrium(
-        [[maybe_unused]] T rho, [[maybe_unused]] Array<T, Descriptor::q> const &GHeq,
-        [[maybe_unused]] Array<T, Descriptor::q> &eq)
+    static void GHcomputeEquilibrium(T, Array<T, Descriptor::q> const &, Array<T, Descriptor::q> &)
     {
         // We only provide specialized implementations.
         PLB_ASSERT(false);
     }
 
     static void GHcollide(
-        [[maybe_unused]] Array<T, Descriptor::q> &cell, [[maybe_unused]] T rho,
-        [[maybe_unused]] Array<T, Descriptor::d> const &u,
-        [[maybe_unused]] Array<T, Descriptor::q> const &GH,    // Hermite moments
-        [[maybe_unused]] Array<T, Descriptor::q> const &GHeq,  // Equilibrium moments (hermite)
-        [[maybe_unused]] Array<T, Descriptor::numRelaxationTimes> const &omega)
+        Array<T, Descriptor::q> &, T, Array<T, Descriptor::d> const &,
+        Array<T, Descriptor::q> const &,  // Hermite moments
+        Array<T, Descriptor::q> const &,  // Equilibrium moments (hermite)
+        Array<T, Descriptor::numRelaxationTimes> const &)
     {
         // We only provide specialized implementations.
         PLB_ASSERT(false);
@@ -508,36 +474,30 @@ struct comprehensiveDynamicsTemplatesImpl {
 
     //========================= RR = Recursive Regularization based on Gauss-Hermite Formalism
     //======================//
-    static void RRcomputeMoments(
-        [[maybe_unused]] Array<T, Descriptor::q> const &cell,
-        [[maybe_unused]] Array<T, Descriptor::q> &GH, [[maybe_unused]] T &rho)
+    static void RRcomputeMoments(Array<T, Descriptor::q> const &, Array<T, Descriptor::q> &, T &)
     {
         // We only provide specialized implementations.
         PLB_ASSERT(false);
     }
 
     static void RRcomputeEquilibriumMoments(
-        [[maybe_unused]] Array<T, Descriptor::d> const &u,
-        [[maybe_unused]] Array<T, Descriptor::q> &GHeq)
+        Array<T, Descriptor::d> const &, Array<T, Descriptor::q> &)
     {
         // We only provide specialized implementations.
         PLB_ASSERT(false);
     }
 
-    static void RRcomputeEquilibrium(
-        [[maybe_unused]] T rho, [[maybe_unused]] Array<T, Descriptor::q> const &GHeq,
-        [[maybe_unused]] Array<T, Descriptor::q> &eq)
+    static void RRcomputeEquilibrium(T, Array<T, Descriptor::q> const &, Array<T, Descriptor::q> &)
     {
         // We only provide specialized implementations.
         PLB_ASSERT(false);
     }
 
     static void RRcollide(
-        [[maybe_unused]] Array<T, Descriptor::q> &cell, [[maybe_unused]] T rho,
-        [[maybe_unused]] Array<T, Descriptor::d> const &u,
-        [[maybe_unused]] Array<T, Descriptor::q> const &GH,    // Hermite moments
-        [[maybe_unused]] Array<T, Descriptor::q> const &GHeq,  // Equilibrium moments (hermite)
-        [[maybe_unused]] Array<T, Descriptor::numRelaxationTimes> const &omega)
+        Array<T, Descriptor::q> &, T, Array<T, Descriptor::d> const &,
+        Array<T, Descriptor::q> const &,  // Hermite moments
+        Array<T, Descriptor::q> const &,  // Equilibrium moments (hermite)
+        Array<T, Descriptor::numRelaxationTimes> const &)
     {
         // We only provide specialized implementations.
         PLB_ASSERT(false);

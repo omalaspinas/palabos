@@ -191,7 +191,7 @@ std::unique_ptr<MultiScalarField2D<T> > MultiGridScalarField2D<T>::convertToFine
 
 /* ************** MultiGridTensorField2D ******************* */
 
-// QUESTION: Unused management_and behaviorLevel_. Remove?
+// QUESTION: Unused management_ and behaviorLevel_. Remove?
 template <typename T, int nDim>
 MultiGridTensorField2D<T, nDim>::MultiGridTensorField2D(
     [[maybe_unused]] MultiGridManagement2D management_,
@@ -201,7 +201,7 @@ MultiGridTensorField2D<T, nDim>::MultiGridTensorField2D(
     allocateFields(communicators_, combinedStatistics_);
 }
 
-// QUESTION: Unused management_and behaviorLevel_, remove it maybe?
+// QUESTION: Unused management_ and behaviorLevel_, remove it maybe?
 template <typename T, int nDim>
 MultiGridTensorField2D<T, nDim>::MultiGridTensorField2D(
     [[maybe_unused]] MultiGridManagement2D management_, [[maybe_unused]] plint behaviorLevel_)

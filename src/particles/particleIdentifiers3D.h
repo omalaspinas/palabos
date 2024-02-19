@@ -71,6 +71,9 @@ public:
 
 public:
     ~ParticleRegistration3D();
+    ParticleRegistration3D(ParticleRegistration3D<T, Descriptor> const &) = delete;
+    ParticleRegistration3D<T, Descriptor> &operator=(
+        ParticleRegistration3D<T, Descriptor> const &) = delete;
     int announce(std::string nameOfParticle, ParticleGenerator3D<T, Descriptor> *generator_ = 0);
     int getId(std::string name) const;
     int getNumId() const;
@@ -83,14 +86,6 @@ public:
     /// This default constructor should actually be private, but it is public
     ///  for now to fix a parse error in older GCCs.
     ParticleRegistration3D() { }
-
-private:
-    ParticleRegistration3D([[maybe_unused]] ParticleRegistration3D<T, Descriptor> const &rhs) { }
-    ParticleRegistration3D<T, Descriptor> &operator=(
-        [[maybe_unused]] ParticleRegistration3D<T, Descriptor> const &rhs)
-    {
-        return *this;
-    }
 
 private:
     EntryMap particleByName;

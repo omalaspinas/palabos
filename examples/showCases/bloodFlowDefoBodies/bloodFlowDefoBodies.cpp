@@ -220,7 +220,7 @@ class Pipe : public DomainFunctional3D {
 public:
     Pipe(Array<T, 3> center_, T radius_) : center(center_), radius(radius_) { }
 
-    virtual bool operator()(plint iX, plint iY, [[maybe_unused]] plint iZ) const
+    virtual bool operator()(plint iX, plint iY, plint) const
     {
         // True if solid
         return (std::sqrt(util::sqr((T)iX - center[0]) + util::sqr((T)iY - center[1])) >= radius);

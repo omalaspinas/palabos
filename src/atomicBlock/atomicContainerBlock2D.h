@@ -51,33 +51,19 @@ public:
     {
         return 0;
     }
-    virtual void send(
-        [[maybe_unused]] Box2D domain, [[maybe_unused]] std::vector<char> &buffer,
-        [[maybe_unused]] modif::ModifT kind) const
-    { }
-    virtual void receive(
-        [[maybe_unused]] Box2D domain, [[maybe_unused]] std::vector<char> const &buffer,
-        [[maybe_unused]] modif::ModifT kind)
-    { }
-    virtual void receive(
-        Box2D domain, std::vector<char> const &buffer, modif::ModifT kind,
-        [[maybe_unused]] Dot2D offset)
+    virtual void send(Box2D, std::vector<char> &, modif::ModifT) const { }
+    virtual void receive(Box2D, std::vector<char> const &, modif::ModifT) { }
+    virtual void receive(Box2D domain, std::vector<char> const &buffer, modif::ModifT kind, Dot2D)
     {
         receive(domain, buffer, kind);
     }
     virtual void receive(
-        [[maybe_unused]] Box2D domain, [[maybe_unused]] std::vector<char> const &buffer,
-        [[maybe_unused]] modif::ModifT kind,
-        [[maybe_unused]] std::map<int, std::string> const &foreignIds)
+        Box2D, std::vector<char> const &, modif::ModifT, std::map<int, std::string> const &)
     { }
-    virtual void attribute(
-        [[maybe_unused]] Box2D toDomain, [[maybe_unused]] plint deltaX,
-        [[maybe_unused]] plint deltaY, [[maybe_unused]] AtomicBlock2D const &from,
-        [[maybe_unused]] modif::ModifT kind)
-    { }
+    virtual void attribute(Box2D, plint, plint, AtomicBlock2D const &, modif::ModifT) { }
     virtual void attribute(
         Box2D toDomain, plint deltaX, plint deltaY, AtomicBlock2D const &from, modif::ModifT kind,
-        [[maybe_unused]] Dot2D absoluteOffset)
+        Dot2D)
     {
         attribute(toDomain, deltaX, deltaY, from, kind);
     }

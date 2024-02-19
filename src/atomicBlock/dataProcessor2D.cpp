@@ -65,7 +65,7 @@ plint DataProcessor2D::extent() const
 /** By default, this method assumes a symmetric neighborhood relation
  *  and refers to the non-directed version of extent().
  */
-plint DataProcessor2D::extent([[maybe_unused]] int direction) const
+plint DataProcessor2D::extent(int) const
 {
     return extent();
 }
@@ -87,16 +87,12 @@ BlockDomain::DomainT DataProcessorGenerator2D::appliesTo() const
     return BlockDomain::bulk;
 }
 
-void DataProcessorGenerator2D::rescale(
-    [[maybe_unused]] double dxScale_, [[maybe_unused]] double dtScale_)
-{ }
+void DataProcessorGenerator2D::rescale(double, double) { }
 
 /** \param dxScale Scale factor for space scale dx.
  *  \param dtScale Scale factor for time scale dt.
  */
-void DataProcessorGenerator2D::setscale(
-    [[maybe_unused]] int dxScale_, [[maybe_unused]] int dtScale_)
-{ }
+void DataProcessorGenerator2D::setscale(int, int) { }
 
 void DataProcessorGenerator2D::getModificationPattern(std::vector<bool> &isWritten) const
 {
@@ -118,9 +114,7 @@ int DataProcessorGenerator2D::getStaticId() const
 
 /** Default action does nothing to help transition period. **/
 // TODO: Maybe transition is over?
-void DataProcessorGenerator2D::serialize(
-    [[maybe_unused]] Box2D &domain, [[maybe_unused]] std::string &data) const
-{ }
+void DataProcessorGenerator2D::serialize(Box2D &, std::string &) const { }
 
 ////////////////////// Class BoxedDataProcessorGenerator2D /////////////////
 
@@ -157,8 +151,7 @@ Box2D BoxedDataProcessorGenerator2D::getDomain() const
     return domain;
 }
 
-void BoxedDataProcessorGenerator2D::serialize(
-    Box2D &domain_, [[maybe_unused]] std::string &data) const
+void BoxedDataProcessorGenerator2D::serialize(Box2D &domain_, std::string &) const
 {
     domain_ = domain;
 }
@@ -174,9 +167,7 @@ BlockDomain::DomainT ReductiveDataProcessorGenerator2D::appliesTo() const
     return BlockDomain::bulk;
 }
 
-void ReductiveDataProcessorGenerator2D::rescale(
-    [[maybe_unused]] double dxScale, [[maybe_unused]] double dtScale)
-{ }
+void ReductiveDataProcessorGenerator2D::rescale(double, double) { }
 
 /** \param dxScale Scale factor for space scale dx.
  *  \param dtScale Scale factor for time scale dt.
@@ -225,9 +216,7 @@ void ReductiveDataProcessorGenerator2D::getModificationPattern(std::vector<bool>
     }
 }
 
-void ReductiveDataProcessorGenerator2D::serialize(
-    [[maybe_unused]] Box2D &domain, [[maybe_unused]] std::string &data) const
-{ }
+void ReductiveDataProcessorGenerator2D::serialize(Box2D &, std::string &) const { }
 
 ////////////////////// Class BoxedReductiveDataProcessorGenerator2D /////////////////
 
@@ -266,8 +255,7 @@ Box2D BoxedReductiveDataProcessorGenerator2D::getDomain() const
     return domain;
 }
 
-void BoxedReductiveDataProcessorGenerator2D::serialize(
-    Box2D &domain_, [[maybe_unused]] std::string &data) const
+void BoxedReductiveDataProcessorGenerator2D::serialize(Box2D &domain_, std::string &) const
 {
     domain_ = domain;
 }

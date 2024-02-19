@@ -58,8 +58,7 @@ IterateDynamicsFunctional3D::IterateDynamicsFunctional3D(std::vector<int> previo
     }
 }
 
-void IterateDynamicsFunctional3D::processGenericBlocks(
-    [[maybe_unused]] Box3D domain, std::vector<AtomicBlock3D *> blocks)
+void IterateDynamicsFunctional3D::processGenericBlocks(Box3D, std::vector<AtomicBlock3D *> blocks)
 {
     PLB_PRECONDITION(blocks.size() == 1);
     AtomicContainerBlock3D &container = *dynamic_cast<AtomicContainerBlock3D *>(blocks[0]);
@@ -118,8 +117,7 @@ AllFlagsTrueFunctional3D::AllFlagsTrueFunctional3D() :
     numFalseId(this->getStatistics().subscribeIntSum())
 { }
 
-void AllFlagsTrueFunctional3D::processGenericBlocks(
-    [[maybe_unused]] Box3D domain, std::vector<AtomicBlock3D *> blocks)
+void AllFlagsTrueFunctional3D::processGenericBlocks(Box3D, std::vector<AtomicBlock3D *> blocks)
 {
     PLB_PRECONDITION(blocks.size() == 1);
     if (!blocks[0]->getFlag()) {

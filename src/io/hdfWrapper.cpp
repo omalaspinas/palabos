@@ -94,8 +94,7 @@ void writeStringHDF5(hid_t file_id, std::string const &string, int mpi_rank)
 
 std::vector<std::vector<char>> readParallelHDF5(
     hsize_t fid, std::vector<plb::plint> const &my_block_id,
-    std::vector<plb::plint> const &i_offset, [[maybe_unused]] int mpi_rank,
-    [[maybe_unused]] MPI_Comm comm)
+    std::vector<plb::plint> const &i_offset)
 {
     hid_t dset_id, plist_id;    // file and dataset identifiers //
     hid_t filespace, memspace;  // file and memory dataspace identifiers //

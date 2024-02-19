@@ -276,9 +276,7 @@ MultiBlockManagement3D intersect(
 }
 
 // QUESTION: Suspicious that this addedUniqueBulk is not used
-MultiBlockManagement3D extend(
-    MultiBlockManagement3D const &management, Box3D addedBulk,
-    [[maybe_unused]] Box3D addedUniqueBulk)
+MultiBlockManagement3D extend(MultiBlockManagement3D const &management, Box3D addedBulk, Box3D)
 {
     std::vector<plint> newIds;
     SparseBlockStructure3D resultStructure =

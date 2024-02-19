@@ -51,8 +51,7 @@ SerialCellAccess3D<T, Descriptor>::SerialCellAccess3D() : locatedBlock(0)
 
 template <typename T, template <typename U> class Descriptor>
 void SerialCellAccess3D<T, Descriptor>::broadCastCell(
-    [[maybe_unused]] Cell<T, Descriptor> &cell, [[maybe_unused]] plint fromBlock,
-    [[maybe_unused]] MultiBlockManagement3D const &multiBlockManagement) const
+    Cell<T, Descriptor> &, plint, MultiBlockManagement3D const &) const
 {
     // Nothing to do in the serial case
 }

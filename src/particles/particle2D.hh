@@ -87,65 +87,56 @@ void Particle2D<T, Descriptor>::setTag(plint tag_)
 }
 
 template <typename T, template <typename U> class Descriptor>
-bool Particle2D<T, Descriptor>::getVector(
-    [[maybe_unused]] plint whichVector, [[maybe_unused]] Array<T, 2> &vector) const
+bool Particle2D<T, Descriptor>::getVector(plint, Array<T, 2> &) const
 {
     return false;
 }
 
 template <typename T, template <typename U> class Descriptor>
-bool Particle2D<T, Descriptor>::setVector(
-    [[maybe_unused]] plint whichVector, [[maybe_unused]] Array<T, 2> const &vector)
+bool Particle2D<T, Descriptor>::setVector(plint, Array<T, 2> const &)
 {
     return false;
 }
 
 template <typename T, template <typename U> class Descriptor>
-bool Particle2D<T, Descriptor>::getScalar(
-    [[maybe_unused]] plint whichScalar, [[maybe_unused]] T &scalar) const
+bool Particle2D<T, Descriptor>::getScalar(plint, T &) const
 {
     return false;
 }
 
 template <typename T, template <typename U> class Descriptor>
-bool Particle2D<T, Descriptor>::setScalar(
-    [[maybe_unused]] plint whichScalar, [[maybe_unused]] T scalar)
+bool Particle2D<T, Descriptor>::setScalar(plint, T)
 {
     return false;
 }
 
 template <typename T, template <typename U> class Descriptor>
-bool Particle2D<T, Descriptor>::getTensor(
-    [[maybe_unused]] plint whichVector,
-    [[maybe_unused]] Array<T, SymmetricTensorImpl<T, 2>::n> &tensor) const
+bool Particle2D<T, Descriptor>::getTensor(plint, Array<T, SymmetricTensorImpl<T, 2>::n> &) const
 {
     return false;
 }
 
 template <typename T, template <typename U> class Descriptor>
-bool Particle2D<T, Descriptor>::setTensor(
-    [[maybe_unused]] plint whichVector,
-    [[maybe_unused]] Array<T, SymmetricTensorImpl<T, 2>::n> const &tensor)
+bool Particle2D<T, Descriptor>::setTensor(plint, Array<T, SymmetricTensorImpl<T, 2>::n> const &)
 {
     return false;
 }
 
 template <typename T, template <typename U> class Descriptor>
-bool Particle2D<T, Descriptor>::setScalars([[maybe_unused]] std::vector<T> const &scalars)
+bool Particle2D<T, Descriptor>::setScalars(std::vector<T> const &)
 {
     return false;
 }
 
 template <typename T, template <typename U> class Descriptor>
-bool Particle2D<T, Descriptor>::setVectors(
-    [[maybe_unused]] std::vector<Array<T, 2> > const &vectors)
+bool Particle2D<T, Descriptor>::setVectors(std::vector<Array<T, 2> > const &)
 {
     return false;
 }
 
 template <typename T, template <typename U> class Descriptor>
 bool Particle2D<T, Descriptor>::setTensors(
-    [[maybe_unused]] std::vector<Array<T, SymmetricTensorImpl<T, 2>::n> > const &tensors)
+    std::vector<Array<T, SymmetricTensorImpl<T, 2>::n> > const &)
 {
     return false;
 }
@@ -451,24 +442,19 @@ RestParticle2D<T, Descriptor>::RestParticle2D(plint tag_, Array<T, 2> const &pos
 { }
 
 template <typename T, template <typename U> class Descriptor>
-void RestParticle2D<T, Descriptor>::velocityToParticle(
-    [[maybe_unused]] TensorField2D<T, 2> &velocityField, [[maybe_unused]] T scaling)
+void RestParticle2D<T, Descriptor>::velocityToParticle(TensorField2D<T, 2> &, T)
 { }
 
 template <typename T, template <typename U> class Descriptor>
-void RestParticle2D<T, Descriptor>::velocityToParticle(
-    [[maybe_unused]] NTensorField2D<T> &velocityField, [[maybe_unused]] T scaling)
+void RestParticle2D<T, Descriptor>::velocityToParticle(NTensorField2D<T> &, T)
 { }
 
 template <typename T, template <typename U> class Descriptor>
-void RestParticle2D<T, Descriptor>::rhoBarJtoParticle(
-    [[maybe_unused]] NTensorField2D<T> &rhoBarJfield, [[maybe_unused]] bool velIsJ,
-    [[maybe_unused]] T scaling)
+void RestParticle2D<T, Descriptor>::rhoBarJtoParticle(NTensorField2D<T> &, bool, T)
 { }
 
 template <typename T, template <typename U> class Descriptor>
-void RestParticle2D<T, Descriptor>::fluidToParticle(
-    [[maybe_unused]] BlockLattice2D<T, Descriptor> &fluid, [[maybe_unused]] T scaling)
+void RestParticle2D<T, Descriptor>::fluidToParticle(BlockLattice2D<T, Descriptor> &, T)
 { }
 
 template <typename T, template <typename U> class Descriptor>

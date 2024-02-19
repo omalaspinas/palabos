@@ -53,7 +53,7 @@ namespace plb {
  */
 class DevNullBuffer : public std::streambuf {
 protected:
-    virtual int_type overflow([[maybe_unused]] int_type c)
+    virtual int_type overflow(int_type)
     {
         return EOF;
     }
@@ -110,6 +110,8 @@ public:
         const char *filename,
         std::ostream::openmode mode = std::ostream::out | std::ostream::trunc);
     ~plb_ofstream();
+    plb_ofstream(plb_ofstream const &) = delete;
+    plb_ofstream &operator=(plb_ofstream const &) = delete;
     virtual std::ostream &getOriginalStream();
 
     bool is_open();
@@ -118,10 +120,6 @@ public:
         const char *filename,
         std::ostream::openmode mode = std::ostream::out | std::ostream::trunc);
     void close();
-
-private:
-    plb_ofstream(plb_ofstream const &rhs);
-    plb_ofstream &operator=(plb_ofstream const &rhs);
 
 private:
     DevNullBuffer devNullBuffer;
@@ -172,16 +170,14 @@ public:
     plb_ifstream();
     explicit plb_ifstream(const char *filename, std::istream::openmode mode = std::ostream::in);
     ~plb_ifstream();
+    plb_ifstream(plb_ifstream const &) = delete;
+    plb_ifstream &operator=(plb_ifstream const &) = delete;
     virtual std::istream &getOriginalStream();
 
     bool is_open();
     void open(const char *filename, std::istream::openmode mode = std::ostream::in);
     void close();
     bool good();
-
-private:
-    plb_ifstream(plb_ifstream const &rhs);
-    plb_ifstream &operator=(plb_ifstream const &rhs);
 
 private:
     DevNullBuffer devNullBuffer;

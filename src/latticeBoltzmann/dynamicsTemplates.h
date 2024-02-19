@@ -53,8 +53,7 @@ struct dynamicsTemplatesImpl;
 /// This structure forwards the calls to the appropriate helper class
 template <typename T, template <typename U> class Descriptor>
 struct dynamicsTemplates {
-    static T bgk_ma0_equilibrium(
-        plint iPop, T rhoBar, [[maybe_unused]] Array<T, Descriptor<T>::d> const &jEq)
+    static T bgk_ma0_equilibrium(plint iPop, T rhoBar, Array<T, Descriptor<T>::d> const &)
     {
         return dynamicsTemplatesImpl<
             T, typename Descriptor<T>::BaseDescriptor>::bgk_ma0_equilibrium(iPop, rhoBar);
@@ -335,9 +334,7 @@ struct dynamicsTemplatesImpl {
                   + Descriptor::invCs2 / (T)2 * invRho * (Descriptor::invCs2 * c_j * c_j - jSqr));
     }
 
-    static T complete_bgk_ma2_equilibrium(
-        [[maybe_unused]] plint iPop, [[maybe_unused]] T rhoBar, [[maybe_unused]] T invRho,
-        [[maybe_unused]] Array<T, Descriptor::d> const &j, [[maybe_unused]] T jSqr)
+    static T complete_bgk_ma2_equilibrium(plint, T, T, Array<T, Descriptor::d> const &, T)
     {
         PLB_ASSERT(false);
         return T();
@@ -362,11 +359,8 @@ struct dynamicsTemplatesImpl {
     }
 
     static void complete_bgk_ma2_regularize(
-        [[maybe_unused]] Array<T, Descriptor::q> &f, [[maybe_unused]] T rhoBar,
-        [[maybe_unused]] T invRho, [[maybe_unused]] Array<T, Descriptor::d> const &j,
-        [[maybe_unused]] T jSqr,
-        [[maybe_unused]] Array<T, SymmetricTensorImpl<T, Descriptor::d>::n> const &piNeq,
-        [[maybe_unused]] T omega, [[maybe_unused]] T omegaNonPhys)
+        Array<T, Descriptor::q> &, T, T, Array<T, Descriptor::d> const &, T,
+        Array<T, SymmetricTensorImpl<T, Descriptor::d>::n> const &, T, T)
     {
         PLB_ASSERT(false);
     }
@@ -386,89 +380,71 @@ struct dynamicsTemplatesImpl {
     }
 
     static T complete_bgk_ma2_collision(
-        [[maybe_unused]] Array<T, Descriptor::q> &f, [[maybe_unused]] T rhoBar,
-        [[maybe_unused]] T invRho, [[maybe_unused]] Array<T, Descriptor::d> const &j,
-        [[maybe_unused]] T omega)
+        Array<T, Descriptor::q> &, T, T, Array<T, Descriptor::d> const &, T)
     {
         PLB_ASSERT(false);
         return T();
     }
 
-    static T complete_mrt_ma2_collision(
-        [[maybe_unused]] Array<T, Descriptor::q> &f, [[maybe_unused]] T omega,
-        [[maybe_unused]] T omegaNonPhys)
+    static T complete_mrt_ma2_collision(Array<T, Descriptor::q> &, T, T)
     {
         PLB_ASSERT(false);
         return T();
     }
 
-    static T truncated_mrt_ma2_collision(
-        [[maybe_unused]] Array<T, Descriptor::q> &f, [[maybe_unused]] T omega,
-        [[maybe_unused]] T omegaNonPhys)
+    static T truncated_mrt_ma2_collision(Array<T, Descriptor::q> &, T, T)
     {
         PLB_ASSERT(false);
         return T();
     }
 
     static T complete_mrt_ma2_ext_rhoBar_j_collision(
-        [[maybe_unused]] Array<T, Descriptor::q> &f, [[maybe_unused]] T rhoBar,
-        [[maybe_unused]] Array<T, Descriptor::d> const &j, [[maybe_unused]] T omega,
-        [[maybe_unused]] T omegaNonPhys, [[maybe_unused]] plint iPhys)
+        Array<T, Descriptor::q> &, T, Array<T, Descriptor::d> const &, T, T, plint)
     {
         PLB_ASSERT(false);
         return T();
     }
 
     static T truncated_mrt_ma2_ext_rhoBar_j_collision(
-        [[maybe_unused]] Array<T, Descriptor::q> &f, [[maybe_unused]] T rhoBar,
-        [[maybe_unused]] Array<T, Descriptor::d> const &j, [[maybe_unused]] T omega,
-        [[maybe_unused]] T omegaNonPhys, [[maybe_unused]] plint iPhys)
+        Array<T, Descriptor::q> &, T, Array<T, Descriptor::d> const &, T, T, plint)
     {
         PLB_ASSERT(false);
         return T();
     }
 
-    static T complete_mrt_smagorinsky_ma2_collision(
-        [[maybe_unused]] Array<T, Descriptor::q> &f, [[maybe_unused]] T cSmago,
-        [[maybe_unused]] T omega, [[maybe_unused]] T omegaNonPhys, [[maybe_unused]] plint iPhys)
+    static T complete_mrt_smagorinsky_ma2_collision(Array<T, Descriptor::q> &, T, T, T, plint)
     {
         PLB_ASSERT(false);
         return T();
     }
 
     static T complete_mrt_smagorinsky_ma2_ext_rhoBar_j_collision(
-        [[maybe_unused]] Array<T, Descriptor::q> &f, [[maybe_unused]] T rhoBar,
-        [[maybe_unused]] Array<T, Descriptor::d> const &j, [[maybe_unused]] T cSmago,
-        [[maybe_unused]] T omega, [[maybe_unused]] T omegaNonPhys, [[maybe_unused]] plint iPhys)
+        Array<T, Descriptor::q> &, T, Array<T, Descriptor::d> const &, T, T, T, plint)
     {
         PLB_ASSERT(false);
         return T();
     }
 
-    static T truncated_mrt_smagorinsky_ma2_collision(
-        [[maybe_unused]] Array<T, Descriptor::q> &f, [[maybe_unused]] T cSmago,
-        [[maybe_unused]] T omega, [[maybe_unused]] T omegaNonPhys, [[maybe_unused]] plint iPhys)
+    static T truncated_mrt_smagorinsky_ma2_collision(Array<T, Descriptor::q> &, T, T, T, plint)
     {
         PLB_ASSERT(false);
         return T();
     }
 
     static T truncated_mrt_smagorinsky_ma2_ext_rhoBar_j_collision(
-        [[maybe_unused]] Array<T, Descriptor::q> &f, [[maybe_unused]] T rhoBar,
-        [[maybe_unused]] Array<T, Descriptor::d> const &j, [[maybe_unused]] T cSmago,
-        [[maybe_unused]] T omega, [[maybe_unused]] T omegaNonPhys, [[maybe_unused]] plint iPhys)
+        Array<T, Descriptor::q> &, T, Array<T, Descriptor::d> const &, T, T, T, plint)
     {
         PLB_ASSERT(false);
         return T();
     }
 
-    static T computePsiComplete([[maybe_unused]] T omega)
+    static T computePsiComplete(T)
     {
         PLB_ASSERT(false);
         return T();
     }
 
-    static T computePsiTruncated([[maybe_unused]] T omega)
+    static T computePsiTruncated(T)
     {
         PLB_ASSERT(false);
         return T();

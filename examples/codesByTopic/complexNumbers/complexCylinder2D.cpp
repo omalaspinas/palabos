@@ -84,7 +84,7 @@ template <typename PlbT>
 class PoiseuilleVelocity {
 public:
     PoiseuilleVelocity(IncomprFlowParam<PlbT> parameters_) : parameters(parameters_) { }
-    void operator()([[maybe_unused]] plint iX, plint iY, Array<PlbT, 2> &u) const
+    void operator()(plint, plint iY, Array<PlbT, 2> &u) const
     {
         u[0] = poiseuilleVelocity(iY, parameters);
         u[1] = PlbT();
@@ -99,7 +99,7 @@ template <typename PlbT>
 class ConstantDensity {
 public:
     ConstantDensity(PlbT density_) : density(density_) { }
-    PlbT operator()([[maybe_unused]] plint iX, [[maybe_unused]] plint iY) const
+    PlbT operator()(plint, plint) const
     {
         return density;
     }

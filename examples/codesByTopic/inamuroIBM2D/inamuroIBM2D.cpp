@@ -83,7 +83,7 @@ template <typename T>
 class PoiseuilleVelocity {
 public:
     PoiseuilleVelocity(IncomprFlowParam<T> parameters_) : parameters(parameters_) { }
-    void operator()([[maybe_unused]] plint iX, plint iY, Array<T, 2> &u) const
+    void operator()(plint, plint iY, Array<T, 2> &u) const
     {
         u[0] = poiseuilleVelocity(iY, parameters);
         u[1] = T();
@@ -98,7 +98,7 @@ template <typename T>
 class ConstantDensity {
 public:
     ConstantDensity(T density_) : density(density_) { }
-    T operator()([[maybe_unused]] plint iX, [[maybe_unused]] plint iY) const
+    T operator()(plint, plint) const
     {
         return density;
     }
@@ -126,7 +126,7 @@ private:
 class SurfaceVelocity {
 public:
     SurfaceVelocity() { }
-    Array<T, 2> operator()([[maybe_unused]] Array<T, 2> const &pos)
+    Array<T, 2> operator()(Array<T, 2> const &)
     {
         return Array<T, 2>(T(), T());
     }

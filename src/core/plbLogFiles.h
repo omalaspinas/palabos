@@ -49,6 +49,8 @@ class PlbLogFile {
 public:
     PlbLogFile(std::string fName, bool parallel_);
     ~PlbLogFile();
+    PlbLogFile(PlbLogFile const &) = delete;
+    PlbLogFile &operator=(PlbLogFile const &) = delete;
     /// Start a new section, with corresponding indentation.
     void push(std::string sectionName);
     /// End section, and unindent.
@@ -57,10 +59,6 @@ public:
     void entry(std::string entryText);
     /// Write a log entry (endline is automatic) and flush the file buffer.
     void flushEntry(std::string entryText);
-
-private:
-    PlbLogFile(PlbLogFile const &rhs);
-    PlbLogFile &operator=(PlbLogFile const &rhs);
 
 private:
     bool parallel;
@@ -77,11 +75,9 @@ class LogFileCollection {
 public:
     LogFileCollection(bool parallel_);
     ~LogFileCollection();
+    LogFileCollection(LogFileCollection const &) = delete;
+    LogFileCollection &operator=(LogFileCollection const &) = delete;
     PlbLogFile &get(std::string nameOfLogFile);
-
-private:
-    LogFileCollection(LogFileCollection const &rhs);
-    LogFileCollection &operator=(LogFileCollection const &rhs);
 
 private:
     std::map<std::string, PlbLogFile *> collection;

@@ -99,8 +99,8 @@ void MRTdynamics<T, Descriptor>::collide(Cell<T, Descriptor> &cell, BlockStatist
 
 template <typename T, template <typename U> class Descriptor>
 void MRTdynamics<T, Descriptor>::collideExternal(
-    Cell<T, Descriptor> &cell, T rhoBar, Array<T, Descriptor<T>::d> const &j,
-    [[maybe_unused]] T thetaBar, BlockStatistics &statistics)
+    Cell<T, Descriptor> &cell, T rhoBar, Array<T, Descriptor<T>::d> const &j, T,
+    BlockStatistics &statistics)
 {
     typedef mrtTemplates<T, Descriptor> mrtTemp;
 
@@ -115,8 +115,7 @@ void MRTdynamics<T, Descriptor>::collideExternal(
 
 template <typename T, template <typename U> class Descriptor>
 T MRTdynamics<T, Descriptor>::computeEquilibrium(
-    plint iPop, T rhoBar, Array<T, Descriptor<T>::d> const &j, T jSqr,
-    [[maybe_unused]] T thetaBar) const
+    plint iPop, T rhoBar, Array<T, Descriptor<T>::d> const &j, T jSqr, T) const
 {
     T invRho = Descriptor<T>::invRho(rhoBar);
     return dynamicsTemplates<T, Descriptor>::bgk_ma2_equilibrium(iPop, rhoBar, invRho, j, jSqr);
@@ -171,8 +170,8 @@ void IncMRTdynamics<T, Descriptor>::collide(Cell<T, Descriptor> &cell, BlockStat
 
 template <typename T, template <typename U> class Descriptor>
 void IncMRTdynamics<T, Descriptor>::collideExternal(
-    Cell<T, Descriptor> &cell, T rhoBar, Array<T, Descriptor<T>::d> const &j,
-    [[maybe_unused]] T thetaBar, BlockStatistics &statistics)
+    Cell<T, Descriptor> &cell, T rhoBar, Array<T, Descriptor<T>::d> const &j, T,
+    BlockStatistics &statistics)
 {
     typedef mrtTemplates<T, Descriptor> mrtTemp;
 
@@ -185,8 +184,7 @@ void IncMRTdynamics<T, Descriptor>::collideExternal(
 
 template <typename T, template <typename U> class Descriptor>
 T IncMRTdynamics<T, Descriptor>::computeEquilibrium(
-    plint iPop, T rhoBar, Array<T, Descriptor<T>::d> const &j, T jSqr,
-    [[maybe_unused]] T thetaBar) const
+    plint iPop, T rhoBar, Array<T, Descriptor<T>::d> const &j, T jSqr, T) const
 {
     return dynamicsTemplates<T, Descriptor>::bgk_ma2_equilibrium(iPop, rhoBar, (T)1, j, jSqr);
 }
@@ -270,8 +268,8 @@ void D3Q13Dynamics<T, Descriptor>::collide(Cell<T, Descriptor> &cell, BlockStati
 
 template <typename T, template <typename U> class Descriptor>
 void D3Q13Dynamics<T, Descriptor>::collideExternal(
-    Cell<T, Descriptor> &cell, T rhoBar, Array<T, Descriptor<T>::d> const &j,
-    [[maybe_unused]] T thetaBar, BlockStatistics &statistics)
+    Cell<T, Descriptor> &cell, T rhoBar, Array<T, Descriptor<T>::d> const &j, T,
+    BlockStatistics &statistics)
 {
     typedef d3q13Templates<T> d3q13Temp;
     T rho = Descriptor<T>::fullRho(rhoBar);
@@ -290,8 +288,7 @@ void D3Q13Dynamics<T, Descriptor>::collideExternal(
 
 template <typename T, template <typename U> class Descriptor>
 T D3Q13Dynamics<T, Descriptor>::computeEquilibrium(
-    plint iPop, T rhoBar, Array<T, Descriptor<T>::d> const &j, T jSqr,
-    [[maybe_unused]] T thetaBar) const
+    plint iPop, T rhoBar, Array<T, Descriptor<T>::d> const &j, T jSqr, T) const
 {
     return dynamicsTemplates<T, Descriptor>::bgk_ma2_equilibrium(iPop, rhoBar, (T)1, j, jSqr);
 }

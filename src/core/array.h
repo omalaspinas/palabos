@@ -380,61 +380,61 @@ public:
         data[0] = (T)0;
     }
     template <typename U>
-    Array([[maybe_unused]] Array<U, 0> const &rhs)
+    Array(Array<U, 0> const &)
     {
         data[0] = (T)0;
     }
     template <typename U>
-    Array<T, 0> &operator=([[maybe_unused]] Array<U, 0> const &rhs)
+    Array<T, 0> &operator=(Array<U, 0> const &)
     {
         return *this;
     }
-    T &operator[]([[maybe_unused]] pluint index)
+    T &operator[](pluint)
     {
         PLB_PRECONDITION(false);
         return data[0];
     }
-    T const &operator[]([[maybe_unused]] pluint index) const
+    T const &operator[](pluint) const
     {
         PLB_PRECONDITION(false);
         return data[0];
     }
-    void from_cArray([[maybe_unused]] T const *cArray) { }
-    void add_from_cArray([[maybe_unused]] T const *cArray) { }
-    void add_from_cArray([[maybe_unused]] T const *cArray, [[maybe_unused]] T factor) { }
-    void to_cArray([[maybe_unused]] T *cArray) const { }
-    void add_to_cArray([[maybe_unused]] T *cArray) const { }
-    void add_to_cArray([[maybe_unused]] T *cArray, [[maybe_unused]] T factor) const { }
+    void from_cArray(T const *) { }
+    void add_from_cArray(T const *) { }
+    void add_from_cArray(T const *, T) { }
+    void to_cArray(T *) const { }
+    void add_to_cArray(T *) const { }
+    void add_to_cArray(T *, T) const { }
     void resetToZero() { }
-    Array<T, 0> &operator+=([[maybe_unused]] Array<T, 0> const &b)
+    Array<T, 0> &operator+=(Array<T, 0> const &)
     {
         return *this;
     }
-    Array<T, 0> &operator+=([[maybe_unused]] T alpha)
+    Array<T, 0> &operator+=(T)
     {
         return *this;
     }
-    Array<T, 0> &operator-=([[maybe_unused]] Array<T, 0> const &b)
+    Array<T, 0> &operator-=(Array<T, 0> const &)
     {
         return *this;
     }
-    Array<T, 0> &operator-=([[maybe_unused]] T alpha)
+    Array<T, 0> &operator-=(T)
     {
         return *this;
     }
-    Array<T, 0> &operator*=([[maybe_unused]] Array<T, 0> const &b)
+    Array<T, 0> &operator*=(Array<T, 0> const &)
     {
         return *this;
     }
-    Array<T, 0> &operator*=([[maybe_unused]] T alpha)
+    Array<T, 0> &operator*=(T)
     {
         return *this;
     }
-    Array<T, 0> &operator/=([[maybe_unused]] Array<T, 0> const &b)
+    Array<T, 0> &operator/=(Array<T, 0> const &)
     {
         return *this;
     }
-    Array<T, 0> &operator/=([[maybe_unused]] T alpha)
+    Array<T, 0> &operator/=(T)
     {
         return *this;
     }
@@ -454,103 +454,103 @@ private:
 };
 
 template <typename T>
-Array<T, 0> operator+([[maybe_unused]] Array<T, 0> const &a, [[maybe_unused]] Array<T, 0> const &b)
+Array<T, 0> operator+(Array<T, 0> const &, Array<T, 0> const &)
 {
     return Array<T, 0>();
 }
 
 template <typename T>
-Array<T, 0> operator+([[maybe_unused]] Array<T, 0> const &a, [[maybe_unused]] T alpha)
+Array<T, 0> operator+(Array<T, 0> const &, T)
 {
     return Array<T, 0>();
 }
 
 template <typename T>
-Array<T, 0> operator+([[maybe_unused]] T alpha, [[maybe_unused]] Array<T, 0> const &a)
+Array<T, 0> operator+(T, Array<T, 0> const &)
 {
     return Array<T, 0>();
 }
 
 template <typename T>
-Array<T, 0> operator-([[maybe_unused]] Array<T, 0> const &a, [[maybe_unused]] Array<T, 0> const &b)
+Array<T, 0> operator-(Array<T, 0> const &, Array<T, 0> const &)
 {
     return Array<T, 0>();
 }
 
 template <typename T>
-Array<T, 0> operator-([[maybe_unused]] Array<T, 0> const &a)
+Array<T, 0> operator-(Array<T, 0> const &)
 {
     return Array<T, 0>();
 }
 
 template <typename T>
-Array<T, 0> operator-([[maybe_unused]] Array<T, 0> const &a, [[maybe_unused]] T alpha)
+Array<T, 0> operator-(Array<T, 0> const &, T)
 {
     return Array<T, 0>();
 }
 
 template <typename T>
-Array<T, 0> operator-([[maybe_unused]] T alpha, [[maybe_unused]] Array<T, 0> const &a)
+Array<T, 0> operator-(T, Array<T, 0> const &)
 {
     return Array<T, 0>();
 }
 
 template <typename T>
-Array<T, 0> operator*([[maybe_unused]] Array<T, 0> const &a, [[maybe_unused]] Array<T, 0> const &b)
+Array<T, 0> operator*(Array<T, 0> const &, Array<T, 0> const &)
 {
     return Array<T, 0>();
 }
 
 template <typename T>
-Array<T, 0> operator*([[maybe_unused]] Array<T, 0> const &a, [[maybe_unused]] T alpha)
+Array<T, 0> operator*(Array<T, 0> const &, T)
 {
     return Array<T, 0>();
 }
 
 template <typename T>
-Array<T, 0> operator*([[maybe_unused]] T alpha, [[maybe_unused]] Array<T, 0> const &a)
+Array<T, 0> operator*(T, Array<T, 0> const &)
 {
     return Array<T, 0>();
 }
 
 template <typename T>
-Array<T, 0> operator/([[maybe_unused]] Array<T, 0> const &a, [[maybe_unused]] Array<T, 0> const &b)
+Array<T, 0> operator/(Array<T, 0> const &, Array<T, 0> const &)
 {
     return Array<T, 0>();
 }
 
 template <typename T>
-Array<T, 0> operator/([[maybe_unused]] Array<T, 0> const &a, [[maybe_unused]] T alpha)
+Array<T, 0> operator/(Array<T, 0> const &, T)
 {
     return Array<T, 0>();
 }
 
 template <typename T>
-inline bool operator==([[maybe_unused]] Array<T, 0> const &A, [[maybe_unused]] Array<T, 0> const &B)
+inline bool operator==(Array<T, 0> const &, Array<T, 0> const &)
 {
     return true;
 }
 
 template <typename T>
-inline bool operator!=([[maybe_unused]] Array<T, 0> const &A, [[maybe_unused]] Array<T, 0> const &B)
+inline bool operator!=(Array<T, 0> const &, Array<T, 0> const &)
 {
     return false;
 }
 
 template <typename T>
-inline bool operator<([[maybe_unused]] Array<T, 0> const &A, [[maybe_unused]] Array<T, 0> const &B)
+inline bool operator<(Array<T, 0> const &, Array<T, 0> const &)
 {
     return false;
 }
 
 template <typename T>
-Array<T, 0> operator/([[maybe_unused]] T alpha, [[maybe_unused]] Array<T, 0> const &a)
+Array<T, 0> operator/(T, Array<T, 0> const &)
 {
     return Array<T, 0>();
 }
 
 template <typename T>
-T maxElement([[maybe_unused]] Array<T, 0> const &a)
+T maxElement(Array<T, 0> const &)
 {
     PLB_ASSERT(false);
     return T();

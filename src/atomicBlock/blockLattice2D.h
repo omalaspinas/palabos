@@ -81,7 +81,7 @@ public:
         Box2D toDomain, plint deltaX, plint deltaY, AtomicBlock2D const &from, modif::ModifT kind);
     virtual void attribute(
         Box2D toDomain, plint deltaX, plint deltaY, AtomicBlock2D const &from, modif::ModifT kind,
-        [[maybe_unused]] Dot2D absoluteOffset)
+        Dot2D)
     {
         attribute(toDomain, deltaX, deltaY, from, kind);
     }

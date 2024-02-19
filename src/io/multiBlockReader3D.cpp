@@ -313,8 +313,7 @@ MultiBlock3D *load3dHDF(FileName fName)
     PLB_ASSERT(newBlock);
 
     std::vector<std::vector<char>> data;
-    data = readParallelHDF5(
-        fid, myBlockIds, offsets, global::mpi().getRank(), global::mpi().getGlobalCommunicator());
+    data = readParallelHDF5(fid, myBlockIds, offsets);
 
     std::map<int, std::string> foreignIds;
     createDynamicsForeignIds3D(Parsed_xml, foreignIds);

@@ -1016,11 +1016,8 @@ GuoFdCompletionAlgorithm3D<T, Descriptor>::GuoFdCompletionAlgorithm3D(
 
 template <typename T, template <typename U> class Descriptor>
 void GuoFdCompletionAlgorithm3D<T, Descriptor>::extrapolateVariables(
-    [[maybe_unused]] Dot3D const &fluidDirection, [[maybe_unused]] int depth,
-    [[maybe_unused]] Array<T, 3> const &wallNode, [[maybe_unused]] T delta,
-    [[maybe_unused]] Array<T, 3> const &wall_vel, [[maybe_unused]] OffBoundary::Type bdType,
-    [[maybe_unused]] Array<T, 3> const &wallNormal, [[maybe_unused]] plint triangleId,
-    [[maybe_unused]] plint iDirection)
+    Dot3D const &, int, Array<T, 3> const &, T, Array<T, 3> const &, OffBoundary::Type,
+    Array<T, 3> const &, plint, plint)
 {
     PLB_ASSERT(false && "Nothing to extrapolate in fd guo completion.");
 }
@@ -1033,7 +1030,7 @@ bool GuoFdCompletionAlgorithm3D<T, Descriptor>::computeNeighborData()
 }
 
 template <typename T, template <typename U> class Descriptor>
-void GuoFdCompletionAlgorithm3D<T, Descriptor>::reduceVariables([[maybe_unused]] T sumWeights)
+void GuoFdCompletionAlgorithm3D<T, Descriptor>::reduceVariables(T)
 {
     if (this->args.empty()) {
         this->cell.getDynamics().computeRhoBarJ(this->cell, this->rhoBar, this->j);

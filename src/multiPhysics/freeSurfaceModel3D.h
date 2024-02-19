@@ -41,6 +41,7 @@
 #include "atomicBlock/dataProcessingFunctional3D.h"
 #include "basicDynamics/dynamicsProcessor3D.h"
 #include "core/globalDefs.h"
+#include "core/runTimeDiagnostics.h"
 #include "core/util.h"
 #include "dataProcessors/dataInitializerWrapper3D.h"
 #include "latticeBoltzmann/geometricOperationTemplates.h"
@@ -943,8 +944,7 @@ private:
 
 template <typename T, template <typename U> class Descriptor>
 class InitializeInterfaceLists3D : public BoxProcessingFunctional3D {
-    virtual void processGenericBlocks(
-        [[maybe_unused]] Box3D domain, std::vector<AtomicBlock3D *> atomicBlocks)
+    virtual void processGenericBlocks(Box3D, std::vector<AtomicBlock3D *> atomicBlocks)
     {
         PLB_ASSERT(atomicBlocks.size() == 1);
 
@@ -2078,10 +2078,10 @@ public:
     }
 
     template <class VelFunction>
-    Actions3D immersedWallActions(  // TODO: maybe remove container?
-        plint numIBIterations, [[maybe_unused]] MultiContainerBlock3D &container,
-        std::vector<Array<T, 3> > const &vertices, std::vector<T> const &areas,
-        std::vector<int> const &flags, VelFunction velFunction, bool strongRepelling)
+    Actions3D immersedWallActions(
+        plint numIBIterations, std::vector<Array<T, 3> > const &vertices,
+        std::vector<T> const &areas, std::vector<int> const &flags, VelFunction velFunction,
+        bool strongRepelling)
     {
         Actions3D actions;
 
@@ -2306,12 +2306,13 @@ public:
     }
 
 private:
-    // TODO: maybe replace ASSERTS with exceptions.
-    bool fieldExists(std::string name, [[maybe_unused]] plint envelopeWidth)
+    bool fieldExists(std::string name, plint envelopeWidth)
     {
         if (group.hasBlock(name)) {
-            PLB_ASSERT(
-                group.get(name).getMultiBlockManagement().getEnvelopeWidth() >= envelopeWidth);
+            if (group.get(name).getMultiBlockManagement().getEnvelopeWidth() < envelopeWidth) {
+                global::plbErrors().registerError(
+                    "FreeSurfaceSetup::fieldExists(): wrong envelopeWidth.");
+            }
             return true;
         }
         return false;
@@ -3441,12 +3442,13 @@ public:
     }
 
 private:
-    // TODO: maybe replace ASSERTS with exceptions.
-    bool fieldExists(std::string name, [[maybe_unused]] plint envelopeWidth)
+    bool fieldExists(std::string name, plint envelopeWidth)
     {
         if (group.hasBlock(name)) {
-            PLB_ASSERT(
-                group.get(name).getMultiBlockManagement().getEnvelopeWidth() >= envelopeWidth);
+            if (group.get(name).getMultiBlockManagement().getEnvelopeWidth() < envelopeWidth) {
+                global::plbErrors().registerError(
+                    "FreeSurfaceWrapper::fieldExists(): wrong envelopeWidth.");
+            }
             return true;
         }
         return false;

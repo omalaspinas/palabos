@@ -241,7 +241,7 @@ InamuroIteration3D<T, VelFunction>::InamuroIteration3D(
 
 template <typename T, class VelFunction>
 void InamuroIteration3D<T, VelFunction>::processGenericBlocks(
-    [[maybe_unused]] Box3D domain, std::vector<AtomicBlock3D *> blocks)
+    Box3D, std::vector<AtomicBlock3D *> blocks)
 {
     PLB_PRECONDITION(blocks.size() == 3);
     ScalarField3D<T> *rhoBar = dynamic_cast<ScalarField3D<T> *>(blocks[0]);
@@ -401,7 +401,7 @@ IndexedInamuroIteration3D<T, VelFunction>::IndexedInamuroIteration3D(
 
 template <typename T, class VelFunction>
 void IndexedInamuroIteration3D<T, VelFunction>::processGenericBlocks(
-    [[maybe_unused]] Box3D domain, std::vector<AtomicBlock3D *> blocks)
+    Box3D, std::vector<AtomicBlock3D *> blocks)
 {
     PLB_PRECONDITION(blocks.size() == 3);
     ScalarField3D<T> *rhoBar = dynamic_cast<ScalarField3D<T> *>(blocks[0]);
@@ -557,7 +557,7 @@ IndexedImmersedBoundaryIteration3D<T, VelFunction>::IndexedImmersedBoundaryItera
 
 template <typename T, class VelFunction>
 void IndexedImmersedBoundaryIteration3D<T, VelFunction>::processGenericBlocks(
-    [[maybe_unused]] Box3D domain, std::vector<AtomicBlock3D *> blocks)
+    Box3D, std::vector<AtomicBlock3D *> blocks)
 {
     PLB_PRECONDITION(blocks.size() == 2);
     TensorField3D<T, 3> *u = dynamic_cast<TensorField3D<T, 3> *>(blocks[0]);
@@ -668,8 +668,7 @@ ConstVelInamuroIteration3D<T>::ConstVelInamuroIteration3D(
 { }
 
 template <typename T>
-void ConstVelInamuroIteration3D<T>::processGenericBlocks(
-    [[maybe_unused]] Box3D domain, std::vector<AtomicBlock3D *> blocks)
+void ConstVelInamuroIteration3D<T>::processGenericBlocks(Box3D, std::vector<AtomicBlock3D *> blocks)
 {
     PLB_PRECONDITION(blocks.size() == 3);
     ScalarField3D<T> *rhoBar = dynamic_cast<ScalarField3D<T> *>(blocks[0]);
@@ -814,7 +813,7 @@ BlockDomain::DomainT ConstVelInamuroIteration3D<T>::appliesTo() const
 
 template <typename T>
 void ComputeImmersedBoundaryForce3D<T>::processGenericBlocks(
-    [[maybe_unused]] Box3D domain, std::vector<AtomicBlock3D *> blocks)
+    Box3D, std::vector<AtomicBlock3D *> blocks)
 {
     PLB_PRECONDITION(blocks.size() == 2);
     TensorField3D<T, 3> *force = dynamic_cast<TensorField3D<T, 3> *>(blocks[0]);
@@ -1308,8 +1307,7 @@ BlockDomain::DomainT SurfaceOnLattice3D_N<T, U>::appliesTo() const
 /* ******** ResetForceStatistics3D ************************************ */
 
 template <typename T>
-void ResetForceStatistics3D<T>::processGenericBlocks(
-    [[maybe_unused]] Box3D domain, std::vector<AtomicBlock3D *> blocks)
+void ResetForceStatistics3D<T>::processGenericBlocks(Box3D, std::vector<AtomicBlock3D *> blocks)
 {
     PLB_PRECONDITION(blocks.size() == 1);
     AtomicContainerBlock3D *container = dynamic_cast<AtomicContainerBlock3D *>(blocks[0]);
@@ -1358,7 +1356,7 @@ RecomputeImmersedForce3D<T, Descriptor, NormalFunction>::RecomputeImmersedForce3
 
 template <typename T, template <typename U> class Descriptor, class NormalFunction>
 void RecomputeImmersedForce3D<T, Descriptor, NormalFunction>::processGenericBlocks(
-    [[maybe_unused]] Box3D domain, std::vector<AtomicBlock3D *> blocks)
+    Box3D, std::vector<AtomicBlock3D *> blocks)
 {
     PLB_PRECONDITION(blocks.size() == 3);
 
@@ -1480,7 +1478,7 @@ OpenSurfaceImmersedForce3D<T, Descriptor, NormalFunction>::OpenSurfaceImmersedFo
 
 template <typename T, template <typename U> class Descriptor, class NormalFunction>
 void OpenSurfaceImmersedForce3D<T, Descriptor, NormalFunction>::processGenericBlocks(
-    [[maybe_unused]] Box3D domain, std::vector<AtomicBlock3D *> blocks)
+    Box3D, std::vector<AtomicBlock3D *> blocks)
 {
     PLB_PRECONDITION(blocks.size() == 3);
 
@@ -1746,7 +1744,7 @@ TwoPhaseInamuroIteration3D<T, VelFunction>::TwoPhaseInamuroIteration3D(
 
 template <typename T, class VelFunction>
 void TwoPhaseInamuroIteration3D<T, VelFunction>::processGenericBlocks(
-    [[maybe_unused]] Box3D domain, std::vector<AtomicBlock3D *> blocks)
+    Box3D, std::vector<AtomicBlock3D *> blocks)
 {
     TwoPhaseInamuroParam3D<T> param(blocks, tau, tau2);
     std::vector<Array<T, 3> > deltaG(param.getNumVertices());
@@ -1853,7 +1851,7 @@ TwoPhaseIndexedInamuroIteration3D<T, VelFunction>::TwoPhaseIndexedInamuroIterati
 
 template <typename T, class VelFunction>
 void TwoPhaseIndexedInamuroIteration3D<T, VelFunction>::processGenericBlocks(
-    [[maybe_unused]] Box3D domain, std::vector<AtomicBlock3D *> blocks)
+    Box3D, std::vector<AtomicBlock3D *> blocks)
 {
     TwoPhaseInamuroParam3D<T> param(blocks, tau, tau2);
     std::vector<Array<T, 3> > deltaG(param.getNumVertices());
@@ -1960,7 +1958,7 @@ TwoPhaseConstVelInamuroIteration3D<T>::TwoPhaseConstVelInamuroIteration3D(
 
 template <typename T>
 void TwoPhaseConstVelInamuroIteration3D<T>::processGenericBlocks(
-    [[maybe_unused]] Box3D domain, std::vector<AtomicBlock3D *> blocks)
+    Box3D, std::vector<AtomicBlock3D *> blocks)
 {
     TwoPhaseInamuroParam3D<T> param(blocks, tau, tau2);
     std::vector<Array<T, 3> > deltaG(param.getNumVertices());

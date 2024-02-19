@@ -51,8 +51,7 @@ SerialCellAccess2D<T, Descriptor>::SerialCellAccess2D() : locatedBlock(0)
 
 template <typename T, template <typename U> class Descriptor>
 void SerialCellAccess2D<T, Descriptor>::broadCastCell(
-    [[maybe_unused]] Cell<T, Descriptor> &cell, [[maybe_unused]] plint fromBlock,
-    [[maybe_unused]] MultiBlockManagement2D const &multiBlockManagement) const
+    Cell<T, Descriptor> &, plint, MultiBlockManagement2D const &) const
 {
     // Nothing to do in the serial case
 }

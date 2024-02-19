@@ -199,7 +199,7 @@ public:
                + 2 * std::pow((T)1 + lambda * lambda * z * z, (n - (T)1) / (T)2) * nu0 * z;
     }
 
-    virtual T derivative([[maybe_unused]] T y, T z) const
+    virtual T derivative(T, T z) const
     {
         T lz2 = lambda * lambda * z * z;
 

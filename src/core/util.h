@@ -587,6 +587,8 @@ inline bool isFiniteNumber(T x)
 class UniqueId {
 public:
     UniqueId() : currentId(0) { }
+    UniqueId(UniqueId const &) = delete;
+    UniqueId &operator=(UniqueId const &) = delete;
     id_t getId()
     {
         if (currentId == std::numeric_limits<id_t>::max()) {
@@ -602,13 +604,6 @@ public:
             throw PlbLogicException("Releasing a non-assigned ID.");
         }
         assignedIds.erase(it);
-    }
-
-private:
-    UniqueId([[maybe_unused]] UniqueId const &rhs) { }
-    UniqueId &operator=([[maybe_unused]] UniqueId const &rhs)
-    {
-        return *this;
     }
 
 private:

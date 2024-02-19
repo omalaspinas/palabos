@@ -610,9 +610,8 @@ VertexProperty3D<T> const *TriangleBoundary3D<T>::getVertexProperty(plint iVerte
 
 template <typename T>
 bool TriangleBoundary3D<T>::intersectSegment(
-    plint iTriangle, [[maybe_unused]] AtomicBlock3D *boundaryArg, Array<T, 3> const &fromPoint,
-    Array<T, 3> const &direction, Array<T, 3> &locatedPoint, T &distance,
-    Array<T, 3> &wallNormal) const
+    plint iTriangle, AtomicBlock3D *, Array<T, 3> const &fromPoint, Array<T, 3> const &direction,
+    Array<T, 3> &locatedPoint, T &distance, Array<T, 3> &wallNormal) const
 {
     int flag = 0;  // Intersection with line segment.
     Array<T, 3> point2(fromPoint + direction);

@@ -189,7 +189,7 @@ private:
 class MpiManager {
 public:
     /// Initializes the mpi manager
-    void init(int *argc, char ***argv, bool verbous = false) { }
+    void init(int *, char ***, bool = false) { }
     /// Initializes the MPI manager, but assumes that the MPI
     ///   machine is handled by another instance.
     void init() { }
@@ -215,12 +215,12 @@ public:
     }
     /// Broadcast data from one processor to multiple processors
     template <typename T>
-    void bCast(T *sendBuf, int sendCount, int root = 0)
+    void bCast(T *, int, int = 0)
     { }
     /// Special case for broadcasting strings. Memory handling is automatic.
-    void bCast(std::string &message, int root = 0) { }
+    void bCast(std::string &, int = 0) { }
     /// Special case for sending strings. Memory handling is automatic.
-    void sendToMaster(std::string &message, bool iAmRoot) { }
+    void sendToMaster(std::string &, bool) { }
     /// Synchronizes the processes
     void barrier() { }
 

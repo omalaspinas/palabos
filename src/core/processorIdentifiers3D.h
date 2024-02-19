@@ -70,6 +70,8 @@ public:
 public:
     ProcessorRegistration3D() { }
     ~ProcessorRegistration3D();
+    ProcessorRegistration3D(ProcessorRegistration3D const &) = delete;
+    ProcessorRegistration3D &operator=(ProcessorRegistration3D const &) = delete;
     int announce(std::string nameOfProcessor, ProcessorFactory3D *factory_ = 0);
     int getId(std::string name) const;
     int getNumId() const;
@@ -77,13 +79,6 @@ public:
     BoxProcessingFunctional3D *create(std::string procName, std::string data);
     EntryMap::const_iterator begin() const;
     EntryMap::const_iterator end() const;
-
-private:
-    ProcessorRegistration3D([[maybe_unused]] ProcessorRegistration3D const &rhs) { }
-    ProcessorRegistration3D &operator=([[maybe_unused]] ProcessorRegistration3D const &rhs)
-    {
-        return *this;
-    }
 
 private:
     EntryMap processorByName;

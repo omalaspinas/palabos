@@ -188,8 +188,7 @@ T BoundaryCompositeDynamics<T, Descriptor>::computeEbar(Cell<T, Descriptor> cons
  *  method completePopulations().
  */
 template <typename T, template <typename U> class Descriptor>
-void BoundaryCompositeDynamics<T, Descriptor>::completePopulations(
-    [[maybe_unused]] Cell<T, Descriptor> &cell) const
+void BoundaryCompositeDynamics<T, Descriptor>::completePopulations(Cell<T, Descriptor> &) const
 { }
 
 template <typename T, template <typename U> class Descriptor>
@@ -250,22 +249,19 @@ void StoreDensityDynamics<T, Descriptor>::serialize(HierarchicSerializer &serial
 }
 
 template <typename T, template <typename U> class Descriptor>
-T StoreDensityDynamics<T, Descriptor>::computeDensity(
-    [[maybe_unused]] Cell<T, Descriptor> const &cell) const
+T StoreDensityDynamics<T, Descriptor>::computeDensity(Cell<T, Descriptor> const &) const
 {
     return Descriptor<T>::fullRho(rhoBar);
 }
 
 template <typename T, template <typename U> class Descriptor>
-void StoreDensityDynamics<T, Descriptor>::defineDensity(
-    [[maybe_unused]] Cell<T, Descriptor> &cell, T rho_)
+void StoreDensityDynamics<T, Descriptor>::defineDensity(Cell<T, Descriptor> &, T rho_)
 {
     rhoBar = Descriptor<T>::rhoBar(rho_);
 }
 
 template <typename T, template <typename U> class Descriptor>
-T StoreDensityDynamics<T, Descriptor>::computeRhoBar(
-    [[maybe_unused]] Cell<T, Descriptor> const &cell) const
+T StoreDensityDynamics<T, Descriptor>::computeRhoBar(Cell<T, Descriptor> const &) const
 {
     return rhoBar;
 }
@@ -333,7 +329,7 @@ void StoreVelocityDynamics<T, Descriptor>::serialize(HierarchicSerializer &seria
 
 template <typename T, template <typename U> class Descriptor>
 void StoreVelocityDynamics<T, Descriptor>::computeVelocity(
-    [[maybe_unused]] Cell<T, Descriptor> const &cell, Array<T, Descriptor<T>::d> &velocity_) const
+    Cell<T, Descriptor> const &, Array<T, Descriptor<T>::d> &velocity_) const
 {
     for (int iD = 0; iD < Descriptor<T>::d; ++iD) {
         velocity_[iD] = velocity[iD];
@@ -342,7 +338,7 @@ void StoreVelocityDynamics<T, Descriptor>::computeVelocity(
 
 template <typename T, template <typename U> class Descriptor>
 void StoreVelocityDynamics<T, Descriptor>::defineVelocity(
-    [[maybe_unused]] Cell<T, Descriptor> &cell, Array<T, Descriptor<T>::d> const &velocity_)
+    Cell<T, Descriptor> &, Array<T, Descriptor<T>::d> const &velocity_)
 {
     for (int iD = 0; iD < Descriptor<T>::d; ++iD) {
         velocity[iD] = velocity_[iD];
@@ -430,15 +426,14 @@ void StoreDensityAndVelocityDynamics<T, Descriptor>::serialize(
 }
 
 template <typename T, template <typename U> class Descriptor>
-T StoreDensityAndVelocityDynamics<T, Descriptor>::computeDensity(
-    [[maybe_unused]] Cell<T, Descriptor> const &cell) const
+T StoreDensityAndVelocityDynamics<T, Descriptor>::computeDensity(Cell<T, Descriptor> const &) const
 {
     return Descriptor<T>::fullRho(rhoBar);
 }
 
 template <typename T, template <typename U> class Descriptor>
 void StoreDensityAndVelocityDynamics<T, Descriptor>::computeVelocity(
-    [[maybe_unused]] Cell<T, Descriptor> const &cell, Array<T, Descriptor<T>::d> &velocity_) const
+    Cell<T, Descriptor> const &, Array<T, Descriptor<T>::d> &velocity_) const
 {
     if (this->velIsJ()) {
         for (int iD = 0; iD < Descriptor<T>::d; ++iD) {
@@ -452,15 +447,14 @@ void StoreDensityAndVelocityDynamics<T, Descriptor>::computeVelocity(
 }
 
 template <typename T, template <typename U> class Descriptor>
-void StoreDensityAndVelocityDynamics<T, Descriptor>::defineDensity(
-    [[maybe_unused]] Cell<T, Descriptor> &cell, T rho_)
+void StoreDensityAndVelocityDynamics<T, Descriptor>::defineDensity(Cell<T, Descriptor> &, T rho_)
 {
     rhoBar = Descriptor<T>::rhoBar(rho_);
 }
 
 template <typename T, template <typename U> class Descriptor>
 void StoreDensityAndVelocityDynamics<T, Descriptor>::defineVelocity(
-    [[maybe_unused]] Cell<T, Descriptor> &cell, Array<T, Descriptor<T>::d> const &velocity_)
+    Cell<T, Descriptor> &, Array<T, Descriptor<T>::d> const &velocity_)
 {
     for (int iD = 0; iD < Descriptor<T>::d; ++iD) {
         velocity[iD] = velocity_[iD];
@@ -468,8 +462,7 @@ void StoreDensityAndVelocityDynamics<T, Descriptor>::defineVelocity(
 }
 
 template <typename T, template <typename U> class Descriptor>
-T StoreDensityAndVelocityDynamics<T, Descriptor>::computeRhoBar(
-    [[maybe_unused]] Cell<T, Descriptor> const &cell) const
+T StoreDensityAndVelocityDynamics<T, Descriptor>::computeRhoBar(Cell<T, Descriptor> const &) const
 {
     return rhoBar;
 }
@@ -549,7 +542,7 @@ void StoreTemperatureAndVelocityDynamics<T, Descriptor>::serialize(
 
 template <typename T, template <typename U> class Descriptor>
 void StoreTemperatureAndVelocityDynamics<T, Descriptor>::computeVelocity(
-    [[maybe_unused]] Cell<T, Descriptor> const &cell, Array<T, Descriptor<T>::d> &velocity_) const
+    Cell<T, Descriptor> const &, Array<T, Descriptor<T>::d> &velocity_) const
 {
     for (int iD = 0; iD < Descriptor<T>::d; ++iD) {
         velocity_[iD] = velocity[iD];
@@ -558,14 +551,14 @@ void StoreTemperatureAndVelocityDynamics<T, Descriptor>::computeVelocity(
 
 template <typename T, template <typename U> class Descriptor>
 T StoreTemperatureAndVelocityDynamics<T, Descriptor>::computeTemperature(
-    [[maybe_unused]] Cell<T, Descriptor> const &cell) const
+    Cell<T, Descriptor> const &) const
 {
     return (thetaBar + (T)1) * Descriptor<T>::cs2;
 }
 
 template <typename T, template <typename U> class Descriptor>
 void StoreTemperatureAndVelocityDynamics<T, Descriptor>::defineVelocity(
-    [[maybe_unused]] Cell<T, Descriptor> &cell, Array<T, Descriptor<T>::d> const &velocity_)
+    Cell<T, Descriptor> &, Array<T, Descriptor<T>::d> const &velocity_)
 {
     for (int iD = 0; iD < Descriptor<T>::d; ++iD) {
         velocity[iD] = velocity_[iD];
@@ -574,7 +567,7 @@ void StoreTemperatureAndVelocityDynamics<T, Descriptor>::defineVelocity(
 
 template <typename T, template <typename U> class Descriptor>
 void StoreTemperatureAndVelocityDynamics<T, Descriptor>::defineTemperature(
-    [[maybe_unused]] Cell<T, Descriptor> &cell, T theta_)
+    Cell<T, Descriptor> &, T theta_)
 {
     thetaBar = theta_ * Descriptor<T>::invCs2 - (T)1;
 }
@@ -738,14 +731,14 @@ int VelocityDirichletConstRhoBoundaryDynamics<T, Descriptor, direction, orientat
 
 template <typename T, template <typename U> class Descriptor, int direction, int orientation>
 T VelocityDirichletConstRhoBoundaryDynamics<T, Descriptor, direction, orientation>::computeRhoBar(
-    [[maybe_unused]] Cell<T, Descriptor> const &cell) const
+    Cell<T, Descriptor> const &) const
 {
     return Descriptor<T>::rhoBar((T)1.0);
 }
 
 template <typename T, template <typename U> class Descriptor, int direction, int orientation>
 T VelocityDirichletConstRhoBoundaryDynamics<T, Descriptor, direction, orientation>::computeDensity(
-    [[maybe_unused]] Cell<T, Descriptor> const &cell) const
+    Cell<T, Descriptor> const &) const
 {
     return (T)1.0;
 }

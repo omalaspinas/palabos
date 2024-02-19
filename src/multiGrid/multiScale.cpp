@@ -126,14 +126,12 @@ MultiBlockManagement3D PowerTwoMultiScaleManager::scaleMultiBlockManagement(
 
 ///////////////// Class ConvectiveMultiScaleManager //////////////////////////
 
-void ConvectiveMultiScaleManager::scaleVelocity(
-    [[maybe_unused]] Array<double, 2> &u, [[maybe_unused]] plint nLevel) const
+void ConvectiveMultiScaleManager::scaleVelocity(Array<double, 2> &, plint) const
 {
     // Velocity is scale-invariant in convective scaling.
 }
 
-void ConvectiveMultiScaleManager::scaleVelocity(
-    [[maybe_unused]] Array<double, 3> &u, [[maybe_unused]] plint nLevel) const
+void ConvectiveMultiScaleManager::scaleVelocity(Array<double, 3> &, plint) const
 {
     // Velocity is scale-invariant in convective scaling.
 }

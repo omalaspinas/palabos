@@ -49,9 +49,7 @@ BlockDomain::DomainT BoxProcessingFunctional2D::appliesTo() const
     return BlockDomain::bulk;
 }
 
-void BoxProcessingFunctional2D::rescale(
-    [[maybe_unused]] double dxScale, [[maybe_unused]] double dtScale)
-{ }
+void BoxProcessingFunctional2D::rescale(double, double) { }
 
 void BoxProcessingFunctional2D::setscale(int dxScale_, int dtScale_)
 {
@@ -321,12 +319,9 @@ BlockDomain::DomainT DotProcessingFunctional2D::appliesTo() const
 }
 
 /** No rescaling is done by default. **/
-void DotProcessingFunctional2D::rescale(
-    [[maybe_unused]] double dxScale, [[maybe_unused]] double dtScale)
-{ }
+void DotProcessingFunctional2D::rescale(double, double) { }
 
-void DotProcessingFunctional2D::setscale([[maybe_unused]] int dxScale, [[maybe_unused]] int dtScale)
-{ }
+void DotProcessingFunctional2D::setscale(int, int) { }
 
 /** The default assumption is conservative: all blocks have potentially been modified.
  */
@@ -351,9 +346,7 @@ BlockDomain::DomainT BoundedBoxProcessingFunctional2D::appliesTo() const
 }
 
 /** No rescaling is done by default. **/
-void BoundedBoxProcessingFunctional2D::rescale(
-    [[maybe_unused]] double dxScale, [[maybe_unused]] double dtScale)
-{ }
+void BoundedBoxProcessingFunctional2D::rescale(double, double) { }
 
 void BoundedBoxProcessingFunctional2D::setscale(int dxScale_, int dtScale_)
 {

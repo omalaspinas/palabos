@@ -257,7 +257,7 @@ CouplingAction3D *CouplingAction3D::clone() const
     return new CouplingAction3D(*this);
 }
 
-void CouplingAction3D::execute([[maybe_unused]] std::vector<id_t> &allMultiBlocks)
+void CouplingAction3D::execute(std::vector<id_t> &)
 {
     coupling->execute();
 }
@@ -294,7 +294,7 @@ ReductiveCouplingAction3D *ReductiveCouplingAction3D::clone() const
     return new ReductiveCouplingAction3D(*this);
 }
 
-void ReductiveCouplingAction3D::execute([[maybe_unused]] std::vector<id_t> &allMultiBlocks)
+void ReductiveCouplingAction3D::execute(std::vector<id_t> &)
 {
     coupling->execute();
 }
@@ -390,7 +390,7 @@ SubActionsAction3D *SubActionsAction3D::clone() const
     return new SubActionsAction3D(*this);
 }
 
-void SubActionsAction3D::execute([[maybe_unused]] std::vector<id_t> &allMultiBlocks)
+void SubActionsAction3D::execute(std::vector<id_t> &)
 {
     actions->execute();
 }
@@ -705,7 +705,7 @@ CopySumReductionToVariable3D *CopySumReductionToVariable3D::clone() const
     return new CopySumReductionToVariable3D(*this);
 }
 
-void CopySumReductionToVariable3D::execute([[maybe_unused]] std::vector<id_t> &allMultiBlocks)
+void CopySumReductionToVariable3D::execute(std::vector<id_t> &)
 {
     result = actions.statistics(actionID).getSum(0);
 }
@@ -715,6 +715,6 @@ NOPaction *NOPaction::clone() const
     return new NOPaction(*this);
 }
 
-void NOPaction::execute([[maybe_unused]] std::vector<id_t> &allMultiBlocks) { }
+void NOPaction::execute(std::vector<id_t> &) { }
 
 }  // namespace plb

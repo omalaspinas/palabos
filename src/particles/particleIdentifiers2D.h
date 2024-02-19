@@ -71,6 +71,9 @@ public:
 
 public:
     ~ParticleRegistration2D();
+    ParticleRegistration2D(ParticleRegistration2D<T, Descriptor> const &) = delete;
+    ParticleRegistration2D<T, Descriptor> &operator=(
+        ParticleRegistration2D<T, Descriptor> const &) = delete;
     int announce(std::string nameOfParticle, ParticleGenerator2D<T, Descriptor> *generator_ = 0);
     int getId(std::string name) const;
     int getNumId() const;
@@ -83,14 +86,6 @@ public:
     /// This default constructor should actually be private, but it is public
     ///  for now to fix a parse error in older GCCs.
     ParticleRegistration2D() { }
-
-private:
-    ParticleRegistration2D([[maybe_unused]] ParticleRegistration2D<T, Descriptor> const &rhs) { }
-    ParticleRegistration2D<T, Descriptor> &operator=(
-        [[maybe_unused]] ParticleRegistration2D<T, Descriptor> const &rhs)
-    {
-        return *this;
-    }
 
 private:
     EntryMap particleByName;

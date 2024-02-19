@@ -146,11 +146,8 @@ SerialCombinedStatistics *SerialCombinedStatistics::clone() const
 }
 
 void SerialCombinedStatistics::reduceStatistics(
-    [[maybe_unused]] std::vector<double> &averageObservables,
-    [[maybe_unused]] std::vector<double> &sumWeights,
-    [[maybe_unused]] std::vector<double> &sumObservables,
-    [[maybe_unused]] std::vector<double> &maxObservables,
-    [[maybe_unused]] std::vector<plint> &intSumObservables) const
+    std::vector<double> &, std::vector<double> &, std::vector<double> &, std::vector<double> &,
+    std::vector<plint> &) const
 {
     // Do nothing in serial case
 }

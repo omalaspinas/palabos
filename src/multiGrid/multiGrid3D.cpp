@@ -471,15 +471,13 @@ MultiScaleManager const &MultiGrid3D::getScaleManager() const
 
 // TODO think how to do a good serialization
 /// I/O
-DataSerializer *MultiGrid3D::getBlockSerializer(
-    [[maybe_unused]] Box3D const &domain, [[maybe_unused]] IndexOrdering::OrderingT ordering) const
+DataSerializer *MultiGrid3D::getBlockSerializer(Box3D const &, IndexOrdering::OrderingT) const
 {
     PLB_ASSERT(false);
     return 0;
 }
 
-DataUnSerializer *MultiGrid3D::getBlockUnSerializer(
-    [[maybe_unused]] Box3D const &domain, [[maybe_unused]] IndexOrdering::OrderingT ordering)
+DataUnSerializer *MultiGrid3D::getBlockUnSerializer(Box3D const &, IndexOrdering::OrderingT)
 {
     PLB_ASSERT(false);
     return 0;

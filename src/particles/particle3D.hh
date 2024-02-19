@@ -88,65 +88,56 @@ void Particle3D<T, Descriptor>::setTag(plint tag_)
 }
 
 template <typename T, template <typename U> class Descriptor>
-bool Particle3D<T, Descriptor>::getVector(
-    [[maybe_unused]] plint whichVector, [[maybe_unused]] Array<T, 3> &vector) const
+bool Particle3D<T, Descriptor>::getVector(plint, Array<T, 3> &) const
 {
     return false;
 }
 
 template <typename T, template <typename U> class Descriptor>
-bool Particle3D<T, Descriptor>::setVector(
-    [[maybe_unused]] plint whichVector, [[maybe_unused]] Array<T, 3> const &vector)
+bool Particle3D<T, Descriptor>::setVector(plint, Array<T, 3> const &)
 {
     return false;
 }
 
 template <typename T, template <typename U> class Descriptor>
-bool Particle3D<T, Descriptor>::getScalar(
-    [[maybe_unused]] plint whichScalar, [[maybe_unused]] T &scalar) const
+bool Particle3D<T, Descriptor>::getScalar(plint, T &) const
 {
     return false;
 }
 
 template <typename T, template <typename U> class Descriptor>
-bool Particle3D<T, Descriptor>::setScalar(
-    [[maybe_unused]] plint whichScalar, [[maybe_unused]] T scalar)
+bool Particle3D<T, Descriptor>::setScalar(plint, T)
 {
     return false;
 }
 
 template <typename T, template <typename U> class Descriptor>
-bool Particle3D<T, Descriptor>::getTensor(
-    [[maybe_unused]] plint whichVector,
-    [[maybe_unused]] Array<T, SymmetricTensorImpl<T, 3>::n> &tensor) const
+bool Particle3D<T, Descriptor>::getTensor(plint, Array<T, SymmetricTensorImpl<T, 3>::n> &) const
 {
     return false;
 }
 
 template <typename T, template <typename U> class Descriptor>
-bool Particle3D<T, Descriptor>::setTensor(
-    [[maybe_unused]] plint whichVector,
-    [[maybe_unused]] Array<T, SymmetricTensorImpl<T, 3>::n> const &tensor)
+bool Particle3D<T, Descriptor>::setTensor(plint, Array<T, SymmetricTensorImpl<T, 3>::n> const &)
 {
     return false;
 }
 
 template <typename T, template <typename U> class Descriptor>
-bool Particle3D<T, Descriptor>::setScalars([[maybe_unused]] std::vector<T> const &scalars)
+bool Particle3D<T, Descriptor>::setScalars(std::vector<T> const &)
 {
     return false;
 }
 
 template <typename T, template <typename U> class Descriptor>
-bool Particle3D<T, Descriptor>::setVectors(
-    [[maybe_unused]] std::vector<Array<T, 3> > const &vectors)
+bool Particle3D<T, Descriptor>::setVectors(std::vector<Array<T, 3> > const &)
 {
     return false;
 }
 
 template <typename T, template <typename U> class Descriptor>
 bool Particle3D<T, Descriptor>::setTensors(
-    [[maybe_unused]] std::vector<Array<T, SymmetricTensorImpl<T, 3>::n> > const &tensors)
+    std::vector<Array<T, SymmetricTensorImpl<T, 3>::n> > const &)
 {
     return false;
 }
@@ -562,30 +553,24 @@ RestParticle3D<T, Descriptor>::RestParticle3D(plint tag_, Array<T, 3> const &pos
 { }
 
 template <typename T, template <typename U> class Descriptor>
-void RestParticle3D<T, Descriptor>::velocityToParticle(
-    [[maybe_unused]] TensorField3D<T, 3> &velocityField, [[maybe_unused]] T scaling)
+void RestParticle3D<T, Descriptor>::velocityToParticle(TensorField3D<T, 3> &, T)
 { }
 
 template <typename T, template <typename U> class Descriptor>
-void RestParticle3D<T, Descriptor>::velocityToParticle(
-    [[maybe_unused]] NTensorField3D<T> &velocityField, [[maybe_unused]] T scaling)
+void RestParticle3D<T, Descriptor>::velocityToParticle(NTensorField3D<T> &, T)
 { }
 
 template <typename T, template <typename U> class Descriptor>
-void RestParticle3D<T, Descriptor>::rhoBarJtoParticle(
-    [[maybe_unused]] NTensorField3D<T> &rhoBarJfield, [[maybe_unused]] bool velIsJ,
-    [[maybe_unused]] T scaling)
+void RestParticle3D<T, Descriptor>::rhoBarJtoParticle(NTensorField3D<T> &, bool, T)
 { }
 
 template <typename T, template <typename U> class Descriptor>
-void RestParticle3D<T, Descriptor>::fluidToParticle(
-    [[maybe_unused]] BlockLattice3D<T, Descriptor> &fluid, [[maybe_unused]] T scaling)
+void RestParticle3D<T, Descriptor>::fluidToParticle(BlockLattice3D<T, Descriptor> &, T)
 { }
 
 template <typename T, template <typename U> class Descriptor>
 void RestParticle3D<T, Descriptor>::fluidToParticle(
-    [[maybe_unused]] BlockLattice3D<T, Descriptor> &fluid, [[maybe_unused]] ScalarField3D<T> &sF,
-    [[maybe_unused]] T scaling)
+    BlockLattice3D<T, Descriptor> &, ScalarField3D<T> &, T)
 { }
 
 template <typename T, template <typename U> class Descriptor>

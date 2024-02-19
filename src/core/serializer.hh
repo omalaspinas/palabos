@@ -56,7 +56,7 @@ WriteToSerialArray<T> *WriteToSerialArray<T>::clone() const
 }
 
 template <typename T>
-void WriteToSerialArray<T>::writeHeader([[maybe_unused]] pluint dataSize)
+void WriteToSerialArray<T>::writeHeader(pluint)
 { }
 
 template <typename T>
@@ -81,7 +81,7 @@ ReadFromSerialArray<T> *ReadFromSerialArray<T>::clone() const
 }
 
 template <typename T>
-void ReadFromSerialArray<T>::readHeader([[maybe_unused]] pluint dataSize) const
+void ReadFromSerialArray<T>::readHeader(pluint) const
 { }
 
 template <typename T>

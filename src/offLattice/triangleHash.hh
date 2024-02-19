@@ -291,8 +291,7 @@ CreateTriangleHash<T>::CreateTriangleHash(TriangularSurfaceMesh<T> const &mesh_)
 { }
 
 template <typename T>
-void CreateTriangleHash<T>::processGenericBlocks(
-    [[maybe_unused]] Box3D domain, std::vector<AtomicBlock3D *> blocks)
+void CreateTriangleHash<T>::processGenericBlocks(Box3D, std::vector<AtomicBlock3D *> blocks)
 {
     PLB_PRECONDITION(blocks.size() == 1);
     AtomicContainerBlock3D *container = dynamic_cast<AtomicContainerBlock3D *>(blocks[0]);
@@ -331,7 +330,7 @@ ReAssignTriangleHash<T, ParticleFieldT>::ReAssignTriangleHash(
 
 template <typename T, class ParticleFieldT>
 void ReAssignTriangleHash<T, ParticleFieldT>::processGenericBlocks(
-    [[maybe_unused]] Box3D domain, std::vector<AtomicBlock3D *> blocks)
+    Box3D, std::vector<AtomicBlock3D *> blocks)
 {
     PLB_PRECONDITION(blocks.size() == 2);
     AtomicContainerBlock3D *container = dynamic_cast<AtomicContainerBlock3D *>(blocks[0]);
@@ -369,8 +368,7 @@ BruteReAssignTriangleHash<T>::BruteReAssignTriangleHash(TriangularSurfaceMesh<T>
 { }
 
 template <typename T>
-void BruteReAssignTriangleHash<T>::processGenericBlocks(
-    [[maybe_unused]] Box3D domain, std::vector<AtomicBlock3D *> blocks)
+void BruteReAssignTriangleHash<T>::processGenericBlocks(Box3D, std::vector<AtomicBlock3D *> blocks)
 {
     PLB_PRECONDITION(blocks.size() == 1);
     AtomicContainerBlock3D *container = dynamic_cast<AtomicContainerBlock3D *>(blocks[0]);

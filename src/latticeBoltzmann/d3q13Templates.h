@@ -136,9 +136,7 @@ struct d3q13Templates {
     /// BGK collision step with density correction
     // QUESTION: Looks super wrong....
     static T constRhoCollision(
-        [[maybe_unused]] Cell<T, descriptors::D3Q13Descriptor> &cell, [[maybe_unused]] T rho,
-        Array<T, Descriptor::d> const &u, [[maybe_unused]] T ratioRho, [[maybe_unused]] T lambda_nu,
-        [[maybe_unused]] T lambda_nu_prime)
+        Cell<T, descriptors::D3Q13Descriptor> &, T, Array<T, Descriptor::d> const &u, T, T, T)
     {
         const T uSqr = VectorTemplate<T, descriptors::D3Q13Descriptor>::normSqr(u);
         return uSqr;
