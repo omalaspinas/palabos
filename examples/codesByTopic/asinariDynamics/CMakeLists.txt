@@ -40,7 +40,7 @@ if (BUILD_TESTING_MPI)
         ALL
         DEPENDS ${EXECUTABLE_NAME}
         COMMAND tar xzf aneurysm.stl.tgz
-        COMMAND "LSAN_OPTIONS=suppressions=${CMAKE_CURRENT_SOURCE_DIR}/test/LAsan.supp" mpirun --allow-run-as-root -np 4 ./${EXECUTABLE_NAME} test/param_aneurysm_regression.xml > test/output_mpi.dat || (cat test/output_mpi.dat\; exit 1)
+        COMMAND "LSAN_OPTIONS=use_tls=0:suppressions=${CMAKE_CURRENT_SOURCE_DIR}/test/LAsan.supp" mpirun --allow-run-as-root --oversubscribe -np 4 ./${EXECUTABLE_NAME} test/param_aneurysm_regression.xml > test/output_mpi.dat || (cat test/output_mpi.dat\; exit 1)
         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
         COMMENT "run generated test in ${CMAKE_CURRENT_SOURCE_DIR}"
         SOURCES ./${SOURCE_NAME}.cpp

@@ -31,7 +31,7 @@ if(BUILD_TESTING_MPI)
     # add_custom_target(${PROJECT_NAME}_test_mpi
     #     ALL
     #     DEPENDS ${PROJECT_NAME}
-    #     COMMAND "LSAN_OPTIONS=suppressions=${LSAN_SUPPRESSION_FILE}" mpirun --allow-run-as-root -np 4 ./${PROJECT_NAME} > test/output_mpi.dat || (cat test/output_mpi.dat\; exit 1)
+    #     COMMAND "LSAN_OPTIONS=use_tls=0:suppressions=${LSAN_SUPPRESSION_FILE}" mpirun --allow-run-as-root --oversubscribe -np 4 ./${PROJECT_NAME} > test/output_mpi.dat || (cat test/output_mpi.dat\; exit 1)
     #     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
     #     COMMENT "run generated test in ${CMAKE_CURRENT_SOURCE_DIR}"
     #     SOURCES ./${EXECUTABLE_NAME}.cpp
