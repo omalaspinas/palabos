@@ -437,31 +437,38 @@ int main(int argc, char *argv[])
         if (iter % simParam.outIter == 0) {
             std::vector<Array<T, 3> > positions;
             // inlet
-            positions.push_back(Array<T, 3>(round(inletCenter[0]), round(inletCenter[1]), round(inletCenter[2])));
+            positions.push_back(
+                Array<T, 3>(round(inletCenter[0]), round(inletCenter[1]), round(inletCenter[2])));
             // inlet+1
-            positions.push_back(Array<T, 3>(round(inletCenter[0]), round(inletCenter[1]), round(inletCenter[2])+1));
+            positions.push_back(Array<T, 3>(
+                round(inletCenter[0]), round(inletCenter[1]), round(inletCenter[2]) + 1));
             // outlet-1
-            positions.push_back(Array<T, 3>(round(outletCenter[0]), round(outletCenter[1]), round(outletCenter[2])-1));
+            positions.push_back(Array<T, 3>(
+                round(outletCenter[0]), round(outletCenter[1]), round(outletCenter[2]) - 1));
             // outlet
-            positions.push_back(Array<T, 3>(round(outletCenter[0]), round(outletCenter[1]), round(outletCenter[2])));
+            positions.push_back(Array<T, 3>(
+                round(outletCenter[0]), round(outletCenter[1]), round(outletCenter[2])));
             // clot begin
-            positions.push_back(Array<T, 3>(round(outletCenter[0]), round(outletCenter[1]), round(clotBeginZ)));
+            positions.push_back(
+                Array<T, 3>(round(outletCenter[0]), round(outletCenter[1]), round(clotBeginZ)));
             // clot end
-            positions.push_back(Array<T, 3>(round(outletCenter[0]), round(outletCenter[1]), round(clotEndZ)));
+            positions.push_back(
+                Array<T, 3>(round(outletCenter[0]), round(outletCenter[1]), round(clotEndZ)));
 
             // compute the densities and velocities at probes positions
             std::vector<T> densities = densitySingleProbes(*lattice, positions);
-            std::vector<Array<T,3> > velocities = velocitySingleProbes(*lattice, positions);
-            T gradPClot = densities[4] * convRhoToPressure
-                    - densities[5] * convRhoToPressure
-                / double((clotEndZ - clotBeginZ) * simParam.dx);
+            std::vector<Array<T, 3> > velocities = velocitySingleProbes(*lattice, positions);
+            T gradPClot =
+                densities[4] * convRhoToPressure
+                - densities[5] * convRhoToPressure / double((clotEndZ - clotBeginZ) * simParam.dx);
 
-            T gradPClotAdim = (densities[4] - densities[5])
-                * convRhoToPressureAdim / double(clotEndZ - clotBeginZ);
+            T gradPClotAdim = (densities[4] - densities[5]) * convRhoToPressureAdim
+                              / double(clotEndZ - clotBeginZ);
 
             T permeability = computeVSeepage(*lattice, clotSolidFraction)
                              * (simParam.dx / simParam.dt) * simParam.rho * simParam.nu / gradPClot;
-            T permeAdim = computeVSeepage(*lattice, clotSolidFraction) * simParam.rho_LB * simParam.nu_LB / gradPClotAdim;
+            T permeAdim = computeVSeepage(*lattice, clotSolidFraction) * simParam.rho_LB
+                          * simParam.nu_LB / gradPClotAdim;
 
 #ifndef PLB_REGRESSION
             flowFile << velocities[0][0] * simParam.dx / simParam.dt << " "
