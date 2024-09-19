@@ -435,79 +435,55 @@ int main(int argc, char *argv[])
 
         // output flow.dat data
         if (iter % simParam.outIter == 0) {
-            Cell<T, DESCRIPTOR> &cellInlet =
-                lattice->get(round(inletCenter[0]), round(inletCenter[1]), round(inletCenter[2]));
-            cellInlet.computeVelocity(velInlet);
-            rhoInlet = cellInlet.computeDensity();
-            Cell<T, DESCRIPTOR> &cellOutlet = lattice->get(
-                round(outletCenter[0]), round(outletCenter[1]), round(outletCenter[2]));
-            cellOutlet.computeVelocity(velOutlet);
-            rhoOutlet = cellOutlet.computeDensity();
-            Cell<T, DESCRIPTOR> &cellInlet_1 = lattice->get(
-                round(inletCenter[0]), round(inletCenter[1]) + 1, round(inletCenter[2]));
-            Array<T, 3> velInlet_1;
-            cellInlet_1.computeVelocity(velInlet_1);
-            T rhoInlet_1 = cellInlet_1.computeDensity();
-            Cell<T, DESCRIPTOR> &cellOutlet_1 = lattice->get(
-                round(outletCenter[0]), round(outletCenter[1]), round(outletCenter[2]) - 1);
-            Array<T, 3> velOutlet_1;
-            cellOutlet_1.computeVelocity(velOutlet_1);
-            T rhoOutlet_1 = cellOutlet_1.computeDensity();
-            Cell<T, DESCRIPTOR> &cellClotStart =
-                lattice->get(round(outletCenter[0]), round(outletCenter[1]), round(clotBeginZ + 2));
-            Array<T, 3> velClotStart;
-            cellClotStart.computeVelocity(velClotStart);
-            Cell<T, DESCRIPTOR> &cellClotEnd =
-                lattice->get(round(outletCenter[0]), round(outletCenter[1]), round(clotEndZ - 2));
-            Array<T, 3> velClotEnd;
-            cellClotEnd.computeVelocity(velClotEnd);
+            std::vector<Array<T, 3> > positions;
+            // inlet
+            positions.push_back(Array<T, 3>(round(inletCenter[0]), round(inletCenter[1]), round(inletCenter[2])));
+            // inlet+1
+            positions.push_back(Array<T, 3>(round(inletCenter[0]), round(inletCenter[1]), round(inletCenter[2])+1));
+            // outlet-1
+            positions.push_back(Array<T, 3>(round(outletCenter[0]), round(outletCenter[1]), round(outletCenter[2])-1));
+            // outlet
+            positions.push_back(Array<T, 3>(round(outletCenter[0]), round(outletCenter[1]), round(outletCenter[2])));
+            // clot begin
+            positions.push_back(Array<T, 3>(round(outletCenter[0]), round(outletCenter[1]), round(clotBeginZ)));
+            // clot end
+            positions.push_back(Array<T, 3>(round(outletCenter[0]), round(outletCenter[1]), round(clotEndZ)));
 
-            T gradPClot =
-                double(
-                    (lattice->get(round(outletCenter[0]), round(outletCenter[1]), round(clotBeginZ))
-                             .computeDensity()
-                         * convRhoToPressure
-                     + offsetRhoToPressure)
-                    - (lattice->get(round(outletCenter[0]), round(outletCenter[1]), round(clotEndZ))
-                               .computeDensity()
-                           * convRhoToPressure
-                       + offsetRhoToPressure))
+            // compute the densities and velocities at probes positions
+            std::vector<T> densities = densitySingleProbes(*lattice, positions);
+            std::vector<Array<T,3> > velocities = velocitySingleProbes(*lattice, positions);
+            T gradPClot = densities[4] * convRhoToPressure
+                    - densities[5] * convRhoToPressure
                 / double((clotEndZ - clotBeginZ) * simParam.dx);
 
-            T gradPClotAdim =
-                double(
-                    (lattice->get(round(outletCenter[0]), round(outletCenter[1]), round(clotBeginZ))
-                         .computeDensity())
-                    - (lattice->get(round(outletCenter[0]), round(outletCenter[1]), round(clotEndZ))
-                           .computeDensity()))
+            T gradPClotAdim = (densities[4] - densities[5])
                 * convRhoToPressureAdim / double(clotEndZ - clotBeginZ);
 
             T permeability = computeVSeepage(*lattice, clotSolidFraction)
                              * (simParam.dx / simParam.dt) * simParam.rho * simParam.nu / gradPClot;
-            T permeAdim = computeVSeepage(*lattice, clotSolidFraction) * simParam.rho_LB
-                          * simParam.nu_LB / gradPClotAdim;
+            T permeAdim = computeVSeepage(*lattice, clotSolidFraction) * simParam.rho_LB * simParam.nu_LB / gradPClotAdim;
 
 #ifndef PLB_REGRESSION
-            flowFile << velInlet[0] * simParam.dx / simParam.dt << " "
-                     << velInlet[1] * simParam.dx / simParam.dt << " "
+            flowFile << velocities[0][0] * simParam.dx / simParam.dt << " "
+                     << velocities[0][1] * simParam.dx / simParam.dt << " "
 #else
-            pcout << velInlet[0] * simParam.dx / simParam.dt << " "
-                  << velInlet[1] * simParam.dx / simParam.dt << " "
+            pcout << velocities[0][0] * simParam.dx / simParam.dt << " "
+                  << velocities[0][1] * simParam.dx / simParam.dt << " "
 #endif
-                     << velInlet[2] * simParam.dx / simParam.dt << " "
-                     << rhoInlet * convRhoToPressure + offsetRhoToPressure << " "
-                     << velInlet_1[0] * simParam.dx / simParam.dt << " "
-                     << velInlet_1[1] * simParam.dx / simParam.dt << " "
-                     << velInlet_1[2] * simParam.dx / simParam.dt << " "
-                     << rhoInlet_1 * convRhoToPressure + offsetRhoToPressure << " "
-                     << velOutlet[0] * simParam.dx / simParam.dt << " "
-                     << velOutlet[1] * simParam.dx / simParam.dt << " "
-                     << velOutlet[2] * simParam.dx / simParam.dt << " "
-                     << rhoOutlet * convRhoToPressure + offsetRhoToPressure << " "
-                     << velOutlet_1[0] * simParam.dx / simParam.dt << " "
-                     << velOutlet_1[1] * simParam.dx / simParam.dt << " "
-                     << velOutlet_1[2] * simParam.dx / simParam.dt << " "
-                     << rhoOutlet_1 * convRhoToPressure + offsetRhoToPressure << " "
+                     << velocities[0][2] * simParam.dx / simParam.dt << " "
+                     << densities[0] * convRhoToPressure + offsetRhoToPressure << " "
+                     << velocities[1][0] * simParam.dx / simParam.dt << " "
+                     << velocities[1][1] * simParam.dx / simParam.dt << " "
+                     << velocities[1][2] * simParam.dx / simParam.dt << " "
+                     << densities[1] * convRhoToPressure + offsetRhoToPressure << " "
+                     << velocities[3][0] * simParam.dx / simParam.dt << " "
+                     << velocities[3][1] * simParam.dx / simParam.dt << " "
+                     << velocities[3][2] * simParam.dx / simParam.dt << " "
+                     << densities[3] * convRhoToPressure + offsetRhoToPressure << " "
+                     << velocities[2][0] * simParam.dx / simParam.dt << " "
+                     << velocities[2][1] * simParam.dx / simParam.dt << " "
+                     << velocities[2][2] * simParam.dx / simParam.dt << " "
+                     << densities[2] * convRhoToPressure + offsetRhoToPressure << " "
                      << computeVSeepage(*lattice, clotSolidFraction) * simParam.dx / simParam.dt
                      << " " << permeability << " " << gradPClot << " "
                      << computeVSeepage(*lattice, clotSolidFraction) << " " << permeAdim << " "
